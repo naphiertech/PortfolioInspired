@@ -4,24 +4,79 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  --border: #e8e8e8;
+  --accent: #2563eb;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  --border: #222222;
+  --accent: #3b82f6;
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scroll-snap-type-x-mandatory {
+    scroll-snap-type: x mandatory;
+  }
+  .scroll-snap-align-start {
+    scroll-snap-align: start;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Identical brutalist sharp-corner constraint from live site */
+:not(.allow-rounded):not(.allow-rounded *){
+  border-radius: 0 !important;
+}
+
+::selection {
+  background: var(--accent);
+  color: white;
+}
+
+/* Custom Bento Card Styling */
+.bento-card {
+  @apply bg-card-bg dark:bg-dark-card-bg border border-card-border dark:border-dark-card-border rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all duration-300;
+}
+
+.bento-card:hover {
+  @apply border-gray-400 dark:border-neutral-700 shadow-[0_3px_10px_rgba(0,0,0,0.06)];
+}
+
+/* Access Card scanline and gradient backgrounds */
+.dev-card-scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.015) 2px,
+    rgba(255, 255, 255, 0.015) 4px
+  );
+}
+
+/* Keyframe animations for CSS carousel fallbacks */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease forwards;
 }

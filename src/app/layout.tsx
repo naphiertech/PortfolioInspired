@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ChatWidget } from "@/components/ChatWidget";
+import { PWARegister } from "@/components/PWARegister";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +32,24 @@ export const metadata: Metadata = {
     "TypeScript",
     "React",
   ],
+  manifest: "/icon/site.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Naphier Awalie",
+  },
+  icons: {
+    icon: [
+      { url: "/icon/favicon.ico" },
+      { url: "/icon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icon/favicon.svg", type: "image/svg+xml" }
+    ],
+    apple: "/icon/apple-touch-icon.png",
+  },
+};
+
+export const viewport = {
+  themeColor: "#2563eb",
 };
 
 export default function RootLayout({
@@ -41,6 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} font-sans`} suppressHydrationWarning>
       <body className="antialiased min-h-screen">
+        <PWARegister />
         <main className="animate-fade-in">
           {children}
           

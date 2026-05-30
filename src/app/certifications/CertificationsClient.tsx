@@ -65,9 +65,14 @@ export function CertificationsClient() {
               key={index}
               variants={itemVariants}
               href={cert.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block border-b border-r border-border-default dark:border-dark-border p-8 hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary transition-all duration-300"
+              target={cert.href === "#" ? undefined : "_blank"}
+              rel={cert.href === "#" ? undefined : "noopener noreferrer"}
+              onClick={cert.href === "#" ? (e) => e.preventDefault() : undefined}
+              className={`group block border-b border-r border-border-default dark:border-dark-border p-8 transition-all duration-300 ${
+                cert.href === "#" 
+                  ? "bg-bg-primary dark:bg-dark-bg-primary" 
+                  : "hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary cursor-pointer"
+              }`}
             >
               <div className="flex flex-col gap-3 h-full justify-between">
                 <div className="flex flex-col gap-2">
@@ -77,10 +82,15 @@ export function CertificationsClient() {
                   <p className="text-[14px] text-text-secondary dark:text-dark-text-secondary leading-relaxed font-normal">
                     Issued by {cert.issuer}
                   </p>
+                  {cert.code && (
+                    <p className="text-xs text-text-muted dark:text-dark-text-muted font-mono mt-1">
+                      Credential ID: <span className="bg-gray-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded border border-border-default dark:border-dark-border">{cert.code}</span>
+                    </p>
+                  )}
                 </div>
                 <div className="mt-4">
                   <span className="inline-block px-2.5 py-1 rounded bg-[#f4f4f5] dark:bg-[#18181b] border border-border-default dark:border-dark-border text-xs font-mono text-[#27272a] dark:text-zinc-300 transition-colors group-hover:border-accent/30 dark:group-hover:border-accent/30">
-                    Verify Credential
+                    {cert.href === "#" ? "Verified Achievement" : "Verify Credential"}
                   </span>
                 </div>
               </div>

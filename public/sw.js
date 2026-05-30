@@ -15,7 +15,10 @@ const APP_SHELL = [
   "/icon/favicon.svg",
   "/icon/site.webmanifest",
   "/icon/web-app-manifest-192x192.png",
-  "/icon/web-app-manifest-512x512.png"
+  "/icon/web-app-manifest-512x512.png",
+  "/certificates/BuildWithAIZampen.jpg",
+  "/certificates/DICT-NotebookLM.png",
+  "/certificates/GoogleIOExtended.jpg"
 ];
 
 // Install Event - Pre-cache the App Shell

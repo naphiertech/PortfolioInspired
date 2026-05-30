@@ -1,4 +1,4 @@
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `dynamic-${CACHE_VERSION}`;
 
@@ -61,6 +61,19 @@ self.addEventListener("fetch", (event) => {
 
   // Exclude API requests (like /api/chat) from cache first strategies
   if (url.pathname.startsWith("/api/")) {
+    event.respondWith(networkOnly(request));
+    return;
+  }
+
+  // Exclude Next.js RSC (React Server Component) and prefetch data requests from cache
+  const isRSCRequest = 
+    url.searchParams.has("_rsc") || 
+    request.headers.has("RSC") || 
+    request.headers.has("Next-Router-State-Tree") || 
+    request.headers.has("Next-Router-Prefetch") ||
+    request.headers.get("Purpose") === "prefetch";
+
+  if (isRSCRequest) {
     event.respondWith(networkOnly(request));
     return;
   }

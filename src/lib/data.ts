@@ -18,6 +18,7 @@ export interface CertificationItem {
   name: string;
   issuer: string;
   href: string;
+  code?: string;
 }
 
 export interface ExperienceItem {
@@ -65,24 +66,27 @@ export const projects: ProjectItem[] = [
 
 export const certifications: CertificationItem[] = [
   {
-    name: "Next.js & React Developer Certification",
-    issuer: "Vercel / Next.js",
-    href: "https://nextjs.org/",
+    name: "Build with AI Hackathon 2026",
+    issuer: "Google Developers Group Zamboanga",
+    href: "#",
   },
   {
-    name: "TypeScript Professional Developer",
-    issuer: "TypeScript Team",
-    href: "https://www.typescriptlang.org/",
+    name: "Artificial Intelligence for Education: Unlocking the Power of NotebookLM",
+    issuer: "Department of Information and Communications Technology (DICT)",
+    href: "/certificates/DICT-NotebookLM.png",
+    code: "AAR-TOD-2026-ZAM-010-193",
   },
   {
-    name: "Responsive Web Design",
-    issuer: "freeCodeCamp",
-    href: "https://www.freecodecamp.org/",
+    name: "Google I/O Extended Zamboanga Peninsula",
+    issuer: "Google Developer Groups Zamboanga",
+    href: "/certificates/GoogleIOExtended.jpg",
+    code: "BD9B3110",
   },
   {
-    name: "Full-Stack Software Engineering",
-    issuer: "Open Source Community",
-    href: "https://github.com/",
+    name: "Build with AI | Zamboanga Peninsula",
+    issuer: "Google Developer Groups Zamboanga",
+    href: "/certificates/BuildWithAIZampen.jpg",
+    code: "6D72DF79",
   },
 ];
 

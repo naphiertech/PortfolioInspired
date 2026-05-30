@@ -33,8 +33,13 @@ export function Certifications() {
             <h3 className="text-xs font-semibold text-text-primary dark:text-dark-text-primary group-hover/cert:text-blue-600 dark:group-hover/cert:text-blue-400 transition-colors">
               {cert.name}
             </h3>
-            <p className="text-[11px] text-text-muted dark:text-dark-text-muted mt-0.5">
-              {cert.issuer}
+            <p className="text-[11px] text-text-muted dark:text-dark-text-muted mt-0.5 flex items-center justify-between gap-2 flex-wrap">
+              <span>{cert.issuer}</span>
+              {cert.code && (
+                <span className="font-mono text-[9px] px-1.5 py-0.5 bg-gray-200/80 dark:bg-zinc-800/80 rounded text-foreground/80">
+                  {cert.code}
+                </span>
+              )}
             </p>
           </a>
         ))}

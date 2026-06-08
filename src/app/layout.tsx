@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     icon: [
       { url: "/icon/favicon.ico" },
       { url: "/icon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
-      { url: "/icon/favicon.svg", type: "image/svg+xml" }
+      { url: "/icon/favicon.svg", type: "image/svg+xml" },
     ],
     apple: "/icon/apple-touch-icon.png",
   },
@@ -58,12 +58,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} font-sans`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} font-sans`}
+      suppressHydrationWarning
+    >
       <body className="antialiased min-h-screen">
         <PWARegister />
         <main className="animate-fade-in">
           {children}
-          
+
           {/* Bottom Copyright Footer */}
           <footer className="max-w-4xl mx-auto px-4 py-8 border-t border-border mt-12">
             <div className="flex justify-center items-center">

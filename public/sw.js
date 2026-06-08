@@ -18,7 +18,7 @@ const APP_SHELL = [
   "/icon/web-app-manifest-512x512.png",
   "/certificates/BuildWithAIZampen.jpg",
   "/certificates/DICT-NotebookLM.png",
-  "/certificates/GoogleIOExtended.jpg"
+  "/certificates/GoogleIOExtended.jpg",
 ];
 
 // Install Event - Pre-cache the App Shell
@@ -27,7 +27,7 @@ self.addEventListener("install", (event) => {
     caches.open(STATIC_CACHE).then((cache) => {
       console.log("[SW] Pre-caching App Shell");
       return cache.addAll(APP_SHELL);
-    })
+    }),
   );
   // Activate immediately
   self.skipWaiting();
@@ -43,9 +43,9 @@ self.addEventListener("activate", (event) => {
           .map((name) => {
             console.log("[SW] Deleting stale cache:", name);
             return caches.delete(name);
-          })
+          }),
       );
-    })
+    }),
   );
   // Take control immediately
   self.clients.claim();
@@ -66,10 +66,10 @@ self.addEventListener("fetch", (event) => {
   }
 
   // Exclude Next.js RSC (React Server Component) and prefetch data requests from cache
-  const isRSCRequest = 
-    url.searchParams.has("_rsc") || 
-    request.headers.has("RSC") || 
-    request.headers.has("Next-Router-State-Tree") || 
+  const isRSCRequest =
+    url.searchParams.has("_rsc") ||
+    request.headers.has("RSC") ||
+    request.headers.has("Next-Router-State-Tree") ||
     request.headers.has("Next-Router-Prefetch") ||
     request.headers.get("Purpose") === "prefetch";
 

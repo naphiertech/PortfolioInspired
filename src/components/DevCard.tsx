@@ -12,14 +12,14 @@ export function DevCard() {
     if (!cardRef.current) return;
     const card = cardRef.current;
     const rect = card.getBoundingClientRect();
-    
+
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    
+
     // Normalized values (-0.5 to 0.5)
     const normalizedX = mouseX / rect.width - 0.5;
     const normalizedY = mouseY / rect.height - 0.5;
-    
+
     // Calculate rotation (max tilt of 20 degrees)
     setRotateX(-normalizedY * 20);
     setRotateY(normalizedX * 20);
@@ -36,7 +36,10 @@ export function DevCard() {
   };
 
   return (
-    <div className="flex justify-center w-full select-none" style={{ perspective: "1000px" }}>
+    <div
+      className="flex justify-center w-full select-none"
+      style={{ perspective: "1000px" }}
+    >
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
@@ -45,9 +48,12 @@ export function DevCard() {
         className="relative w-full max-w-[260px] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.18)] cursor-pointer group border border-white/10"
         style={{
           aspectRatio: "3 / 4",
-          background: "linear-gradient(203.33deg, rgb(17, 17, 17) 1.16%, rgb(51, 51, 51) 14.27%, rgb(85, 85, 85) 34.09%, rgb(68, 68, 68) 53.64%, rgb(34, 34, 34) 80.17%, rgb(17, 17, 17) 100%)",
+          background:
+            "linear-gradient(203.33deg, rgb(17, 17, 17) 1.16%, rgb(51, 51, 51) 14.27%, rgb(85, 85, 85) 34.09%, rgb(68, 68, 68) 53.64%, rgb(34, 34, 34) 80.17%, rgb(17, 17, 17) 100%)",
           transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-          transition: isHovered ? "transform 0.05s ease-out, shadow 0.15s ease-out" : "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), shadow 0.5s ease-out",
+          transition: isHovered
+            ? "transform 0.05s ease-out, shadow 0.15s ease-out"
+            : "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), shadow 0.5s ease-out",
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.18)",
         }}
       >
@@ -56,7 +62,6 @@ export function DevCard() {
 
         {/* Card Header Content */}
         <div className="absolute left-[20px] top-[30px] z-10 flex flex-col text-left">
-          
           {/* Custom inline terminal SVG icon representing '/card/terminal-icon.svg' */}
           <svg
             viewBox="0 0 48 48"
@@ -72,7 +77,7 @@ export function DevCard() {
           <p className="mt-[4px] text-[9px] font-mono font-medium uppercase tracking-[0.08em] text-white/40">
             Member Card
           </p>
-          
+
           <p className="mt-[60px] text-[9px] font-mono font-medium uppercase tracking-[0.08em] text-white/40">
             Community Member
           </p>
@@ -93,17 +98,44 @@ export function DevCard() {
           aria-hidden="true"
         >
           {/* Top-Left Locator */}
-          <rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="1.2" rx="0.5" />
+          <rect
+            x="2"
+            y="2"
+            width="6"
+            height="6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            rx="0.5"
+          />
           <rect x="4" y="4" width="2" height="2" fill="currentColor" />
-          
+
           {/* Top-Right Locator */}
-          <rect x="16" y="2" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="1.2" rx="0.5" />
+          <rect
+            x="16"
+            y="2"
+            width="6"
+            height="6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            rx="0.5"
+          />
           <rect x="18" y="4" width="2" height="2" fill="currentColor" />
-          
+
           {/* Bottom-Left Locator */}
-          <rect x="2" y="16" width="6" height="6" fill="none" stroke="currentColor" strokeWidth="1.2" rx="0.5" />
+          <rect
+            x="2"
+            y="16"
+            width="6"
+            height="6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            rx="0.5"
+          />
           <rect x="4" y="18" width="2" height="2" fill="currentColor" />
-          
+
           {/* Precise sharp pixel data points */}
           <path
             d="M10 2h2v2h-2zm4 0h1v1h-1zm0 2h1v1h-1zm-4 2h2v1h-2zm4 0h1v1h-1zm-4 2h1v1h-1zm2 0h1v2h-1zm1 1h1v1h-1zm-4 1h1v1h-1zm2 1h1v1h-1zm1 1h1v1h-1zm-4 1h1v2h-1zm2 0h1v1h-1zm3 0h1v1h-1zm-3 2h2v1h-2zm3 0h1v1h-1zm-8-4h1v1H2zm0 2h1v1H2zm14 4h2v1h-2zm0 2h1v1h-1zm2 0h1v1h-1z"

@@ -37,7 +37,15 @@ export interface RecommendationItem {
 export const techSections: TechSection[] = [
   {
     title: "Frontend",
-    items: ["JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS", "Framer Motion", "Locomotive Scroll"],
+    items: [
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Next.js",
+      "Tailwind CSS",
+      "Framer Motion",
+      "Locomotive Scroll",
+    ],
   },
   {
     title: "Backend",
@@ -45,7 +53,12 @@ export const techSections: TechSection[] = [
   },
   {
     title: "Specialty",
-    items: ["PC Gaming Systems", "Graphic Design", "Animations", "UI/UX Design"],
+    items: [
+      "PC Gaming Systems",
+      "Graphic Design",
+      "Animations",
+      "UI/UX Design",
+    ],
   },
 ];
 
@@ -121,32 +134,38 @@ export const experiences: ExperienceItem[] = [
 
 export const recommendations: RecommendationItem[] = [
   {
-    quote: "Naphier is one of the most talented software developers I've mentored. He is a fast learner, and he always makes sure to deliver quality output given a period of time. He is also very keen on learning new technologies, and I find him to be objectively passionate about tech. He's definitely someone you want on your team.",
+    quote:
+      "Naphier is one of the most talented software developers I've mentored. He is a fast learner, and he always makes sure to deliver quality output given a period of time. He is also very keen on learning new technologies, and I find him to be objectively passionate about tech. He's definitely someone you want on your team.",
     author: "Cris Lawrence Adrian Militante",
     title: "ICT Director at GCM",
   },
   {
-    quote: "Intelligent software engineer. Naphier takes lead during software development and can handle and manage teams well.",
+    quote:
+      "Intelligent software engineer. Naphier takes lead during software development and can handle and manage teams well.",
     author: "Ken Gorro",
     title: "Senior Developer at Fullscale",
   },
   {
-    quote: "Was an intern at PocketDevs and sir Naphier was our main trainer for the different technologies we use in the company such as Laravel, React, and Bootstrap. With his guidance, I was equipped with some of the current trends and insights in the tech industry which enabled me to succeed.",
+    quote:
+      "Was an intern at PocketDevs and sir Naphier was our main trainer for the different technologies we use in the company such as Laravel, React, and Bootstrap. With his guidance, I was equipped with some of the current trends and insights in the tech industry which enabled me to succeed.",
     author: "Patrick Vince Velasco",
     title: "Software Engineer, YNS",
   },
   {
-    quote: "Sir Naphier's teaching approach is incredibly hands-on, and the projects significantly accelerated my learning process in web development. I am truly grateful for the mentorship I received from him during my web development internship.",
+    quote:
+      "Sir Naphier's teaching approach is incredibly hands-on, and the projects significantly accelerated my learning process in web development. I am truly grateful for the mentorship I received from him during my web development internship.",
     author: "John Edmerson Pizarra",
     title: "Jr. Full-stack Developer, PocketDevs",
   },
   {
-    quote: "Naphier is a dedicated student and software developer who shows professionalism in whatever he does. His software projects during his academic years are up to standard and are highly regarded by the university. He also demonstrated social awareness and leadership skills through active involvement in local groups.",
+    quote:
+      "Naphier is a dedicated student and software developer who shows professionalism in whatever he does. His software projects during his academic years are up to standard and are highly regarded by the university. He also demonstrated social awareness and leadership skills through active involvement in local groups.",
     author: "Glenn Pepito",
     title: "Professor at University of San Carlos",
   },
   {
-    quote: "Naphier and I worked together in various projects where I saw his tenacity to deliver what he promised to do. He is able to meet deadlines without sacrificing the quality of the output, and at times even exceeding the set goals. His dedication to pursue his craft and his mindset as a lifelong learner allow him to be easily mentored, as he is eager to learn new technologies. His enthusiasm at new opportunities makes him a great asset because he does everything with renewed energy.",
+    quote:
+      "Naphier and I worked together in various projects where I saw his tenacity to deliver what he promised to do. He is able to meet deadlines without sacrificing the quality of the output, and at times even exceeding the set goals. His dedication to pursue his craft and his mindset as a lifelong learner allow him to be easily mentored, as he is eager to learn new technologies. His enthusiasm at new opportunities makes him a great asset because he does everything with renewed energy.",
     author: "Van Honoridez",
     title: "Application Development Analyst at Accenture",
   },
@@ -335,10 +354,7 @@ export const fullProjects: FullProjectItem[] = [
     tags: ["Flutter", "Dart", "Provider", "SharedPreferences"],
     overview:
       "Quicknotes is a lightweight and blazing-fast note-taking application designed for capturing thoughts on the go. It prioritizes speed and simplicity, ensuring that nothing gets in the way of your ideas.",
-    designScreens: [
-      "/projects/quicknotes-1.png",
-      "/projects/quicknotes-2.png",
-    ],
+    designScreens: ["/projects/quicknotes-1.png", "/projects/quicknotes-2.png"],
     techStack: [
       "Flutter",
       "Dart",

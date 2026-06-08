@@ -7,7 +7,7 @@ export function ExperienceTimeline() {
       <h2 className="text-lg font-bold text-text-primary dark:text-dark-text-primary">
         Experience
       </h2>
-      
+
       {/* Timeline items list */}
       <div className="relative space-y-4 mt-4">
         {/* Dashed background line */}
@@ -26,7 +26,7 @@ export function ExperienceTimeline() {
                   : "border-border-default dark:border-dark-border bg-bg-primary dark:bg-dark-bg-primary group-hover/role:bg-blue-600 dark:group-hover/role:bg-blue-500"
               }`}
             />
-            
+
             {/* Contents */}
             <div className="space-y-1">
               <h3
@@ -38,7 +38,7 @@ export function ExperienceTimeline() {
               >
                 {exp.role}
               </h3>
-              
+
               <div className="flex items-center justify-between">
                 <span
                   className={`text-xs ${
@@ -49,7 +49,7 @@ export function ExperienceTimeline() {
                 >
                   {exp.company}
                 </span>
-                
+
                 {/* Year tag */}
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full shadow-[0_1px_1px_rgba(0,0,0,0.02)] ${

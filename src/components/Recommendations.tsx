@@ -8,19 +8,22 @@ export function Recommendations() {
   const [activeIndex, setActiveIndex] = useState(0);
   const slideRef = useRef<HTMLDivElement>(null);
 
-  const handleSlideChange = useCallback((index: number) => {
-    if (index === activeIndex) return;
+  const handleSlideChange = useCallback(
+    (index: number) => {
+      if (index === activeIndex) return;
 
-    if (slideRef.current) {
-      // Premium horizontal shift crossfade slide transitions
-      gsap.fromTo(
-        slideRef.current,
-        { opacity: 0, x: 20 },
-        { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
-      );
-    }
-    setActiveIndex(index);
-  }, [activeIndex]);
+      if (slideRef.current) {
+        // Premium horizontal shift crossfade slide transitions
+        gsap.fromTo(
+          slideRef.current,
+          { opacity: 0, x: 20 },
+          { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" },
+        );
+      }
+      setActiveIndex(index);
+    },
+    [activeIndex],
+  );
 
   // Auto advance slide every 8 seconds (matches live site timing!)
   useEffect(() => {
@@ -42,13 +45,16 @@ export function Recommendations() {
 
       {/* Slide Container (matches live layout height and typography) */}
       <div className="relative min-h-[160px] pt-2">
-        <div ref={slideRef} className="absolute inset-0 flex flex-col justify-between select-none">
+        <div
+          ref={slideRef}
+          className="absolute inset-0 flex flex-col justify-between select-none"
+        >
           <div>
             <p className="text-[13px] leading-relaxed text-text-secondary dark:text-dark-text-secondary font-serif italic line-clamp-4">
               &ldquo;{currentRec.quote}&rdquo;
             </p>
           </div>
-          
+
           <div className="mt-3 pt-3 border-t border-border-default dark:border-dark-border">
             <h3 className="text-xs font-semibold font-sans text-text-primary dark:text-dark-text-primary leading-tight">
               {currentRec.author}

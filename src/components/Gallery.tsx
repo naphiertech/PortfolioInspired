@@ -46,12 +46,14 @@ export function Gallery() {
       if (e.key === "Escape") {
         setActiveIdx(null);
       } else if (e.key === "ArrowLeft") {
-        setActiveIdx((prev) => 
-          prev !== null ? (prev - 1 + galleryImages.length) % galleryImages.length : null
+        setActiveIdx((prev) =>
+          prev !== null
+            ? (prev - 1 + galleryImages.length) % galleryImages.length
+            : null,
         );
       } else if (e.key === "ArrowRight") {
-        setActiveIdx((prev) => 
-          prev !== null ? (prev + 1) % galleryImages.length : null
+        setActiveIdx((prev) =>
+          prev !== null ? (prev + 1) % galleryImages.length : null,
         );
       }
     };
@@ -112,85 +114,90 @@ export function Gallery() {
       </div>
 
       {/* Lightbox Modal (rendered safely inside a React Portal to break out of layout transform boundaries) */}
-      {mounted && typeof document !== "undefined" && createPortal(
-        <AnimatePresence>
-          {activeIdx !== null && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/90 dark:bg-black/95 z-[999999] flex items-center justify-center backdrop-blur-sm select-none"
-              onClick={() => setActiveIdx(null)}
-            >
-              {/* Header / Counter */}
-              <div className="absolute top-6 left-6 bg-zinc-900/80 border border-zinc-800 text-white font-mono text-xs px-3 py-1.5 rounded-[4px] shadow-md">
-                {activeIdx + 1} / {galleryImages.length}
-              </div>
-
-              {/* Close Button */}
-              <button
-                onClick={() => setActiveIdx(null)}
-                className="absolute top-6 right-6 text-white/70 hover:text-white hover:bg-white/10 p-2.5 rounded transition-colors cursor-pointer"
-                aria-label="Close lightbox"
-              >
-                <X className="w-6 h-6" />
-              </button>
-
-              {/* Left navigation arrow */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveIdx((prev) => 
-                    prev !== null ? (prev - 1 + galleryImages.length) % galleryImages.length : null
-                  );
-                }}
-                className="absolute left-6 top-1/2 -translate-y-1/2 bg-zinc-900/60 hover:bg-zinc-900/90 text-white p-3.5 rounded border border-zinc-800 transition-all hover:scale-105 cursor-pointer z-10"
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-
-              {/* Centered Image */}
+      {mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {activeIdx !== null && (
               <motion.div
-                key={activeIdx}
-                initial={{ scale: 0.97, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.97, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="relative max-w-[85vw] max-h-[75vh] md:max-w-[70vw] md:max-h-[80vh] flex items-center justify-center"
-                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 bg-black/90 dark:bg-black/95 z-[999999] flex items-center justify-center backdrop-blur-sm select-none"
+                onClick={() => setActiveIdx(null)}
               >
-                <img
-                  src={galleryImages[activeIdx]}
-                  alt={`Expanded gallery image ${activeIdx + 1}`}
-                  className="max-w-full max-h-full object-contain rounded-md shadow-2xl border border-zinc-800"
-                />
+                {/* Header / Counter */}
+                <div className="absolute top-6 left-6 bg-zinc-900/80 border border-zinc-800 text-white font-mono text-xs px-3 py-1.5 rounded-[4px] shadow-md">
+                  {activeIdx + 1} / {galleryImages.length}
+                </div>
+
+                {/* Close Button */}
+                <button
+                  onClick={() => setActiveIdx(null)}
+                  className="absolute top-6 right-6 text-white/70 hover:text-white hover:bg-white/10 p-2.5 rounded transition-colors cursor-pointer"
+                  aria-label="Close lightbox"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+
+                {/* Left navigation arrow */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveIdx((prev) =>
+                      prev !== null
+                        ? (prev - 1 + galleryImages.length) %
+                          galleryImages.length
+                        : null,
+                    );
+                  }}
+                  className="absolute left-6 top-1/2 -translate-y-1/2 bg-zinc-900/60 hover:bg-zinc-900/90 text-white p-3.5 rounded border border-zinc-800 transition-all hover:scale-105 cursor-pointer z-10"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+
+                {/* Centered Image */}
+                <motion.div
+                  key={activeIdx}
+                  initial={{ scale: 0.97, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.97, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  className="relative max-w-[85vw] max-h-[75vh] md:max-w-[70vw] md:max-h-[80vh] flex items-center justify-center"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <img
+                    src={galleryImages[activeIdx]}
+                    alt={`Expanded gallery image ${activeIdx + 1}`}
+                    className="max-w-full max-h-full object-contain rounded-md shadow-2xl border border-zinc-800"
+                  />
+                </motion.div>
+
+                {/* Right navigation arrow */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveIdx((prev) =>
+                      prev !== null ? (prev + 1) % galleryImages.length : null,
+                    );
+                  }}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 bg-zinc-900/60 hover:bg-zinc-900/90 text-white p-3.5 rounded border border-zinc-800 transition-all hover:scale-105 cursor-pointer z-10"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+
+                {/* Bottom Keyboard instructions */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900/95 border border-zinc-800 text-zinc-400 font-mono text-[11px] px-4 py-2.5 rounded-[4px] shadow-lg">
+                  Use arrow keys to navigate • ESC to close
+                </div>
               </motion.div>
-
-              {/* Right navigation arrow */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveIdx((prev) => 
-                    prev !== null ? (prev + 1) % galleryImages.length : null
-                  );
-                }}
-                className="absolute right-6 top-1/2 -translate-y-1/2 bg-zinc-900/60 hover:bg-zinc-900/90 text-white p-3.5 rounded border border-zinc-800 transition-all hover:scale-105 cursor-pointer z-10"
-                aria-label="Next image"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-
-              {/* Bottom Keyboard instructions */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900/95 border border-zinc-800 text-zinc-400 font-mono text-[11px] px-4 py-2.5 rounded-[4px] shadow-lg">
-                Use arrow keys to navigate • ESC to close
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
     </div>
   );
 }

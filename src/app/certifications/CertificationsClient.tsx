@@ -67,10 +67,12 @@ export function CertificationsClient() {
               href={cert.href}
               target={cert.href === "#" ? undefined : "_blank"}
               rel={cert.href === "#" ? undefined : "noopener noreferrer"}
-              onClick={cert.href === "#" ? (e) => e.preventDefault() : undefined}
+              onClick={
+                cert.href === "#" ? (e) => e.preventDefault() : undefined
+              }
               className={`group block border-b border-r border-border-default dark:border-dark-border p-8 transition-all duration-300 ${
-                cert.href === "#" 
-                  ? "bg-bg-primary dark:bg-dark-bg-primary" 
+                cert.href === "#"
+                  ? "bg-bg-primary dark:bg-dark-bg-primary"
                   : "hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary cursor-pointer"
               }`}
             >
@@ -84,13 +86,18 @@ export function CertificationsClient() {
                   </p>
                   {cert.code && (
                     <p className="text-xs text-text-muted dark:text-dark-text-muted font-mono mt-1">
-                      Credential ID: <span className="bg-gray-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded border border-border-default dark:border-dark-border">{cert.code}</span>
+                      Credential ID:{" "}
+                      <span className="bg-gray-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded border border-border-default dark:border-dark-border">
+                        {cert.code}
+                      </span>
                     </p>
                   )}
                 </div>
                 <div className="mt-4">
                   <span className="inline-block px-2.5 py-1 rounded bg-[#f4f4f5] dark:bg-[#18181b] border border-border-default dark:border-dark-border text-xs font-mono text-[#27272a] dark:text-zinc-300 transition-colors group-hover:border-accent/30 dark:group-hover:border-accent/30">
-                    {cert.href === "#" ? "Verified Achievement" : "Verify Credential"}
+                    {cert.href === "#"
+                      ? "Verified Achievement"
+                      : "Verify Credential"}
                   </span>
                 </div>
               </div>

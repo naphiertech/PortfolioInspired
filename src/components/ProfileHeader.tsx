@@ -55,9 +55,17 @@ export function ProfileHeader() {
   useEffect(() => {
     // 1. Knob slider GSAP
     if (theme === "dark") {
-      gsap.to(toggleKnobRef.current, { x: 20, duration: 0.3, ease: "power2.out" });
+      gsap.to(toggleKnobRef.current, {
+        x: 20,
+        duration: 0.3,
+        ease: "power2.out",
+      });
     } else {
-      gsap.to(toggleKnobRef.current, { x: 0, duration: 0.3, ease: "power2.out" });
+      gsap.to(toggleKnobRef.current, {
+        x: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      });
     }
 
     // 2. Play Glasses Animation (Slow 20fps interval, step size 4, 100% 404-free)
@@ -112,11 +120,9 @@ export function ProfileHeader() {
     }
   };
 
-
   return (
     <section className="mb-8 w-full select-none">
       <div className="flex items-center gap-4 md:gap-6">
-
         {/* Avatar cycling box */}
         <div className="gsap-profile-photo rounded-lg w-32 h-32 md:w-40 md:h-40 object-cover flex-shrink-0 relative overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-border-default dark:border-dark-border">
           {/* Static Light Mode Profile Image */}
@@ -170,15 +176,28 @@ export function ProfileHeader() {
               aria-label="Toggle theme"
             >
               <div
-                className={`absolute left-0.5 top-0.5 flex h-5 w-5 items-center justify-center bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition-all duration-300 ease-in-out ${theme === "dark" ? "translate-x-5" : "translate-x-0"
-                  }`}
+                className={`absolute left-0.5 top-0.5 flex h-5 w-5 items-center justify-center bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition-all duration-300 ease-in-out ${
+                  theme === "dark" ? "translate-x-5" : "translate-x-0"
+                }`}
               >
                 {theme === "light" ? (
-                  <svg className="h-3 w-3 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"></path>
+                  <svg
+                    className="h-3 w-3 text-gray-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                      clipRule="evenodd"
+                    ></path>
                   </svg>
                 ) : (
-                  <svg className="h-3 w-3 text-zinc-700" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="h-3 w-3 text-zinc-700"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                   </svg>
                 )}
@@ -194,8 +213,18 @@ export function ProfileHeader() {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
             <span className="truncate">Zamboanga City, Philippines</span>
           </p>
@@ -203,15 +232,14 @@ export function ProfileHeader() {
           {/* Role and desktop badge row */}
           <div className="flex items-center justify-between mt-1.5 md:mt-2">
             <p className="text-[10px] md:text-base">
-              IT Student <span className="text-gray-400">\</span> Full-Stack Developer <span className="text-gray-400">\</span> Tech Enthusiast
+              IT Student <span className="text-gray-400">\</span> Full-Stack
+              Developer <span className="text-gray-400">\</span> Tech Enthusiast
             </p>
 
             {/* Desktop badge showing "Available for Work" status */}
             <div className="hidden md:block">
               <div className="relative" style={{ zIndex: 999999 }}>
-                <div
-                  className="flex items-center rounded-lg border border-[#10b981]/30 bg-[#10b981]/10 px-2.5 py-1 text-xs font-semibold text-[#10b981] gap-1.5 whitespace-nowrap md:scale-90"
-                >
+                <div className="flex items-center rounded-lg border border-[#10b981]/30 bg-[#10b981]/10 px-2.5 py-1 text-xs font-semibold text-[#10b981] gap-1.5 whitespace-nowrap md:scale-90">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]"></span>
@@ -232,12 +260,32 @@ export function ProfileHeader() {
             href="mailto:naphiera@gmail.com?subject=Let's%20Schedule%20a%20Call"
             className="inline-flex h-7 md:h-8 items-center rounded-lg bg-foreground px-2.5 md:px-4 text-[8px] md:text-xs font-medium text-background transition-all duration-200 hover:bg-foreground/90 hover:-translate-y-0.5 gap-1 md:gap-1.5 whitespace-nowrap min-h-0 cursor-pointer"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
             </svg>
             <span className="text-left">Schedule a Call</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7"></path>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M9 5l7 7-7 7"
+              ></path>
             </svg>
           </a>
 
@@ -246,8 +294,18 @@ export function ProfileHeader() {
             href="mailto:naphiera@gmail.com"
             className="hidden md:inline-flex h-7 md:h-8 items-center rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03),0_1px_1px_rgba(0,0,0,0.04)] bg-background px-2.5 md:px-4 text-[8px] md:text-xs font-medium transition-all duration-200 hover:bg-muted hover:-translate-y-0.5 hover:shadow-[0_3px_10px_rgba(0,0,0,0.06)] gap-1 md:gap-1.5 whitespace-nowrap min-h-0 cursor-pointer"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
             </svg>
             <span className="text-left">Send Email</span>
           </a>
@@ -259,8 +317,18 @@ export function ProfileHeader() {
             rel="noopener noreferrer"
             className="inline-flex h-7 md:h-8 items-center rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03),0_1px_1px_rgba(0,0,0,0.04)] bg-background px-2.5 md:px-4 text-[8px] md:text-xs font-medium transition-all duration-200 hover:bg-muted hover:-translate-y-0.5 hover:shadow-[0_3px_10px_rgba(0,0,0,0.06)] gap-1 md:gap-1.5 whitespace-nowrap min-h-0 cursor-pointer"
           >
-            <svg className="w-4 h-4 text-text-primary dark:text-dark-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            <svg
+              className="w-4 h-4 text-text-primary dark:text-dark-text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
             </svg>
             <span className="text-left">Resume</span>
           </a>
@@ -272,15 +340,32 @@ export function ProfileHeader() {
             rel="noopener noreferrer"
             className="inline-flex h-7 md:h-8 items-center rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03),0_1px_1px_rgba(0,0,0,0.04)] bg-background px-2.5 md:px-4 text-[8px] md:text-xs font-medium transition-all duration-200 hover:bg-muted hover:-translate-y-0.5 hover:shadow-[0_3px_10px_rgba(0,0,0,0.06)] gap-1 md:gap-1.5 whitespace-nowrap flex-1 md:flex-1 min-h-0 cursor-pointer"
           >
-            <svg className="w-4 h-4 fill-current text-text-primary dark:text-dark-text-primary" viewBox="0 0 24 24">
-              <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+            <svg
+              className="w-4 h-4 fill-current text-text-primary dark:text-dark-text-primary"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                clipRule="evenodd"
+              />
             </svg>
             <span className="text-left flex-1">
               <span className="md:hidden">GitHub</span>
               <span className="hidden md:inline">View my GitHub</span>
             </span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7"></path>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M9 5l7 7-7 7"
+              ></path>
             </svg>
           </a>
         </div>
@@ -288,9 +373,7 @@ export function ProfileHeader() {
         {/* Collapsed Mobile Only Status Pill */}
         <div className="block md:hidden">
           <div className="relative" style={{ zIndex: 999999 }}>
-            <div
-              className="flex items-center justify-center rounded-lg border border-[#10b981]/30 bg-[#10b981]/10 px-2.5 py-1 text-[10px] font-semibold text-[#10b981] gap-1.5 w-full"
-            >
+            <div className="flex items-center justify-center rounded-lg border border-[#10b981]/30 bg-[#10b981]/10 px-2.5 py-1 text-[10px] font-semibold text-[#10b981] gap-1.5 w-full">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10b981] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10b981]"></span>

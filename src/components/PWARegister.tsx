@@ -8,7 +8,10 @@ export function PWARegister() {
       const handleRegister = async () => {
         try {
           const registration = await navigator.serviceWorker.register("/sw.js");
-          console.log("[PWA] Service Worker registered successfully at scope:", registration.scope);
+          console.log(
+            "[PWA] Service Worker registered successfully at scope:",
+            registration.scope,
+          );
         } catch (error) {
           console.error("[PWA] Service Worker registration failed:", error);
         }

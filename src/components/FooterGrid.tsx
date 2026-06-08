@@ -1,12 +1,18 @@
 import React from "react";
-import { ExternalLink, Mail, Calendar, BookOpen, ChevronRight, FileText } from "lucide-react";
+import {
+  ExternalLink,
+  Mail,
+  Calendar,
+  BookOpen,
+  ChevronRight,
+  FileText,
+} from "lucide-react";
 import { memberOf } from "@/lib/data";
 
 export function FooterGrid() {
   return (
     <div className="gsap-footer-section bento-card p-4 col-span-1 md:col-span-6 space-y-4 group">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        
         {/* Column 1 — A member of */}
         <div className="gsap-footer-link flex flex-col h-full justify-between">
           <div>
@@ -114,7 +120,8 @@ export function FooterGrid() {
           </p>
           <div className="p-3 rounded-lg bg-text-primary/5 border border-border-default/50 dark:border-dark-border/50 h-full flex flex-col justify-between">
             <p className="text-[11px] text-text-secondary dark:text-dark-text-secondary leading-relaxed">
-              Available for speaking at events about software development and emerging technologies.
+              Available for speaking at events about software development and
+              emerging technologies.
             </p>
             <a
               href="mailto:naphiera@gmail.com"
@@ -130,7 +137,7 @@ export function FooterGrid() {
           <p className="text-xs text-text-secondary dark:text-dark-text-secondary font-medium mb-2 uppercase tracking-wide">
             Contact
           </p>
-          
+
           {/* Row 1: Email */}
           <a
             href="mailto:naphiera@gmail.com"
@@ -139,7 +146,9 @@ export function FooterGrid() {
             <div className="flex items-center gap-2">
               <Mail className="w-3.5 h-3.5 text-text-muted" />
               <div className="flex flex-col">
-                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">Email</span>
+                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">
+                  Email
+                </span>
                 <span className="text-[10px] font-medium text-text-secondary dark:text-dark-text-secondary group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 mt-0.5 leading-none">
                   naphiera@gmail.com
                 </span>
@@ -158,7 +167,9 @@ export function FooterGrid() {
             <div className="flex items-center gap-2">
               <Calendar className="w-3.5 h-3.5 text-text-muted" />
               <div className="flex flex-col">
-                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">LinkedIn</span>
+                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">
+                  LinkedIn
+                </span>
                 <span className="text-[10px] font-medium text-text-secondary dark:text-dark-text-secondary group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 mt-0.5 leading-none">
                   Connect on LinkedIn
                 </span>
@@ -177,7 +188,9 @@ export function FooterGrid() {
             <div className="flex items-center gap-2">
               <BookOpen className="w-3.5 h-3.5 text-text-muted" />
               <div className="flex flex-col">
-                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">GitHub</span>
+                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">
+                  GitHub
+                </span>
                 <span className="text-[10px] font-medium text-text-secondary dark:text-dark-text-secondary group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 mt-0.5 leading-none">
                   View my GitHub
                 </span>
@@ -196,7 +209,9 @@ export function FooterGrid() {
             <div className="flex items-center gap-2">
               <FileText className="w-3.5 h-3.5 text-text-muted" />
               <div className="flex flex-col">
-                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">Resume</span>
+                <span className="text-[8px] text-text-muted uppercase tracking-wider leading-none">
+                  Resume
+                </span>
                 <span className="text-[10px] font-medium text-text-secondary dark:text-dark-text-secondary group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 mt-0.5 leading-none">
                   Download Resume
                 </span>
@@ -204,7 +219,6 @@ export function FooterGrid() {
             </div>
             <ChevronRight className="w-3.5 h-3.5 text-text-muted" />
           </a>
-
         </div>
       </div>
     </div>

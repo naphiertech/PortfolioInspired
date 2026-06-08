@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>) {
+export function useGsapAnimations(
+  containerRef: React.RefObject<HTMLDivElement>,
+) {
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
 
@@ -13,28 +15,35 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
       gsap.fromTo(
         ".gsap-profile-photo",
         { opacity: 0, scale: 0.92 },
-        { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }
+        { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" },
       );
 
       // 2. Name h1 (chars)
       gsap.fromTo(
         ".gsap-char",
         { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.03 }
+        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.03 },
       );
 
       // 3. Role line + location
       gsap.fromTo(
         ".gsap-meta-line",
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", delay: 0.15 }
+        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", delay: 0.15 },
       );
 
       // 4. Action buttons row
       gsap.fromTo(
         ".gsap-action-btn",
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.1, delay: 0.3 }
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.1,
+          delay: 0.3,
+        },
       );
 
       // About paragraphs
@@ -52,7 +61,7 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        }
+        },
       );
 
       // Tech stack tags
@@ -70,7 +79,7 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        }
+        },
       );
 
       // Project cards
@@ -88,7 +97,7 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        }
+        },
       );
 
       // Certification rows
@@ -106,7 +115,7 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        }
+        },
       );
 
       // Experience timeline items (handles both mobile and desktop instances if they have classes)
@@ -124,7 +133,7 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        }
+        },
       );
 
       // Gallery images
@@ -142,7 +151,7 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
             start: "top 85%",
             toggleActions: "play none none none",
           },
-        }
+        },
       );
 
       // Footer links
@@ -160,7 +169,7 @@ export function useGsapAnimations(containerRef: React.RefObject<HTMLDivElement>)
             start: "top 90%",
             toggleActions: "play none none none",
           },
-        }
+        },
       );
     }, containerRef);
 

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
         { error: "Invalid messages array provided." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -15,9 +15,10 @@ export async function POST(req: Request) {
     if (!apiKey || apiKey === "your_gemini_api_key_here") {
       return NextResponse.json(
         {
-          error: "API key is not configured. Please paste your Gemini API key in the .env file.",
+          error:
+            "API key is not configured. Please paste your Gemini API key in the .env file.",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -55,13 +56,15 @@ Rules for responding:
 
     // Map messages array to Gemini contents format
     // Expects: { role: 'user' | 'model', parts: [{ text: string }] }
-    const formattedContents = messages.map((msg: { role: string; content: string }) => {
-      const role = msg.role === "assistant" ? "model" : "user";
-      return {
-        role: role,
-        parts: [{ text: msg.content }],
-      };
-    });
+    const formattedContents = messages.map(
+      (msg: { role: string; content: string }) => {
+        const role = msg.role === "assistant" ? "model" : "user";
+        return {
+          role: role,
+          parts: [{ text: msg.content }],
+        };
+      },
+    );
 
     // Make the backend request to the official Gemini REST endpoint
     const response = await fetch(
@@ -85,7 +88,7 @@ Rules for responding:
             temperature: 0.7,
           },
         }),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -93,7 +96,7 @@ Rules for responding:
       console.error("Gemini API Error Response:", errorText);
       return NextResponse.json(
         { error: `Gemini API reported an error: ${response.statusText}` },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -105,7 +108,7 @@ Rules for responding:
     // Clean up any stray markdown characters (asterisks, bullet stars) to ensure beautiful clear plain text
     replyText = replyText
       .replace(/\*\*/g, "") // Strip double asterisks (bold)
-      .replace(/\*/g, "")   // Strip single asterisks (italic)
+      .replace(/\*/g, "") // Strip single asterisks (italic)
       .replace(/^\s*[\-\+]\s+/gm, "- ") // Clean list markers to be consistent dashes
       .trim();
 
@@ -113,8 +116,13 @@ Rules for responding:
   } catch (error: unknown) {
     console.error("Error in chat API route:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "An internal error occurred." },
-      { status: 500 }
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "An internal error occurred.",
+      },
+      { status: 500 },
     );
   }
 }

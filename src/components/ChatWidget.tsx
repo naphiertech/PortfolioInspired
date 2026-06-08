@@ -57,7 +57,11 @@ export function ChatWidget() {
           </span>
         );
       }
-      return <span key={index} className="break-words">{part}</span>;
+      return (
+        <span key={index} className="break-words">
+          {part}
+        </span>
+      );
     });
   };
 
@@ -89,13 +93,20 @@ export function ChatWidget() {
       }
 
       if (data.reply) {
-        setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.reply },
+        ]);
       } else {
         throw new Error("Invalid response received from server.");
       }
     } catch (err: unknown) {
       console.error("Chat error:", err);
-      setError(err instanceof Error ? err.message : "Failed to send message. Please try again.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send message. Please try again.",
+      );
     } finally {
       setIsTyping(false);
     }
@@ -146,8 +157,18 @@ export function ChatWidget() {
                   className="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 p-1 rounded-full transition-all duration-200 cursor-pointer"
                   aria-label="Close chat"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -183,7 +204,9 @@ export function ChatWidget() {
                             : "bg-zinc-100/90 dark:bg-zinc-900/90 border-zinc-200/50 dark:border-zinc-800/80 text-zinc-800 dark:text-zinc-200 rounded-tl-none shadow-sm"
                         }`}
                       >
-                        <p className="whitespace-pre-wrap break-words">{renderMessageContent(msg.content)}</p>
+                        <p className="whitespace-pre-wrap break-words">
+                          {renderMessageContent(msg.content)}
+                        </p>
                       </div>
                     </div>
                   );
@@ -203,9 +226,18 @@ export function ChatWidget() {
                       />
                     </div>
                     <div className="bg-zinc-100/90 dark:bg-zinc-900/90 border border-zinc-200/50 dark:border-zinc-800/80 px-4 py-3 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-1.5 h-1.5 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-1.5 h-1.5 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      <span
+                        className="w-1.5 h-1.5 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce"
+                        style={{ animationDelay: "0ms" }}
+                      />
+                      <span
+                        className="w-1.5 h-1.5 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce"
+                        style={{ animationDelay: "150ms" }}
+                      />
+                      <span
+                        className="w-1.5 h-1.5 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce"
+                        style={{ animationDelay: "300ms" }}
+                      />
                     </div>
                   </div>
                 )}
@@ -213,8 +245,18 @@ export function ChatWidget() {
                 {/* Secure API Key Missing / Config Error Notice */}
                 {error && (
                   <div className="p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200/50 dark:border-rose-900/30 rounded-xl text-center text-xs text-rose-600 dark:text-rose-400 shadow-sm leading-normal">
-                    <svg className="w-4 h-4 mx-auto mb-1 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <svg
+                      className="w-4 h-4 mx-auto mb-1 text-rose-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
                     </svg>
                     {error}
                   </div>
@@ -236,21 +278,41 @@ export function ChatWidget() {
                   />
                   <button
                     type="submit"
-                    disabled={!inputValue.trim() || isTyping || inputValue.length > 1000}
+                    disabled={
+                      !inputValue.trim() || isTyping || inputValue.length > 1000
+                    }
                     className={`w-10 h-10 bg-[#707070] dark:bg-zinc-800 hover:bg-[#505050] dark:hover:bg-zinc-700 text-white flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer ${
-                      !inputValue.trim() || isTyping ? "opacity-50 pointer-events-none" : ""
+                      !inputValue.trim() || isTyping
+                        ? "opacity-50 pointer-events-none"
+                        : ""
                     }`}
                     aria-label="Send message"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
                     </svg>
                   </button>
                 </form>
                 {/* Character validation text and helper exactly matching Bryl Lim */}
                 <div className="flex justify-between items-center text-[10px] text-zinc-500 dark:text-zinc-400 mt-2.5 font-sans leading-none px-0.5">
                   <span>Ask me about programming, web dev, or tech!</span>
-                  <span className={inputValue.length >= 1000 ? "text-rose-500 font-semibold animate-pulse" : ""}>
+                  <span
+                    className={
+                      inputValue.length >= 1000
+                        ? "text-rose-500 font-semibold animate-pulse"
+                        : ""
+                    }
+                  >
                     {inputValue.length}/1000
                   </span>
                 </div>
@@ -266,7 +328,12 @@ export function ChatWidget() {
         className="bg-black text-white dark:bg-white dark:text-black px-6 py-3 border border-zinc-800 dark:border-zinc-200 hover:bg-zinc-900 dark:hover:bg-zinc-100 transition-all duration-200 flex items-center gap-2 group z-50 cursor-pointer shadow-lg"
         aria-label={isOpen ? "Close chat" : "Chat with Naphier"}
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -274,7 +341,9 @@ export function ChatWidget() {
             d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
           />
         </svg>
-        <span className="text-sm font-semibold tracking-wide">Chat with Naphier</span>
+        <span className="text-sm font-semibold tracking-wide">
+          Chat with Naphier
+        </span>
       </button>
     </div>
   );

@@ -79,6 +79,12 @@ export const projects: ProjectItem[] = [
 
 export const certifications: CertificationItem[] = [
   {
+    name: "Build with AI 2026",
+    issuer: "Google Developer Groups Zamboanga",
+    href: "/certificates/BuildWithAI_2026.png",
+    code: "440727A3",
+  },
+  {
     name: "Build with AI Hackathon 2026",
     issuer: "Google Developers Group Zamboanga",
     href: "#",

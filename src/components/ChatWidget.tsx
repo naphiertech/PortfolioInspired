@@ -74,11 +74,11 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* Floating Tactile Launcher Button */}
-      <div className="fixed bottom-7 right-5 sm:right-8 z-50">
+      {/* Floating Tactile Launcher Button (Elevated above navigation dock on mobile to avoid overlap) */}
+      <div className="fixed bottom-[78px] right-4 sm:bottom-7 sm:right-8 z-50">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="tactile-btn gap-2 h-9 px-3.5 rounded-full shadow-lg border border-border-hairline"
+          className="tactile-btn gap-2 h-9 px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/90 backdrop-blur-md"
           aria-label={isOpen ? "Close AI Assistant" : "Open AI Assistant"}
           aria-expanded={isOpen}
         >
@@ -99,7 +99,7 @@ export function ChatWidget() {
       {/* Floating Chat Modal Panel */}
       {isOpen && (
         <div
-          className="fixed bottom-20 right-4 sm:right-8 w-[calc(100vw-2rem)] sm:w-[380px] h-[480px] rounded-xl bg-page border border-border-hairline shadow-2xl z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
+          className="fixed bottom-[125px] right-3 left-3 sm:left-auto sm:bottom-20 sm:right-8 sm:w-[380px] h-[calc(100dvh-150px)] max-h-[480px] rounded-xl bg-page border border-border-hairline shadow-2xl z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
           role="dialog"
           aria-label="AI Assistant Chat"
         >

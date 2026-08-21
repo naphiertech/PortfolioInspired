@@ -1,42 +1,89 @@
 "use client";
 
 import React from "react";
+import type { IconType } from "react-icons";
 import {
   SiHtml5,
   SiCss,
   SiJavascript,
   SiTypescript,
+  SiPython,
+  SiRust,
+  SiGo,
+  SiCplusplus,
+  SiSharp,
+  SiOpenjdk,
+  SiKotlin,
+  SiSwift,
+  SiPhp,
+  SiRuby,
+  SiDart,
+  SiLua,
+  SiR,
+  SiScala,
+  SiElixir,
+  SiGnubash,
   SiReact,
   SiNextdotjs,
-  SiTailwindcss,
+  SiVuedotjs,
+  SiNuxt,
+  SiSvelte,
+  SiAngular,
   SiFlutter,
-  SiDart,
-  SiCapacitor,
-  SiNodedotjs,
+  SiVite,
+  SiTailwindcss,
+  SiBootstrap,
+  SiSass,
   SiExpress,
-  SiPhp,
+  SiNestjs,
+  SiFastapi,
+  SiDjango,
+  SiFlask,
   SiLaravel,
-  SiSupabase,
-  SiMysql,
-  SiPostgresql,
-  SiMongodb,
-  SiFirebase,
-  SiTensorflow,
-  SiPytorch,
-  SiFigma,
+  SiAstro,
+  SiThreedotjs,
   SiGreensock,
   SiFramer,
   SiLottiefiles,
+  SiRedux,
+  SiJquery,
+  SiCapacitor,
+  SiElectron,
+  SiReactrouter,
+  SiZod,
+  SiLucide,
+  SiPostgresql,
+  SiMysql,
+  SiMongodb,
+  SiSqlite,
+  SiRedis,
+  SiSupabase,
+  SiFirebase,
+  SiPrisma,
+  SiGraphql,
+  SiApollographql,
+  SiMariadb,
   SiDocker,
+  SiKubernetes,
   SiJenkins,
   SiGithubactions,
   SiGit,
   SiGithub,
-  SiPostman,
+  SiGitlab,
+  SiBitbucket,
   SiVercel,
-  SiVite,
-  SiZod,
-  SiLucide,
+  SiNetlify,
+  SiGooglecloud,
+  SiCloudflare,
+  SiTerraform,
+  SiNginx,
+  SiLinux,
+  SiPostman,
+  SiFigma,
+  SiBun,
+  SiNodedotjs,
+  SiTensorflow,
+  SiPytorch,
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 
@@ -45,190 +92,183 @@ interface TechIconProps {
   className?: string;
 }
 
+interface IconConfig {
+  component: IconType;
+  color?: string;
+  isThemeAware?: boolean;
+}
+
+// Complete library of top 80+ technology icons with brand hex colors
+const ICON_REGISTRY: Record<string, IconConfig> = {
+  // Frontend Languages & Standards
+  html: { component: SiHtml5, color: "#E34F26" },
+  html5: { component: SiHtml5, color: "#E34F26" },
+  css: { component: SiCss, color: "#1572B6" },
+  css3: { component: SiCss, color: "#1572B6" },
+  javascript: { component: SiJavascript, color: "#F7DF1E" },
+  js: { component: SiJavascript, color: "#F7DF1E" },
+  typescript: { component: SiTypescript, color: "#3178C6" },
+  ts: { component: SiTypescript, color: "#3178C6" },
+
+  // Programming Languages
+  python: { component: SiPython, color: "#3776AB" },
+  rust: { component: SiRust, color: "#DEA584" },
+  go: { component: SiGo, color: "#00ADD8" },
+  golang: { component: SiGo, color: "#00ADD8" },
+  cplusplus: { component: SiCplusplus, color: "#00599C" },
+  cpp: { component: SiCplusplus, color: "#00599C" },
+  csharp: { component: SiSharp, color: "#239120" },
+  cs: { component: SiSharp, color: "#239120" },
+  sharp: { component: SiSharp, color: "#239120" },
+  java: { component: SiOpenjdk, color: "#ED8B00" },
+  kotlin: { component: SiKotlin, color: "#7F52FF" },
+  swift: { component: SiSwift, color: "#F05138" },
+  php: { component: SiPhp, color: "#777BB4" },
+  ruby: { component: SiRuby, color: "#CC342D" },
+  dart: { component: SiDart, color: "#0175C2" },
+  lua: { component: SiLua, color: "#000080" },
+  r: { component: SiR, color: "#276DC3" },
+  scala: { component: SiScala, color: "#DC322F" },
+  elixir: { component: SiElixir, color: "#4B275F" },
+  bash: { component: SiGnubash, color: "#4EAA25" },
+  shell: { component: SiGnubash, color: "#4EAA25" },
+
+  // Frontend Frameworks & Libraries
+  react: { component: SiReact, color: "#61DAFB" },
+  reactjs: { component: SiReact, color: "#61DAFB" },
+  react18: { component: SiReact, color: "#61DAFB" },
+  react19: { component: SiReact, color: "#61DAFB" },
+  next: { component: SiNextdotjs, isThemeAware: true },
+  nextjs: { component: SiNextdotjs, isThemeAware: true },
+  nextdotjs: { component: SiNextdotjs, isThemeAware: true },
+  vue: { component: SiVuedotjs, color: "#4FC08D" },
+  vuejs: { component: SiVuedotjs, color: "#4FC08D" },
+  nuxt: { component: SiNuxt, color: "#00DC82" },
+  nuxtjs: { component: SiNuxt, color: "#00DC82" },
+  svelte: { component: SiSvelte, color: "#FF3E00" },
+  sveltejs: { component: SiSvelte, color: "#FF3E00" },
+  angular: { component: SiAngular, color: "#DD0031" },
+  angularjs: { component: SiAngular, color: "#DD0031" },
+  astro: { component: SiAstro, color: "#BC52EE" },
+  flutter: { component: SiFlutter, color: "#02569B" },
+  reactnative: { component: SiReact, color: "#61DAFB" },
+  capacitor: { component: SiCapacitor, color: "#119EFF" },
+  electron: { component: SiElectron, color: "#47848F" },
+  vite: { component: SiVite, color: "#646CFF" },
+  bun: { component: SiBun, color: "#FBF0DF" },
+  tailwind: { component: SiTailwindcss, color: "#06B6D4" },
+  tailwindcss: { component: SiTailwindcss, color: "#06B6D4" },
+  bootstrap: { component: SiBootstrap, color: "#7952B3" },
+  sass: { component: SiSass, color: "#CC6699" },
+  scss: { component: SiSass, color: "#CC6699" },
+
+  // State, UI & Motion
+  redux: { component: SiRedux, color: "#764ABC" },
+  framer: { component: SiFramer, color: "#0055FF" },
+  framermotion: { component: SiFramer, color: "#0055FF" },
+  motion: { component: SiFramer, color: "#0055FF" },
+  gsap: { component: SiGreensock, color: "#88CE02" },
+  greensock: { component: SiGreensock, color: "#88CE02" },
+  lottie: { component: SiLottiefiles, color: "#00DDB3" },
+  lottiefiles: { component: SiLottiefiles, color: "#00DDB3" },
+  threejs: { component: SiThreedotjs, color: "#049EF4" },
+  threedotjs: { component: SiThreedotjs, color: "#049EF4" },
+  reactrouter: { component: SiReactrouter, color: "#CA4245" },
+  zod: { component: SiZod, color: "#3E67B1" },
+  lucide: { component: SiLucide, color: "#F56565" },
+  lucidereact: { component: SiLucide, color: "#F56565" },
+  jquery: { component: SiJquery, color: "#0769AD" },
+
+  // Backend & APIs
+  node: { component: SiNodedotjs, color: "#5FA04E" },
+  nodejs: { component: SiNodedotjs, color: "#5FA04E" },
+  nodedotjs: { component: SiNodedotjs, color: "#5FA04E" },
+  express: { component: SiExpress, isThemeAware: true },
+  expressjs: { component: SiExpress, isThemeAware: true },
+  nestjs: { component: SiNestjs, color: "#E0234E" },
+  fastapi: { component: SiFastapi, color: "#009688" },
+  django: { component: SiDjango, color: "#092E20" },
+  flask: { component: SiFlask, isThemeAware: true },
+  laravel: { component: SiLaravel, color: "#FF2D20" },
+  graphql: { component: SiGraphql, color: "#E10098" },
+  apollo: { component: SiApollographql, color: "#311C87" },
+
+  // Databases & Cloud BaaS
+  postgres: { component: SiPostgresql, color: "#4169E1" },
+  postgresql: { component: SiPostgresql, color: "#4169E1" },
+  mysql: { component: SiMysql, color: "#4479A1" },
+  mongodb: { component: SiMongodb, color: "#47A248" },
+  mongo: { component: SiMongodb, color: "#47A248" },
+  sqlite: { component: SiSqlite, color: "#003B57" },
+  redis: { component: SiRedis, color: "#FF4438" },
+  supabase: { component: SiSupabase, color: "#3ECF8E" },
+  firebase: { component: SiFirebase, color: "#FFCA28" },
+  prisma: { component: SiPrisma, color: "#2D3748" },
+  mariadb: { component: SiMariadb, color: "#003545" },
+
+  // AI & ML
+  tensorflow: { component: SiTensorflow, color: "#FF6F00" },
+  pytorch: { component: SiPytorch, color: "#EE4C2C" },
+
+  // DevOps & Tools
+  docker: { component: SiDocker, color: "#2496ED" },
+  kubernetes: { component: SiKubernetes, color: "#326CE5" },
+  k8s: { component: SiKubernetes, color: "#326CE5" },
+  jenkins: { component: SiJenkins, color: "#D24939" },
+  githubactions: { component: SiGithubactions, color: "#2088FF" },
+  actions: { component: SiGithubactions, color: "#2088FF" },
+  git: { component: SiGit, color: "#F05032" },
+  github: { component: SiGithub, isThemeAware: true },
+  gitlab: { component: SiGitlab, color: "#FC6D26" },
+  bitbucket: { component: SiBitbucket, color: "#0052CC" },
+  vercel: { component: SiVercel, isThemeAware: true },
+  netlify: { component: SiNetlify, color: "#00C7B7" },
+  googlecloud: { component: SiGooglecloud, color: "#4285F4" },
+  gcp: { component: SiGooglecloud, color: "#4285F4" },
+  cloudflare: { component: SiCloudflare, color: "#F38020" },
+  terraform: { component: SiTerraform, color: "#844FBA" },
+  nginx: { component: SiNginx, color: "#009639" },
+  linux: { component: SiLinux, color: "#FCC624" },
+  postman: { component: SiPostman, color: "#FF6C37" },
+  figma: { component: SiFigma, color: "#F24E1E" },
+};
+
 export function TechIcon({ name, className = "w-3.5 h-3.5 flex-shrink-0" }: TechIconProps) {
-  const normalized = name.toLowerCase().trim().replace(/[\s\.\-_@/]/g, "");
+  const normalized = name
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/#/g, "sharp")
+    .replace(/\./g, "")
+    .replace(/[\s\-_@/]/g, "");
 
-  // HTML5
-  if (normalized === "html" || normalized === "html5") {
-    return <SiHtml5 className={className} style={{ color: "#E34F26" }} aria-hidden="true" />;
-  }
-
-  // CSS3
-  if (normalized === "css" || normalized === "css3") {
-    return <SiCss className={className} style={{ color: "#1572B6" }} aria-hidden="true" />;
-  }
-
-  // JavaScript
-  if (normalized === "javascript" || normalized === "js") {
-    return <SiJavascript className={className} style={{ color: "#F7DF1E" }} aria-hidden="true" />;
-  }
-
-  // TypeScript
-  if (normalized === "typescript" || normalized === "ts") {
-    return <SiTypescript className={className} style={{ color: "#3178C6" }} aria-hidden="true" />;
-  }
-
-  // React
-  if (normalized.includes("react") && !normalized.includes("router")) {
-    return <SiReact className={className} style={{ color: "#61DAFB" }} aria-hidden="true" />;
-  }
-
-  // Next.js (Theme aware: black in light mode, white in dark mode)
-  if (normalized.includes("next")) {
-    return <SiNextdotjs className={`${className} text-ink`} aria-hidden="true" />;
-  }
-
-  // Tailwind CSS
-  if (normalized.includes("tailwind")) {
-    return <SiTailwindcss className={className} style={{ color: "#06B6D4" }} aria-hidden="true" />;
-  }
-
-  // Vite
-  if (normalized.includes("vite")) {
-    return <SiVite className={className} style={{ color: "#646CFF" }} aria-hidden="true" />;
-  }
-
-  // Zod
-  if (normalized.includes("zod")) {
-    return <SiZod className={className} style={{ color: "#3E67B1" }} aria-hidden="true" />;
-  }
-
-  // Lucide
-  if (normalized.includes("lucide")) {
-    return <SiLucide className={className} style={{ color: "#F56565" }} aria-hidden="true" />;
-  }
-
-  // Flutter
-  if (normalized.includes("flutter")) {
-    return <SiFlutter className={className} style={{ color: "#02569B" }} aria-hidden="true" />;
-  }
-
-  // Dart
-  if (normalized.includes("dart")) {
-    return <SiDart className={className} style={{ color: "#0175C2" }} aria-hidden="true" />;
-  }
-
-  // Capacitor
-  if (normalized.includes("capacitor")) {
-    return <SiCapacitor className={className} style={{ color: "#119EFF" }} aria-hidden="true" />;
-  }
-
-  // Node.js
-  if (normalized.includes("node")) {
-    return <SiNodedotjs className={className} style={{ color: "#5FA04E" }} aria-hidden="true" />;
-  }
-
-  // Express.js (Theme aware: black in light mode, white in dark mode)
-  if (normalized.includes("express")) {
-    return <SiExpress className={`${className} text-ink`} aria-hidden="true" />;
-  }
-
-  // PHP
-  if (normalized.includes("php")) {
-    return <SiPhp className={className} style={{ color: "#777BB4" }} aria-hidden="true" />;
-  }
-
-  // Laravel
-  if (normalized.includes("laravel")) {
-    return <SiLaravel className={className} style={{ color: "#FF2D20" }} aria-hidden="true" />;
-  }
-
-  // Supabase
-  if (normalized.includes("supabase")) {
-    return <SiSupabase className={className} style={{ color: "#3ECF8E" }} aria-hidden="true" />;
-  }
-
-  // MySQL
-  if (normalized.includes("mysql")) {
-    return <SiMysql className={className} style={{ color: "#4479A1" }} aria-hidden="true" />;
-  }
-
-  // PostgreSQL
-  if (normalized.includes("postgres")) {
-    return <SiPostgresql className={className} style={{ color: "#4169E1" }} aria-hidden="true" />;
-  }
-
-  // MongoDB
-  if (normalized.includes("mongo")) {
-    return <SiMongodb className={className} style={{ color: "#47A248" }} aria-hidden="true" />;
-  }
-
-  // Firebase
-  if (normalized.includes("firebase")) {
-    return <SiFirebase className={className} style={{ color: "#FFCA28" }} aria-hidden="true" />;
-  }
-
-  // TensorFlow
-  if (normalized.includes("tensorflow")) {
-    return <SiTensorflow className={className} style={{ color: "#FF6F00" }} aria-hidden="true" />;
-  }
-
-  // PyTorch
-  if (normalized.includes("pytorch")) {
-    return <SiPytorch className={className} style={{ color: "#EE4C2C" }} aria-hidden="true" />;
-  }
-
-  // Figma
-  if (normalized.includes("figma")) {
-    return <SiFigma className={className} style={{ color: "#F24E1E" }} aria-hidden="true" />;
-  }
-
-  // GSAP (Greensock)
-  if (normalized.includes("gsap") || normalized.includes("greensock")) {
-    return <SiGreensock className={className} style={{ color: "#88CE02" }} aria-hidden="true" />;
-  }
-
-  // Framer Motion / Motion
-  if (normalized.includes("framer") || normalized.includes("motion")) {
-    return <SiFramer className={className} style={{ color: "#0055FF" }} aria-hidden="true" />;
-  }
-
-  // Lottie
-  if (normalized.includes("lottie")) {
-    return <SiLottiefiles className={className} style={{ color: "#00DDB3" }} aria-hidden="true" />;
-  }
-
-  // Docker
-  if (normalized.includes("docker")) {
-    return <SiDocker className={className} style={{ color: "#2496ED" }} aria-hidden="true" />;
-  }
-
-  // Jenkins
-  if (normalized.includes("jenkins")) {
-    return <SiJenkins className={className} style={{ color: "#D24939" }} aria-hidden="true" />;
-  }
-
-  // GitHub Actions
-  if (normalized.includes("action")) {
-    return <SiGithubactions className={className} style={{ color: "#2088FF" }} aria-hidden="true" />;
-  }
-
-  // Git
-  if (normalized === "git") {
-    return <SiGit className={className} style={{ color: "#F05032" }} aria-hidden="true" />;
-  }
-
-  // GitHub (Theme aware)
-  if (normalized.includes("github")) {
-    return <SiGithub className={`${className} text-ink`} aria-hidden="true" />;
-  }
-
-  // VS Code
-  if (normalized.includes("vscode") || normalized.includes("visualstudio") || normalized.includes("code")) {
+  // VS Code special handling (from react-icons/vsc)
+  if (normalized.includes("vscode") || normalized.includes("visualstudio") || (normalized === "code" && !name.includes(" "))) {
     return <VscVscode className={className} style={{ color: "#007ACC" }} aria-hidden="true" />;
   }
 
-  // Postman
-  if (normalized.includes("postman")) {
-    return <SiPostman className={className} style={{ color: "#FF6C37" }} aria-hidden="true" />;
+  // 1. Direct registry lookup
+  let config = ICON_REGISTRY[normalized];
+
+  // 2. Partial/fuzzy registry lookup if exact match not found
+  if (!config) {
+    for (const [key, val] of Object.entries(ICON_REGISTRY)) {
+      if (normalized.includes(key) || key.includes(normalized)) {
+        config = val;
+        break;
+      }
+    }
   }
 
-  // Vercel (Theme aware)
-  if (normalized.includes("vercel")) {
-    return <SiVercel className={`${className} text-ink`} aria-hidden="true" />;
+  if (config) {
+    const Icon = config.component;
+    if (config.isThemeAware) {
+      return <Icon className={`${className} text-ink`} aria-hidden={true} />;
+    }
+    return <Icon className={className} style={config.color ? { color: config.color } : undefined} aria-hidden={true} />;
   }
 
-  // Fallback: Clean text-only
+  // Safe fallback: null (clean text-only pill)
   return null;
 }
 

@@ -34,6 +34,266 @@ export interface RecommendationItem {
   title: string;
 }
 
+export interface FullProjectItem {
+  title: string;
+  category: string;
+  year: string;
+  image: string;
+  color: string;
+  role: string;
+  client: string;
+  tags: string[];
+  overview: string;
+  designScreens: string[];
+  techStack: string[];
+  features: string[];
+  live?: string;
+  github?: string;
+  featured?: boolean;
+}
+
+// Single Source of Truth: All Featured & Side Projects
+export const fullProjects: FullProjectItem[] = [
+  {
+    title: "Naphix Resume",
+    category: "Web Application",
+    year: "2026",
+    image: "/projects/resumebuilder.png",
+    color: "bg-[#0f172a]",
+    role: "Fullstack Developer & Creator",
+    client: "Personal Project",
+    tags: ["React 18", "TypeScript", "Tailwind CSS", "Vite", "Zustand"],
+    overview:
+      "Naphix Resume is a privacy-first resume builder with a real-time split-screen editor and live A4 preview, drag-and-drop customization, and native PDF and Word export.",
+    designScreens: [
+      "/projects/resumebuilder.png",
+      "/projects/resumebuilder-1.png",
+      "/projects/resumebuilder-2.png",
+      "/projects/resumebuilder-3.png",
+    ],
+    techStack: [
+      "React 18",
+      "TypeScript",
+      "Tailwind CSS 3.4",
+      "Vite",
+      "Zustand",
+      "@dnd-kit",
+      "docx",
+      "@react-pdf/renderer",
+      "Lucide React",
+      "Zod",
+    ],
+    features: [
+      "Real-time split-screen workspace with 1:1 ISO 216 A4 live preview mirror",
+      "Smooth drag-and-drop section and entry reordering powered by @dnd-kit",
+      "Universal custom section system with dynamic schema fields",
+      "Dual native export: selectable ATS-compliant vector PDF and editable Word .docx",
+      "Adaptive responsive layout for desktop, laptop, tablet, and mobile",
+      "100% client-side local storage with zero server tracking",
+      "Undo/redo history with keyboard shortcuts and debounced state management",
+    ],
+    live: "https://naphix-resume.netlify.app/",
+    featured: true,
+  },
+  {
+    title: "AssetLink",
+    category: "Asset Management",
+    year: "2026",
+    image: "/projects/assetlink.png",
+    color: "bg-[#E6F0FF]",
+    role: "Fullstack Developer",
+    client: "School Project",
+    tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "QR Logic"],
+    overview:
+      "AssetLink is a revolutionary school asset and repair tracking system. By leveraging QR code technology, it allows teachers and staff to report and track maintenance issues with a simple scan, streamlining communication between faculty and maintenance teams.",
+    designScreens: ["/projects/assetlink-1.png", "/projects/assetlink-2.png"],
+    techStack: [
+      "Next.js",
+      "Supabase",
+      "TypeScript",
+      "Tailwind CSS",
+      "Lucide React",
+      "Framer Motion",
+    ],
+    features: [
+      "QR-Code Asset Scanning",
+      "Real-time Repair Tracking",
+      "Role-based Dashboards (Teacher, Admin, Maintenance)",
+      "Automated Status Updates",
+      "Comprehensive Asset Inventory",
+      "Intuitive Reporting Interface",
+    ],
+    live: "https://assetlink-supabase-landing.vercel.app/",
+    github: "https://github.com/naphiertech/ASSETLINK-supabase",
+    featured: true,
+  },
+  {
+    title: "MovieStream",
+    category: "Next-Gen Cinematic Experience",
+    year: "2026",
+    image: "/projects/moviestream.png",
+    color: "bg-[#0A0A0A]",
+    role: "Fullstack Developer",
+    client: "Personal Project",
+    tags: ["Next.js", "React", "Tailwind CSS", "Framer Motion", "TMDB API"],
+    overview:
+      "MovieStream is a high-fidelity, editorial-style movie discovery platform built for the modern web. It combines live TMDB data with a premium, cinematic user interface designed for enthusiasts who appreciate bold typography, smooth motion, and a distraction-free viewing experience.",
+    designScreens: [
+      "/projects/moviestream.png",
+      "/projects/moviestream-1.png",
+      "/projects/moviestream-2.png",
+    ],
+    techStack: [
+      "Next.js 15",
+      "React 19",
+      "Tailwind CSS 4.0",
+      "Motion 12",
+      "Lucide React",
+      "TMDB API",
+    ],
+    features: [
+      "Live TMDB Integration",
+      "Secure Middleware",
+      "Dynamic Genres Hub",
+      "Intelligent Watch History",
+      "Motion-First Design",
+      "Advanced Search",
+    ],
+    live: "https://movie-stream-pi.vercel.app/",
+    featured: true,
+  },
+  {
+    title: "BudgetBuddy",
+    category: "App Development",
+    year: "2025",
+    image: "/projects/budgetbuddy.png",
+    color: "bg-[#FDF6D5]",
+    role: "App Developer",
+    client: "Personal Project",
+    tags: ["Flutter", "Dart", "Provider", "SharedPreferences"],
+    overview:
+      "BudgetBuddy is a smart financial companion designed to help users track expenses, set budgets, and achieve their financial goals with ease. Built with modern technologies, it offers a seamless and intuitive experience for personal finance management.",
+    designScreens: [
+      "/projects/budgetbuddy-1.png",
+      "/projects/budgetbuddy-2.png",
+      "/projects/budgetbuddy-3.png",
+    ],
+    techStack: [
+      "Flutter",
+      "Dart",
+      "Provider",
+      "go_router",
+      "SharedPreferences",
+    ],
+    features: [
+      "Intuitive Dashboard with expense visualization",
+      "Category-based expense tracking with pie charts",
+      "Weekly and monthly spending trend charts",
+      "Persistent local storage with SharedPreferences",
+      "Glass-morphism UI with smooth animations",
+    ],
+    github: "https://github.com/naphiertech/budgetbuddy",
+    featured: true,
+  },
+  {
+    title: "Freelance",
+    category: "Frontend Development",
+    year: "2025",
+    image: "/projects/freelance.png",
+    color: "bg-[#FFD6E8]",
+    role: "Frontend Developer",
+    client: "School Project",
+    tags: ["React", "TypeScript", "Tailwind CSS", "React Router"],
+    overview:
+      "A professional portfolio for a freelance creative, focusing on high-performance animations and a unique aesthetic that highlights their design and coding capabilities. This platform is built to provide an immersive experience for potential clients and collaborators.",
+    designScreens: [
+      "/projects/freelance-1.png",
+      "/projects/freelance-2.png",
+      "/projects/freelance-3.png",
+    ],
+    techStack: [
+      "React 18",
+      "TypeScript",
+      "Tailwind CSS",
+      "React Router v6",
+      "React Context API",
+    ],
+    features: [
+      "Smooth scroll implementation",
+      "Dynamic project gallery",
+      "Responsive and accessible design",
+      "Optimized performance for mobile devices",
+    ],
+    github: "https://github.com/naphiertech/freelance-marketplace/",
+  },
+  {
+    title: "Online Business Permit Management System",
+    category: "Web Development",
+    year: "2025",
+    image: "/projects/obms.png",
+    color: "bg-[#E5E5E5]",
+    role: "Fullstack Developer",
+    client: "School Project",
+    tags: ["PHP", "MySQL", "JavaScript", "CSS3"],
+    overview:
+      "A comprehensive digital solution for local government units to streamline the business permit application process. This system reduces paper usage and wait times through an intuitive online portal.",
+    designScreens: [
+      "/projects/obms-1.png",
+      "/projects/obms-2.png",
+      "/projects/obms-3.png",
+    ],
+    techStack: ["PHP", "MySQL", "JavaScript", "CSS", "AJAX"],
+    features: [
+      "User-friendly application portal",
+      "Admin dashboard for application review",
+      "Role-based access control (Admin, Staff, Applicant)",
+      "Automated email notifications",
+      "Secure document upload and storage",
+    ],
+    github: "https://github.com/naphiertech/OnlineBusinessPermit",
+  },
+  {
+    title: "Quicknotes",
+    category: "App Development",
+    year: "2025",
+    image: "/projects/quicknotes.png",
+    color: "bg-[#C4F5D6]",
+    role: "Mobile Developer",
+    client: "Personal Project",
+    tags: ["Flutter", "Dart", "Provider", "SharedPreferences"],
+    overview:
+      "Quicknotes is a lightweight and blazing-fast note-taking application designed for capturing thoughts on the go. It prioritizes speed and simplicity, ensuring that nothing gets in the way of your ideas.",
+    designScreens: ["/projects/quicknotes-1.png", "/projects/quicknotes-2.png"],
+    techStack: [
+      "Flutter",
+      "Dart",
+      "Provider",
+      "SharedPreferences",
+      "Google Fonts",
+      "Material 3",
+    ],
+    features: [
+      "Offline-first functionality with local storage",
+      "6 customizable note colors and 5 categories",
+      "Smart search across titles, content, and tags",
+      "Masonry grid layout with smooth animations",
+      "Favorites, sorting, and advanced filtering",
+    ],
+    github: "https://github.com/naphiertech/quicknotes",
+  },
+];
+
+// Dynamically derived summary projects list for backward compatibility
+export const projects: ProjectItem[] = fullProjects
+  .filter((p) => p.featured !== false)
+  .map((p) => ({
+    name: p.title,
+    description: p.overview,
+    url: (p.live || p.github || "").replace(/^https?:\/\//, ""),
+    href: p.live || p.github || "#",
+  }));
+
+// Single Source of Truth: Tech Stack Categories
 export const techSections: TechSection[] = [
   {
     title: "Frontend",
@@ -97,27 +357,6 @@ export const techSections: TechSection[] = [
       "Postman",
       "Vercel",
     ],
-  },
-];
-
-export const projects: ProjectItem[] = [
-  {
-    name: "Naphix Resume",
-    description: "Privacy-First Live A4 Resume Builder & Exporter",
-    url: "naphix-resume.netlify.app/",
-    href: "https://naphix-resume.netlify.app/",
-  },
-  {
-    name: "MovieStream",
-    description: "Cinematic Movie Search Experience",
-    url: "movie-stream-pi.vercel.app/",
-    href: "https://movie-stream-pi.vercel.app/",
-  },
-  {
-    name: "AssetLink",
-    description: "Decentralized Asset Management & Auditing",
-    url: "assetlink-supabase-landing.vercel.app/",
-    href: "https://assetlink-supabase-landing.vercel.app/",
   },
 ];
 
@@ -218,249 +457,6 @@ export const recommendations: RecommendationItem[] = [
       "Naphier and I worked together in various projects where I saw his tenacity to deliver what he promised to do. He is able to meet deadlines without sacrificing the quality of the output, and at times even exceeding the set goals. His dedication to pursue his craft and his mindset as a lifelong learner allow him to be easily mentored, as he is eager to learn new technologies. His enthusiasm at new opportunities makes him a great asset because he does everything with renewed energy.",
     author: "Van Honoridez",
     title: "Application Development Analyst at Accenture",
-  },
-];
-
-export interface FullProjectItem {
-  title: string;
-  category: string;
-  year: string;
-  image: string;
-  color: string;
-  role: string;
-  client: string;
-  tags: string[];
-  overview: string;
-  designScreens: string[];
-  techStack: string[];
-  features: string[];
-  live?: string;
-  github?: string;
-}
-
-export const fullProjects: FullProjectItem[] = [
-  {
-    title: "Naphix Resume",
-    category: "Web Application",
-    year: "2026",
-    image: "/projects/resumebuilder.png",
-    color: "bg-[#0f172a]",
-    role: "Fullstack Developer & Creator",
-    client: "Personal Project",
-    tags: ["React 18", "TypeScript", "Tailwind CSS", "Vite", "Zustand"],
-    overview:
-      "Naphix Resume is a privacy-first resume builder with a real-time split-screen editor and live A4 preview, drag-and-drop customization, and native PDF and Word export.",
-    designScreens: [
-      "/projects/resumebuilder.png",
-      "/projects/resumebuilder-1.png",
-      "/projects/resumebuilder-2.png",
-      "/projects/resumebuilder-3.png",
-    ],
-    techStack: [
-      "React 18",
-      "TypeScript",
-      "Tailwind CSS 3.4",
-      "Vite",
-      "Zustand",
-      "@dnd-kit",
-      "docx",
-      "@react-pdf/renderer",
-      "Lucide React",
-      "Zod",
-    ],
-    features: [
-      "Real-time split-screen workspace with 1:1 ISO 216 A4 live preview mirror",
-      "Smooth drag-and-drop section and entry reordering powered by @dnd-kit",
-      "Universal custom section system with dynamic schema fields",
-      "Dual native export: selectable ATS-compliant vector PDF and editable Word .docx",
-      "Adaptive responsive layout for desktop, laptop, tablet, and mobile",
-      "100% client-side local storage with zero server tracking",
-      "Undo/redo history with keyboard shortcuts and debounced state management",
-    ],
-    live: "https://naphix-resume.netlify.app/",
-  },
-  {
-    title: "AssetLink",
-    category: "Asset Management",
-    year: "2026",
-    image: "/projects/assetlink.png",
-    color: "bg-[#E6F0FF]",
-    role: "Fullstack Developer",
-    client: "School Project",
-    tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "QR Logic"],
-    overview:
-      "AssetLink is a revolutionary school asset and repair tracking system. By leveraging QR code technology, it allows teachers and staff to report and track maintenance issues with a simple scan, streamlining communication between faculty and maintenance teams.",
-    designScreens: ["/projects/assetlink-1.png", "/projects/assetlink-2.png"],
-    techStack: [
-      "Next.js",
-      "Supabase",
-      "TypeScript",
-      "Tailwind CSS",
-      "Lucide React",
-      "Framer Motion",
-    ],
-    features: [
-      "QR-Code Asset Scanning",
-      "Real-time Repair Tracking",
-      "Role-based Dashboards (Teacher, Admin, Maintenance)",
-      "Automated Status Updates",
-      "Comprehensive Asset Inventory",
-      "Intuitive Reporting Interface",
-    ],
-    live: "https://assetlink-supabase-landing.vercel.app/",
-    github: "https://github.com/naphiertech/ASSETLINK-supabase",
-  },
-  {
-    title: "MovieStream",
-    category: "Next-Gen Cinematic Experience",
-    year: "2026",
-    image: "/projects/moviestream.png",
-    color: "bg-[#0A0A0A]",
-    role: "Fullstack Developer",
-    client: "Personal Project",
-    tags: ["Next.js", "React", "Tailwind CSS", "Framer Motion", "TMDB API"],
-    overview:
-      "MovieStream is a high-fidelity, editorial-style movie discovery platform built for the modern web. It combines live TMDB data with a premium, cinematic user interface designed for enthusiasts who appreciate bold typography, smooth motion, and a distraction-free viewing experience.",
-    designScreens: [
-      "/projects/moviestream.png",
-      "/projects/moviestream-1.png",
-      "/projects/moviestream-2.png",
-    ],
-    techStack: [
-      "Next.js 15",
-      "React 19",
-      "Tailwind CSS 4.0",
-      "Motion 12",
-      "Lucide React",
-      "TMDB API",
-    ],
-    features: [
-      "Live TMDB Integration",
-      "Secure Middleware",
-      "Dynamic Genres Hub",
-      "Intelligent Watch History",
-      "Motion-First Design",
-      "Advanced Search",
-    ],
-    live: "https://movie-stream-pi.vercel.app/",
-  },
-  {
-    title: "BudgetBuddy",
-    category: "App Development",
-    year: "2025",
-    image: "/projects/budgetbuddy.png",
-    color: "bg-[#FDF6D5]",
-    role: "App Developer",
-    client: "Personal Project",
-    tags: ["Flutter", "Dart", "Provider", "SharedPreferences"],
-    overview:
-      "BudgetBuddy is a smart financial companion designed to help users track expenses, set budgets, and achieve their financial goals with ease. Built with modern technologies, it offers a seamless and intuitive experience for personal finance management.",
-    designScreens: [
-      "/projects/budgetbuddy-1.png",
-      "/projects/budgetbuddy-2.png",
-      "/projects/budgetbuddy-3.png",
-    ],
-    techStack: [
-      "Flutter",
-      "Dart",
-      "Provider",
-      "go_router",
-      "SharedPreferences",
-    ],
-    features: [
-      "Intuitive Dashboard with expense visualization",
-      "Category-based expense tracking with pie charts",
-      "Weekly and monthly spending trend charts",
-      "Persistent local storage with SharedPreferences",
-      "Glass-morphism UI with smooth animations",
-    ],
-    github: "https://github.com/naphiertech/budgetbuddy",
-  },
-  {
-    title: "Freelance",
-    category: "Frontend Development",
-    year: "2025",
-    image: "/projects/freelance.png",
-    color: "bg-[#FFD6E8]",
-    role: "Frontend Developer",
-    client: "School Project",
-    tags: ["React", "TypeScript", "Tailwind CSS", "React Router"],
-    overview:
-      "A professional portfolio for a freelance creative, focusing on high-performance animations and a unique aesthetic that highlights their design and coding capabilities. This platform is built to provide an immersive experience for potential clients and collaborators.",
-    designScreens: [
-      "/projects/freelance-1.png",
-      "/projects/freelance-2.png",
-      "/projects/freelance-3.png",
-    ],
-    techStack: [
-      "React 18",
-      "TypeScript",
-      "Tailwind CSS",
-      "React Router v6",
-      "React Context API",
-    ],
-    features: [
-      "Smooth scroll implementation",
-      "Dynamic project gallery",
-      "Responsive and accessible design",
-      "Optimized performance for mobile devices",
-    ],
-    github: "https://github.com/naphiertech/freelance-marketplace/",
-  },
-  {
-    title: "Online Business Permit Management System",
-    category: "Web Development",
-    year: "2025",
-    image: "/projects/obms.png",
-    color: "bg-[#E5E5E5]",
-    role: "Fullstack Developer",
-    client: "School Project",
-    tags: ["PHP", "MySQL", "JavaScript", "CSS3"],
-    overview:
-      "A comprehensive digital solution for local government units to streamline the business permit application process. This system reduces paper usage and wait times through an intuitive online portal.",
-    designScreens: [
-      "/projects/obms-1.png",
-      "/projects/obms-2.png",
-      "/projects/obms-3.png",
-    ],
-    techStack: ["PHP", "MySQL", "JavaScript", "CSS", "AJAX"],
-    features: [
-      "User-friendly application portal",
-      "Admin dashboard for application review",
-      "Role-based access control (Admin, Staff, Applicant)",
-      "Automated email notifications",
-      "Secure document upload and storage",
-    ],
-    github: "https://github.com/naphiertech/OnlineBusinessPermit",
-  },
-  {
-    title: "Quicknotes",
-    category: "App Development",
-    year: "2025",
-    image: "/projects/quicknotes.png",
-    color: "bg-[#C4F5D6]",
-    role: "Mobile Developer",
-    client: "Personal Project",
-    tags: ["Flutter", "Dart", "Provider", "SharedPreferences"],
-    overview:
-      "Quicknotes is a lightweight and blazing-fast note-taking application designed for capturing thoughts on the go. It prioritizes speed and simplicity, ensuring that nothing gets in the way of your ideas.",
-    designScreens: ["/projects/quicknotes-1.png", "/projects/quicknotes-2.png"],
-    techStack: [
-      "Flutter",
-      "Dart",
-      "Provider",
-      "SharedPreferences",
-      "Google Fonts",
-      "Material 3",
-    ],
-    features: [
-      "Offline-first functionality with local storage",
-      "6 customizable note colors and 5 categories",
-      "Smart search across titles, content, and tags",
-      "Masonry grid layout with smooth animations",
-      "Favorites, sorting, and advanced filtering",
-    ],
-    github: "https://github.com/naphiertech/quicknotes",
   },
 ];
 

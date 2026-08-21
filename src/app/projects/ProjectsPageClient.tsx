@@ -2,136 +2,129 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
-
-interface ProjectItem {
-  title: string;
-  description: string;
-  url: string;
-  link: string;
-}
-
-const projects: ProjectItem[] = [
-  {
-    title: "AssetLink",
-    description: "Decentralized Asset Management & Auditing",
-    url: "assetlink-supabase-landing.vercel.app",
-    link: "https://assetlink-supabase-landing.vercel.app/",
-  },
-  {
-    title: "MovieStream",
-    description: "Cinematic Movie Search Experience",
-    url: "movie-stream-pi.vercel.app",
-    link: "https://movie-stream-pi.vercel.app/",
-  },
-  {
-    title: "BudgetBuddy",
-    description: "Smart expense tracker & budget visualizer",
-    url: "github.com/bagatata05/budgetbuddy",
-    link: "https://github.com/bagatata05/budgetbuddy",
-  },
-  {
-    title: "Freelance",
-    description: "Freelance matches & student jobs portal",
-    url: "github.com/bagatata05/freelance-marketplace",
-    link: "https://github.com/bagatata05/freelance-marketplace",
-  },
-  {
-    title: "Online Business Permit Management System",
-    description: "Online Business Permit System for Zamboanga",
-    url: "github.com/bagatata05/OnlineBusinessPermit",
-    link: "https://github.com/bagatata05/OnlineBusinessPermit",
-  },
-  {
-    title: "Quicknotes",
-    description: "Cloud-based minimal note taking app",
-    url: "github.com/bagatata05/quicknotes",
-    link: "https://github.com/bagatata05/quicknotes",
-  },
-];
-
-// Animation Variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.16, 1, 0.3, 1] as const, // custom cubic bezier for premium feel
-    },
-  },
-};
+import Image from "next/image";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import { fullProjects } from "@/lib/data";
+import { TechIcon } from "@/components/TechIcon";
 
 export function ProjectsPageClient() {
   return (
-    <div className="min-h-screen bg-bg-primary dark:bg-dark-bg-primary text-text-primary dark:text-dark-text-primary pt-24 pb-32">
-      <div className="max-w-4xl mx-auto px-6">
-        {/* Header with Animation */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="flex items-center gap-6 mb-12"
+    <div className="w-full select-none">
+      {/* Page Header */}
+      <div className="mb-10 space-y-2">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
         >
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary dark:text-dark-text-secondary hover:text-text-primary dark:hover:text-dark-text-primary transition-colors group"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-            Back to Home
-          </Link>
-          <h1 className="text-2xl font-bold tracking-tight text-text-primary dark:text-dark-text-primary">
-            All Projects
-          </h1>
-        </motion.div>
+          <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
+          <span>cd .. / home</span>
+        </Link>
 
-        {/* Clean Border Grid with Animation */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 border-t border-l border-border-default dark:border-dark-border"
-        >
-          {projects.map((project, index) => (
-            <motion.a
-              key={index}
-              variants={itemVariants}
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block border-b border-r border-border-default dark:border-dark-border p-8 hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary transition-all duration-300"
-            >
-              <div className="flex flex-col gap-3 h-full justify-between">
-                <div className="flex flex-col gap-2">
-                  <h2 className="text-lg font-bold tracking-tight text-text-primary dark:text-dark-text-primary group-hover:text-accent dark:group-hover:text-accent transition-colors">
-                    {project.title}
-                  </h2>
-                  <p className="text-[14px] text-text-secondary dark:text-dark-text-secondary leading-relaxed font-normal">
-                    {project.description}
-                  </p>
-                </div>
-                <div className="mt-4">
-                  <span className="inline-block px-2.5 py-1 rounded bg-[#f4f4f5] dark:bg-[#18181b] border border-border-default dark:border-dark-border text-xs font-mono text-[#27272a] dark:text-zinc-300 transition-colors group-hover:border-accent/30 dark:group-hover:border-accent/30">
-                    {project.url}
-                  </span>
-                </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink tracking-tight">
+              Projects
+            </h1>
+            <p className="font-mono text-xs text-muted-foreground mt-1">
+              {"// Selected software engineering, full-stack, and mobile applications"}
+            </p>
+          </div>
+          <span className="font-mono text-xs text-muted-foreground bg-muted-subtle px-2.5 py-1 rounded border border-border-hairline">
+            {fullProjects.length} builds
+          </span>
+        </div>
+      </div>
+
+      {/* 2-Column Responsive CAD Project Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {fullProjects.map((project) => (
+          <article
+            key={project.title}
+            className="cad-project-card group block"
+          >
+            {/* CAD Corner Drafting Reticles */}
+            <div className="cad-reticle cad-reticle--tl" />
+            <div className="cad-reticle cad-reticle--tr" />
+            <div className="cad-reticle cad-reticle--br" />
+            <div className="cad-reticle cad-reticle--bl" />
+
+            {/* 16:9 Thumbnail with Grayscale Hover Transition */}
+            <div className="relative aspect-video w-full rounded-[3px] overflow-hidden bg-surface mb-3 border border-border-hairline/60">
+              <Image
+                src={project.image}
+                alt={project.title}
+                fill
+                sizes="(max-width: 640px) 100vw, 360px"
+                className="object-cover opacity-85 grayscale transition-all duration-250 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02]"
+              />
+              <div className="absolute top-2.5 right-2.5 bg-page/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground border border-border-hairline z-10">
+                {project.category}
               </div>
-            </motion.a>
-          ))}
-        </motion.div>
+            </div>
+
+            {/* Title & Metadata */}
+            <div className="space-y-2 px-1">
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors duration-150">
+                  {project.title}
+                </h2>
+                <span className="font-mono text-[11px] text-muted-foreground flex-shrink-0">
+                  {project.year}
+                </span>
+              </div>
+
+              <p className="font-mono text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                {project.overview}
+              </p>
+
+              {/* Tech Stack Pills with TechIcon */}
+              <div className="flex flex-wrap gap-1.5 pt-1.5">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground bg-muted-subtle px-2 py-0.5 rounded-[4px] border border-border-hairline"
+                  >
+                    <TechIcon name={tag} className="w-3 h-3 text-muted-foreground" />
+                    <span>{tag}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Links */}
+            <div className="flex items-center gap-2 pt-3 mt-4 border-t border-border-hairline/50 px-1">
+              {project.live && (
+                <a
+                  href={project.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tactile-btn gap-1.5 text-[11px]"
+                >
+                  <ExternalLink className="w-3 h-3 opacity-70" />
+                  <span>Live Demo</span>
+                </a>
+              )}
+
+              {project.github && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tactile-btn gap-1.5 text-[11px]"
+                >
+                  <svg className="w-3 h-3 fill-current opacity-70" viewBox="0 0 24 24">
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>Source</span>
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   );

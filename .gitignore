@@ -6,8 +6,13 @@
 .pnp.js
 .yarn/install-state.gz
 
-# testing
+# testing & screenshots
 /coverage
+/*.png
+/*.jpg
+/*.jpeg
+/scratch
+bryllim-clone-prompt.md
 
 # next.js
 /.next/
@@ -27,6 +32,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -34,8 +40,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-.env
-
-scratch
-bryllim-clone-prompt.md

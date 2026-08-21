@@ -10,42 +10,47 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Light Mode Tokens
-        'bg-primary': '#ffffff',
-        'bg-secondary': '#f9f9f9',
-        'border-default': '#e8e8e8',
-        'text-primary': '#111111',
-        'text-secondary': '#555555',
-        'text-muted': '#999999',
-        'tag-bg': '#f2f2f2',
-        'tag-text': '#333333',
-        'card-bg': '#ffffff',
-        'card-border': '#e8e8e8',
-
-        // Dark Mode Tokens
-        'dark-bg-primary': '#000000',
-        'dark-bg-secondary': '#0a0a0a',
-        'dark-border': '#222222',
-        'dark-text-primary': '#ffffff',
-        'dark-text-secondary': '#aaaaaa',
-        'dark-text-muted': '#666666',
-        'dark-tag-bg': '#1a1a1a',
-        'dark-tag-text': '#cccccc',
-        'dark-card-bg': '#111111',
-        'dark-card-border': '#222222',
-
-        // Accent Tokens
-        'accent': '#4f46e5',
-        'accent-badge': '#4f46e5',
-        'accent-badge-text': '#ffffff',
+        page: "var(--bg-page)",
+        surface: {
+          DEFAULT: "var(--bg-surface)",
+          hover: "var(--bg-surface-hover)",
+        },
+        dock: "var(--bg-dock)",
+        muted: {
+          DEFAULT: "var(--bg-muted)",
+          subtle: "var(--bg-muted-subtle)",
+          foreground: "var(--text-muted)",
+        },
+        ink: "var(--text-ink)",
+        body: "var(--text-body)",
+        faint: "var(--text-faint)",
+        brand: "var(--text-brand)",
+        border: {
+          hairline: "var(--border-hairline)",
+          dashed: "var(--border-dashed)",
+          reticle: "var(--border-reticle)",
+          divider: "var(--border-divider)",
+        },
+        star: "var(--metric-star)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "monospace"],
+        display: ["Doto", "Geist Mono", "ui-monospace", "monospace"],
+        sans: ["Figtree", "Inter", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "Menlo", "monospace"],
+        caps: ["Carrois Gothic SC", "JetBrains Mono", "monospace"],
+      },
+      maxWidth: {
+        reading: "760px",
+      },
+      screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1440px",
       },
     },
   },
   plugins: [],
 };
 export default config;
-

@@ -1,23 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowLeft, Terminal } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 px-4 select-none">
-      <div className="bento-card p-8 max-w-sm w-full text-center space-y-4 border border-border-default dark:border-dark-border bg-white dark:bg-zinc-900">
-        <h1 className="text-5xl font-extrabold tracking-tight text-text-primary dark:text-dark-text-primary">
-          404
-        </h1>
-        <p className="text-sm text-text-secondary dark:text-dark-text-secondary">
-          The page you are looking for does not exist or has been moved.
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center select-none space-y-4">
+      <div className="p-6 rounded-lg bg-surface/30 border border-border-hairline max-w-sm w-full space-y-3">
+        <div className="w-10 h-10 rounded-[6px] bg-surface border border-border-hairline flex items-center justify-center mx-auto text-muted-foreground">
+          <Terminal className="w-5 h-5" />
+        </div>
+
+        <h1 className="font-display text-4xl font-bold text-ink">404</h1>
+
+        <p className="font-mono text-xs text-muted-foreground">
+          {"// Error: The requested route could not be resolved in this workspace."}
         </p>
-        <Link
-          href="/"
-          className="inline-flex h-9 w-full items-center justify-center rounded-lg bg-foreground px-4 text-xs font-semibold text-background transition-all hover:bg-foreground/90 cursor-pointer"
-        >
-          Go Back Home
-        </Link>
+
+        <div className="pt-2">
+          <Link
+            href="/"
+            className="tactile-btn !h-[30px] px-4 gap-1.5 w-full justify-center"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return Home</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,20 +1,9 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { NavigationDock } from "@/components/NavigationDock";
 
 export const metadata: Metadata = {
   title: "Naphier Awalie | IT Student & Full-Stack Developer",
@@ -27,7 +16,7 @@ export const metadata: Metadata = {
     "Software Engineer",
     "Portfolio",
     "Zamboanga City",
-    "WMSU",
+    "ZPPSU",
     "Next.js",
     "TypeScript",
     "React",
@@ -35,7 +24,7 @@ export const metadata: Metadata = {
   manifest: "/icon/site.webmanifest",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "Naphier Awalie",
   },
   icons: {
@@ -48,8 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
-  themeColor: "#2563eb",
+export const viewport: Viewport = {
+  themeColor: "#0b0d0e",
 };
 
 export default function RootLayout({
@@ -58,28 +47,52 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} font-sans`}
-      suppressHydrationWarning
-    >
-      <body className="antialiased min-h-screen">
-        <PWARegister />
-        <main className="animate-fade-in">
-          {children}
+    <html lang="en" suppressHydrationWarning className="dark">
+      <head>
+        {/* Anti-flash theme initialization script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var saved = localStorage.getItem('naphier_theme');
+                var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches) || (saved === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                } else {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="antialiased bg-page text-ink min-h-screen selection:bg-brand selection:text-page">
+        <ThemeProvider>
+          <PWARegister />
 
-          {/* Bottom Copyright Footer */}
-          <footer className="max-w-4xl mx-auto px-4 py-8 border-t border-border mt-12">
-            <div className="flex justify-center items-center">
-              <p className="text-sm text-foreground/70">
-                &copy; 2026 Naphier Awalie. All rights reserved.
+          {/* Centered Page Shell Container (760px reading anchor) */}
+          <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between">
+            <main className="w-full">{children}</main>
+
+            {/* Minimalist Tech Footer */}
+            <footer className="w-full mt-20 pt-8 border-t border-border-divider text-center">
+              <p className="text-xs font-mono text-muted-foreground">
+                &copy; 2026 Naphier Awalie. Designed with precision & craft.
               </p>
-            </div>
-          </footer>
-        </main>
+            </footer>
+          </div>
 
-        {/* Secure & Premium Chatbot Widget */}
-        <ChatWidget />
+          {/* Bottom Progressive Blur Overlay */}
+          <div className="bottom-progressive-blur" aria-hidden="true" />
+
+          {/* Persistent Floating Navigation Dock */}
+          <NavigationDock />
+
+          {/* AI Assistant Chat Widget */}
+          <ChatWidget />
+        </ThemeProvider>
       </body>
     </html>
   );

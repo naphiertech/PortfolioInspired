@@ -38,31 +38,75 @@ export const techSections: TechSection[] = [
   {
     title: "Frontend",
     items: [
+      "HTML5",
+      "CSS3",
       "JavaScript",
       "TypeScript",
       "React",
       "Next.js",
       "Tailwind CSS",
-      "Framer Motion",
-      "Locomotive Scroll",
+      "Flutter",
+      "Dart",
+      "Capacitor",
     ],
   },
   {
     title: "Backend",
-    items: ["Node.js", "Express.js", "PostgreSQL", "MongoDB"],
+    items: [
+      "Node.js",
+      "Express.js",
+      "PHP",
+      "Laravel",
+    ],
   },
   {
-    title: "Specialty",
+    title: "Databases & Cloud",
     items: [
-      "PC Gaming Systems",
-      "Graphic Design",
-      "Animations",
-      "UI/UX Design",
+      "Supabase",
+      "MySQL",
+      "PostgreSQL",
+      "MongoDB",
+      "Firebase",
+    ],
+  },
+  {
+    title: "AI & Machine Learning",
+    items: [
+      "TensorFlow",
+      "PyTorch",
+    ],
+  },
+  {
+    title: "Animation & Design",
+    items: [
+      "Figma",
+      "GSAP",
+      "Framer Motion",
+      "Lottie",
+    ],
+  },
+  {
+    title: "DevOps & Tools",
+    items: [
+      "Docker",
+      "Jenkins",
+      "GitHub Actions",
+      "Git",
+      "GitHub",
+      "VS Code",
+      "Postman",
+      "Vercel",
     ],
   },
 ];
 
 export const projects: ProjectItem[] = [
+  {
+    name: "Naphix Resume",
+    description: "Privacy-First Live A4 Resume Builder & Exporter",
+    url: "naphix-resume.netlify.app/",
+    href: "https://naphix-resume.netlify.app/",
+  },
   {
     name: "MovieStream",
     description: "Cinematic Movie Search Experience",
@@ -196,6 +240,46 @@ export interface FullProjectItem {
 
 export const fullProjects: FullProjectItem[] = [
   {
+    title: "Naphix Resume",
+    category: "Web Application",
+    year: "2026",
+    image: "/projects/resumebuilder.png",
+    color: "bg-[#0f172a]",
+    role: "Fullstack Developer & Creator",
+    client: "Personal Project",
+    tags: ["React 18", "TypeScript", "Tailwind CSS", "Vite", "Zustand"],
+    overview:
+      "Naphix Resume is a privacy-first resume builder with a real-time split-screen editor and live A4 preview, drag-and-drop customization, and native PDF and Word export.",
+    designScreens: [
+      "/projects/resumebuilder.png",
+      "/projects/resumebuilder-1.png",
+      "/projects/resumebuilder-2.png",
+      "/projects/resumebuilder-3.png",
+    ],
+    techStack: [
+      "React 18",
+      "TypeScript",
+      "Tailwind CSS 3.4",
+      "Vite",
+      "Zustand",
+      "@dnd-kit",
+      "docx",
+      "@react-pdf/renderer",
+      "Lucide React",
+      "Zod",
+    ],
+    features: [
+      "Real-time split-screen workspace with 1:1 ISO 216 A4 live preview mirror",
+      "Smooth drag-and-drop section and entry reordering powered by @dnd-kit",
+      "Universal custom section system with dynamic schema fields",
+      "Dual native export: selectable ATS-compliant vector PDF and editable Word .docx",
+      "Adaptive responsive layout for desktop, laptop, tablet, and mobile",
+      "100% client-side local storage with zero server tracking",
+      "Undo/redo history with keyboard shortcuts and debounced state management",
+    ],
+    live: "https://naphix-resume.netlify.app/",
+  },
+  {
     title: "AssetLink",
     category: "Asset Management",
     year: "2026",
@@ -224,7 +308,7 @@ export const fullProjects: FullProjectItem[] = [
       "Intuitive Reporting Interface",
     ],
     live: "https://assetlink-supabase-landing.vercel.app/",
-    github: "https://github.com/bagatata05/ASSETLINK-supabase",
+    github: "https://github.com/naphiertech/ASSETLINK-supabase",
   },
   {
     title: "MovieStream",
@@ -234,7 +318,7 @@ export const fullProjects: FullProjectItem[] = [
     color: "bg-[#0A0A0A]",
     role: "Fullstack Developer",
     client: "Personal Project",
-    tags: ["Next.js 15", "React 19", "Tailwind 4", "Motion 12", "TMDB API"],
+    tags: ["Next.js", "React", "Tailwind CSS", "Framer Motion", "TMDB API"],
     overview:
       "MovieStream is a high-fidelity, editorial-style movie discovery platform built for the modern web. It combines live TMDB data with a premium, cinematic user interface designed for enthusiasts who appreciate bold typography, smooth motion, and a distraction-free viewing experience.",
     designScreens: [
@@ -290,7 +374,7 @@ export const fullProjects: FullProjectItem[] = [
       "Persistent local storage with SharedPreferences",
       "Glass-morphism UI with smooth animations",
     ],
-    github: "https://github.com/bagatata05/budgetbuddy",
+    github: "https://github.com/naphiertech/budgetbuddy",
   },
   {
     title: "Freelance",
@@ -300,7 +384,7 @@ export const fullProjects: FullProjectItem[] = [
     color: "bg-[#FFD6E8]",
     role: "Frontend Developer",
     client: "School Project",
-    tags: ["React", "TypeScript", "TailwindCSS", "React Router"],
+    tags: ["React", "TypeScript", "Tailwind CSS", "React Router"],
     overview:
       "A professional portfolio for a freelance creative, focusing on high-performance animations and a unique aesthetic that highlights their design and coding capabilities. This platform is built to provide an immersive experience for potential clients and collaborators.",
     designScreens: [
@@ -321,7 +405,7 @@ export const fullProjects: FullProjectItem[] = [
       "Responsive and accessible design",
       "Optimized performance for mobile devices",
     ],
-    github: "https://github.com/bagatata05/freelance-marketplace/",
+    github: "https://github.com/naphiertech/freelance-marketplace/",
   },
   {
     title: "Online Business Permit Management System",
@@ -331,7 +415,7 @@ export const fullProjects: FullProjectItem[] = [
     color: "bg-[#E5E5E5]",
     role: "Fullstack Developer",
     client: "School Project",
-    tags: ["PHP", "MySQL", "JavaScript", "CSS"],
+    tags: ["PHP", "MySQL", "JavaScript", "CSS3"],
     overview:
       "A comprehensive digital solution for local government units to streamline the business permit application process. This system reduces paper usage and wait times through an intuitive online portal.",
     designScreens: [
@@ -347,7 +431,7 @@ export const fullProjects: FullProjectItem[] = [
       "Automated email notifications",
       "Secure document upload and storage",
     ],
-    github: "https://github.com/bagatata05/OnlineBusinessPermit",
+    github: "https://github.com/naphiertech/OnlineBusinessPermit",
   },
   {
     title: "Quicknotes",
@@ -376,7 +460,7 @@ export const fullProjects: FullProjectItem[] = [
       "Masonry grid layout with smooth animations",
       "Favorites, sorting, and advanced filtering",
     ],
-    github: "https://github.com/bagatata05/quicknotes",
+    github: "https://github.com/naphiertech/quicknotes",
   },
 ];
 

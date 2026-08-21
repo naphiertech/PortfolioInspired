@@ -1,87 +1,73 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { recommendations } from "@/lib/data";
-import { gsap } from "gsap";
 
 export function Recommendations() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const slideRef = useRef<HTMLDivElement>(null);
 
-  const handleSlideChange = useCallback(
-    (index: number) => {
-      if (index === activeIndex) return;
+  const handleNext = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % recommendations.length);
+  }, []);
 
-      if (slideRef.current) {
-        // Premium horizontal shift crossfade slide transitions
-        gsap.fromTo(
-          slideRef.current,
-          { opacity: 0, x: 20 },
-          { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" },
-        );
-      }
-      setActiveIndex(index);
-    },
-    [activeIndex],
-  );
-
-  // Auto advance slide every 8 seconds (matches live site timing!)
+  // Auto advance slide every 8 seconds
   useEffect(() => {
-    const timer = setInterval(() => {
-      const nextIndex = (activeIndex + 1) % recommendations.length;
-      handleSlideChange(nextIndex);
-    }, 8000);
-
+    const timer = setInterval(handleNext, 8000);
     return () => clearInterval(timer);
-  }, [activeIndex, handleSlideChange]);
+  }, [handleNext]);
 
   const currentRec = recommendations[activeIndex];
 
   return (
-    <div className="bento-card p-4 col-span-1 md:col-span-3 space-y-2 group overflow-hidden">
-      <h2 className="text-lg font-bold text-text-primary dark:text-dark-text-primary">
-        Recommendations
-      </h2>
+    <section className="w-full space-y-3.5 select-none mb-14">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+            &lt;recommendations/&gt;
+          </span>
+        </div>
 
-      {/* Slide Container (matches live layout height and typography) */}
-      <div className="relative min-h-[160px] pt-2">
-        <div
-          ref={slideRef}
-          className="absolute inset-0 flex flex-col justify-between select-none"
-        >
-          <div>
-            <p className="text-[13px] leading-relaxed text-text-secondary dark:text-dark-text-secondary font-serif italic line-clamp-4">
-              &ldquo;{currentRec.quote}&rdquo;
-            </p>
-          </div>
-
-          <div className="mt-3 pt-3 border-t border-border-default dark:border-dark-border">
-            <h3 className="text-xs font-semibold font-sans text-text-primary dark:text-dark-text-primary leading-tight">
-              {currentRec.author}
-            </h3>
-            <p className="text-xs text-text-muted dark:text-dark-text-muted font-sans mt-0.5">
-              {currentRec.title}
-            </p>
-          </div>
+        {/* Slide Indicators */}
+        <div className="flex items-center gap-1.5">
+          {recommendations.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActiveIndex(idx)}
+              className={`h-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+                idx === activeIndex
+                  ? "w-4 bg-brand"
+                  : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+              }`}
+              aria-label={`Go to recommendation ${idx + 1}`}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Dot Pagination indicators */}
-      <div className="flex gap-1.5 mt-4">
-        {recommendations.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleSlideChange(idx)}
-            className={`rounded-full transition-all duration-500 cursor-pointer ${
-              idx === activeIndex
-                ? "w-3 h-1.5 bg-text-primary dark:bg-dark-text-primary opacity-80"
-                : "w-1.5 h-1.5 bg-text-primary dark:bg-dark-text-primary opacity-20"
-            }`}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
+      {/* Testimonial Card */}
+      <div className="p-5 rounded-lg bg-surface/30 border border-border-hairline/60 space-y-4 min-h-[140px] flex flex-col justify-between">
+        <p className="font-sans text-[14px] text-muted-foreground italic leading-relaxed">
+          &ldquo;{currentRec.quote}&rdquo;
+        </p>
+
+        <div className="pt-3 border-t border-border-hairline/40 flex items-center justify-between gap-2">
+          <div>
+            <h4 className="font-sans text-xs sm:text-sm font-semibold text-ink leading-tight">
+              {currentRec.author}
+            </h4>
+            <p className="font-sans text-xs text-muted-foreground mt-0.5">
+              {currentRec.title}
+            </p>
+          </div>
+
+          <span className="font-mono text-[11px] text-muted-foreground/60">
+            {activeIndex + 1} / {recommendations.length}
+          </span>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
+
 export default Recommendations;

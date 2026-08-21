@@ -84,7 +84,18 @@ import {
   SiNodedotjs,
   SiTensorflow,
   SiPytorch,
+  SiGooglegemini,
+  SiClaude,
+  SiAnthropic,
+  SiDeepseek,
+  SiCursor,
+  SiGithubcopilot,
+  SiOllama,
+  SiHuggingface,
+  SiMistralai,
+  SiLangchain,
 } from "react-icons/si";
+import { RiOpenaiFill } from "react-icons/ri";
 import { VscVscode } from "react-icons/vsc";
 
 interface TechIconProps {
@@ -98,7 +109,7 @@ interface IconConfig {
   isThemeAware?: boolean;
 }
 
-// Complete library of top 80+ technology icons with brand hex colors
+// Complete library of top 90+ technology icons with brand hex colors
 const ICON_REGISTRY: Record<string, IconConfig> = {
   // Frontend Languages & Standards
   html: { component: SiHtml5, color: "#E34F26" },
@@ -206,9 +217,26 @@ const ICON_REGISTRY: Record<string, IconConfig> = {
   prisma: { component: SiPrisma, color: "#2D3748" },
   mariadb: { component: SiMariadb, color: "#003545" },
 
-  // AI & ML
+  // AI & ML (Core + LLMs & AI Tools)
   tensorflow: { component: SiTensorflow, color: "#FF6F00" },
   pytorch: { component: SiPytorch, color: "#EE4C2C" },
+  gemini: { component: SiGooglegemini, color: "#8E75FF" },
+  googlegemini: { component: SiGooglegemini, color: "#8E75FF" },
+  claude: { component: SiClaude, color: "#D97706" },
+  anthropic: { component: SiAnthropic, color: "#CC785C" },
+  codex: { component: RiOpenaiFill, color: "#10A37F" },
+  openai: { component: RiOpenaiFill, color: "#10A37F" },
+  chatgpt: { component: RiOpenaiFill, color: "#10A37F" },
+  gpt: { component: RiOpenaiFill, color: "#10A37F" },
+  deepseek: { component: SiDeepseek, color: "#4D6BFE" },
+  cursor: { component: SiCursor, isThemeAware: true },
+  copilot: { component: SiGithubcopilot, isThemeAware: true },
+  githubcopilot: { component: SiGithubcopilot, isThemeAware: true },
+  ollama: { component: SiOllama, isThemeAware: true },
+  huggingface: { component: SiHuggingface, color: "#FFD21E" },
+  mistral: { component: SiMistralai, color: "#FF7000" },
+  mistralai: { component: SiMistralai, color: "#FF7000" },
+  langchain: { component: SiLangchain, color: "#1C3C3C" },
 
   // DevOps & Tools
   docker: { component: SiDocker, color: "#2496ED" },
@@ -244,7 +272,7 @@ export function TechIcon({ name, className = "w-3.5 h-3.5 flex-shrink-0" }: Tech
 
   // VS Code special handling (from react-icons/vsc)
   if (normalized.includes("vscode") || normalized.includes("visualstudio") || (normalized === "code" && !name.includes(" "))) {
-    return <VscVscode className={className} style={{ color: "#007ACC" }} aria-hidden="true" />;
+    return <VscVscode className={className} style={{ color: "#007ACC" }} aria-hidden={true} />;
   }
 
   // 1. Direct registry lookup

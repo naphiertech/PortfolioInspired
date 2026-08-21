@@ -159,7 +159,7 @@ export const fullProjects: FullProjectItem[] = [
       "Motion-First Design",
       "Advanced Search",
     ],
-    live: "https://movie-stream-pi.vercel.app/",
+    live: "https://phierplay.vercel.app/",
     featured: true,
   },
   {
@@ -304,6 +304,7 @@ export const techSections: TechSection[] = [
       "TypeScript",
       "React",
       "Next.js",
+      "Vue.js",
       "Tailwind CSS",
       "Flutter",
       "Dart",
@@ -317,6 +318,10 @@ export const techSections: TechSection[] = [
       "Express.js",
       "PHP",
       "Laravel",
+      "Python",
+      "FastAPI",
+      "GraphQL",
+      "Prisma",
     ],
   },
   {
@@ -334,6 +339,10 @@ export const techSections: TechSection[] = [
     items: [
       "TensorFlow",
       "PyTorch",
+      "Codex",
+      "Gemini",
+      "Claude",
+      "Ollama",
     ],
   },
   {

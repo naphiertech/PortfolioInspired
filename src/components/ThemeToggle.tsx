@@ -58,7 +58,7 @@ export function ThemeToggle() {
         return (
           <button
             key={t.key}
-            onClick={() => setTheme(t.key)}
+            onClick={(e) => setTheme(t.key, e)}
             className={`flex items-center justify-center h-5 w-5 rounded-[4px] transition-all duration-150 cursor-pointer ${
               isActive
                 ? "bg-page text-ink shadow-[0_1px_2px_rgba(0,0,0,0.1)] border border-border-hairline"

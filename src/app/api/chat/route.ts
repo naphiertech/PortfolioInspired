@@ -2,11 +2,16 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const body = await req.json();
+    let messages = body.messages;
 
-    if (!messages || !Array.isArray(messages)) {
+    if (!messages && body.message) {
+      messages = [{ role: "user", content: body.message }];
+    }
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
-        { error: "Invalid messages array provided." },
+        { error: "Invalid or empty messages provided." },
         { status: 400 },
       );
     }
@@ -27,14 +32,14 @@ export async function POST(req: Request) {
 
 Here are the details you MUST use to answer any questions about Naphier:
 - Name: Naphier Awalie (often goes by 'Naphier' or online handle 'naphiertech').
-- Current Role: BS Information Technology (BS IT) Student at Zamboanga Peninsula Polytechnic State University (ZPPSU), College of Information and Computing Sciences, and a Full-Stack / Mobile Developer.
+- Current Role: BS Information Technology (BS IT) Student at Zamboanga Peninsula Polytechnic State University (ZPPSU), College of Information and Computing Sciences, and a Full-Stack & UI/UX Developer.
 - Location: Zamboanga City, Philippines.
 - Professional Persona: Extremely passionate about web animations, modern UI/UX design, clean layouts, and functional development. Friendly, welcoming, and knowledgeable.
 - Memberships: Active member of Google Developer Groups (GDG) Zamboanga Region, and active in the ZPPSU tech community.
 - Tech Stack:
   * Frontend & Mobile: HTML5, CSS3, JavaScript, TypeScript, React, Next.js, Tailwind CSS, Flutter, Dart, Capacitor.
   * Backend & Cloud: Node.js, Express.js, PHP, Laravel, Supabase, MySQL, PostgreSQL, MongoDB, Firebase.
-  * AI & ML: TensorFlow, PyTorch.
+  * AI & ML: TensorFlow, PyTorch, Codex, Gemini, Claude, Ollama.
   * Animation & Design: Figma, GSAP, Framer Motion, Lottie.
   * DevOps & Tools: Docker, Jenkins, GitHub Actions, Git, GitHub, VS Code, Postman, Vercel.
 - Primary Projects:
@@ -57,7 +62,6 @@ Rules for responding:
 6. NEVER use markdown symbols like double asterisks (**), single asterisks (*), hashtags (#), or dash/asterisk bullet points (like - or *). Instead, output only plain, clear, and professional text. If listing items, use standard plain newlines and start each item directly without a prefix or with a simple dash.`;
 
     // Map messages array to Gemini contents format
-    // Expects: { role: 'user' | 'model', parts: [{ text: string }] }
     const formattedContents = messages.map(
       (msg: { role: string; content: string }) => {
         const role = msg.role === "assistant" ? "model" : "user";
@@ -68,44 +72,61 @@ Rules for responding:
       },
     );
 
-    // Make the backend request to the official Gemini REST endpoint
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: formattedContents,
-          systemInstruction: {
-            parts: [
-              {
-                text: systemInstruction,
-              },
-            ],
-          },
-          generationConfig: {
-            maxOutputTokens: 500,
-            temperature: 0.7,
-          },
-        }),
-      },
-    );
+    // Default to Gemini 3.5 Flash, with graceful fallback to 2.5 Flash / 1.5 Flash
+    const candidateModels = [
+      "gemini-3.5-flash",
+      "gemini-2.5-flash",
+      "gemini-1.5-flash",
+    ];
+    let replyText = "";
+    let lastError = "";
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Gemini API Error Response:", errorText);
-      return NextResponse.json(
-        { error: `Gemini API reported an error: ${response.statusText}` },
-        { status: response.status },
-      );
+    for (const model of candidateModels) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contents: formattedContents,
+              systemInstruction: {
+                parts: [
+                  {
+                    text: systemInstruction,
+                  },
+                ],
+              },
+              generationConfig: {
+                maxOutputTokens: 500,
+                temperature: 0.7,
+              },
+            }),
+          },
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          replyText =
+            data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          if (replyText) break;
+        } else {
+          lastError = await response.text();
+        }
+      } catch (err: unknown) {
+        lastError = err instanceof Error ? err.message : String(err);
+      }
     }
 
-    const data = await response.json();
-    let replyText =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "I'm sorry, I couldn't generate a response. Please try again.";
+    if (!replyText) {
+      console.error("Gemini API Error Response:", lastError);
+      return NextResponse.json(
+        { error: "Could not generate a response from Gemini." },
+        { status: 500 },
+      );
+    }
 
     // Clean up any stray markdown characters (asterisks, bullet stars) to ensure beautiful clear plain text
     replyText = replyText

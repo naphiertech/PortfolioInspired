@@ -7,7 +7,7 @@ export type Theme = "light" | "dark" | "system";
 interface ThemeContextType {
   theme: Theme;
   resolvedTheme: "light" | "dark";
-  setTheme: (theme: Theme) => void;
+  setTheme: (theme: Theme, event?: React.MouseEvent) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -26,7 +26,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Update DOM classes and resolve theme
+  // Update DOM classes and resolve theme on initial mount and system changes
   useEffect(() => {
     if (!mounted) return;
 
@@ -65,13 +65,74 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return () => mediaQuery.removeEventListener("change", listener);
   }, [theme, mounted]);
 
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
-    try {
-      localStorage.setItem("naphier_theme", newTheme);
-    } catch {
-      // Ignore localStorage errors
+  const setTheme = (newTheme: Theme, event?: React.MouseEvent) => {
+    const isAppearanceTransition =
+      typeof document !== "undefined" &&
+      "startViewTransition" in document &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const applyThemeUpdate = () => {
+      setThemeState(newTheme);
+      try {
+        localStorage.setItem("naphier_theme", newTheme);
+      } catch {
+        // Ignore localStorage errors
+      }
+
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const resolved =
+        newTheme === "system"
+          ? mediaQuery.matches
+            ? "dark"
+            : "light"
+          : newTheme;
+
+      setResolvedTheme(resolved);
+      const root = document.documentElement;
+      if (resolved === "dark") {
+        root.classList.add("dark");
+        root.classList.remove("light");
+      } else {
+        root.classList.add("light");
+        root.classList.remove("dark");
+      }
+    };
+
+    if (!isAppearanceTransition || !event) {
+      applyThemeUpdate();
+      return;
     }
+
+    const x = event.clientX;
+    const y = event.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = (
+      document as unknown as {
+        startViewTransition: (cb: () => void) => { ready: Promise<void> };
+      }
+    ).startViewTransition(() => {
+      applyThemeUpdate();
+    });
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 550,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          pseudoElement: "::view-transition-new(root)",
+        }
+      );
+    });
   };
 
   return (
@@ -88,3 +149,5 @@ export function useTheme() {
   }
   return context;
 }
+
+export default ThemeProvider;

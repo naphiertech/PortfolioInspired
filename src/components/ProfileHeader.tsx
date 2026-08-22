@@ -105,7 +105,7 @@ export function ProfileHeader() {
         <div
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface border border-border-hairline shadow-md cursor-pointer group transition-transform duration-200"
+          className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface border border-border-hairline shadow-md cursor-pointer group transition-transform duration-200"
           title="Naphier Awalie"
         >
           {/* Static Base Image */}
@@ -113,7 +113,7 @@ export function ProfileHeader() {
             src="/profile/ezgif-frame-001.png"
             alt="Naphier Awalie"
             fill
-            sizes="80px"
+            sizes="100px"
             priority
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             style={{ objectPosition: "center 25%" }}

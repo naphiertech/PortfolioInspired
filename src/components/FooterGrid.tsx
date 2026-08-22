@@ -3,15 +3,15 @@ import { memberOf } from "@/lib/data";
 
 export function FooterGrid() {
   return (
-    <section className="w-full space-y-10 select-none mb-10 pt-4 border-t border-border-divider">
+    <section className="w-full space-y-10 select-none mb-10 pt-6 border-t border-border-divider" aria-label="Connect and Memberships">
       {/* 2-Column Matrix for Lower Half Sections */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10">
         {/* Column 1: Memberships */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-              &lt;memberships/&gt;
-            </span>
+          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
+            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+              &lt;MEMBERSHIPS/&gt;
+            </h3>
           </div>
 
           <div className="space-y-2">
@@ -36,10 +36,10 @@ export function FooterGrid() {
 
         {/* Column 2: Social Links */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-              &lt;social-channels/&gt;
-            </span>
+          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
+            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+              &lt;SOCIAL-CHANNELS/&gt;
+            </h3>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -97,10 +97,10 @@ export function FooterGrid() {
 
         {/* Column 3: Speaking & Collaboration */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-              &lt;speaking-and-events/&gt;
-            </span>
+          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
+            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+              &lt;SPEAKING-AND-EVENTS/&gt;
+            </h3>
           </div>
 
           <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
@@ -118,10 +118,10 @@ export function FooterGrid() {
 
         {/* Column 4: Quick Contact */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-              &lt;direct-contact/&gt;
-            </span>
+          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
+            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+              &lt;DIRECT-CONTACT/&gt;
+            </h3>
           </div>
 
           <div className="space-y-2 font-mono text-xs">
@@ -139,10 +139,8 @@ export function FooterGrid() {
               rel="noopener noreferrer"
               className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-surface/50 text-muted-foreground hover:text-ink transition-colors"
             >
-              <span>Download Resume</span>
-              <svg className="w-3.5 h-3.5 text-muted-foreground/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+              <span>Resume PDF</span>
+              <span className="text-muted-foreground/60 text-[11px]">download</span>
             </a>
           </div>
         </div>

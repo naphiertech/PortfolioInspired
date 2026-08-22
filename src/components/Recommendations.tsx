@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { recommendations } from "@/lib/data";
+import { SectionHeader } from "./SectionHeader";
 
 export function Recommendations() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -19,50 +20,47 @@ export function Recommendations() {
   const currentRec = recommendations[activeIndex];
 
   return (
-    <section className="w-full space-y-3.5 select-none mb-14">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center gap-2">
-          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-            &lt;recommendations/&gt;
-          </span>
-        </div>
+    <section className="w-full space-y-4 select-none mb-16" aria-label="Recommendations">
+      {/* Consistent Section Header */}
+      <SectionHeader
+        label="RECOMMENDATIONS"
+        actionComponent={
+          <div className="flex items-center gap-1.5">
+            {recommendations.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                className={`h-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+                  idx === activeIndex
+                    ? "w-4 bg-brand"
+                    : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                }`}
+                aria-label={`Go to recommendation ${idx + 1}`}
+              />
+            ))}
+          </div>
+        }
+        className="mb-4 pb-2 border-b border-border-hairline/40"
+      />
 
-        {/* Slide Indicators */}
-        <div className="flex items-center gap-1.5">
-          {recommendations.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveIndex(idx)}
-              className={`h-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                idx === activeIndex
-                  ? "w-4 bg-brand"
-                  : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/60"
-              }`}
-              aria-label={`Go to recommendation ${idx + 1}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Testimonial Card */}
-      <div className="p-5 rounded-lg bg-surface/30 border border-border-hairline/60 space-y-4 min-h-[140px] flex flex-col justify-between">
-        <p className="font-sans text-[14px] text-muted-foreground italic leading-relaxed">
+      {/* Unboxed Quote Card with Smooth Slide Fade Transition */}
+      <div className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline/70 min-h-[140px] flex flex-col justify-between transition-all duration-300">
+        <blockquote className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 italic leading-relaxed">
           &ldquo;{currentRec.quote}&rdquo;
-        </p>
+        </blockquote>
 
-        <div className="pt-3 border-t border-border-hairline/40 flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between pt-3 mt-2 border-t border-border-hairline/40">
           <div>
-            <h4 className="font-sans text-xs sm:text-sm font-semibold text-ink leading-tight">
+            <div className="font-sans text-xs font-semibold text-ink">
               {currentRec.author}
-            </h4>
-            <p className="font-sans text-xs text-muted-foreground mt-0.5">
+            </div>
+            <div className="font-sans text-[11px] text-muted-foreground">
               {currentRec.title}
-            </p>
+            </div>
           </div>
 
-          <span className="font-mono text-[11px] text-muted-foreground/60">
-            {activeIndex + 1} / {recommendations.length}
+          <span className="font-mono text-[10px] text-muted-foreground/60">
+            {activeIndex + 1} of {recommendations.length}
           </span>
         </div>
       </div>

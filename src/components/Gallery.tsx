@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { galleryImages } from "@/lib/data";
+import { SectionHeader } from "./SectionHeader";
 
 export function Gallery() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -62,32 +63,30 @@ export function Gallery() {
   }, [activeIdx]);
 
   return (
-    <section className="w-full space-y-3.5 select-none mb-14">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center gap-2">
-          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-            &lt;moments-and-events/&gt;
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => scroll("left")}
-            className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer"
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
+    <section className="w-full space-y-4 select-none mb-16" aria-label="Moments and Events">
+      {/* Consistent Section Header */}
+      <SectionHeader
+        label="MOMENTS-AND-EVENTS"
+        actionComponent={
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => scroll("left")}
+              className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer"
+              aria-label="Scroll left"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer"
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        }
+        className="mb-4 pb-2 border-b border-border-hairline/40"
+      />
 
       {/* Horizontal Strip */}
       <div

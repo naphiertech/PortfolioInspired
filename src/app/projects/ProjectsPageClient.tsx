@@ -39,60 +39,69 @@ export function ProjectsPageClient() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {fullProjects.map((project) => (
           <article
-            key={project.title}
-            className="cad-project-card group block"
+            key={project.slug}
+            className="cad-project-card group relative flex flex-col justify-between"
           >
-            {/* CAD Corner Drafting Reticles */}
-            <div className="cad-reticle cad-reticle--tl" />
-            <div className="cad-reticle cad-reticle--tr" />
-            <div className="cad-reticle cad-reticle--br" />
-            <div className="cad-reticle cad-reticle--bl" />
+            {/* Full Card Clickable Link to Detail Page */}
+            <Link
+              href={`/projects/${project.slug}`}
+              className="absolute inset-0 z-10 cursor-pointer rounded-[3px]"
+              aria-label={`View details for ${project.title}`}
+            />
 
-            {/* 16:9 Thumbnail with Grayscale Hover Transition */}
-            <div className="relative aspect-video w-full rounded-[3px] overflow-hidden bg-surface mb-3 border border-border-hairline/60">
-              <Image
-                src={project.image}
-                alt={project.title}
-                fill
-                sizes="(max-width: 640px) 100vw, 360px"
-                className="object-cover opacity-85 grayscale transition-all duration-250 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02]"
-              />
-              <div className="absolute top-2.5 right-2.5 bg-page/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground border border-border-hairline z-10">
-                {project.category}
-              </div>
-            </div>
+            <div>
+              {/* CAD Corner Drafting Reticles */}
+              <div className="cad-reticle cad-reticle--tl pointer-events-none" />
+              <div className="cad-reticle cad-reticle--tr pointer-events-none" />
+              <div className="cad-reticle cad-reticle--br pointer-events-none" />
+              <div className="cad-reticle cad-reticle--bl pointer-events-none" />
 
-            {/* Title & Metadata */}
-            <div className="space-y-2 px-1">
-              <div className="flex items-center justify-between gap-2">
-                <h2 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors duration-150">
-                  {project.title}
-                </h2>
-                <span className="font-mono text-[11px] text-muted-foreground flex-shrink-0">
-                  {project.year}
-                </span>
+              {/* 16:9 Thumbnail with Grayscale Hover Transition */}
+              <div className="relative aspect-video w-full rounded-[3px] overflow-hidden bg-surface mb-3 border border-border-hairline/60">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, 360px"
+                  className="object-cover opacity-85 grayscale transition-all duration-250 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02]"
+                />
+                <div className="absolute top-2.5 right-2.5 bg-page/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground border border-border-hairline z-10">
+                  {project.category}
+                </div>
               </div>
 
-              <p className="font-mono text-xs text-muted-foreground line-clamp-3 leading-relaxed">
-                {project.overview}
-              </p>
-
-              {/* Tech Stack Pills with TechIcon */}
-              <div className="flex flex-wrap gap-1.5 pt-1.5">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground bg-muted-subtle px-2 py-0.5 rounded-[4px] border border-border-hairline"
-                  >
-                    <TechIcon name={tag} className="w-3 h-3 text-muted-foreground" />
-                    <span>{tag}</span>
+              {/* Title & Metadata */}
+              <div className="space-y-2 px-1">
+                <div className="flex items-center justify-between gap-2">
+                  <h2 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors duration-150">
+                    {project.title}
+                  </h2>
+                  <span className="font-mono text-[11px] text-muted-foreground flex-shrink-0">
+                    {project.year}
                   </span>
-                ))}
+                </div>
+
+                <p className="font-mono text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                  {project.overview}
+                </p>
+
+                {/* Tech Stack Pills with TechIcon */}
+                <div className="flex flex-wrap gap-1.5 pt-1.5">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground bg-muted-subtle px-2 py-0.5 rounded-[4px] border border-border-hairline"
+                    >
+                      <TechIcon name={tag} className="w-3 h-3 text-muted-foreground" />
+                      <span>{tag}</span>
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Action Links */}
-            <div className="flex items-center gap-2 pt-3 mt-4 border-t border-border-hairline/50 px-1">
+            {/* Action Links (Higher z-index so clicking them opens external URL and does not trigger card route) */}
+            <div className="flex items-center gap-2 pt-3 mt-4 border-t border-border-hairline/50 px-1 relative z-20">
               {project.live && (
                 <a
                   href={project.live}

@@ -1,7 +1,7 @@
 import React from "react";
-import Link from "next/link";
 import { techSections } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
+import { SectionHeader } from "./SectionHeader";
 
 // Map section titles to code-syntax category tags
 const categorySyntaxMap: Record<string, string> = {
@@ -19,45 +19,46 @@ export function TechStack() {
   );
 
   return (
-    <section className="w-full space-y-5 select-none mb-14">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center gap-2">
-          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-            &lt;tech-stack/&gt;
-          </span>
-        </div>
-
-        <Link
-          href="/tech-stack"
-          className="font-mono text-xs text-muted-foreground hover:text-ink flex items-center gap-1 transition-colors duration-200 group"
-        >
-          <span>all technologies</span>
-          <span className="text-muted-foreground/60 group-hover:text-ink transition-transform group-hover:translate-x-0.5">
-            -&gt;
-          </span>
-        </Link>
-      </div>
+    <section className="w-full space-y-5 select-none mb-16" aria-label="Tech Stack">
+      {/* Consistent Section Header */}
+      <SectionHeader
+        label="TECH-STACK"
+        description="Technologies, frameworks, and development tools I work with."
+        actionHref="/tech-stack"
+        actionLabel="all technologies"
+        className="mb-5 pb-2 border-b border-border-hairline/40"
+      />
 
       {/* Core Categories with Code-Syntax Headings and Vector-Icon Pills */}
       <div className="space-y-5">
         {displayedSections.map((section) => {
           const syntaxTag =
             categorySyntaxMap[section.title] ||
-            `<${section.title.toLowerCase().replace(/\s+/g, "-")}/>`;
+            `<${section.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}/>`;
 
           return (
             <div key={section.title} className="space-y-2.5">
-              <div className="font-mono text-xs text-muted-foreground font-medium tracking-tight">
-                {syntaxTag}
+              {/* Category Code Header */}
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs text-muted-foreground/80 lowercase">
+                  {syntaxTag}
+                </span>
+                <div className="h-[1px] flex-1 bg-border-hairline/30" />
               </div>
 
+              {/* Vector Icon Tech Stack Pills */}
               <div className="flex flex-wrap gap-2">
-                {section.items.map((item) => (
-                  <span key={item} className="skill-pill">
-                    <TechIcon name={item} className="w-3.5 h-3.5" />
-                    <span>{item}</span>
-                  </span>
+                {section.items.map((tech) => (
+                  <div
+                    key={tech}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-surface/50 border border-border-hairline hover:border-border-hairline hover:bg-surface text-ink text-xs font-sans transition-colors cursor-default shadow-2xs group"
+                  >
+                    <TechIcon
+                      name={tech}
+                      className="w-3.5 h-3.5 text-muted-foreground group-hover:text-ink transition-colors flex-shrink-0"
+                    />
+                    <span>{tech}</span>
+                  </div>
                 ))}
               </div>
             </div>

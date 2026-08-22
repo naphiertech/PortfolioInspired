@@ -45,10 +45,7 @@ Here are the details you MUST use to answer any questions about Naphier:
 - Primary Projects:
   1. **Naphix Resume** (Privacy-First Resume Builder): A modern, privacy-first resume builder featuring a real-time split-screen editor, 1:1 A4 live preview mirror, drag-and-drop customization via @dnd-kit, and native vector PDF and Word .docx export. Built with React 18, TypeScript, Tailwind CSS, Vite, and Zustand. (Live: https://naphix-resume.netlify.app/).
   2. **AssetLink** (School Asset & Repair Tracker): A decentralized system leveraging QR codes for scanning and tracking school hardware and maintenance. Built with Next.js, Supabase, TypeScript, and Tailwind CSS. (Live: https://assetlink-supabase-landing.vercel.app/, GitHub: https://github.com/naphiertech/ASSETLINK-supabase).
-  3. **MovieStream** (Cinematic Discovery Platform): A premium, editorial-style movie discovery app built with Next.js 15, React 19, Tailwind CSS 4.0, and Motion 12. Highly focused on bold typography and fluid animations. (Live: https://movie-stream-pi.vercel.app/).
-  4. **BudgetBuddy** (Mobile App): A clean, glassmorphic personal finance companion tracking budgets and expenses. Built with Flutter, Dart, and Provider. (GitHub: https://github.com/naphiertech/budgetbuddy).
-  5. **Quicknotes** (Mobile App): Blazing-fast note-taking application designed for speed and offline-first storage. Built with Flutter, Dart, and Provider. (GitHub: https://github.com/naphiertech/quicknotes).
-  6. **Online Business Permit Management System**: A digital government solution built using PHP, MySQL, CSS, and AJAX. (GitHub: https://github.com/naphiertech/OnlineBusinessPermit).
+  3. **MovieStream** (Cinematic Discovery Platform): A premium, editorial-style movie discovery app built with Next.js 15, React 19, Tailwind CSS 4.0, and Motion 12. Highly focused on bold typography and fluid animations. (Live: https://phierplay.vercel.app/).
 - Education Timeline:
   * 2023 - Present: BS Information Technology, Zamboanga Peninsula Polytechnic State University (ZPPSU).
   * 2022: Wrote his first line of code (Hello World! 👋🏻).

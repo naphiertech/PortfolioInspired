@@ -1,13 +1,10 @@
 import React from "react";
+import { SectionHeader } from "./SectionHeader";
 
 export function AboutSection() {
   return (
-    <section className="w-full space-y-3.5 select-none mb-14">
-      <div className="flex items-center gap-2">
-        <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-          &lt;about/&gt;
-        </span>
-      </div>
+    <section className="w-full space-y-3.5 select-none mb-16" aria-label="About">
+      <SectionHeader label="ABOUT" className="mb-3" />
 
       <div className="font-sans text-[15px] text-muted-foreground leading-[26px] space-y-4">
         <p>

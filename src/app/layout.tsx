@@ -6,6 +6,7 @@ import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://naphiertech.vercel.app"),
   title: "Naphier Awalie | IT Student & Full-Stack Developer",
   description:
     "Personal portfolio of Naphier Awalie, an IT Student and Full-Stack Developer crafting high-performance, accessible, and clean digital solutions.",

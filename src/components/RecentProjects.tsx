@@ -6,97 +6,83 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { fullProjects } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
+import { SectionHeader } from "./SectionHeader";
 
 export function RecentProjects() {
-  // Showcase top 4 key projects on the home page
   const featuredProjects = fullProjects.slice(0, 4);
 
   return (
-    <section className="w-full space-y-4 select-none mb-14">
+    <section className="w-full space-y-5 select-none mb-16" aria-label="Selected Projects">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center gap-2">
-          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-            &lt;selected-projects/&gt;
-          </span>
-        </div>
-
-        <Link
-          href="/projects"
-          className="font-mono text-xs text-muted-foreground hover:text-ink flex items-center gap-1 transition-colors duration-200 group"
-        >
-          <span>all projects</span>
-          <span className="text-muted-foreground/60 group-hover:text-ink transition-transform group-hover:translate-x-0.5">
-            -&gt;
-          </span>
-        </Link>
-      </div>
+      <SectionHeader
+        label="SELECTED-PROJECTS"
+        description="Selected software engineering, full-stack, and mobile applications."
+        actionHref="/projects"
+        actionLabel="all projects"
+        className="mb-5 pb-2 border-b border-border-hairline/40"
+      />
 
       {/* 2-Column Responsive CAD Project Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {featuredProjects.map((project) => {
-          const targetHref = project.live || project.github || "/projects";
-          const isExternal = !!(project.live || project.github);
+        {featuredProjects.map((project) => (
+          <Link
+            key={project.slug}
+            href={`/projects/${project.slug}`}
+            className="cad-project-card group block cursor-pointer"
+          >
+            {/* CAD Drafting Reticles (Four corner L-brackets revealing on hover) */}
+            <div className="cad-reticle cad-reticle--tl" />
+            <div className="cad-reticle cad-reticle--tr" />
+            <div className="cad-reticle cad-reticle--bl" />
+            <div className="cad-reticle cad-reticle--br" />
 
-          return (
-            <a
-              key={project.title}
-              href={targetHref}
-              target={isExternal ? "_blank" : undefined}
-              rel={isExternal ? "noopener noreferrer" : undefined}
-              className="cad-project-card group block"
-            >
-              {/* CAD Drafting Reticles (Four corner L-brackets revealing on hover) */}
-              <div className="cad-reticle cad-reticle--tl" />
-              <div className="cad-reticle cad-reticle--tr" />
-              <div className="cad-reticle cad-reticle--br" />
-              <div className="cad-reticle cad-reticle--bl" />
-
-              {/* 16:9 Thumbnail with grayscale-to-color transition */}
-              <div className="relative aspect-video w-full rounded-[3px] overflow-hidden bg-surface mb-3 border border-border-hairline/60">
+            {/* Inner Project Container */}
+            <div className="p-3 sm:p-3.5 space-y-3">
+              {/* Cover Image Container (16:9 ratio) */}
+              <div className="relative aspect-video w-full rounded-[4px] overflow-hidden bg-surface border border-border-hairline group-hover:border-border-reticle transition-colors">
                 <Image
                   src={project.image}
                   alt={project.title}
                   fill
-                  sizes="(max-width: 640px) 100vw, 360px"
-                  className="object-cover opacity-85 grayscale transition-all duration-250 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
 
-              {/* Project Metadata */}
-              <div className="space-y-1.5 px-1 pb-1">
+              {/* Title, Category & Action Link */}
+              <div className="space-y-1">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors duration-150 truncate">
+                  <h3 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors line-clamp-1">
                     {project.title}
                   </h3>
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <span className="font-mono text-[11px] text-muted-foreground">
-                      {project.year}
-                    </span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-ink transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </div>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-ink transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 flex-shrink-0" />
                 </div>
-
-                <p className="font-mono text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                  {project.overview}
+                <p className="font-sans text-xs text-muted-foreground line-clamp-1">
+                  {project.category}
                 </p>
-
-                {/* Tech tags with vector icons */}
-                <div className="flex items-center flex-wrap gap-1.5 pt-2">
-                  {project.tags.slice(0, 4).map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground bg-muted-subtle px-2 py-0.5 rounded-[4px] border border-border-hairline"
-                    >
-                      <TechIcon name={tag} className="w-3 h-3 text-muted-foreground" />
-                      <span>{tag}</span>
-                    </span>
-                  ))}
-                </div>
               </div>
-            </a>
-          );
-        })}
+
+              {/* Vector Icon Tech Stack Pills */}
+              <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                {project.tags.slice(0, 4).map((tech) => (
+                  <span
+                    key={tech}
+                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] bg-muted-subtle border border-border-hairline text-muted-foreground text-[11px] font-sans font-medium"
+                  >
+                    <TechIcon name={tech} className="w-3 h-3 flex-shrink-0" />
+                    <span>{tech}</span>
+                  </span>
+                ))}
+                {project.tags.length > 4 && (
+                  <span className="text-[10px] font-mono text-muted-foreground px-1">
+                    +{project.tags.length - 4}
+                  </span>
+                )}
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   );

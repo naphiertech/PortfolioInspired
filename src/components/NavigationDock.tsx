@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home,
+  Briefcase,
   FolderGit2,
   Cpu,
   Award,
@@ -24,6 +25,11 @@ export function NavigationDock() {
       name: "Home",
       href: "/",
       icon: <Home className="w-[18px] h-[18px]" />,
+    },
+    {
+      name: "Work",
+      href: "/work",
+      icon: <Briefcase className="w-[18px] h-[18px]" />,
     },
     {
       name: "Projects",

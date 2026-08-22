@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CertificationsClient } from "@/app/certifications/CertificationsClient";
+import { CertificationsClient } from "./CertificationsClient";
 
 export const metadata: Metadata = {
   title: "Certifications | Naphier Awalie",

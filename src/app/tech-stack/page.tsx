@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TechStackClient } from "@/app/tech-stack/TechStackClient";
+import { TechStackClient } from "./TechStackClient";
 
 export const metadata: Metadata = {
   title: "Tech Stack | Naphier Awalie",

@@ -57,7 +57,7 @@ export function ProjectsPageClient() {
               <div className="cad-reticle cad-reticle--bl pointer-events-none" />
 
               {/* 16:9 Thumbnail with Grayscale Hover Transition */}
-              <div className="relative aspect-video w-full rounded-[3px] overflow-hidden bg-surface mb-3 border border-border-hairline/60">
+              <div className="relative aspect-video w-full rounded-[3px] overflow-hidden bg-surface mb-3 border border-border-hairline">
                 <Image
                   src={project.image}
                   alt={project.title}

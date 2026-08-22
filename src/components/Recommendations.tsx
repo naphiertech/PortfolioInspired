@@ -44,7 +44,7 @@ export function Recommendations() {
       />
 
       {/* Unboxed Quote Card with Smooth Slide Fade Transition */}
-      <div className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline/70 min-h-[140px] flex flex-col justify-between transition-all duration-300">
+      <div className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline min-h-[140px] flex flex-col justify-between transition-all duration-300">
         <blockquote className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 italic leading-relaxed">
           &ldquo;{currentRec.quote}&rdquo;
         </blockquote>

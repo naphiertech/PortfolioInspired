@@ -65,8 +65,8 @@ export function ExperienceTimeline() {
                     <div
                       className={`absolute top-5 sm:top-6 bottom-[-14px] sm:bottom-[-16px] w-[1px] ${
                         isCurrent
-                          ? "bg-gradient-to-b from-brand/80 via-border-hairline to-border-hairline/40"
-                          : "bg-border-hairline/60"
+                          ? "bg-gradient-to-b from-muted-foreground/30 via-border-hairline to-border-hairline/40"
+                          : "bg-border-hairline"
                       }`}
                     />
                   )}
@@ -86,13 +86,13 @@ export function ExperienceTimeline() {
                   <div className="relative flex items-center justify-center z-10">
                     {isCurrent ? (
                       <div className="relative flex items-center justify-center">
-                        <span className="animate-ping absolute inline-flex h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-brand/30 opacity-75" />
-                        <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-brand/70 bg-brand/10 flex items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-brand/20 opacity-75" />
+                        <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-border-hairline bg-surface flex items-center justify-center">
                           <div className="w-1.5 h-1.5 rounded-full bg-brand" />
                         </div>
                       </div>
                     ) : (
-                      <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-surface border-2 border-border-hairline group-hover:border-muted-foreground transition-colors" />
+                      <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-surface border border-border-hairline group-hover:border-border-hairline transition-colors" />
                     )}
                   </div>
 
@@ -108,7 +108,7 @@ export function ExperienceTimeline() {
                         <path
                           d="M 80 0 C 80 16, 56 28, 28 34"
                           stroke="currentColor"
-                          className="text-muted-foreground/60 dark:text-muted-foreground/60"
+                          className="text-muted-foreground/50 dark:text-muted-foreground/50"
                           strokeWidth="1.2"
                           strokeLinecap="round"
                         />
@@ -117,7 +117,7 @@ export function ExperienceTimeline() {
                           cy="34"
                           r="1.8"
                           fill="currentColor"
-                          className="text-muted-foreground/70 dark:text-muted-foreground/70"
+                          className="text-muted-foreground/60 dark:text-muted-foreground/60"
                         />
                       </svg>
 
@@ -134,10 +134,10 @@ export function ExperienceTimeline() {
                 {/* Milestone Row Card Container */}
                 <div className="flex-1 min-w-0">
                   <div
-                    className={`p-3 sm:p-3.5 rounded-xl border transition-all duration-200 ${
+                    className={`p-3 sm:p-3.5 rounded-xl border border-border-hairline transition-all duration-200 ${
                       isCurrent
-                        ? "bg-surface/50 border-brand/30 shadow-2xs group-hover:bg-surface/80 group-hover:border-brand/50"
-                        : "bg-surface/30 border-border-hairline/60 group-hover:bg-surface/70 group-hover:border-border-hairline"
+                        ? "bg-surface/50 shadow-2xs group-hover:bg-surface/70"
+                        : "bg-surface/30 group-hover:bg-surface/60"
                     }`}
                   >
                     {/* --- MOBILE VERTICAL COMPOSITION (< sm) --- */}
@@ -145,10 +145,10 @@ export function ExperienceTimeline() {
                       {/* Top Row: Icon + Title + Current Badge */}
                       <div className="flex items-start gap-2.5">
                         <div
-                          className={`w-7 h-7 rounded-md border flex items-center justify-center flex-shrink-0 shadow-2xs mt-0.5 ${
+                          className={`w-7 h-7 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 shadow-2xs mt-0.5 ${
                             isCurrent
-                              ? "bg-brand/10 border-brand/30 text-brand"
-                              : "bg-surface border-border-hairline text-muted-foreground"
+                              ? "bg-surface text-ink"
+                              : "bg-surface text-muted-foreground"
                           }`}
                         >
                           {getIcon(exp.role)}
@@ -183,7 +183,7 @@ export function ExperienceTimeline() {
 
                       {/* Bottom Row: Date Badge + Arrow */}
                       <div className="flex items-center justify-between pt-1 border-t border-border-hairline/30">
-                        <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline/70">
+                        <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline">
                           {exp.year}
                         </span>
                         <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-ink transition-transform flex-shrink-0" />
@@ -195,10 +195,10 @@ export function ExperienceTimeline() {
                       {/* Left: Icon + Role & Context */}
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div
-                          className={`w-9 h-9 rounded-lg border flex items-center justify-center flex-shrink-0 shadow-2xs transition-colors ${
+                          className={`w-9 h-9 rounded-lg border border-border-hairline flex items-center justify-center flex-shrink-0 shadow-2xs transition-colors ${
                             isCurrent
-                              ? "bg-brand/10 border-brand/30 text-brand"
-                              : "bg-surface border-border-hairline text-muted-foreground group-hover:text-ink"
+                              ? "bg-surface text-ink"
+                              : "bg-surface text-muted-foreground group-hover:text-ink"
                           }`}
                         >
                           {getIcon(exp.role)}
@@ -233,7 +233,7 @@ export function ExperienceTimeline() {
 
                       {/* Right: Date Range & Arrow */}
                       <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
-                        <span className="font-mono text-xs text-muted-foreground bg-muted-subtle/80 px-2.5 py-1 rounded-[5px] border border-border-hairline/70">
+                        <span className="font-mono text-xs text-muted-foreground bg-muted-subtle/80 px-2.5 py-1 rounded-[5px] border border-border-hairline">
                           {exp.year}
                         </span>
                         <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/30 group-hover:text-ink transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 flex-shrink-0" />

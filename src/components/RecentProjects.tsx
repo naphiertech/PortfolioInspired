@@ -39,7 +39,7 @@ export function RecentProjects() {
             {/* Inner Project Container */}
             <div className="p-3 sm:p-3.5 space-y-3">
               {/* Cover Image Container (16:9 ratio) */}
-              <div className="relative aspect-video w-full rounded-[4px] overflow-hidden bg-surface border border-border-hairline group-hover:border-border-reticle transition-colors">
+              <div className="relative aspect-video w-full rounded-[4px] overflow-hidden bg-surface border border-border-hairline transition-colors">
                 <Image
                   src={project.image}
                   alt={project.title}

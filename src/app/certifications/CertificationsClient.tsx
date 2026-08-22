@@ -108,11 +108,11 @@ export function CertificationsClient() {
         {certifications.map((cert) => (
           <div
             key={cert.name}
-            className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline/70 hover:bg-surface/70 hover:border-border-hairline transition-all duration-200 flex flex-col justify-between group shadow-2xs relative overflow-hidden"
+            className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 hover:border-border-hairline transition-all duration-200 flex flex-col justify-between group shadow-2xs relative overflow-hidden"
           >
             <div className="space-y-3.5">
               <div className="flex items-center justify-between gap-2">
-                <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs group-hover:border-border-reticle transition-colors">
+                <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs group-hover:border-border-hairline transition-colors">
                   {getIssuerLogo(cert)}
                 </div>
                 {getTagBadge(cert)}
@@ -130,7 +130,7 @@ export function CertificationsClient() {
 
             <div className="pt-3 mt-3 border-t border-border-hairline/40 flex items-center justify-between gap-2">
               {cert.code ? (
-                <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline/70 truncate max-w-[170px]">
+                <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline truncate max-w-[170px]">
                   ID: {cert.code}
                 </span>
               ) : (

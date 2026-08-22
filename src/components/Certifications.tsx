@@ -97,11 +97,11 @@ export function Certifications() {
           return (
             <div
               key={cert.name}
-              className="relative p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline/70 hover:bg-surface/70 hover:border-border-hairline transition-all duration-200 group flex flex-col justify-between overflow-hidden shadow-2xs"
+              className="relative p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 hover:border-border-hairline transition-all duration-200 group flex flex-col justify-between overflow-hidden shadow-2xs"
             >
               {/* Subtle decorative curve in dark mode */}
               <svg
-                className="absolute right-0 top-0 w-28 h-28 pointer-events-none opacity-5 dark:opacity-15 stroke-brand transition-opacity group-hover:opacity-25"
+                className="absolute right-0 top-0 w-28 h-28 pointer-events-none opacity-5 dark:opacity-15 stroke-brand transition-opacity group-hover:opacity-20"
                 viewBox="0 0 100 100"
                 fill="none"
               >
@@ -111,7 +111,7 @@ export function Certifications() {
               <div className="space-y-3.5 relative z-10">
                 {/* Issuer Logo + Tag Header */}
                 <div className="flex items-center justify-between gap-2">
-                  <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs group-hover:border-border-reticle transition-colors">
+                  <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs group-hover:border-border-hairline transition-colors">
                     {getIssuerLogo(cert)}
                   </div>
                   {getTagBadge(cert)}
@@ -131,7 +131,7 @@ export function Certifications() {
               {/* Bottom Credential ID & Action */}
               <div className="pt-3 mt-3 border-t border-border-hairline/40 flex items-center justify-between gap-2 relative z-10">
                 {cert.code ? (
-                  <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline/70 truncate max-w-[170px]">
+                  <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline truncate max-w-[170px]">
                     ID: {cert.code}
                   </span>
                 ) : (
@@ -161,7 +161,7 @@ export function Certifications() {
 
       {/* Bottom Quote / Tagline */}
       <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
-        <div className="border-l-2 border-brand/60 pl-3 italic text-muted-foreground/90">
+        <div className="border-l-2 border-border-hairline pl-3 italic text-muted-foreground/90">
           “Certifications are milestones, but real learning never stops.”
         </div>
         <span className="font-mono text-[11px] text-muted-foreground/60 tracking-wider font-medium sm:text-right">

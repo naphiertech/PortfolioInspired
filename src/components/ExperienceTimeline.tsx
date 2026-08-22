@@ -50,30 +50,34 @@ export function ExperienceTimeline() {
 
       {/* Vertical Milestone Timeline */}
       <div className="relative pl-0 sm:pl-2 pb-4 sm:pb-8">
-        <div className="space-y-3.5 sm:space-y-3">
+        <div className="flex flex-col">
           {experiences.map((exp, index) => {
             const isCurrent = exp.isCurrent;
             const isLast = index === experiences.length - 1;
             const yearLabel = exp.yearNode || (isCurrent ? "PRESENT" : exp.year.split(" ")[0]);
 
             return (
-              <div key={`${exp.role}-${exp.year}`} className="relative flex items-start gap-2.5 sm:gap-5 group">
+              <div
+                key={`${exp.role}-${exp.year}`}
+                className="relative flex items-start gap-2.5 sm:gap-5 group pb-3.5 sm:pb-3 last:pb-0"
+              >
                 {/* Left Rail & Timeline Node (Compact 48px on mobile, 80px on desktop) */}
                 <div className="flex flex-col items-center flex-shrink-0 w-12 sm:w-20 pt-2.5 sm:pt-3 relative self-stretch">
-                  {/* Vertical Rail Line */}
-                  {!isLast && (
-                    <div
-                      className={`absolute top-5 sm:top-6 bottom-[-14px] sm:bottom-[-16px] w-[1px] ${
-                        isCurrent
-                          ? "bg-gradient-to-b from-muted-foreground/30 via-border-hairline to-border-hairline/40"
-                          : "bg-border-hairline"
-                      }`}
-                    />
+                  {/* Continuous Vertical Rail Line */}
+                  {index === 0 ? (
+                    // Present: rail starts behind the node circle and runs to bottom of row
+                    <div className="absolute top-[32px] sm:top-[36px] bottom-0 w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none" />
+                  ) : isLast ? (
+                    // 2022: rail enters from top and cleanly terminates behind the 2022 node
+                    <div className="absolute top-0 h-[32px] sm:h-[36px] w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none" />
+                  ) : (
+                    // Intermediate years (2025, 2024, 2023): continuous top-to-bottom rail
+                    <div className="absolute top-0 bottom-0 w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none" />
                   )}
 
-                  {/* Year Label */}
+                  {/* Year Label with background mask so rail passes cleanly behind */}
                   <span
-                    className={`font-mono text-[9px] sm:text-[11px] mb-1 sm:mb-1.5 tracking-wider uppercase ${
+                    className={`font-mono text-[9px] sm:text-[11px] mb-1 sm:mb-1.5 tracking-wider uppercase text-center relative z-10 bg-page px-1 select-none ${
                       isCurrent
                         ? "text-brand font-bold"
                         : "text-muted-foreground/70 group-hover:text-muted-foreground transition-colors"
@@ -82,17 +86,17 @@ export function ExperienceTimeline() {
                     {yearLabel}
                   </span>
 
-                  {/* Node Marker */}
+                  {/* Node Marker sitting above the rail */}
                   <div className="relative flex items-center justify-center z-10">
                     {isCurrent ? (
                       <div className="relative flex items-center justify-center">
                         <span className="animate-ping absolute inline-flex h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-brand/20 opacity-75" />
-                        <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-border-hairline bg-surface flex items-center justify-center">
+                        <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-border-hairline bg-surface flex items-center justify-center shadow-2xs">
                           <div className="w-1.5 h-1.5 rounded-full bg-brand" />
                         </div>
                       </div>
                     ) : (
-                      <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-surface border border-border-hairline group-hover:border-border-hairline transition-colors" />
+                      <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-surface border border-border-hairline shadow-2xs group-hover:border-muted-foreground/60 transition-colors" />
                     )}
                   </div>
 

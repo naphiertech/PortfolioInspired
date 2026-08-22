@@ -103,8 +103,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const x = event.clientX;
-    const y = event.clientY;
+    let x = event?.clientX ?? 0;
+    let y = event?.clientY ?? 0;
+
+    if (!x && !y && event?.currentTarget) {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    } else if (!x && !y) {
+      x = window.innerWidth / 2;
+      y = window.innerHeight / 2;
+    }
+
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
@@ -127,8 +137,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           ],
         },
         {
-          duration: 550,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          duration: 450,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
           pseudoElement: "::view-transition-new(root)",
         }
       );

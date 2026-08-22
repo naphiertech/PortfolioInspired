@@ -20,10 +20,9 @@
   --text-faint: #71717a;
   --text-brand: #ffffff;
 
-  --border-hairline-rgb: 255, 255, 255;
   --border-hairline: rgba(255, 255, 255, 0.08);
   --border-dashed: rgba(255, 255, 255, 0.12);
-  --border-reticle: rgba(255, 255, 255, 0.3);
+  --border-reticle: rgba(255, 255, 255, 0.9);
   --border-divider: rgba(255, 255, 255, 0.06);
 
   --status-active: #ffffff;
@@ -69,10 +68,9 @@
   --text-faint: #a1a1aa;
   --text-brand: #000000;
 
-  --border-hairline-rgb: 0, 0, 0;
   --border-hairline: rgba(0, 0, 0, 0.08);
   --border-dashed: rgba(0, 0, 0, 0.12);
-  --border-reticle: rgba(0, 0, 0, 0.3);
+  --border-reticle: rgba(0, 0, 0, 0.9);
   --border-divider: rgba(0, 0, 0, 0.06);
 
   --status-active: #09090b;

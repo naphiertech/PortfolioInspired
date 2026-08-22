@@ -26,7 +26,7 @@ const config: Config = {
         faint: "var(--text-faint)",
         brand: "var(--text-brand)",
         border: {
-          hairline: "rgba(var(--border-hairline-rgb, 255, 255, 255), <alpha-value>)",
+          hairline: "var(--border-hairline)",
           dashed: "var(--border-dashed)",
           reticle: "var(--border-reticle)",
           divider: "var(--border-divider)",

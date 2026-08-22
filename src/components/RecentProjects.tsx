@@ -7,9 +7,11 @@ import { ArrowUpRight } from "lucide-react";
 import { fullProjects } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
+import { useUISound } from "@/context/SoundContext";
 
 export function RecentProjects() {
   const featuredProjects = fullProjects.slice(0, 4);
+  const { playHover, playClick } = useUISound();
 
   return (
     <section className="w-full space-y-5 select-none mb-16" aria-label="Selected Projects">
@@ -28,6 +30,8 @@ export function RecentProjects() {
           <Link
             key={project.slug}
             href={`/projects/${project.slug}`}
+            onMouseEnter={playHover}
+            onClick={playClick}
             className="cad-project-card group block cursor-pointer"
           >
             {/* CAD Drafting Reticles (Four corner L-brackets revealing on hover) */}
@@ -45,7 +49,7 @@ export function RecentProjects() {
                   alt={project.title}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                  className="object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ease-out group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>

@@ -6,14 +6,19 @@ import Image from "next/image";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { fullProjects } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
+import { useUISound } from "@/context/SoundContext";
 
 export function ProjectsPageClient() {
+  const { playHover, playClick } = useUISound();
+
   return (
     <div className="w-full select-none">
       {/* Page Header */}
       <div className="mb-10 space-y-2">
         <Link
           href="/"
+          onMouseEnter={playHover}
+          onClick={playClick}
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
@@ -45,6 +50,8 @@ export function ProjectsPageClient() {
             {/* Full Card Clickable Link to Detail Page */}
             <Link
               href={`/projects/${project.slug}`}
+              onMouseEnter={playHover}
+              onClick={playClick}
               className="absolute inset-0 z-10 cursor-pointer rounded-[3px]"
               aria-label={`View details for ${project.title}`}
             />

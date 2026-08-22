@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SoundProvider } from "@/context/SoundContext";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
@@ -71,28 +72,30 @@ export default function RootLayout({
       </head>
       <body className="antialiased bg-page text-ink min-h-screen selection:bg-brand selection:text-page">
         <ThemeProvider>
-          <PWARegister />
+          <SoundProvider>
+            <PWARegister />
 
-          {/* Centered Page Shell Container (760px reading anchor) */}
-          <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between">
-            <main className="w-full">{children}</main>
+            {/* Centered Page Shell Container (760px reading anchor) */}
+            <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between">
+              <main className="w-full">{children}</main>
 
-            {/* Minimalist Tech Footer */}
-            <footer className="w-full mt-20 pt-8 border-t border-border-divider text-center">
-              <p className="text-xs font-mono text-muted-foreground">
-                &copy; 2026 Naphier Awalie. Designed with precision & craft.
-              </p>
-            </footer>
-          </div>
+              {/* Minimalist Tech Footer */}
+              <footer className="w-full mt-20 pt-8 border-t border-border-divider text-center">
+                <p className="text-xs font-mono text-muted-foreground">
+                  &copy; 2026 Naphier Awalie. Designed with precision & craft.
+                </p>
+              </footer>
+            </div>
 
-          {/* Bottom Progressive Blur Overlay */}
-          <div className="bottom-progressive-blur" aria-hidden="true" />
+            {/* Bottom Progressive Blur Overlay */}
+            <div className="bottom-progressive-blur" aria-hidden="true" />
 
-          {/* Persistent Floating Navigation Dock */}
-          <NavigationDock />
+            {/* Persistent Floating Navigation Dock */}
+            <NavigationDock />
 
-          {/* AI Assistant Chat Widget */}
-          <ChatWidget />
+            {/* AI Assistant Chat Widget */}
+            <ChatWidget />
+          </SoundProvider>
         </ThemeProvider>
       </body>
     </html>

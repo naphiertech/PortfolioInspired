@@ -6,29 +6,24 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { galleryImages } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
+import { useScrollLock } from "@/lib/scrollLock";
+import { useUISound } from "@/context/SoundContext";
 
 export function Gallery() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
+  const { playOpen, playClose, playClick } = useUISound();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Lock body scroll when modal is active
-  useEffect(() => {
-    if (activeIdx !== null) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [activeIdx]);
+  // Lock body scroll with zero layout shift
+  useScrollLock(activeIdx !== null);
 
   const scroll = (direction: "left" | "right") => {
+    playClick();
     if (scrollContainerRef.current) {
       const scrollAmount = 260;
       scrollContainerRef.current.scrollBy({
@@ -44,14 +39,17 @@ export function Gallery() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        playClose();
         setActiveIdx(null);
       } else if (e.key === "ArrowLeft") {
+        playClick();
         setActiveIdx((prev) =>
           prev !== null
             ? (prev - 1 + galleryImages.length) % galleryImages.length
             : null,
         );
       } else if (e.key === "ArrowRight") {
+        playClick();
         setActiveIdx((prev) =>
           prev !== null ? (prev + 1) % galleryImages.length : null,
         );
@@ -60,7 +58,7 @@ export function Gallery() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeIdx]);
+  }, [activeIdx, playClose, playClick]);
 
   return (
     <section className="w-full space-y-4 select-none mb-16" aria-label="Moments and Events">
@@ -96,7 +94,10 @@ export function Gallery() {
         {galleryImages.map((src, idx) => (
           <div
             key={idx}
-            onClick={() => setActiveIdx(idx)}
+            onClick={() => {
+              playOpen();
+              setActiveIdx(idx);
+            }}
             className="relative flex-shrink-0 w-36 h-28 sm:w-48 sm:h-34 rounded-[4px] overflow-hidden bg-surface border border-border-hairline cursor-pointer group"
           >
             <Image
@@ -117,7 +118,10 @@ export function Gallery() {
         createPortal(
           <div
             className="fixed inset-0 bg-page/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 select-none"
-            onClick={() => setActiveIdx(null)}
+            onClick={() => {
+              playClose();
+              setActiveIdx(null);
+            }}
           >
             {/* Counter */}
             <div className="absolute top-6 left-6 font-mono text-xs text-muted-foreground bg-surface px-2.5 py-1 rounded border border-border-hairline">
@@ -126,7 +130,10 @@ export function Gallery() {
 
             {/* Close */}
             <button
-              onClick={() => setActiveIdx(null)}
+              onClick={() => {
+                playClose();
+                setActiveIdx(null);
+              }}
               className="absolute top-6 right-6 p-2 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer"
               aria-label="Close image"
             >

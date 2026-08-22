@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useTheme, Theme } from "./ThemeProvider";
+import { useUISound } from "@/context/SoundContext";
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const { playTheme } = useUISound();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -58,7 +60,10 @@ export function ThemeToggle() {
         return (
           <button
             key={t.key}
-            onClick={(e) => setTheme(t.key, e)}
+            onClick={(e) => {
+              playTheme();
+              setTheme(t.key, e);
+            }}
             className={`flex items-center justify-center h-5 w-5 rounded-[4px] transition-all duration-150 cursor-pointer ${
               isActive
                 ? "bg-page text-ink shadow-[0_1px_2px_rgba(0,0,0,0.1)] border border-border-hairline"

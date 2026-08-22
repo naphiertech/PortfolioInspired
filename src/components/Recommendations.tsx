@@ -5,10 +5,12 @@ import { MessageSquarePlus, ExternalLink } from "lucide-react";
 import { recommendations } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
 import { RecommendModal } from "./RecommendModal";
+import { useUISound } from "@/context/SoundContext";
 
 export function Recommendations() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { playHover, playClick, playOpen } = useUISound();
 
   // Only consider approved recommendations (or active items if status is not explicitly rejected)
   const approvedRecs = recommendations.filter(
@@ -44,7 +46,10 @@ export function Recommendations() {
               {approvedRecs.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setActiveIndex(idx)}
+                  onClick={() => {
+                    playClick();
+                    setActiveIndex(idx);
+                  }}
                   className={`h-1.5 rounded-full transition-all duration-200 cursor-pointer ${
                     idx === activeIndex
                       ? "w-4 bg-brand"
@@ -57,7 +62,11 @@ export function Recommendations() {
           ) : !isEmpty ? (
             <button
               type="button"
-              onClick={() => setIsModalOpen(true)}
+              onMouseEnter={playHover}
+              onClick={() => {
+                playOpen();
+                setIsModalOpen(true);
+              }}
               className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground hover:text-ink transition-colors cursor-pointer"
             >
               <MessageSquarePlus className="w-3 h-3 opacity-70" />
@@ -83,7 +92,11 @@ export function Recommendations() {
 
             <button
               type="button"
-              onClick={() => setIsModalOpen(true)}
+              onMouseEnter={playHover}
+              onClick={() => {
+                playOpen();
+                setIsModalOpen(true);
+              }}
               className="tactile-btn gap-1.5 text-xs font-medium px-3.5 py-1.5 h-8 rounded-md whitespace-nowrap self-start sm:self-auto cursor-pointer"
             >
               <MessageSquarePlus className="w-3.5 h-3.5 opacity-70" />

@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import NextImage from "next/image";
 import { ThemeToggle } from "./ThemeToggle";
+import { SoundToggle } from "./SoundToggle";
 import { GithubContributions } from "./GithubContributions";
 
 export function ProfileHeader() {
@@ -93,6 +94,9 @@ export function ProfileHeader() {
               Available for work
             </span>
           </div>
+
+          {/* Sound Selector Toggle */}
+          <SoundToggle />
 
           {/* Theme Selector Toggle */}
           <ThemeToggle />

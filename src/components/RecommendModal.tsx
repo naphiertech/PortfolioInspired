@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { X, Send, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { useScrollLock } from "@/lib/scrollLock";
+import { useUISound } from "@/context/SoundContext";
 
 interface RecommendModalProps {
   isOpen: boolean;
@@ -34,18 +36,30 @@ export function RecommendModal({ isOpen, onClose }: RecommendModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
 
-  // Close on Escape key & lock scroll
+  const { playOpen, playClose, playClick } = useUISound();
+
+  // Robust scroll lock with zero layout shift
+  useScrollLock(isOpen);
+
+  // Play modal open sound
+  useEffect(() => {
+    if (isOpen) {
+      playOpen();
+    }
+  }, [isOpen, playOpen]);
+
+  // Close on Escape key & manage focus
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        playClose();
         onClose();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
 
     // Auto-focus first input
     const timer = setTimeout(() => {
@@ -54,13 +68,13 @@ export function RecommendModal({ isOpen, onClose }: RecommendModalProps) {
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "unset";
       clearTimeout(timer);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, playClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    playClick();
     setError(null);
 
     // Client-side quick checks
@@ -118,6 +132,7 @@ export function RecommendModal({ isOpen, onClose }: RecommendModalProps) {
   };
 
   const handleResetAndClose = () => {
+    playClose();
     setName("");
     setRole("");
     setRelationship("");

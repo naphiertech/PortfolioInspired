@@ -11,6 +11,8 @@ import {
   Award,
 } from "lucide-react";
 
+import { useUISound } from "@/context/SoundContext";
+
 interface NavItem {
   name: string;
   href: string;
@@ -19,6 +21,7 @@ interface NavItem {
 
 export function NavigationDock() {
   const pathname = usePathname();
+  const { playHover, playClick } = useUISound();
 
   const navItems: NavItem[] = [
     {
@@ -63,6 +66,8 @@ export function NavigationDock() {
           <Link
             key={item.name}
             href={item.href}
+            onMouseEnter={playHover}
+            onClick={playClick}
             className={`flex flex-col items-center justify-center gap-1 transition-all duration-150 px-3 py-1 rounded-full cursor-pointer relative group ${
               isActive
                 ? "text-ink font-semibold"

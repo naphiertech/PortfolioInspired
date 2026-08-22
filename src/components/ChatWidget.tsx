@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { X, Send, Sparkles, User, Bot, Loader2 } from "lucide-react";
+import { useUISound } from "@/context/SoundContext";
 
 interface Message {
   role: "user" | "assistant";
@@ -11,6 +12,7 @@ interface Message {
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
+  const { playHover, playClick, playOpen, playClose } = useUISound();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -31,10 +33,21 @@ export function ChatWidget() {
     }
   }, [messages, isOpen]);
 
+  const toggleChat = () => {
+    if (isOpen) {
+      playClose();
+      setIsOpen(false);
+    } else {
+      playOpen();
+      setIsOpen(true);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    playClick();
     const userMessage = input.trim();
     setInput("");
     const updatedMessages = [
@@ -81,7 +94,8 @@ export function ChatWidget() {
       {/* Floating Tactile Launcher Button */}
       <div className="fixed bottom-[78px] right-4 sm:bottom-7 sm:right-8 z-50">
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleChat}
+          onMouseEnter={playHover}
           className="tactile-btn gap-2 h-9 px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/90 backdrop-blur-md"
           aria-label={isOpen ? "Close AI Assistant" : "Open AI Assistant"}
           aria-expanded={isOpen}

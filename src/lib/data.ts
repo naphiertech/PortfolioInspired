@@ -207,7 +207,7 @@ export const fullProjects: FullProjectItem[] = [
       },
     ],
     live: "https://naphix-resume.netlify.app/",
-    github: "https://github.com/naphiertech/NaphixResume",
+    github: "https://github.com/naphiertech/resumebuilder",
     status: "live",
     featured: true,
   },

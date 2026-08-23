@@ -1,6 +1,7 @@
 import React from "react";
 import { ProfileHeader } from "@/components/ProfileHeader";
 import { AboutSection } from "@/components/AboutSection";
+import { CurrentlyBuilding } from "@/components/CurrentlyBuilding";
 import { RecentProjects } from "@/components/RecentProjects";
 import { TechStack } from "@/components/TechStack";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
@@ -17,6 +18,9 @@ export default function Home() {
 
       {/* 2. About Narrative */}
       <AboutSection />
+
+      {/* 2.5. Currently Building Live Dev Note */}
+      <CurrentlyBuilding />
 
       {/* 3. Selected Projects (CAD Grid) */}
       <RecentProjects />

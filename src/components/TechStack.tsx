@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
+import Link from "next/link";
 import { techSections } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
+import { useUISound } from "@/context/SoundContext";
 
 // Map section titles to code-syntax category tags
 const categorySyntaxMap: Record<string, string> = {
@@ -14,6 +18,7 @@ const categorySyntaxMap: Record<string, string> = {
 const featuredCategoryTitles = ["Frontend", "Backend", "Databases & Cloud"];
 
 export function TechStack() {
+  const { playHover, playClick } = useUISound();
   const displayedSections = techSections.filter((sec) =>
     featuredCategoryTitles.includes(sec.title),
   );
@@ -49,16 +54,20 @@ export function TechStack() {
               {/* Vector Icon Tech Stack Pills */}
               <div className="flex flex-wrap gap-2">
                 {section.items.map((tech) => (
-                  <div
+                  <Link
                     key={tech}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-surface/50 border border-border-hairline hover:border-border-hairline hover:bg-surface text-ink text-xs font-sans transition-colors cursor-default shadow-2xs group"
+                    href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
+                    onMouseEnter={playHover}
+                    onClick={playClick}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-surface/50 border border-border-hairline hover:border-border-hairline hover:bg-surface text-ink text-xs font-sans transition-colors cursor-pointer shadow-2xs group"
+                    title={`View projects built with ${tech}`}
                   >
                     <TechIcon
                       name={tech}
                       className="w-3.5 h-3.5 text-muted-foreground group-hover:text-ink transition-colors flex-shrink-0"
                     />
                     <span>{tech}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>

@@ -44,7 +44,7 @@ export function FooterGrid() {
 
           <div className="grid grid-cols-3 gap-2">
             <a
-              href="https://www.linkedin.com/in/awalie-naphier-b-0551983b5/"
+              href="https://www.linkedin.com/in/naphier-awalie-0551983b5/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center justify-center p-3 rounded-lg bg-surface/40 border border-border-hairline hover:border-border-hairline hover:bg-surface hover:text-ink transition-all group cursor-pointer"

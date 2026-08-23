@@ -44,6 +44,33 @@ export interface RecommendationItem {
   createdAt?: string;
 }
 
+export type ProjectStatus =
+  | "live"
+  | "active"
+  | "wip"
+  | "school-project"
+  | "archived";
+
+export interface TechnicalDecision {
+  title: string;
+  description: string;
+}
+
+export interface ProjectLearning {
+  title: string;
+  description: string;
+}
+
+export interface CurrentBuild {
+  title: string;
+  description: string;
+  projectSlug?: string;
+  href?: string;
+  status?: "building" | "improving" | "experimenting";
+  updatedAt?: string;
+  technologies?: string[];
+}
+
 export interface FullProjectItem {
   slug: string;
   title: string;
@@ -60,7 +87,9 @@ export interface FullProjectItem {
   gallery?: string[];
   techStack: string[];
   features?: string[];
-  status?: string;
+  status?: ProjectStatus;
+  technicalDecisions?: TechnicalDecision[];
+  learnings?: ProjectLearning[];
   highlights?: string[];
   buildNotes?: string;
   lessons?: string;
@@ -68,6 +97,37 @@ export interface FullProjectItem {
   github?: string;
   featured?: boolean;
 }
+
+export const projectStatusConfig: Record<
+  ProjectStatus,
+  { label: string; dotClass: string; badgeClass: string }
+> = {
+  live: {
+    label: "LIVE",
+    dotClass: "bg-emerald-500",
+    badgeClass: "text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  },
+  active: {
+    label: "ACTIVE",
+    dotClass: "bg-cyan-500",
+    badgeClass: "text-cyan-500 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  },
+  wip: {
+    label: "WIP",
+    dotClass: "bg-amber-500",
+    badgeClass: "text-amber-500 dark:text-amber-400 bg-amber-500/10 border-amber-500/20",
+  },
+  "school-project": {
+    label: "SCHOOL PROJECT",
+    dotClass: "bg-indigo-500 dark:bg-indigo-400",
+    badgeClass: "text-indigo-500 dark:text-indigo-300 bg-indigo-500/10 border-indigo-500/20",
+  },
+  archived: {
+    label: "ARCHIVED",
+    dotClass: "bg-zinc-500",
+    badgeClass: "text-zinc-500 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20",
+  },
+};
 
 // Single Source of Truth: All Featured & Side Projects
 export const fullProjects: FullProjectItem[] = [
@@ -117,8 +177,37 @@ export const fullProjects: FullProjectItem[] = [
       "100% client-side local storage with zero server tracking",
       "Undo/redo history with keyboard shortcuts and debounced state management",
     ],
+    technicalDecisions: [
+      {
+        title: "Why 100% client-side local storage?",
+        description:
+          "Resume content stays entirely within the user's browser local storage. This preserves personal identity privacy by default and eliminates remote server accounts, login friction, and database latency.",
+      },
+      {
+        title: "Why Zustand for centralized workspace state?",
+        description:
+          "A centralized immutable store coordinates real-time synchronization between the split-screen form inputs, dynamic section ordering, live ISO A4 preview, and undo/redo history without props drilling or unnecessary re-renders.",
+      },
+      {
+        title: "Why dual export pipelines for PDF and Word (.docx)?",
+        description:
+          "Instead of rasterized HTML screen capture which degrades ATS compliance, @react-pdf/renderer produces sharp, selectable vector PDF documents, while the docx library compiles a structured, fully editable Microsoft Word document.",
+      },
+    ],
+    learnings: [
+      {
+        title: "Document layout mathematics require strict CSS coordinate isolation",
+        description:
+          "Matching ISO 216 A4 aspect ratios across varying screen sizes required fixed print-coordinate scaling to ensure the split-screen browser preview remained 1:1 identical to the compiled PDF output.",
+      },
+      {
+        title: "Managing complex drag-and-drop state transitions",
+        description:
+          "Handling nested dynamic sections with @dnd-kit required careful sensor tuning and stable ID generation so reordering never dropped active form focus or unsaved text.",
+      },
+    ],
     live: "https://naphix-resume.netlify.app/",
-    status: "Live Production",
+    status: "live",
     featured: true,
   },
   {
@@ -156,9 +245,33 @@ export const fullProjects: FullProjectItem[] = [
       "Comprehensive school asset inventory management",
       "Intuitive mobile-first reporting interface",
     ],
+    technicalDecisions: [
+      {
+        title: "Why Supabase with Row-Level Security?",
+        description:
+          "PostgreSQL Row-Level Security (RLS) allowed granular permission modeling between teachers, maintenance staff, and administrators directly at the database layer, ensuring clean role separation with real-time ticket subscription updates.",
+      },
+      {
+        title: "Why dynamic QR code asset tags?",
+        description:
+          "Equipping physical equipment with unique QR identifiers allows staff to scan and open maintenance tickets in seconds without typing serial numbers or navigating long inventory catalogs.",
+      },
+    ],
+    learnings: [
+      {
+        title: "Role-based authorization is cleaner at the database boundary",
+        description:
+          "Leveraging PostgreSQL RLS policies in Supabase proved significantly more resilient against unauthorized state updates than relying solely on client-side routing guards.",
+      },
+      {
+        title: "Physical-to-digital workflows demand fast mobile UX",
+        description:
+          "Testing asset scanning on mobile devices highlighted the need for instant camera initialization and high-contrast status feedback in variable classroom and workshop lighting.",
+      },
+    ],
     live: "https://assetlink-supabase-landing.vercel.app/",
     github: "https://github.com/naphiertech/ASSETLINK-supabase",
-    status: "Active Prototype",
+    status: "school-project",
     featured: true,
   },
   {
@@ -200,11 +313,91 @@ export const fullProjects: FullProjectItem[] = [
       "Motion-first cinematic animations and smooth page transitions",
       "Instant debounced search across thousands of titles",
     ],
+    technicalDecisions: [
+      {
+        title: "Why Edge API proxying for TMDB data?",
+        description:
+          "Proxying TMDB API requests through Next.js server routes protects upstream API credentials, applies response caching headers, and shapes movie payloads to reduce client payload sizes.",
+      },
+      {
+        title: "Why Motion 12 with hardware-accelerated layouts?",
+        description:
+          "Cinematic media browsing requires buttery carousel scrolling and layout-preserving image expand transitions without causing frame drops or layout recalculation spikes.",
+      },
+    ],
+    learnings: [
+      {
+        title: "Debouncing and caching high-frequency search requests",
+        description:
+          "Implementing debounced query handlers with in-memory request caching drastically reduced TMDB rate-limit pressure and eliminated UI stutter during fast typing.",
+      },
+      {
+        title: "Progressive placeholders for heavy media grids",
+        description:
+          "Progressive poster placeholders and lazy poster image loading kept the initial viewport payload minimal even when browsing extensive genre catalogs.",
+      },
+    ],
     live: "https://phierplay.vercel.app/",
-    status: "Live Production",
+    status: "live",
     featured: true,
   },
 ];
+
+export const currentBuild: CurrentBuild = {
+  title: "Personal Portfolio & System Refinements",
+  description:
+    "Refining project case studies, interaction architecture, and tech stack relationship indexing.",
+  status: "improving",
+  updatedAt: "Aug 2026",
+  technologies: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS"],
+};
+
+export function normalizeTechName(name: string): string {
+  if (!name) return "";
+  const clean = name.trim().toLowerCase().replace(/[\s._-]+/g, "");
+  if (clean === "next" || clean === "nextjs" || clean === "nextjs15" || clean === "next15") return "next.js";
+  if (clean === "react" || clean === "react18" || clean === "react19" || clean === "reactjs") return "react";
+  if (clean === "tailwind" || clean === "tailwindcss" || clean === "tailwindcss34" || clean === "tailwind40" || clean === "tailwindcss40") return "tailwind css";
+  if (clean === "postgres" || clean === "postgresql") return "postgresql";
+  if (clean === "node" || clean === "nodejs") return "node.js";
+  if (clean === "express" || clean === "expressjs") return "express.js";
+  if (clean === "vue" || clean === "vuejs") return "vue.js";
+  if (clean === "motion" || clean === "motion12" || clean === "framermotion") return "framer motion";
+  if (clean === "dndkit" || clean === "@dndkit") return "@dnd-kit";
+  if (clean === "tmdb" || clean === "tmdbapi") return "tmdb api";
+  if (clean === "typescript" || clean === "ts") return "typescript";
+  if (clean === "javascript" || clean === "js") return "javascript";
+  return clean;
+}
+
+export function getProjectsUsingTech(tech: string): FullProjectItem[] {
+  if (!tech) return [];
+  const target = normalizeTechName(tech);
+  return fullProjects.filter((p) => {
+    const allTech = [...(p.techStack || []), ...(p.tags || [])];
+    return allTech.some((t) => normalizeTechName(t) === target);
+  });
+}
+
+export function getAllTechItems(): string[] {
+  const set = new Set<string>();
+  techSections.forEach((sec) => {
+    sec.items.forEach((item) => set.add(item));
+  });
+  fullProjects.forEach((p) => {
+    (p.techStack || []).forEach((t) => set.add(t));
+    (p.tags || []).forEach((t) => set.add(t));
+  });
+  return Array.from(set);
+}
+
+export function getCanonicalTechName(query: string): string | null {
+  if (!query) return null;
+  const target = normalizeTechName(query);
+  const all = getAllTechItems();
+  const exact = all.find((item) => normalizeTechName(item) === target);
+  return exact || null;
+}
 
 export function getProjectBySlug(slug: string): FullProjectItem | undefined {
   return fullProjects.find((p) => p.slug === slug);

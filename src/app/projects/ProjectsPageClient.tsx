@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { fullProjects } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
+import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 
 export function ProjectsPageClient() {
@@ -72,6 +73,15 @@ export function ProjectsPageClient() {
                   sizes="(max-width: 640px) 100vw, 360px"
                   className="object-cover opacity-85 grayscale transition-all duration-250 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02]"
                 />
+                {project.status && (
+                  <div className="absolute top-2.5 left-2.5 z-10">
+                    <ProjectStatusBadge
+                      status={project.status}
+                      size="sm"
+                      className="bg-page/90 backdrop-blur-sm shadow-sm"
+                    />
+                  </div>
+                )}
                 <div className="absolute top-2.5 right-2.5 bg-page/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground border border-border-hairline z-10">
                   {project.category}
                 </div>

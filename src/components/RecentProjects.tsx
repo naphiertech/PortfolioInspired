@@ -7,6 +7,7 @@ import { ArrowUpRight } from "lucide-react";
 import { fullProjects } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
+import { ProjectStatusBadge } from "./ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 
 export function RecentProjects() {
@@ -51,6 +52,15 @@ export function RecentProjects() {
                   sizes="(max-width: 640px) 100vw, 50vw"
                   className="object-cover grayscale group-hover:grayscale-0 transition-all duration-300 ease-out group-hover:scale-105"
                 />
+                {project.status && (
+                  <div className="absolute top-2.5 left-2.5 z-10">
+                    <ProjectStatusBadge
+                      status={project.status}
+                      size="sm"
+                      className="bg-page/90 backdrop-blur-sm shadow-sm"
+                    />
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
 

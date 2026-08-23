@@ -6,6 +6,8 @@ import Image from "next/image";
 import { ArrowLeft, ExternalLink, ArrowRight, Layers } from "lucide-react";
 import { FullProjectItem } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
+import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
+import { useUISound } from "@/context/SoundContext";
 
 interface ProjectDetailClientProps {
   project: FullProjectItem;
@@ -18,6 +20,7 @@ export function ProjectDetailClient({
   prevProject,
   nextProject,
 }: ProjectDetailClientProps) {
+  const { playHover, playClick } = useUISound();
   const narrative = project.fullDescription || project.overview;
   const galleryImages = (project.gallery || []).filter(
     (img) => img !== project.image
@@ -29,6 +32,8 @@ export function ProjectDetailClient({
       <div className="space-y-4">
         <Link
           href="/projects"
+          onMouseEnter={playHover}
+          onClick={playClick}
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 group cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-150 group-hover:-translate-x-1" />
@@ -46,15 +51,7 @@ export function ProjectDetailClient({
             </h1>
 
             {project.status && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-status-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400"></span>
-                </span>
-                <span className="text-[11px] font-mono font-medium leading-none">
-                  {project.status}
-                </span>
-              </div>
+              <ProjectStatusBadge status={project.status} size="md" />
             )}
           </div>
 
@@ -150,10 +147,17 @@ export function ProjectDetailClient({
         </span>
         <div className="flex flex-wrap gap-2 pt-1">
           {project.techStack.map((tech) => (
-            <span key={tech} className="skill-pill">
+            <Link
+              key={tech}
+              href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
+              onMouseEnter={playHover}
+              onClick={playClick}
+              className="skill-pill cursor-pointer hover:border-border-hairline hover:text-ink transition-colors"
+              title={`View projects using ${tech}`}
+            >
               <TechIcon name={tech} className="w-3.5 h-3.5" />
               <span>{tech}</span>
-            </span>
+            </Link>
           ))}
         </div>
       </section>
@@ -208,6 +212,59 @@ export function ProjectDetailClient({
                   sizes="(max-width: 640px) 100vw, 360px"
                   className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
                 />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Section: <technical-decisions/> */}
+      {project.technicalDecisions && project.technicalDecisions.length > 0 && (
+        <section className="space-y-3.5 pt-2" aria-label="Technical Decisions">
+          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
+            &lt;technical-decisions/&gt;
+          </span>
+          <div className="space-y-3">
+            {project.technicalDecisions.map((decision, idx) => (
+              <div
+                key={idx}
+                className="p-4 sm:p-4.5 rounded-lg bg-surface/30 border border-border-hairline space-y-1.5 transition-colors"
+              >
+                <h3 className="font-sans text-sm sm:text-[14px] font-semibold text-ink leading-snug">
+                  {decision.title}
+                </h3>
+                <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
+                  {decision.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Section: <what-i-learned/> */}
+      {project.learnings && project.learnings.length > 0 && (
+        <section className="space-y-3.5 pt-2" aria-label="What I Learned">
+          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
+            &lt;what-i-learned/&gt;
+          </span>
+          <div className="space-y-3">
+            {project.learnings.map((learning, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-3.5 p-4 sm:p-4.5 rounded-lg bg-surface/30 border border-border-hairline transition-colors"
+              >
+                <span className="font-mono text-xs font-semibold text-brand/80 dark:text-brand/90 flex-shrink-0 mt-0.5 select-none">
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
+                <div className="space-y-1">
+                  <h3 className="font-sans text-sm sm:text-[14px] font-semibold text-ink leading-snug">
+                    {learning.title}
+                  </h3>
+                  <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
+                    {learning.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

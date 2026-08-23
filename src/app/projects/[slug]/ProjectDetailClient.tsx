@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowLeft, ExternalLink, ArrowRight, Layers } from "lucide-react";
 import { FullProjectItem } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
+import { useUISound } from "@/context/SoundContext";
 
 interface ProjectDetailClientProps {
   project: FullProjectItem;
@@ -18,6 +19,7 @@ export function ProjectDetailClient({
   prevProject,
   nextProject,
 }: ProjectDetailClientProps) {
+  const { playHover, playClick } = useUISound();
   const narrative = project.fullDescription || project.overview;
   const galleryImages = (project.gallery || []).filter(
     (img) => img !== project.image
@@ -29,6 +31,8 @@ export function ProjectDetailClient({
       <div className="space-y-4">
         <Link
           href="/projects"
+          onMouseEnter={playHover}
+          onClick={playClick}
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 group cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-150 group-hover:-translate-x-1" />
@@ -150,7 +154,11 @@ export function ProjectDetailClient({
         </span>
         <div className="flex flex-wrap gap-2 pt-1">
           {project.techStack.map((tech) => (
-            <span key={tech} className="skill-pill">
+            <span
+              key={tech}
+              onMouseEnter={playHover}
+              className="skill-pill"
+            >
               <TechIcon name={tech} className="w-3.5 h-3.5" />
               <span>{tech}</span>
             </span>

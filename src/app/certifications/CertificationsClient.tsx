@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Award } from "lucide-react";
 import { certifications } from "@/lib/data";
+import { useUISound } from "@/context/SoundContext";
 
 function GoogleLogo({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -44,6 +45,7 @@ function DICTLogo({ className = "w-5 h-5" }: { className?: string }) {
 }
 
 export function CertificationsClient() {
+  const { playHover, playClick } = useUISound();
   const getIssuerLogo = (cert: (typeof certifications)[0]) => {
     if (cert.tag === "GOOGLE" || cert.issuer.includes("Google")) {
       return <GoogleLogo />;
@@ -64,14 +66,14 @@ export function CertificationsClient() {
     }
     if (cert.tag === "DICT" || cert.issuer.includes("DICT") || cert.issuer.includes("Information and Communications")) {
       return (
-        <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+        <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
           DICT
         </span>
       );
     }
     return (
-      <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-muted-subtle text-muted-foreground border border-border-hairline">
-        CREDENTIAL
+      <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+        CERTIFIED
       </span>
     );
   };
@@ -82,6 +84,8 @@ export function CertificationsClient() {
       <div className="space-y-2">
         <Link
           href="/"
+          onMouseEnter={playHover}
+          onClick={playClick}
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
@@ -108,6 +112,7 @@ export function CertificationsClient() {
         {certifications.map((cert) => (
           <div
             key={cert.name}
+            onMouseEnter={playHover}
             className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 hover:border-border-hairline transition-all duration-200 flex flex-col justify-between group shadow-2xs relative overflow-hidden"
           >
             <div className="space-y-3.5">

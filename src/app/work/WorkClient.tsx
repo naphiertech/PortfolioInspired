@@ -10,8 +10,10 @@ import {
   FileText,
 } from "lucide-react";
 import { TechIcon } from "@/components/TechIcon";
+import { useUISound } from "@/context/SoundContext";
 
 export function WorkClient() {
+  const { playHover, playClick } = useUISound();
   const capabilities = [
     "Responsive web applications",
     "Clean user interfaces",
@@ -37,6 +39,8 @@ export function WorkClient() {
       <div className="space-y-4">
         <Link
           href="/"
+          onMouseEnter={playHover}
+          onClick={playClick}
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 group cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-150 group-hover:-translate-x-1" />
@@ -146,7 +150,11 @@ export function WorkClient() {
           </span>
           <div className="flex flex-wrap gap-2">
             {coreStack.map((tech) => (
-              <span key={tech} className="skill-pill">
+              <span
+                key={tech}
+                onMouseEnter={playHover}
+                className="skill-pill"
+              >
                 <TechIcon name={tech} className="w-3.5 h-3.5" />
                 <span>{tech}</span>
               </span>

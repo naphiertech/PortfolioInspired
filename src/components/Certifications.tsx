@@ -4,6 +4,7 @@ import React from "react";
 import { ExternalLink, Award } from "lucide-react";
 import { certifications } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
+import { useUISound } from "@/context/SoundContext";
 
 function GoogleLogo({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -45,6 +46,7 @@ function DICTLogo({ className = "w-5 h-5" }: { className?: string }) {
 
 export function Certifications() {
   const featuredCerts = certifications.slice(0, 3);
+  const { playHover } = useUISound();
 
   const getIssuerLogo = (cert: (typeof certifications)[0]) => {
     if (cert.tag === "GOOGLE" || cert.issuer.includes("Google")) {
@@ -97,6 +99,7 @@ export function Certifications() {
           return (
             <div
               key={cert.name}
+              onMouseEnter={playHover}
               className="relative p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 hover:border-border-hairline transition-all duration-200 group flex flex-col justify-between overflow-hidden shadow-2xs"
             >
               {/* Subtle decorative curve in dark mode */}

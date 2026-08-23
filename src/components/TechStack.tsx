@@ -1,7 +1,10 @@
+"use client";
+
 import React from "react";
 import { techSections } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
+import { useUISound } from "@/context/SoundContext";
 
 // Map section titles to code-syntax category tags
 const categorySyntaxMap: Record<string, string> = {
@@ -14,6 +17,7 @@ const categorySyntaxMap: Record<string, string> = {
 const featuredCategoryTitles = ["Frontend", "Backend", "Databases & Cloud"];
 
 export function TechStack() {
+  const { playHover } = useUISound();
   const displayedSections = techSections.filter((sec) =>
     featuredCategoryTitles.includes(sec.title),
   );
@@ -51,6 +55,7 @@ export function TechStack() {
                 {section.items.map((tech) => (
                   <div
                     key={tech}
+                    onMouseEnter={playHover}
                     className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-surface/50 border border-border-hairline hover:border-border-hairline hover:bg-surface text-ink text-xs font-sans transition-colors cursor-default shadow-2xs group"
                   >
                     <TechIcon

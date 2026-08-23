@@ -93,10 +93,11 @@ export function ProjectsPageClient() {
                 </p>
 
                 {/* Tech Stack Pills with TechIcon */}
-                <div className="flex flex-wrap gap-1.5 pt-1.5">
+                <div className="flex flex-wrap gap-1.5 pt-1.5 relative z-20">
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
+                      onMouseEnter={playHover}
                       className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground bg-muted-subtle px-2 py-0.5 rounded-[4px] border border-border-hairline"
                     >
                       <TechIcon name={tag} className="w-3 h-3 text-muted-foreground" />

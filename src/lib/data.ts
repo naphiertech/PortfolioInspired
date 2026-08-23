@@ -341,15 +341,108 @@ export const fullProjects: FullProjectItem[] = [
     status: "live",
     featured: true,
   },
+  {
+    slug: "mkb-ridertrack",
+    title: "MKBRiderTrack",
+    category: "Workforce & Logistics Platform",
+    year: "2026",
+    image: "/projects/mkb.png",
+    color: "bg-[#1a1410]",
+    role: "Lead Fullstack Developer",
+    client: "Capstone Project",
+    tags: [
+      "React 18",
+      "Next.js",
+      "Supabase",
+      "TypeScript",
+      "PostgreSQL",
+      "Tailwind CSS",
+      "Leaflet",
+    ],
+    overview:
+      "MKBRiderTrack is an enterprise workforce operations and rider logistics system combining biometric face verification, GPS geofencing, parcel delivery auditing, role-based portals (Admin, HR, Payroll, Rider), and automated payroll snapshotting.",
+    fullDescription:
+      "MKBRiderTrack is a comprehensive full-stack workforce and fleet logistics management platform built for delivery rider operations. Backed by Supabase PostgreSQL with strict Row Level Security (RLS), it unifies role-based portals for Admins, HR managers, Payroll accountants, and Field Riders. Features include real-time biometric facial recognition and GPS geofence validation for shift attendance, offline-first sync with Dexie.js, interactive zone mapping with Leaflet, immutable payroll snapshots with automated formula audits, and a modern Next.js landing portal.",
+    gallery: [
+      "/projects/mkb-1.png",
+      "/projects/mkb-2.png",
+    ],
+    designScreens: [
+      "/projects/mkb.png",
+      "/projects/mkb-1.png",
+      "/projects/mkb-2.png",
+    ],
+    techStack: [
+      "React 18",
+      "Next.js 16",
+      "Supabase",
+      "TypeScript",
+      "PostgreSQL",
+      "Tailwind CSS",
+      "Leaflet",
+      "Dexie.js",
+      "Framer Motion",
+      "Recharts",
+      "Vitest",
+    ],
+    features: [
+      "Role-based portal architecture with isolated dashboards for Admin, HR, Payroll, and Riders",
+      "Biometric facial verification & GPS geofencing validation for attendance clock-ins",
+      "Real-time fleet monitoring, route history replay, and operational zone boundary tracking with Leaflet",
+      "Offline-first synchronization with Dexie.js for uninterrupted field logging in low-connectivity areas",
+      "Automated payroll calculations with immutable finalized snapshots and payslip generation",
+      "Row-Level Security (RLS), real-time subscriptions, and private document storage on Supabase",
+    ],
+    technicalDecisions: [
+      {
+        title: "Why offline-first IndexedDB (Dexie.js) synchronization for riders?",
+        description:
+          "Delivery riders frequently operate in low-connectivity environments. Dexie.js stores attendance and GPS check-ins locally in an idempotent queue, automatically syncing and resolving conflicts with Supabase once network connectivity is restored.",
+      },
+      {
+        title: "Why multi-role Row Level Security (RLS) over API-layer authorization?",
+        description:
+          "Enforcing security directly at the PostgreSQL layer via Supabase RLS ensures zero unauthorized cross-tenant data leakage between Riders, HR staff, and Payroll accountants regardless of client-side queries.",
+      },
+      {
+        title: "Why immutable payroll snapshots?",
+        description:
+          "To maintain regulatory auditability and prevent retroactive calculation discrepancies, finalized payroll cycles store point-in-time rate matrices and immutable attendance data snapshots.",
+      },
+    ],
+    learnings: [
+      {
+        title: "Real-time geospatial state requires strict throttle & boundary isolation",
+        description:
+          "Tracking dozens of active riders simultaneously required tuning Leaflet coordinate updates and spatial turf.js computations to maintain 60 FPS UI rendering without main-thread blocking.",
+      },
+      {
+        title: "Designing enterprise-grade multi-role permission matrices",
+        description:
+          "Structuring clean boundary transitions across 4 distinct operational roles reinforced the importance of atomic permission sets and resilient database migrations.",
+      },
+    ],
+    github: "https://github.com/naphiertech/MKB-supabase",
+    status: "wip",
+    featured: true,
+  },
 ];
 
 export const currentBuild: CurrentBuild = {
-  title: "Personal Portfolio & System Refinements",
+  title: "MKBRiderTrack",
   description:
-    "Refining project case studies, interaction architecture, and tech stack relationship indexing.",
-  status: "improving",
+    "Building a full-stack workforce operations and rider logistics platform with biometric attendance, GPS geofencing, parcel auditing, and automated payroll snapshots.",
+  projectSlug: "mkb-ridertrack",
+  status: "building",
   updatedAt: "Aug 2026",
-  technologies: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS"],
+  technologies: [
+    "React 18",
+    "Next.js 16",
+    "Supabase",
+    "TypeScript",
+    "PostgreSQL",
+    "Tailwind CSS",
+  ],
 };
 
 export function normalizeTechName(name: string): string {

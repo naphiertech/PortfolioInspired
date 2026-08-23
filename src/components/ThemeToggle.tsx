@@ -6,7 +6,7 @@ import { useUISound } from "@/context/SoundContext";
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const { playTheme, playHover } = useUISound();
+  const { playTheme } = useUISound();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -60,7 +60,6 @@ export function ThemeToggle() {
         return (
           <button
             key={t.key}
-            onMouseEnter={playHover}
             onClick={(e) => {
               playTheme();
               setTheme(t.key, e);

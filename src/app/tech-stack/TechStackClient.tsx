@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { techSections } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
-import { useUISound } from "@/context/SoundContext";
 
 const categorySyntaxMap: Record<string, string> = {
   Frontend: "<frontend/>",
@@ -17,7 +16,6 @@ const categorySyntaxMap: Record<string, string> = {
 };
 
 export function TechStackClient() {
-  const { playHover, playClick } = useUISound();
   const totalSkills = techSections.reduce((acc, cat) => acc + cat.items.length, 0);
 
   return (
@@ -26,8 +24,6 @@ export function TechStackClient() {
       <div className="mb-10 space-y-2">
         <Link
           href="/"
-          onMouseEnter={playHover}
-          onClick={playClick}
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
@@ -72,11 +68,7 @@ export function TechStackClient() {
 
               <div className="flex flex-wrap gap-2">
                 {category.items.map((item) => (
-                  <span
-                    key={item}
-                    onMouseEnter={playHover}
-                    className="skill-pill"
-                  >
+                  <span key={item} className="skill-pill">
                     <TechIcon name={item} className="w-3.5 h-3.5" />
                     <span>{item}</span>
                   </span>

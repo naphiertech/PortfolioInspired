@@ -5,7 +5,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { useUISound } from "@/context/SoundContext";
 
 export function SoundToggle() {
-  const { isSoundEnabled, toggleSound, playClick, playHover } = useUISound();
+  const { isSoundEnabled, toggleSound, playClick } = useUISound();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -27,7 +27,6 @@ export function SoundToggle() {
     <button
       type="button"
       onClick={handleClick}
-      onMouseEnter={playHover}
       className={`h-6 px-2 rounded-[6px] bg-surface border border-border-hairline shadow-xs font-mono text-[10px] inline-flex items-center gap-1.5 transition-colors cursor-pointer select-none ${
         isSoundEnabled
           ? "text-muted-foreground hover:text-ink hover:border-muted-foreground/40"

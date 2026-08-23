@@ -72,7 +72,6 @@ export function RecentProjects() {
                 {project.tags.slice(0, 4).map((tech) => (
                   <span
                     key={tech}
-                    onMouseEnter={playHover}
                     className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] bg-muted-subtle border border-border-hairline text-muted-foreground text-[11px] font-sans font-medium"
                   >
                     <TechIcon name={tech} className="w-3 h-3 flex-shrink-0" />

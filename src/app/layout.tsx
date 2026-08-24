@@ -5,29 +5,80 @@ import { SoundProvider } from "@/context/SoundContext";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
+import {
+  SITE_URL,
+  SITE_DEFAULT_TITLE,
+  SITE_TITLE_TEMPLATE,
+  SITE_DEFAULT_DESCRIPTION,
+  SITE_NAME,
+  AUTHOR_INFO,
+} from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://naphiertech.vercel.app"),
-  title: "Naphier Awalie | IT Student & Full-Stack Developer",
-  description:
-    "Personal portfolio of Naphier Awalie, an IT Student and Full-Stack Developer crafting high-performance, accessible, and clean digital solutions.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_DEFAULT_TITLE,
+    template: SITE_TITLE_TEMPLATE,
+  },
+  description: SITE_DEFAULT_DESCRIPTION,
+  authors: [{ name: AUTHOR_INFO.name, url: SITE_URL }],
+  creator: AUTHOR_INFO.name,
   keywords: [
     "Naphier Awalie",
     "IT Student",
     "Full-Stack Developer",
     "Software Engineer",
-    "Portfolio",
+    "Developer Portfolio",
     "Zamboanga City",
     "ZPPSU",
     "Next.js",
     "TypeScript",
     "React",
+    "Supabase",
+    "Tailwind CSS",
   ],
+  alternates: {
+    canonical: "./",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_DEFAULT_TITLE,
+    description: SITE_DEFAULT_DESCRIPTION,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} — Developer Portfolio`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_DEFAULT_TITLE,
+    description: SITE_DEFAULT_DESCRIPTION,
+    creator: "@naphiertech",
+    images: ["/og-image.png"],
+  },
   manifest: "/icon/site.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Naphier Awalie",
+    title: SITE_NAME,
   },
   icons: {
     icon: [
@@ -37,6 +88,11 @@ export const metadata: Metadata = {
     ],
     apple: "/icon/apple-touch-icon.png",
   },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      }
+    : undefined,
 };
 
 export const viewport: Viewport = {

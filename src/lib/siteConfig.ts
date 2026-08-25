@@ -7,11 +7,11 @@ export const SITE_URL = "https://naphiernode.vercel.app";
 
 export const SITE_NAME = "Naphier Awalie";
 export const SITE_TAGLINE = "IT Student & Full-Stack Developer";
-export const SITE_DEFAULT_TITLE = "Naphier Awalie — Developer Portfolio";
+export const SITE_DEFAULT_TITLE = "Naphier Awalie — Full-Stack Developer";
 export const SITE_TITLE_TEMPLATE = "%s | Naphier Awalie";
 
 export const SITE_DEFAULT_DESCRIPTION =
-  "Personal portfolio of Naphier Awalie, an IT student and full-stack developer in Zamboanga City crafting high-performance web applications, clean architectures, and modern digital interfaces.";
+  "Hi, I’m Naphier Awalie, an IT student and full-stack developer who enjoys turning ideas into practical web applications with clean interfaces, thoughtful user experiences, and reliable functionality.";
 
 export const SOCIAL_PROFILES = {
   github: "https://github.com/naphiertech",

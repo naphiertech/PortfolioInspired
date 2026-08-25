@@ -8,7 +8,7 @@ export function AboutSection() {
 
       <div className="font-sans text-[15px] text-muted-foreground leading-[26px] space-y-4">
         <p>
-          I&apos;m <span className="text-ink font-medium">Naphier Awalie</span>, an IT student and developer based in <span className="text-ink font-medium">Zamboanga City, Philippines</span>. I enjoy building practical web applications with <span className="text-ink font-medium">React</span>, <span className="text-ink font-medium">Next.js</span>, <span className="text-ink font-medium">TypeScript</span>, <span className="text-ink font-medium">Node.js</span>, and <span className="text-ink font-medium">Supabase</span>, with a strong focus on clean interfaces, responsive design, and smooth user experiences.
+          I&apos;m <span className="text-ink font-medium">Naphier Awalie</span>, an IT student and full-stack developer who enjoys turning ideas into practical web applications with clean interfaces, thoughtful user experiences, and reliable functionality.
         </p>
 
         <p>

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Naphier Awalie — Developer Portfolio";
+export const alt = "Naphier Awalie — Full-Stack Developer";
 export const size = {
   width: 1200,
   height: 630,

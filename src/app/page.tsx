@@ -20,10 +20,6 @@ export default function Home() {
         "@id": `${SITE_URL}/#website`,
         url: `${SITE_URL}/`,
         name: SITE_NAME,
-        alternateName: [
-          "Naphier",
-          "naphiernode.vercel.app",
-        ],
         description: SITE_DEFAULT_DESCRIPTION,
         publisher: {
           "@id": `${SITE_URL}/#person`,

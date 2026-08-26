@@ -2,8 +2,15 @@
 
 import React from "react";
 import { ExternalLink, Award } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { certifications } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
+import {
+  sectionContainerVariants,
+  staggeredGridVariants,
+  gridItemVariants,
+  contentBlockVariants,
+} from "@/lib/motion";
 
 function GoogleLogo({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -45,6 +52,7 @@ function DICTLogo({ className = "w-5 h-5" }: { className?: string }) {
 
 export function Certifications() {
   const featuredCerts = certifications.slice(0, 3);
+  const shouldReduceMotion = useReducedMotion();
 
   const getIssuerLogo = (cert: (typeof certifications)[0]) => {
     if (cert.tag === "GOOGLE" || cert.issuer.includes("Google")) {
@@ -79,7 +87,14 @@ export function Certifications() {
   };
 
   return (
-    <section className="w-full space-y-6 select-none mb-16" aria-label="Certifications">
+    <motion.section
+      initial={shouldReduceMotion ? false : "hidden"}
+      whileInView={shouldReduceMotion ? undefined : "visible"}
+      viewport={{ once: true, amount: 0.15 }}
+      variants={shouldReduceMotion ? undefined : sectionContainerVariants}
+      className="w-full space-y-6 select-none mb-16"
+      aria-label="Certifications"
+    >
       {/* Consistent Section Header */}
       <SectionHeader
         label="CERTIFICATIONS"
@@ -90,13 +105,17 @@ export function Certifications() {
       />
 
       {/* 3-Column Card Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-4.5">
+      <motion.div
+        variants={shouldReduceMotion ? undefined : staggeredGridVariants}
+        className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-4.5"
+      >
         {featuredCerts.map((cert) => {
           const isInteractive = cert.href && cert.href !== "#";
 
           return (
-            <div
+            <motion.div
               key={cert.name}
+              variants={shouldReduceMotion ? undefined : gridItemVariants}
               className="relative p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 hover:border-border-hairline transition-all duration-200 group flex flex-col justify-between overflow-hidden shadow-2xs"
             >
               {/* Subtle decorative curve in dark mode */}
@@ -154,21 +173,24 @@ export function Certifications() {
                   <ExternalLink className="w-3.5 h-3.5 text-muted-foreground/20" />
                 )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
 
       {/* Bottom Quote / Tagline */}
-      <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
+      <motion.div
+        variants={shouldReduceMotion ? undefined : contentBlockVariants}
+        className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground"
+      >
         <div className="border-l-2 border-border-hairline pl-3 italic text-muted-foreground/90">
           “Certifications are milestones, but real learning never stops.”
         </div>
         <span className="font-mono text-[11px] text-muted-foreground/60 tracking-wider font-medium sm:text-right">
           Keep Building
         </span>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
 

@@ -686,3 +686,69 @@ export const memberOf = [
     href: "https://developers.google.com/community/gdg",
   },
 ];
+
+export interface CapabilityGroup {
+  id: string;
+  items: string[];
+}
+
+export interface ProfileInfoData {
+  currentFocus: {
+    title: string;
+    description: string;
+    terminalLine: string;
+  };
+  whatIBuild: {
+    title: string;
+    groups: CapabilityGroup[];
+  };
+  howIWork: {
+    title: string;
+    principles: string[];
+  };
+  quickFacts: {
+    label: string;
+    value: string;
+  }[];
+}
+
+export const profileInfo: ProfileInfoData = {
+  currentFocus: {
+    title: "Current Focus",
+    description:
+      "Building accessible, performant, and polished digital experiences while strengthening real-world full-stack skills.",
+    terminalLine: "> learn · build · iterate · ship",
+  },
+  whatIBuild: {
+    title: "What I Build",
+    groups: [
+      {
+        id: "01",
+        items: ["Full-Stack Web Apps", "Responsive Interfaces"],
+      },
+      {
+        id: "02",
+        items: ["Dashboards & Portals", "APIs & Integrations"],
+      },
+      {
+        id: "03",
+        items: ["UI Systems & Tooling", "Database Tools"],
+      },
+    ],
+  },
+  howIWork: {
+    title: "How I Work",
+    principles: [
+      "Clean architecture & modularity",
+      "Thoughtful, accessible interfaces",
+      "Fast iteration & continuous learning",
+    ],
+  },
+  quickFacts: [
+    { label: "OPEN TO", value: "Junior Roles · Internships · Freelance" },
+    { label: "WORK SETUP", value: "Remote-friendly · Hybrid" },
+    { label: "PROJECT STYLE", value: "Product-focused web applications" },
+    { label: "CORE FOCUS", value: "UI Engineering + Full-Stack Architecture" },
+    { label: "INTERESTS", value: "SaaS · Dashboards · Developer Tools" },
+  ],
+};

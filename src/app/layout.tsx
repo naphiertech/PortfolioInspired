@@ -13,6 +13,7 @@ import {
   SITE_NAME,
   AUTHOR_INFO,
 } from "@/lib/siteConfig";
+import { BUILD_INFO } from "@/lib/buildInfo";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -139,9 +140,15 @@ export default function RootLayout({
               <main className="w-full">{children}</main>
 
               {/* Minimalist Tech Footer */}
-              <footer className="w-full mt-20 pt-8 border-t border-border-divider text-center">
-                <p className="text-xs font-mono text-muted-foreground">
+              <footer className="w-full mt-20 pt-8 border-t border-border-divider flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
+                <p>
                   &copy; 2026 Naphier Awalie. Designed with precision & craft.
+                </p>
+                <p className="flex items-center gap-1.5 text-muted-foreground/80">
+                  <span>Portfolio build ·</span>
+                  <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
+                    {BUILD_INFO.formattedDate}
+                  </time>
                 </p>
               </footer>
             </div>

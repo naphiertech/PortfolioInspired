@@ -30,11 +30,10 @@ export function ProjectStatusBadge({
       } ${className}`}
     >
       <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
-        {status === "live" && (
-          <span className="animate-status-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-        )}
         <span
-          className={`relative inline-flex rounded-full h-1.5 w-1.5 ${config.dotClass}`}
+          className={`relative inline-flex rounded-full h-1.5 w-1.5 ${config.dotClass} ${
+            status === "live" ? "animate-status-breathe" : ""
+          }`}
         />
       </span>
       <span>{config.label}</span>

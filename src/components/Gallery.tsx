@@ -4,16 +4,19 @@ import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { galleryImages } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
 import { useScrollLock } from "@/lib/scrollLock";
 import { useUISound } from "@/context/SoundContext";
+import { sectionContainerVariants, contentBlockVariants } from "@/lib/motion";
 
 export function Gallery() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
   const { playOpen, playClose, playClick } = useUISound();
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
@@ -61,7 +64,14 @@ export function Gallery() {
   }, [activeIdx, playClose, playClick]);
 
   return (
-    <section className="w-full space-y-4 select-none mb-16" aria-label="Moments and Events">
+    <motion.section
+      initial={shouldReduceMotion ? false : "hidden"}
+      whileInView={shouldReduceMotion ? undefined : "visible"}
+      viewport={{ once: true, amount: 0.2 }}
+      variants={shouldReduceMotion ? undefined : sectionContainerVariants}
+      className="w-full space-y-4 select-none mb-16"
+      aria-label="Moments and Events"
+    >
       {/* Consistent Section Header */}
       <SectionHeader
         label="MOMENTS-AND-EVENTS"
@@ -87,7 +97,8 @@ export function Gallery() {
       />
 
       {/* Horizontal Strip */}
-      <div
+      <motion.div
+        variants={shouldReduceMotion ? undefined : contentBlockVariants}
         ref={scrollContainerRef}
         className="flex gap-3 overflow-x-auto scrollbar-hide py-1"
       >
@@ -109,7 +120,7 @@ export function Gallery() {
             />
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Lightbox Modal */}
       {mounted &&
@@ -186,7 +197,7 @@ export function Gallery() {
           </div>,
           document.body,
         )}
-    </section>
+    </motion.section>
   );
 }
 

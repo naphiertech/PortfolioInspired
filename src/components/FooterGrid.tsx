@@ -1,17 +1,55 @@
+"use client";
+
 import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { memberOf } from "@/lib/data";
+import {
+  sectionContainerVariants,
+  staggeredGridVariants,
+  gridItemVariants,
+  sectionLineVariants,
+  sectionLabelVariants,
+} from "@/lib/motion";
 
 export function FooterGrid() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className="w-full space-y-10 select-none mb-10 pt-6 border-t border-border-divider" aria-label="Connect and Memberships">
+    <motion.section
+      initial={shouldReduceMotion ? false : "hidden"}
+      whileInView={shouldReduceMotion ? undefined : "visible"}
+      viewport={{ once: true, amount: 0.15 }}
+      variants={shouldReduceMotion ? undefined : sectionContainerVariants}
+      className="w-full space-y-8 select-none mb-10 pt-6"
+      aria-label="Connect and Memberships"
+    >
+      {/* Top Divider Hairline Draw */}
+      <motion.div
+        variants={shouldReduceMotion ? undefined : sectionLineVariants}
+        className="h-[1px] w-full bg-border-divider origin-left"
+      />
+
       {/* 2-Column Matrix for Lower Half Sections */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10">
+      <motion.div
+        variants={shouldReduceMotion ? undefined : staggeredGridVariants}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10"
+      >
         {/* Column 1: Memberships */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
-            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+        <motion.div
+          variants={shouldReduceMotion ? undefined : gridItemVariants}
+          className="space-y-3"
+        >
+          <div className="flex items-center gap-2 pb-1">
+            <motion.h3
+              variants={shouldReduceMotion ? undefined : sectionLabelVariants}
+              className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold"
+            >
               &lt;MEMBERSHIPS/&gt;
-            </h3>
+            </motion.h3>
+            <motion.div
+              variants={shouldReduceMotion ? undefined : sectionLineVariants}
+              className="h-[1px] flex-1 bg-border-hairline/30 origin-left"
+            />
           </div>
 
           <div className="space-y-2">
@@ -32,14 +70,24 @@ export function FooterGrid() {
               </a>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Column 2: Social Links */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
-            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+        <motion.div
+          variants={shouldReduceMotion ? undefined : gridItemVariants}
+          className="space-y-3"
+        >
+          <div className="flex items-center gap-2 pb-1">
+            <motion.h3
+              variants={shouldReduceMotion ? undefined : sectionLabelVariants}
+              className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold"
+            >
               &lt;SOCIAL-CHANNELS/&gt;
-            </h3>
+            </motion.h3>
+            <motion.div
+              variants={shouldReduceMotion ? undefined : sectionLineVariants}
+              className="h-[1px] flex-1 bg-border-hairline/30 origin-left"
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -93,14 +141,24 @@ export function FooterGrid() {
               </span>
             </a>
           </div>
-        </div>
+        </motion.div>
 
         {/* Column 3: Speaking & Collaboration */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
-            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+        <motion.div
+          variants={shouldReduceMotion ? undefined : gridItemVariants}
+          className="space-y-3"
+        >
+          <div className="flex items-center gap-2 pb-1">
+            <motion.h3
+              variants={shouldReduceMotion ? undefined : sectionLabelVariants}
+              className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold"
+            >
               &lt;SPEAKING-AND-EVENTS/&gt;
-            </h3>
+            </motion.h3>
+            <motion.div
+              variants={shouldReduceMotion ? undefined : sectionLineVariants}
+              className="h-[1px] flex-1 bg-border-hairline/30 origin-left"
+            />
           </div>
 
           <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
@@ -114,14 +172,24 @@ export function FooterGrid() {
             <span>Get in touch</span>
             <span>-&gt;</span>
           </a>
-        </div>
+        </motion.div>
 
         {/* Column 4: Quick Contact */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 pb-1 border-b border-border-hairline/30">
-            <h3 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+        <motion.div
+          variants={shouldReduceMotion ? undefined : gridItemVariants}
+          className="space-y-3"
+        >
+          <div className="flex items-center gap-2 pb-1">
+            <motion.h3
+              variants={shouldReduceMotion ? undefined : sectionLabelVariants}
+              className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold"
+            >
               &lt;DIRECT-CONTACT/&gt;
-            </h3>
+            </motion.h3>
+            <motion.div
+              variants={shouldReduceMotion ? undefined : sectionLineVariants}
+              className="h-[1px] flex-1 bg-border-hairline/30 origin-left"
+            />
           </div>
 
           <div className="space-y-2 font-mono text-xs">
@@ -143,9 +211,9 @@ export function FooterGrid() {
               <span className="text-muted-foreground/60 text-[11px]">download</span>
             </a>
           </div>
-        </div>
-      </div>
-    </section>
+        </motion.div>
+      </motion.div>
+    </motion.section>
   );
 }
 

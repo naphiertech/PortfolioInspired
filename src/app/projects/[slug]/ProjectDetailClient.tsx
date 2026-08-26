@@ -2,11 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, ExternalLink, ArrowRight, Layers } from "lucide-react";
 import { FullProjectItem } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
+import { ProjectMedia } from "@/components/ProjectMedia";
 import { useUISound } from "@/context/SoundContext";
 
 interface ProjectDetailClientProps {
@@ -114,19 +114,18 @@ export function ProjectDetailClient({
         )}
       </div>
 
-      {/* Prominent Primary Cover Screenshot */}
+      {/* Prominent Primary Cover Screenshot with Drafting Reveal & Subtle Depth */}
       <div className="cad-project-card group relative w-full aspect-video rounded-lg overflow-hidden bg-surface border border-border-hairline shadow-md">
         <div className="cad-reticle cad-reticle--tl" />
         <div className="cad-reticle cad-reticle--tr" />
         <div className="cad-reticle cad-reticle--br" />
         <div className="cad-reticle cad-reticle--bl" />
-        <Image
+        <ProjectMedia
           src={project.image}
           alt={`${project.title} primary preview`}
-          fill
           priority
           sizes="(max-width: 768px) 100vw, 700px"
-          className="object-cover"
+          className="border-0 rounded-none"
         />
       </div>
 
@@ -204,13 +203,11 @@ export function ProjectDetailClient({
                 <div className="cad-reticle cad-reticle--tr" />
                 <div className="cad-reticle cad-reticle--br" />
                 <div className="cad-reticle cad-reticle--bl" />
-                <Image
+                <ProjectMedia
                   src={screen}
                   alt={`${project.title} screenshot ${idx + 1}`}
-                  fill
-                  loading="lazy"
                   sizes="(max-width: 640px) 100vw, 360px"
-                  className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                  className="border-0 rounded-none"
                 />
               </div>
             ))}

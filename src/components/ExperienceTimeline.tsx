@@ -10,10 +10,19 @@ import {
   Terminal,
   ArrowUpRight,
 } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { experiences } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
+import {
+  sectionContainerVariants,
+  timelineContainerVariants,
+  milestoneVariants,
+  railVariants,
+} from "@/lib/motion";
 
 export function ExperienceTimeline() {
+  const shouldReduceMotion = useReducedMotion();
+
   const getIcon = (role: string) => {
     if (role.includes("Full-Stack")) {
       return <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />;
@@ -34,14 +43,21 @@ export function ExperienceTimeline() {
   };
 
   return (
-    <section className="w-full space-y-6 select-none mb-16" aria-label="Experience Timeline">
+    <motion.section
+      initial={shouldReduceMotion ? false : "hidden"}
+      whileInView={shouldReduceMotion ? undefined : "visible"}
+      viewport={{ once: true, amount: 0.12 }}
+      variants={shouldReduceMotion ? undefined : sectionContainerVariants}
+      className="w-full space-y-6 select-none mb-16"
+      aria-label="Experience Timeline"
+    >
       {/* Consistent Section Header */}
       <SectionHeader
         label="EXPERIENCE-TIMELINE"
         description="A timeline of my growth, from my first line of code to where I am today."
         actionComponent={
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border-hairline text-muted-foreground font-mono text-[10px] font-medium shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-status-breathe" />
             <span>MY JOURNEY</span>
           </div>
         }
@@ -50,29 +66,42 @@ export function ExperienceTimeline() {
 
       {/* Vertical Milestone Timeline */}
       <div className="relative pl-0 sm:pl-2 pb-4 sm:pb-8">
-        <div className="flex flex-col">
+        <motion.div
+          variants={shouldReduceMotion ? undefined : timelineContainerVariants}
+          className="flex flex-col"
+        >
           {experiences.map((exp, index) => {
             const isCurrent = exp.isCurrent;
             const isLast = index === experiences.length - 1;
             const yearLabel = exp.yearNode || (isCurrent ? "PRESENT" : exp.year.split(" ")[0]);
 
             return (
-              <div
+              <motion.div
                 key={`${exp.role}-${exp.year}`}
+                variants={shouldReduceMotion ? undefined : milestoneVariants}
                 className="relative flex items-start gap-2.5 sm:gap-5 group pb-3.5 sm:pb-3 last:pb-0"
               >
                 {/* Left Rail & Timeline Node (Compact 48px on mobile, 80px on desktop) */}
                 <div className="flex flex-col items-center flex-shrink-0 w-12 sm:w-20 pt-2.5 sm:pt-3 relative self-stretch">
-                  {/* Continuous Vertical Rail Line */}
+                  {/* Continuous Vertical Rail Line with progressive reveal */}
                   {index === 0 ? (
                     // Present: rail starts behind the node circle and runs to bottom of row
-                    <div className="absolute top-[32px] sm:top-[36px] bottom-0 w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none" />
+                    <motion.div
+                      variants={shouldReduceMotion ? undefined : railVariants}
+                      className="absolute top-[32px] sm:top-[36px] bottom-0 w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none origin-top"
+                    />
                   ) : isLast ? (
                     // 2022: rail enters from top and cleanly terminates behind the 2022 node
-                    <div className="absolute top-0 h-[32px] sm:h-[36px] w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none" />
+                    <motion.div
+                      variants={shouldReduceMotion ? undefined : railVariants}
+                      className="absolute top-0 h-[32px] sm:h-[36px] w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none origin-top"
+                    />
                   ) : (
                     // Intermediate years (2025, 2024, 2023): continuous top-to-bottom rail
-                    <div className="absolute top-0 bottom-0 w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none" />
+                    <motion.div
+                      variants={shouldReduceMotion ? undefined : railVariants}
+                      className="absolute top-0 bottom-0 w-[1px] bg-border-hairline left-1/2 -translate-x-1/2 z-0 pointer-events-none origin-top"
+                    />
                   )}
 
                   {/* Year Label with background mask so rail passes cleanly behind */}
@@ -90,12 +119,14 @@ export function ExperienceTimeline() {
                   <div className="relative flex items-center justify-center z-10">
                     {isCurrent ? (
                       <div className="relative flex items-center justify-center">
-                        <span className="animate-ping absolute inline-flex h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-brand/20 opacity-75" />
-                        <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-border-hairline bg-surface flex items-center justify-center shadow-2xs">
+                        {/* Soft expanding ring indicator (2.5 - 3.5s, no movement on the core node) */}
+                        <span className="animate-status-ring absolute inline-flex h-4 w-4 rounded-full bg-brand/35 pointer-events-none" />
+                        <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border border-border-hairline bg-surface flex items-center justify-center shadow-2xs relative z-10">
                           <div className="w-1.5 h-1.5 rounded-full bg-brand" />
                         </div>
                       </div>
                     ) : (
+                      /* Past nodes (2025, 2024, 2023, 2022) remain 100% static */
                       <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-surface border border-border-hairline shadow-2xs group-hover:border-muted-foreground/60 transition-colors" />
                     )}
                   </div>
@@ -165,7 +196,7 @@ export function ExperienceTimeline() {
                             </h3>
                             {isCurrent && (
                               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[9px] font-medium leading-none flex-shrink-0">
-                                <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="w-1 h-1 rounded-full bg-emerald-500 animate-status-breathe" />
                                 Current
                               </span>
                             )}
@@ -215,7 +246,7 @@ export function ExperienceTimeline() {
                             </h3>
                             {isCurrent && (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-medium leading-none">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-breathe" />
                                 Current
                               </span>
                             )}
@@ -254,12 +285,12 @@ export function ExperienceTimeline() {
                     </div>
                   )}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

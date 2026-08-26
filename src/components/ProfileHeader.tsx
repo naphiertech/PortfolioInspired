@@ -5,6 +5,8 @@ import NextImage from "next/image";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
 import { GithubContributions } from "./GithubContributions";
+import { LocalTime } from "./LocalTime";
+import { ProfileInfoBlock } from "./ProfileInfoBlock";
 
 export function ProfileHeader() {
   const [animationFrame, setAnimationFrame] = useState(0);
@@ -87,8 +89,7 @@ export function ProfileHeader() {
           {/* Live Availability Status Indicator */}
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-status-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400"></span>
+              <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
             </span>
             <span className="text-[11px] font-mono font-medium leading-none">
               Available for work
@@ -159,7 +160,7 @@ export function ProfileHeader() {
           </div>
 
           {/* Handle & Subtitle */}
-          <div className="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1.5">
+          <div className="flex items-center flex-wrap gap-x-3 gap-y-1.5 mt-1.5">
             <a
               href="https://github.com/naphiertech"
               target="_blank"
@@ -191,6 +192,20 @@ export function ProfileHeader() {
                 />
               </svg>
               <span>Zamboanga City, Philippines</span>
+            </div>
+            <span className="text-border-hairline">•</span>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <svg
+                className="w-3.5 h-3.5 text-muted-foreground/70 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 7v5l3 2" />
+              </svg>
+              <LocalTime />
             </div>
           </div>
 
@@ -251,6 +266,9 @@ export function ProfileHeader() {
           <span>GitHub</span>
         </a>
       </div>
+
+      {/* Structured Developer Profile Matrix (Current Focus, Capabilities, Principles, Quick Facts) */}
+      <ProfileInfoBlock />
 
       {/* Real GitHub Contribution Graph */}
       <GithubContributions />

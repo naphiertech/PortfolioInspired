@@ -2,11 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { fullProjects } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
+import { ProjectMedia } from "@/components/ProjectMedia";
 import { useUISound } from "@/context/SoundContext";
 
 export function ProjectsPageClient() {
@@ -64,28 +64,28 @@ export function ProjectsPageClient() {
               <div className="cad-reticle cad-reticle--br pointer-events-none" />
               <div className="cad-reticle cad-reticle--bl pointer-events-none" />
 
-              {/* 16:9 Thumbnail with Grayscale Hover Transition */}
-              <div className="relative aspect-video w-full rounded-[3px] overflow-hidden bg-surface mb-3 border border-border-hairline">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 360px"
-                  className="object-cover opacity-85 grayscale transition-all duration-250 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02]"
-                />
-                {project.status && (
-                  <div className="absolute top-2.5 left-2.5 z-10">
+              {/* 16:9 Thumbnail with Drafting Reveal, Hover Preview, & Pointer Depth */}
+              <ProjectMedia
+                src={project.image}
+                previewSrc={
+                  project.designScreens && project.designScreens.length > 1
+                    ? project.designScreens[1]
+                    : project.gallery?.[0]
+                }
+                alt={project.title}
+                sizes="(max-width: 640px) 100vw, 360px"
+                className="mb-3"
+                category={project.category}
+                badge={
+                  project.status && (
                     <ProjectStatusBadge
                       status={project.status}
                       size="sm"
                       className="bg-page/90 backdrop-blur-sm shadow-sm"
                     />
-                  </div>
-                )}
-                <div className="absolute top-2.5 right-2.5 bg-page/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground border border-border-hairline z-10">
-                  {project.category}
-                </div>
-              </div>
+                  )
+                }
+              />
 
               {/* Title & Metadata */}
               <div className="space-y-2 px-1">

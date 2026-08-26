@@ -59,8 +59,7 @@ export function WorkClient() {
           {/* Availability Status Badge */}
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 self-start sm:self-auto">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-status-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400"></span>
+              <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
             </span>
             <span className="text-[11px] font-mono font-medium leading-none">
               Available for work

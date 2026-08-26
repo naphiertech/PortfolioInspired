@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,8 +10,9 @@ import {
   Cpu,
   Award,
 } from "lucide-react";
-
+import { motion, useReducedMotion } from "framer-motion";
 import { useUISound } from "@/context/SoundContext";
+import { dockSpring, magneticSpring } from "@/lib/motion";
 
 interface NavItem {
   name: string;
@@ -19,9 +20,105 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
+interface NavItemLinkProps {
+  item: NavItem;
+  isActive: boolean;
+  onHover: () => void;
+  onClick: () => void;
+  shouldReduceMotion: boolean | null;
+  isDesktopPointer: boolean;
+}
+
+function NavItemLink({
+  item,
+  isActive,
+  onHover,
+  onClick,
+  shouldReduceMotion,
+  isDesktopPointer,
+}: NavItemLinkProps) {
+  const [offset, setOffset] = useState({ x: 0, y: 0, scale: 1 });
+  const itemRef = useRef<HTMLAnchorElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isDesktopPointer || shouldReduceMotion || !itemRef.current) return;
+    const rect = itemRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    // Ultra-subtle 1-2.5px translation toward pointer
+    const deltaX = (e.clientX - centerX) * 0.12;
+    const deltaY = (e.clientY - centerY) * 0.12;
+    const clampedX = Math.max(-2.5, Math.min(2.5, deltaX));
+    const clampedY = Math.max(-2.5, Math.min(2.5, deltaY));
+    setOffset({ x: clampedX, y: clampedY, scale: 1.03 });
+  };
+
+  const handleMouseLeave = () => {
+    setOffset({ x: 0, y: 0, scale: 1 });
+  };
+
+  return (
+    <Link
+      ref={itemRef}
+      href={item.href}
+      onMouseEnter={onHover}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center gap-1 px-3 py-1 cursor-pointer relative group select-none ${
+        isActive
+          ? "text-ink font-semibold"
+          : "text-muted-foreground hover:text-ink"
+      }`}
+      aria-current={isActive ? "page" : undefined}
+    >
+      {/* Micro-Magnetic Content Wrapper */}
+      <motion.div
+        animate={
+          shouldReduceMotion
+            ? { x: 0, y: 0, scale: 1 }
+            : { x: offset.x, y: offset.y, scale: offset.scale }
+        }
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+        transition={magneticSpring}
+        className="flex flex-col items-center justify-center gap-1 pointer-events-none"
+      >
+        {/* Icon with Active Dot Indicator */}
+        <div className="relative">
+          {item.icon}
+          {isActive && (
+            <motion.span
+              layoutId="dock-active-dot"
+              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand"
+              transition={shouldReduceMotion ? { duration: 0 } : dockSpring}
+            />
+          )}
+        </div>
+
+        {/* Label */}
+        <span className="text-[10px] font-sans leading-none tracking-tight">
+          {item.name}
+        </span>
+      </motion.div>
+    </Link>
+  );
+}
+
 export function NavigationDock() {
   const pathname = usePathname();
   const { playHover, playClick } = useUISound();
+  const shouldReduceMotion = useReducedMotion();
+  const [isDesktopPointer, setIsDesktopPointer] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const media = window.matchMedia("(hover: hover) and (pointer: fine)");
+      setIsDesktopPointer(media.matches);
+      const listener = (e: MediaQueryListEvent) => setIsDesktopPointer(e.matches);
+      media.addEventListener("change", listener);
+      return () => media.removeEventListener("change", listener);
+    }
+  }, []);
 
   const navItems: NavItem[] = [
     {
@@ -63,31 +160,15 @@ export function NavigationDock() {
             : pathname.startsWith(item.href);
 
         return (
-          <Link
+          <NavItemLink
             key={item.name}
-            href={item.href}
-            onMouseEnter={playHover}
+            item={item}
+            isActive={isActive}
+            onHover={playHover}
             onClick={playClick}
-            className={`flex flex-col items-center justify-center gap-1 transition-all duration-150 px-3 py-1 rounded-full cursor-pointer relative group ${
-              isActive
-                ? "text-ink font-semibold"
-                : "text-muted-foreground hover:text-ink"
-            }`}
-            aria-current={isActive ? "page" : undefined}
-          >
-            {/* Icon */}
-            <div className="relative">
-              {item.icon}
-              {isActive && (
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand" />
-              )}
-            </div>
-
-            {/* Label */}
-            <span className="text-[10px] font-sans leading-none tracking-tight">
-              {item.name}
-            </span>
-          </Link>
+            shouldReduceMotion={shouldReduceMotion}
+            isDesktopPointer={isDesktopPointer}
+          />
         );
       })}
     </nav>

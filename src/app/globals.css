@@ -244,7 +244,7 @@
   padding: 10px;
   background: transparent;
   border-radius: 4px;
-  transition: border-color 200ms ease, background-color 200ms ease;
+  transition: border-color 200ms ease, background-color 200ms ease, transform 150ms ease;
 }
 
 .cad-project-card:hover {
@@ -252,16 +252,23 @@
   background-color: var(--bg-surface-hover);
 }
 
+.cad-project-card:active {
+  transform: scale(0.99);
+}
+
 .cad-reticle {
   position: absolute;
   width: 7px;
   height: 7px;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 200ms ease;
+  opacity: 0.35;
+  transition: opacity 200ms ease, transform 200ms ease, border-color 200ms ease;
 }
 
-.cad-project-card:hover .cad-reticle {
+.cad-project-card:hover .cad-reticle,
+.cad-project-card:focus .cad-reticle,
+.cad-project-card:focus-visible .cad-reticle,
+.cad-project-card:focus-within .cad-reticle {
   opacity: 1;
 }
 
@@ -272,11 +279,25 @@
   border-left: 1.5px solid var(--border-reticle);
 }
 
+.cad-project-card:hover .cad-reticle--tl,
+.cad-project-card:focus .cad-reticle--tl,
+.cad-project-card:focus-visible .cad-reticle--tl,
+.cad-project-card:focus-within .cad-reticle--tl {
+  transform: translate(-1.5px, -1.5px);
+}
+
 .cad-reticle--tr {
   top: -1px;
   right: -1px;
   border-top: 1.5px solid var(--border-reticle);
   border-right: 1.5px solid var(--border-reticle);
+}
+
+.cad-project-card:hover .cad-reticle--tr,
+.cad-project-card:focus .cad-reticle--tr,
+.cad-project-card:focus-visible .cad-reticle--tr,
+.cad-project-card:focus-within .cad-reticle--tr {
+  transform: translate(1.5px, -1.5px);
 }
 
 .cad-reticle--br {
@@ -286,11 +307,25 @@
   border-right: 1.5px solid var(--border-reticle);
 }
 
+.cad-project-card:hover .cad-reticle--br,
+.cad-project-card:focus .cad-reticle--br,
+.cad-project-card:focus-visible .cad-reticle--br,
+.cad-project-card:focus-within .cad-reticle--br {
+  transform: translate(1.5px, 1.5px);
+}
+
 .cad-reticle--bl {
   bottom: -1px;
   left: -1px;
   border-bottom: 1.5px solid var(--border-reticle);
   border-left: 1.5px solid var(--border-reticle);
+}
+
+.cad-project-card:hover .cad-reticle--bl,
+.cad-project-card:focus .cad-reticle--bl,
+.cad-project-card:focus-visible .cad-reticle--bl,
+.cad-project-card:focus-within .cad-reticle--bl {
+  transform: translate(-1.5px, 1.5px);
 }
 
 /* Skill Tag Pill */
@@ -329,14 +364,48 @@
   margin: 0 12px;
 }
 
-/* Continuous Pulsing Ping Dot */
+/* Ambient Living Status Indicators (2.5s - 3.5s slow breathing & subtle ring) */
+@keyframes status-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes status-ring-expand {
+  0% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  70%, 100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
 @keyframes status-pulse {
   0% { transform: scale(1); opacity: 0.8; }
   75%, 100% { transform: scale(2.2); opacity: 0; }
 }
 
+.animate-status-breathe {
+  animation: status-breathe 3s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.animate-status-ring {
+  animation: status-ring-expand 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
 .animate-status-ping {
-  animation: status-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation: status-pulse 3s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 /* Accessibility & Reduced Motion */
@@ -348,10 +417,13 @@
     scroll-behavior: auto !important;
   }
 
+  .animate-status-breathe,
+  .animate-status-ring,
   .animate-status-ping,
   .animate-ping,
   .animate-pulse {
-    display: none !important;
+    animation: none !important;
+    transform: none !important;
   }
 
   img {

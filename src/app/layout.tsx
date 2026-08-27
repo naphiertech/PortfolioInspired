@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SoundProvider } from "@/context/SoundContext";
+import { SnapProvider } from "@/context/SnapContext";
+import { DustCanvas } from "@/components/DustCanvas";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
@@ -134,34 +136,39 @@ export default function RootLayout({
       <body className="antialiased bg-page text-ink min-h-screen selection:bg-brand selection:text-page">
         <ThemeProvider>
           <SoundProvider>
-            <PWARegister />
+            <SnapProvider>
+              <PWARegister />
 
-            {/* Centered Page Shell Container (760px reading anchor) */}
-            <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between">
-              <main className="w-full">{children}</main>
+              {/* Centered Page Shell Container (760px reading anchor) */}
+              <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between">
+                <main className="w-full">{children}</main>
 
-              {/* Minimalist Tech Footer */}
-              <footer className="w-full mt-20 pt-8 border-t border-border-divider flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
-                <p>
-                  &copy; 2026 {SITE_NAME}. Designed with precision & craft.
-                </p>
-                <p className="flex items-center gap-1.5 text-muted-foreground/80">
-                  <span>Portfolio build ·</span>
-                  <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
-                    {BUILD_INFO.formattedDate}
-                  </time>
-                </p>
-              </footer>
-            </div>
+                {/* Minimalist Tech Footer */}
+                <footer className="w-full mt-20 pt-8 border-t border-border-divider flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
+                  <p>
+                    &copy; 2026 {SITE_NAME}. Designed with precision & craft.
+                  </p>
+                  <p className="flex items-center gap-1.5 text-muted-foreground/80">
+                    <span>Portfolio build ·</span>
+                    <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
+                      {BUILD_INFO.formattedDate}
+                    </time>
+                  </p>
+                </footer>
+              </div>
 
-            {/* Bottom Progressive Blur Overlay */}
-            <div className="bottom-progressive-blur" aria-hidden="true" />
+              {/* High-Performance Canvas for Snap Dust Disintegration */}
+              <DustCanvas />
 
-            {/* Persistent Floating Navigation Dock */}
-            <NavigationDock />
+              {/* Bottom Progressive Blur Overlay */}
+              <div className="bottom-progressive-blur" aria-hidden="true" />
 
-            {/* AI Assistant Chat Widget */}
-            <ChatWidget />
+              {/* Persistent Floating Navigation Dock */}
+              <NavigationDock />
+
+              {/* AI Assistant Chat Widget */}
+              <ChatWidget />
+            </SnapProvider>
           </SoundProvider>
         </ThemeProvider>
       </body>

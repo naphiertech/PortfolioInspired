@@ -62,3 +62,14 @@ export const SITE_TITLE_TEMPLATE = `%s | ${SITE_NAME}`;
 // this title/description and AUTHOR_INFO.shortName (their short_name).
 export const SITE_DEFAULT_DESCRIPTION =
   `Hi, I’m ${SITE_NAME}, an IT student and full-stack developer who enjoys turning ideas into practical web applications with clean interfaces, thoughtful user experiences, and reliable functionality.`;
+
+export const SNAP_EASTER_EGG = {
+  triggerLine1: "do not",
+  triggerLine2: "click this!",
+  restoreLine1: "click to",
+  restoreLine2: "restore ↺",
+  busySnapLine1: "oohh no..",
+  busySnapLine2: "noo..",
+  busyRestoreLine1: "restoring",
+  busyRestoreLine2: "reality ↺",
+};

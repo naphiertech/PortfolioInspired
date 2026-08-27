@@ -244,6 +244,138 @@ class WebAudioSoundEngine {
       // Fail silently
     }
   }
+
+  /**
+   * Snap: Original physical tactile snap burst with sharp high transient,
+   * fast body drop, and cinematic sub-bass resonance. 100% synthetic.
+   */
+  public playSnap() {
+    try {
+      const ctx = this.getContext();
+      if (!ctx || ctx.state !== "running") return;
+
+      const t = ctx.currentTime;
+
+      // 1. High transient noise burst (friction / click)
+      const bufferSize = Math.floor(ctx.sampleRate * 0.04);
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = "bandpass";
+      noiseFilter.frequency.setValueAtTime(3400, t);
+      noiseFilter.Q.setValueAtTime(2.5, t);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.09, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.035);
+
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+
+      noise.start(t);
+      noise.stop(t + 0.035);
+
+      // 2. Tactile body "thump" (rapid pitch drop)
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      const oscFilter = ctx.createBiquadFilter();
+
+      oscFilter.type = "lowpass";
+      oscFilter.frequency.setValueAtTime(2000, t);
+
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(950, t);
+      osc.frequency.exponentialRampToValueAtTime(80, t + 0.06);
+
+      oscGain.gain.setValueAtTime(0.12, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+
+      osc.connect(oscFilter);
+      oscFilter.connect(oscGain);
+      oscGain.connect(ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.06);
+
+      // 3. Resonant sub-tail
+      const sub = ctx.createOscillator();
+      const subGain = ctx.createGain();
+      sub.type = "sine";
+      sub.frequency.setValueAtTime(65, t);
+      sub.frequency.exponentialRampToValueAtTime(25, t + 0.25);
+
+      subGain.gain.setValueAtTime(0.08, t);
+      subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+
+      sub.connect(subGain);
+      subGain.connect(ctx.destination);
+
+      sub.start(t);
+      sub.stop(t + 0.25);
+    } catch {
+      // Fail silently
+    }
+  }
+
+  /**
+   * Restore / Rematerialize: Ascending crystal harmonic arpeggio & shimmer.
+   * 100% original synthetic sound.
+   */
+  public playRestore() {
+    try {
+      const ctx = this.getContext();
+      if (!ctx || ctx.state !== "running") return;
+
+      const t = ctx.currentTime;
+      // Musical pentatonic crystal frequencies
+      const freqs = [523.25, 659.25, 783.99, 987.77, 1174.66, 1318.51];
+
+      freqs.forEach((freq, idx) => {
+        const noteTime = t + idx * 0.05;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq * 0.95, noteTime);
+        osc.frequency.exponentialRampToValueAtTime(freq, noteTime + 0.08);
+
+        gain.gain.setValueAtTime(0.035, noteTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 0.25);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(noteTime);
+        osc.stop(noteTime + 0.25);
+      });
+
+      // Shimmer background swell
+      const swell = ctx.createOscillator();
+      const swellGain = ctx.createGain();
+      swell.type = "triangle";
+      swell.frequency.setValueAtTime(220, t);
+      swell.frequency.exponentialRampToValueAtTime(880, t + 0.35);
+
+      swellGain.gain.setValueAtTime(0.001, t);
+      swellGain.gain.linearRampToValueAtTime(0.025, t + 0.18);
+      swellGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+
+      swell.connect(swellGain);
+      swellGain.connect(ctx.destination);
+
+      swell.start(t);
+      swell.stop(t + 0.38);
+    } catch {
+      // Fail silently
+    }
+  }
 }
 
 export const soundEngine = new WebAudioSoundEngine();

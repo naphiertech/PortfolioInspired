@@ -189,13 +189,9 @@
 
 /* Floating Navigation Dock */
 .nav-dock {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
   width: auto;
-  min-width: 320px;
-  max-width: 400px;
+  min-width: 0;
+  max-width: 95vw;
   height: 54px;
   border-radius: 9999px;
   background-color: var(--bg-dock);
@@ -203,20 +199,17 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-hairline);
   box-shadow: var(--shadow-nav-dock);
-  z-index: 50;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-around;
-  padding: 6px 14px;
+  justify-content: center;
+  padding: 6px 12px;
   user-select: none;
   transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
 }
 
 @media (max-width: 640px) {
   .nav-dock {
-    bottom: 16px;
     padding: 6px 8px;
-    min-width: 300px;
     max-width: 95vw;
   }
 }

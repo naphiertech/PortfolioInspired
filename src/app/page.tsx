@@ -10,6 +10,7 @@ import { Certifications } from "@/components/Certifications";
 import { Recommendations } from "@/components/Recommendations";
 import { Gallery } from "@/components/Gallery";
 import { FooterGrid } from "@/components/FooterGrid";
+import { SnapSectionWrapper } from "@/components/SnapSectionWrapper";
 import { SITE_URL, SITE_NAME, SITE_DEFAULT_DESCRIPTION, AUTHOR_INFO } from "@/lib/siteConfig";
 
 export default function Home() {
@@ -61,37 +62,55 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* 1. Identity & Hero */}
+      {/* 1. Identity & Hero (Permanent - Never snapped) */}
       <ProfileHeader />
 
       {/* 2. About Narrative */}
-      <AboutSection />
+      <SnapSectionWrapper id="about">
+        <AboutSection />
+      </SnapSectionWrapper>
 
       {/* 2.5. Currently Building Live Dev Note */}
-      <CurrentlyBuilding />
+      <SnapSectionWrapper id="currently-building">
+        <CurrentlyBuilding />
+      </SnapSectionWrapper>
 
       {/* 2.75. Latest Development Activity */}
-      <LatestActivity />
+      <SnapSectionWrapper id="latest-activity">
+        <LatestActivity />
+      </SnapSectionWrapper>
 
       {/* 3. Selected Projects (CAD Grid) */}
-      <RecentProjects />
+      <SnapSectionWrapper id="recent-projects">
+        <RecentProjects />
+      </SnapSectionWrapper>
 
       {/* 4. Tech Stack (<categories/> & Vector Pills) */}
-      <TechStack />
+      <SnapSectionWrapper id="tech-stack">
+        <TechStack />
+      </SnapSectionWrapper>
 
-      {/* 5. Work Experience Timeline (Unboxed) */}
-      <ExperienceTimeline />
+      {/* 5. Work Experience Timeline */}
+      <SnapSectionWrapper id="experience">
+        <ExperienceTimeline />
+      </SnapSectionWrapper>
 
-      {/* 6. Recent Certifications (Unboxed) */}
-      <Certifications />
+      {/* 6. Recent Certifications */}
+      <SnapSectionWrapper id="certifications">
+        <Certifications />
+      </SnapSectionWrapper>
 
       {/* 7. Recommendations */}
-      <Recommendations />
+      <SnapSectionWrapper id="recommendations">
+        <Recommendations />
+      </SnapSectionWrapper>
 
       {/* 8. Gallery Moments */}
-      <Gallery />
+      <SnapSectionWrapper id="gallery">
+        <Gallery />
+      </SnapSectionWrapper>
 
-      {/* 9. Contact, Social & Memberships Matrix (Unboxed) */}
+      {/* 9. Contact, Social & Memberships Matrix (Permanent - Never snapped) */}
       <FooterGrid />
     </div>
   );

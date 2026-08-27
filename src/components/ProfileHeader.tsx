@@ -7,6 +7,7 @@ import { SoundToggle } from "./SoundToggle";
 import { GithubContributions } from "./GithubContributions";
 import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
+import { SnapTrigger } from "./SnapTrigger";
 import { AUTHOR_INFO, AVAILABILITY, EDUCATION, SITE_NAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
 
 export function ProfileHeader() {
@@ -77,7 +78,12 @@ export function ProfileHeader() {
   }, [isHovered]);
 
   return (
-    <section className="w-full select-none mb-16">
+    <section className="relative w-full select-none mb-16">
+      {/* Subtle 2-Line Monospace Dev-Annotation Easter Egg Trigger in Middle-Right Area */}
+      <div className="absolute right-[-4px] sm:-right-5 top-[225px] sm:top-[145px] z-20 pointer-events-auto rotate-45 origin-center opacity-65 hover:opacity-100 transition-all duration-200">
+        <SnapTrigger />
+      </div>
+
       {/* Top Eyebrow, Status & Theme Row */}
       <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
         <div className="flex items-center gap-2">
@@ -86,7 +92,7 @@ export function ProfileHeader() {
           </span>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap justify-end">
           {/* Live Availability Status Indicator */}
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
             <span className="relative flex h-1.5 w-1.5">

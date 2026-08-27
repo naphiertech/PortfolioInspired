@@ -20,6 +20,8 @@ interface SoundContextType {
   playTheme: () => void;
   playOpen: () => void;
   playClose: () => void;
+  playSnap: () => void;
+  playRestore: () => void;
 }
 
 const SoundContext = createContext<SoundContextType | undefined>(undefined);
@@ -91,6 +93,16 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     soundEngine.playClose();
   }, [isSoundEnabled]);
 
+  const playSnap = useCallback(() => {
+    if (!isSoundEnabled) return;
+    soundEngine.playSnap();
+  }, [isSoundEnabled]);
+
+  const playRestore = useCallback(() => {
+    if (!isSoundEnabled) return;
+    soundEngine.playRestore();
+  }, [isSoundEnabled]);
+
   // Route change sound
   useEffect(() => {
     if (isFirstRender.current) {
@@ -111,6 +123,8 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
         playTheme,
         playOpen,
         playClose,
+        playSnap,
+        playRestore,
       }}
     >
       {children}
@@ -131,6 +145,8 @@ export function useUISound() {
       playTheme: () => {},
       playOpen: () => {},
       playClose: () => {},
+      playSnap: () => {},
+      playRestore: () => {},
     };
   }
   return context;

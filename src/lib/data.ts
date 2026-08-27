@@ -9,6 +9,12 @@ export interface TechSection {
   items: string[];
 }
 
+export interface TechStackIntro {
+  headline: string;
+  highlightedTools: string[];
+  footer: string;
+}
+
 export interface ProjectItem {
   name: string;
   description: string;
@@ -448,7 +454,7 @@ export const currentBuild: CurrentBuild = {
 export function normalizeTechName(name: string): string {
   if (!name) return "";
   const clean = name.trim().toLowerCase().replace(/[\s._-]+/g, "");
-  if (clean === "next" || clean === "nextjs" || clean === "nextjs15" || clean === "next15") return "next.js";
+  if (clean === "next" || clean === "nextjs" || clean === "nextjs15" || clean === "next15" || clean === "nextjs16" || clean === "next16") return "next.js";
   if (clean === "react" || clean === "react18" || clean === "react19" || clean === "reactjs") return "react";
   if (clean === "tailwind" || clean === "tailwindcss" || clean === "tailwindcss34" || clean === "tailwind40" || clean === "tailwindcss40") return "tailwind css";
   if (clean === "postgres" || clean === "postgresql") return "postgresql";
@@ -581,6 +587,23 @@ export const techSections: TechSection[] = [
     ],
   },
 ];
+
+export const techStackIntro: TechStackIntro = {
+  headline:
+    "I work across frontend, backend, mobile, databases, and deployment — JavaScript is part of what I use, not the only thing I do.",
+  highlightedTools: [
+    "Next.js",
+    "React",
+    "Python",
+    "Flutter",
+    "PHP",
+    "PostgreSQL",
+    "MySQL",
+    "Supabase",
+  ],
+  footer:
+    "These are technologies I’m familiar with and have used while building different projects.",
+};
 
 // Curated order for the Work page; display names come from the shared catalog.
 export const coreTechStack = [

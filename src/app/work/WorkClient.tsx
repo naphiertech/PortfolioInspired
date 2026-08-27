@@ -28,9 +28,6 @@ export function WorkClient() {
 
         <div className="flex items-start sm:items-center justify-between flex-wrap gap-3 pt-1">
           <div>
-            <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block mb-1">
-              &lt;work/&gt;
-            </span>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink tracking-tight">
               Work & Availability
             </h1>

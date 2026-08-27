@@ -152,6 +152,14 @@ const ICON_REGISTRY: Record<string, IconConfig> = {
   next: { component: SiNextdotjs, isThemeAware: true },
   nextjs: { component: SiNextdotjs, isThemeAware: true },
   nextdotjs: { component: SiNextdotjs, isThemeAware: true },
+  next13: { component: SiNextdotjs, isThemeAware: true },
+  next14: { component: SiNextdotjs, isThemeAware: true },
+  next15: { component: SiNextdotjs, isThemeAware: true },
+  next16: { component: SiNextdotjs, isThemeAware: true },
+  nextjs13: { component: SiNextdotjs, isThemeAware: true },
+  nextjs14: { component: SiNextdotjs, isThemeAware: true },
+  nextjs15: { component: SiNextdotjs, isThemeAware: true },
+  nextjs16: { component: SiNextdotjs, isThemeAware: true },
   vue: { component: SiVuedotjs, color: "#4FC08D" },
   vuejs: { component: SiVuedotjs, color: "#4FC08D" },
   nuxt: { component: SiNuxt, color: "#00DC82" },
@@ -278,14 +286,20 @@ export function TechIcon({ name, className = "w-3.5 h-3.5 flex-shrink-0" }: Tech
   // 1. Direct registry lookup
   let config = ICON_REGISTRY[normalized];
 
-  // 2. Partial/fuzzy registry lookup if exact match not found
+  // 2. Partial/fuzzy registry lookup sorted longest-first to prioritize specific tools before 2-letter tokens
   if (!config) {
-    for (const [key, val] of Object.entries(ICON_REGISTRY)) {
-      if (normalized.includes(key) || key.includes(normalized)) {
-        config = val;
+    const sortedKeys = Object.keys(ICON_REGISTRY).sort((a, b) => b.length - a.length);
+    for (const key of sortedKeys) {
+      if (key.length >= 3 && (normalized.includes(key) || key.includes(normalized))) {
+        config = ICON_REGISTRY[key];
         break;
       }
     }
+  }
+
+  // 3. Fallback for exact short tokens (e.g. "js", "ts", "r", "go")
+  if (!config && ICON_REGISTRY[normalized]) {
+    config = ICON_REGISTRY[normalized];
   }
 
   if (config) {

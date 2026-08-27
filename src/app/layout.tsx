@@ -12,6 +12,7 @@ import {
   SITE_DEFAULT_DESCRIPTION,
   SITE_NAME,
   AUTHOR_INFO,
+  EDUCATION,
 } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
 
@@ -25,13 +26,13 @@ export const metadata: Metadata = {
   authors: [{ name: AUTHOR_INFO.name, url: SITE_URL }],
   creator: AUTHOR_INFO.name,
   keywords: [
-    "Naphier Awalie",
+    SITE_NAME,
     "IT Student",
-    "Full-Stack Developer",
+    AUTHOR_INFO.jobTitle,
     "Software Engineer",
     "Developer Portfolio",
-    "Zamboanga City",
-    "ZPPSU",
+    AUTHOR_INFO.city,
+    EDUCATION.abbreviation,
     "Next.js",
     "TypeScript",
     "React",
@@ -72,7 +73,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_DEFAULT_TITLE,
     description: SITE_DEFAULT_DESCRIPTION,
-    creator: "@naphiertech",
+    creator: AUTHOR_INFO.handle,
     images: ["/og-image.png"],
   },
   manifest: "/site.webmanifest",
@@ -142,7 +143,7 @@ export default function RootLayout({
               {/* Minimalist Tech Footer */}
               <footer className="w-full mt-20 pt-8 border-t border-border-divider flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
                 <p>
-                  &copy; 2026 Naphier Awalie. Designed with precision & craft.
+                  &copy; 2026 {SITE_NAME}. Designed with precision & craft.
                 </p>
                 <p className="flex items-center gap-1.5 text-muted-foreground/80">
                   <span>Portfolio build ·</span>

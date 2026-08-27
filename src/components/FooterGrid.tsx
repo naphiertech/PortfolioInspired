@@ -3,6 +3,7 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { memberOf } from "@/lib/data";
+import { SOCIAL_PROFILES } from "@/lib/siteConfig";
 import {
   sectionContainerVariants,
   staggeredGridVariants,
@@ -92,7 +93,7 @@ export function FooterGrid() {
 
           <div className="grid grid-cols-3 gap-2">
             <a
-              href="https://www.linkedin.com/in/naphier-awalie-0551983b5/"
+              href={SOCIAL_PROFILES.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center justify-center p-3 rounded-lg bg-surface/40 border border-border-hairline hover:border-border-hairline hover:bg-surface hover:text-ink transition-all group cursor-pointer"
@@ -106,7 +107,7 @@ export function FooterGrid() {
             </a>
 
             <a
-              href="https://github.com/naphiertech"
+              href={SOCIAL_PROFILES.github}
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center justify-center p-3 rounded-lg bg-surface/40 border border-border-hairline hover:border-border-hairline hover:bg-surface hover:text-ink transition-all group cursor-pointer"
@@ -124,7 +125,7 @@ export function FooterGrid() {
             </a>
 
             <a
-              href="https://www.instagram.com/bagatata05/"
+              href={SOCIAL_PROFILES.instagram}
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center justify-center p-3 rounded-lg bg-surface/40 border border-border-hairline hover:border-border-hairline hover:bg-surface hover:text-ink transition-all group cursor-pointer"
@@ -166,7 +167,7 @@ export function FooterGrid() {
           </p>
 
           <a
-            href="mailto:naphiera@gmail.com?subject=Speaking%20Inquiry"
+            href={`mailto:${SOCIAL_PROFILES.email}?subject=Speaking%20Inquiry`}
             className="inline-flex items-center gap-1.5 font-mono text-xs text-brand hover:underline pt-1"
           >
             <span>Get in touch</span>
@@ -194,10 +195,10 @@ export function FooterGrid() {
 
           <div className="space-y-2 font-mono text-xs">
             <a
-              href="mailto:naphiera@gmail.com"
+              href={`mailto:${SOCIAL_PROFILES.email}`}
               className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-surface/50 text-muted-foreground hover:text-ink transition-colors border-b border-border-hairline/40"
             >
-              <span>naphiera@gmail.com</span>
+              <span>{SOCIAL_PROFILES.email}</span>
               <span className="text-muted-foreground/60 text-[11px]">email</span>
             </a>
 

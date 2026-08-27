@@ -4,10 +4,15 @@ import {
   experiences,
   certifications,
   currentBuild,
+  coreTechStack,
+  workCapabilities,
+  profileInfo,
+  memberOf,
   getProjectBySlug,
   getProjectsUsingTech,
   getCanonicalTechName,
 } from "./data";
+import { AUTHOR_INFO, AVAILABILITY, EDUCATION, GITHUB_USERNAME, SOCIAL_PROFILES } from "./siteConfig";
 
 export interface PortfolioPageContext {
   pathname: string;
@@ -127,16 +132,16 @@ export function getSuggestedQuestions(context: PortfolioPageContext): string[] {
   switch (context.pageType) {
     case "home":
       return [
-        "What projects has Naphier built?",
+        `What projects has ${AUTHOR_INFO.shortName} built?`,
         "What technologies does he use most?",
         "What kind of roles is he open to?",
       ];
 
     case "work":
       return [
-        "What roles is Naphier open to?",
+        `What roles is ${AUTHOR_INFO.shortName} open to?`,
         "What can he help build?",
-        "How can I get in touch with Naphier?",
+        `How can I get in touch with ${AUTHOR_INFO.shortName}?`,
       ];
 
     case "projects":
@@ -150,35 +155,35 @@ export function getSuggestedQuestions(context: PortfolioPageContext): string[] {
       return [
         "How does this project work?",
         "Why was this tech stack chosen?",
-        "What did Naphier learn building it?",
+        `What did ${AUTHOR_INFO.shortName} learn building it?`,
       ];
 
     case "tech_stack":
       if (context.selectedTech) {
         return [
-          `Where did Naphier use ${context.selectedTech}?`,
+          `Where did ${AUTHOR_INFO.shortName} use ${context.selectedTech}?`,
           `Which projects use ${context.selectedTech}?`,
           "What stack was this paired with?",
         ];
       }
       return [
         "Which projects use Supabase?",
-        "What backend technologies does Naphier use?",
+        `What backend technologies does ${AUTHOR_INFO.shortName} use?`,
         "Which technologies appear in the most projects?",
       ];
 
     case "certifications":
       return [
-        "What certifications does Naphier have?",
+        `What certifications does ${AUTHOR_INFO.shortName} have?`,
         "What skills do these certifications cover?",
         "Which certification relates to web development?",
       ];
 
     default:
       return [
-        "What projects has Naphier built?",
+        `What projects has ${AUTHOR_INFO.shortName} built?`,
         "What is his primary tech stack?",
-        "How can I contact Naphier?",
+        `How can I contact ${AUTHOR_INFO.shortName}?`,
       ];
   }
 }
@@ -224,10 +229,10 @@ export function validatePortfolioLink(href: string): { isValid: boolean; normali
 
   // 4. Trusted external portfolio links
   const trustedPrefixes = [
-    "https://github.com/naphiertech",
-    "https://www.linkedin.com/in/naphier-awalie",
-    "https://linkedin.com/in/naphier-awalie",
-    "mailto:naphiera@gmail.com",
+    SOCIAL_PROFILES.github,
+    SOCIAL_PROFILES.linkedinLegacy,
+    SOCIAL_PROFILES.linkedinLegacy.replace("https://www.", "https://"),
+    `mailto:${SOCIAL_PROFILES.email}`,
   ];
 
   // Also allow verified live demo URLs from fullProjects
@@ -296,7 +301,7 @@ export function buildPortfolioSystemPrompt(pageContext?: PortfolioPageContext): 
     * Full Description: ${p.fullDescription}
     * Tech Stack: ${techList}
     * Live URL: ${p.live || "Not publicly deployed"}
-    * Source Repo: ${p.github || "Private or on GitHub @ naphiertech"}
+    * Source Repo: ${p.github || `Private or on GitHub @ ${GITHUB_USERNAME}`}
     * Key Features:
 ${featuresList}
     * Technical Decisions:
@@ -321,6 +326,14 @@ ${learningsList}`;
     .map((e) => `  * ${e.year}: ${e.role} at ${e.company} - ${e.description}`)
     .join("\n");
 
+  const featuredProjectNames = fullProjects
+    .filter((project) => project.featured !== false)
+    .map((project) => project.title)
+    .join(", ");
+  const projectLinks = fullProjects
+    .map((project) => `[${project.title}](/projects/${project.slug})`)
+    .join(", ");
+
   // Determine active context instructions
   let activeFocusInstructions = "The visitor is on the general portfolio website.";
 
@@ -344,38 +357,44 @@ The visitor is currently exploring the technology "${pageContext.selectedTech}" 
 - When the visitor asks "Where did he use this?", "Why did he choose this?", or "Which projects use this?", discuss these specific matching projects.`;
       } else {
         activeFocusInstructions = `ACTIVE PAGE CONTEXT (TECH STACK):
-The visitor is browsing the Tech Stack overview page (/tech-stack). Answer questions about Naphier's frontend, backend, database, AI/ML, animation, and DevOps toolchains.`;
+The visitor is browsing the Tech Stack overview page (/tech-stack). Answer questions about ${AUTHOR_INFO.shortName}'s toolchains: ${techSections.map((section) => section.title).join(", ")}.`;
       }
     } else if (pageContext.pageType === "work") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (WORK & AVAILABILITY):
-The visitor is viewing the Work & Experience page (/work). Highlight Naphier's experience timeline, student status at ZPPSU, freelance availability, and contact options (email: naphiera@gmail.com).`;
+The visitor is viewing the Work & Experience page (/work). Highlight ${AUTHOR_INFO.shortName}'s experience timeline, student status at ${EDUCATION.abbreviation}, availability (${AVAILABILITY.label}; ${AVAILABILITY.lookingFor}), and contact options (email: ${SOCIAL_PROFILES.email}).`;
     } else if (pageContext.pageType === "certifications") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (CERTIFICATIONS):
-The visitor is on the Certifications page (/certifications). Answer questions regarding Naphier's Google Developer Groups (GDG) and DICT certifications based strictly on the provided certificate list.`;
+The visitor is on the Certifications page (/certifications). Answer questions regarding ${AUTHOR_INFO.shortName}'s certifications based strictly on the provided certificate list.`;
     } else if (pageContext.pageType === "projects") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (PROJECTS OVERVIEW):
-The visitor is browsing the Projects Index (/projects). Highlight featured work (Naphix Resume, AssetLink, MovieStream, MKBRiderTrack).`;
+The visitor is browsing the Projects Index (/projects). Highlight featured work (${featuredProjectNames}).`;
     } else if (pageContext.pageType === "home") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (HOMEPAGE):
 The visitor is on the homepage. Current in-progress build focus is: ${currentBuild.title} (${currentBuild.description}).`;
     }
   }
 
-  return `You are the personal AI Assistant for Naphier Awalie's developer portfolio.
-Your role is to represent Naphier Awalie to visitors, recruiters, clients, and fellow developers with clarity, warmth, and absolute technical truthfulness.
+  return `You are the personal AI Assistant for ${AUTHOR_INFO.name}'s developer portfolio.
+Your role is to represent ${AUTHOR_INFO.name} to visitors, recruiters, clients, and fellow developers with clarity, warmth, and absolute technical truthfulness.
 
 ==================================================
-NAPHIER AWALIE - AUTHORITATIVE PROFILE
+${AUTHOR_INFO.name.toUpperCase()} - AUTHORITATIVE PROFILE
 ==================================================
-- Full Name: Naphier Awalie (online handle: naphiertech)
-- Education: BS Information Technology (BS IT) Student at Zamboanga Peninsula Polytechnic State University (ZPPSU), College of Information and Computing Sciences (2023 - Present).
-- Location: Zamboanga City, Philippines.
-- Focus: Full-Stack Engineering, UI/UX Craft, Web Motion, and Modern Web Applications.
-- Community: Active member of Google Developer Groups (GDG) Zamboanga Region.
-- Email: naphiera@gmail.com
-- GitHub: https://github.com/naphiertech
-- LinkedIn: https://www.linkedin.com/in/naphier-awalie-0551983b5/
-- Currently Building: ${currentBuild.title} - ${currentBuild.description} (Tech: ${currentBuild.technologies?.join(", ") || "React, Next.js, Supabase"}).
+- Full Name: ${AUTHOR_INFO.name} (online handle: ${GITHUB_USERNAME})
+- Education: ${EDUCATION.degree} (${EDUCATION.shortDegree}) Student at ${AUTHOR_INFO.affiliation}, ${EDUCATION.department} (${EDUCATION.period}).
+- Location: ${AUTHOR_INFO.location}.
+- Focus: ${profileInfo.currentFocus.description}
+- Memberships: ${memberOf.map((membership) => membership.name).join("; ")}.
+- Availability: ${AVAILABILITY.label}; ${AVAILABILITY.lookingFor}; ${AVAILABILITY.workPreference}.
+- Capabilities: ${workCapabilities.join("; ")}.
+- Profile Capabilities: ${profileInfo.whatIBuild.groups.flatMap((group) => group.items).join("; ")}.
+- How I Work: ${profileInfo.howIWork.principles.join("; ")}.
+- Quick Facts: ${profileInfo.quickFacts.map((fact) => `${fact.label}: ${fact.value}`).join("; ")}.
+- Core Stack: ${coreTechStack.join(", ")}.
+- Email: ${SOCIAL_PROFILES.email}
+- GitHub: ${SOCIAL_PROFILES.github}
+- LinkedIn: ${SOCIAL_PROFILES.linkedin}
+- Currently Building: ${currentBuild.title} - ${currentBuild.description} (Tech: ${currentBuild.technologies?.join(", ") || coreTechStack.join(", ")}).
 
 ==================================================
 EXPERIENCE & EDUCATION TIMELINE
@@ -406,20 +425,20 @@ ${activeFocusInstructions}
 GUIDELINES FOR RESPONSES
 ==================================================
 1. TONE & IDENTITY:
-   - Speak in the third person about Naphier (e.g., "Naphier built...", "Naphier designed...", "In this project, Naphier...").
+   - Speak in the third person about ${AUTHOR_INFO.shortName} (e.g., "${AUTHOR_INFO.shortName} built...", "${AUTHOR_INFO.shortName} designed...", "In this project, ${AUTHOR_INFO.shortName}...").
    - Friendly, professional, clear, and engaging.
    - Keep answers concise: 2 to 4 short paragraphs or bullet points unless detailed technical elaboration is explicitly requested.
 
 2. GROUNDING & ABSOLUTE TRUTHFULNESS:
    - Stick strictly to the facts, technical decisions, learnings, and metadata documented above.
    - NEVER fabricate employers, commercial clients, employee headcount, paying customer counts, revenue numbers, or unlisted technologies.
-   - If asked about information not in this portfolio (e.g., "How many active users does Naphix Resume have?"), state honestly that this information is not available in the portfolio.
+   - If asked about information not in this portfolio (e.g., "How many active users does ${fullProjects[0]?.title || "this project"} have?"), state honestly that this information is not available in the portfolio.
 
 3. INTERNAL DEEP LINKS & SAFE NAVIGATION:
    - When referencing or recommending projects, technologies, or sections, use standard markdown links with valid portfolio paths so visitors can navigate easily:
-     * Project pages: [Project Title](/projects/<slug>) (e.g. [Naphix Resume](/projects/naphix-resume), [AssetLink](/projects/assetlink), [MovieStream](/projects/moviestream), [MKBRiderTrack](/projects/mkb-ridertrack))
+     * Project pages: [Project Title](/projects/<slug>) (e.g. ${projectLinks})
      * Filtered Tech: [Explore <Tech>](/tech-stack?tech=<canonical-tech-slug>) (e.g. [Explore Supabase](/tech-stack?tech=supabase), [Explore TypeScript](/tech-stack?tech=typescript))
      * Sections: [View Projects](/projects), [View Tech Stack](/tech-stack), [View Certifications](/certifications), [View Work](/work)
-     * Trusted external: [GitHub](https://github.com/naphiertech), [LinkedIn](https://www.linkedin.com/in/naphier-awalie-0551983b5/), [Email Naphier](mailto:naphiera@gmail.com)
+     * Trusted external: [GitHub](${SOCIAL_PROFILES.github}), [LinkedIn](${SOCIAL_PROFILES.linkedin}), [Email ${AUTHOR_INFO.shortName}](mailto:${SOCIAL_PROFILES.email})
    - Do NOT output random, unverified, or third-party web links.`;
 }

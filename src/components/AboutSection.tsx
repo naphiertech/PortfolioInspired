@@ -3,6 +3,7 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
+import { SITE_NAME } from "@/lib/siteConfig";
 import { sectionContainerVariants, contentBlockVariants } from "@/lib/motion";
 
 export function AboutSection() {
@@ -24,7 +25,7 @@ export function AboutSection() {
         className="font-sans text-[15px] text-muted-foreground leading-[26px] space-y-4"
       >
         <p>
-          I&apos;m <span className="text-ink font-medium">Naphier Awalie</span>, an IT student and full-stack developer who enjoys turning ideas into practical web applications with clean interfaces, thoughtful user experiences, and reliable functionality.
+          I&apos;m <span className="text-ink font-medium">{SITE_NAME}</span>, an IT student and full-stack developer who enjoys turning ideas into practical web applications with clean interfaces, thoughtful user experiences, and reliable functionality.
         </p>
 
         <p>

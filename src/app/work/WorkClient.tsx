@@ -10,27 +10,10 @@ import {
   FileText,
 } from "lucide-react";
 import { TechIcon } from "@/components/TechIcon";
+import { coreTechStack, workCapabilities } from "@/lib/data";
+import { AUTHOR_INFO, AVAILABILITY, SOCIAL_PROFILES } from "@/lib/siteConfig";
 
 export function WorkClient() {
-  const capabilities = [
-    "Responsive web applications",
-    "Clean user interfaces",
-    "Dashboards & internal systems",
-    "High-converting landing pages",
-    "Interactive web experiences",
-    "AI-assisted development & UI animation",
-  ];
-
-  const coreStack = [
-    "React",
-    "Next.js",
-    "TypeScript",
-    "Tailwind CSS",
-    "Node.js",
-    "Supabase",
-    "PostgreSQL",
-  ];
-
   return (
     <div className="space-y-12 sm:space-y-14 animate-in fade-in duration-300">
       {/* Top Header & Context Row */}
@@ -62,7 +45,7 @@ export function WorkClient() {
               <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
             </span>
             <span className="text-[11px] font-mono font-medium leading-none">
-              Available for work
+              {AVAILABILITY.label}
             </span>
           </div>
         </div>
@@ -74,20 +57,20 @@ export function WorkClient() {
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground/60">Status:</span>
             <span className="text-emerald-500 dark:text-emerald-400 font-medium">
-              Available
+              {AVAILABILITY.status}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground/60">Looking for:</span>
-            <span className="text-ink">Junior / Internship / Freelance</span>
+            <span className="text-ink">{AVAILABILITY.lookingFor}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground/60">Location:</span>
-            <span className="text-ink">Zamboanga City, Philippines</span>
+            <span className="text-ink">{AUTHOR_INFO.location}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground/60">Work preference:</span>
-            <span className="text-ink">Remote / On-site / Hybrid</span>
+            <span className="text-ink">{AVAILABILITY.workPreference}</span>
           </div>
         </div>
       </div>
@@ -127,7 +110,7 @@ export function WorkClient() {
 
         {/* Areas of Help / Capabilities */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          {capabilities.map((area) => (
+          {workCapabilities.map((area) => (
             <div
               key={area}
               className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-surface/30 border border-border-hairline font-sans text-xs sm:text-[13px] text-ink"
@@ -144,7 +127,7 @@ export function WorkClient() {
             {"// Current working stack"}
           </span>
           <div className="flex flex-wrap gap-2">
-            {coreStack.map((tech) => (
+            {coreTechStack.map((tech) => (
               <span key={tech} className="skill-pill">
                 <TechIcon name={tech} className="w-3.5 h-3.5" />
                 <span>{tech}</span>
@@ -181,7 +164,7 @@ export function WorkClient() {
         {/* Action Buttons */}
         <div className="flex items-center flex-wrap gap-3 pt-2">
           <a
-            href="mailto:naphiera@gmail.com"
+            href={`mailto:${SOCIAL_PROFILES.email}`}
             className="tactile-btn gap-2 h-9 px-4 rounded-md"
           >
             <Mail className="w-3.5 h-3.5 opacity-70" />
@@ -189,7 +172,7 @@ export function WorkClient() {
           </a>
 
           <a
-            href="mailto:naphiera@gmail.com?subject=Let's%20Schedule%20a%20Call"
+            href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
             className="tactile-btn gap-2 h-9 px-4 rounded-md"
           >
             <Calendar className="w-3.5 h-3.5 opacity-70" />

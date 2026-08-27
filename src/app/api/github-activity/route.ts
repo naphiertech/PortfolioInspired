@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { fullProjects } from "@/lib/data";
+import { AUTHOR_INFO, GITHUB_USERNAME } from "@/lib/siteConfig";
 import { formatShortDate, formatRelativeTime } from "@/lib/dateUtils";
 
 export const dynamic = "force-dynamic";
@@ -55,7 +56,7 @@ export async function GET() {
     }
 
     const headers: Record<string, string> = {
-      "User-Agent": "NaphierAwalie-Portfolio/1.0",
+      "User-Agent": `${AUTHOR_INFO.name.replace(/\s/g, "")}-Portfolio/1.0`,
       Accept: "application/vnd.github.v3+json",
     };
 
@@ -64,7 +65,7 @@ export async function GET() {
     }
 
     const response = await fetch(
-      "https://api.github.com/users/naphiertech/repos?sort=pushed&per_page=10",
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=10`,
       {
         headers,
         next: { revalidate: 1800 },

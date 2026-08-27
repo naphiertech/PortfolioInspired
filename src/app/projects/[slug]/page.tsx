@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fullProjects, getProjectBySlug } from "@/lib/data";
-import { SITE_URL, AUTHOR_INFO } from "@/lib/siteConfig";
+import { SITE_URL, SITE_NAME, AUTHOR_INFO } from "@/lib/siteConfig";
 import ProjectDetailClient from "./ProjectDetailClient";
 
 interface Props {
@@ -41,9 +41,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: canonicalUrl,
     },
     openGraph: {
+      siteName: SITE_NAME,
       type: "article",
       url: canonicalUrl,
-      title: `${project.title} | Naphier Awalie`,
+      title: `${project.title} | ${SITE_NAME}`,
       description: project.overview,
       images: [
         {
@@ -56,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${project.title} | Naphier Awalie`,
+      title: `${project.title} | ${SITE_NAME}`,
       description: project.overview,
       images: [ogImage],
     },

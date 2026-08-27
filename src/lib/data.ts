@@ -1,3 +1,5 @@
+import { AVAILABILITY, EDUCATION, SOCIAL_PROFILES } from "./siteConfig";
+
 export interface TechStackItem {
   name: string;
 }
@@ -207,7 +209,7 @@ export const fullProjects: FullProjectItem[] = [
       },
     ],
     live: "https://naphix-resume.netlify.app/",
-    github: "https://github.com/naphiertech/resumebuilder",
+    github: `${SOCIAL_PROFILES.github}/resumebuilder`,
     status: "live",
     featured: true,
   },
@@ -271,7 +273,7 @@ export const fullProjects: FullProjectItem[] = [
       },
     ],
     live: "https://assetlink-supabase-landing.vercel.app/",
-    github: "https://github.com/naphiertech/ASSETLINK-supabase",
+    github: `${SOCIAL_PROFILES.github}/ASSETLINK-supabase`,
     status: "school-project",
     featured: true,
   },
@@ -424,27 +426,23 @@ export const fullProjects: FullProjectItem[] = [
       },
     ],
     live: "https://mkbridertrack.vercel.app/",
-    github: "https://github.com/naphiertech/MKB-supabase",
+    github: `${SOCIAL_PROFILES.github}/MKB-supabase`,
     status: "wip",
     featured: true,
   },
 ];
 
+const currentBuildProject = getProjectBySlug("mkb-ridertrack")!;
+
 export const currentBuild: CurrentBuild = {
-  title: "MKBRiderTrack",
+  title: currentBuildProject.title,
   description:
     "Building a full-stack workforce operations and rider logistics platform with biometric attendance, GPS geofencing, parcel auditing, and automated payroll snapshots.",
-  projectSlug: "mkb-ridertrack",
+  projectSlug: currentBuildProject.slug,
   status: "building",
   updatedAt: "Aug 2026",
-  technologies: [
-    "React 18",
-    "Next.js 16",
-    "Supabase",
-    "TypeScript",
-    "PostgreSQL",
-    "Tailwind CSS",
-  ],
+  // The progress card shows the first six technologies from the project.
+  technologies: currentBuildProject.techStack.slice(0, 6),
 };
 
 export function normalizeTechName(name: string): string {
@@ -584,6 +582,21 @@ export const techSections: TechSection[] = [
   },
 ];
 
+// Curated order for the Work page; display names come from the shared catalog.
+export const coreTechStack = [
+  "React", "Next.js", "TypeScript", "Tailwind CSS", "Node.js", "Supabase", "PostgreSQL",
+].map(getCanonicalTechName).filter((tech): tech is string => tech !== null);
+
+// Full-page capability copy is distinct from the compact profileInfo summaries.
+export const workCapabilities = [
+  "Responsive web applications",
+  "Clean user interfaces",
+  "Dashboards & internal systems",
+  "High-converting landing pages",
+  "Interactive web experiences",
+  "AI-assisted development & UI animation",
+];
+
 export const certifications: CertificationItem[] = [
   {
     name: "Build with AI 2026",
@@ -648,9 +661,9 @@ export const experiences: ExperienceItem[] = [
       "Turned ideas into interactive and accessible web experiences.",
   },
   {
-    role: "BS Information Technology",
-    company: "Zamboanga Peninsula Polytechnic State University",
-    year: "2023 - Present",
+    role: EDUCATION.degree,
+    company: EDUCATION.institution,
+    year: EDUCATION.period,
     yearNode: "2023",
     description:
       "Formal education that strengthened my technical and problem-solving foundation.",
@@ -678,8 +691,8 @@ export const galleryImages: string[] = [
 
 export const memberOf = [
   {
-    name: "ZPPSU - College of Information and Computing Sciences",
-    href: "https://zppsu.edu.ph",
+    name: `${EDUCATION.abbreviation} - ${EDUCATION.department}`,
+    href: EDUCATION.website,
   },
   {
     name: "Google Developer Groups (GDG) Zamboanga Region",
@@ -694,16 +707,13 @@ export interface CapabilityGroup {
 
 export interface ProfileInfoData {
   currentFocus: {
-    title: string;
     description: string;
     terminalLine: string;
   };
   whatIBuild: {
-    title: string;
     groups: CapabilityGroup[];
   };
   howIWork: {
-    title: string;
     principles: string[];
   };
   quickFacts: {
@@ -714,13 +724,11 @@ export interface ProfileInfoData {
 
 export const profileInfo: ProfileInfoData = {
   currentFocus: {
-    title: "Current Focus",
     description:
       "Building accessible, performant, and polished digital experiences while strengthening real-world full-stack skills.",
     terminalLine: "> learn · build · iterate · ship",
   },
   whatIBuild: {
-    title: "What I Build",
     groups: [
       {
         id: "01",
@@ -737,7 +745,6 @@ export const profileInfo: ProfileInfoData = {
     ],
   },
   howIWork: {
-    title: "How I Work",
     principles: [
       "Clean architecture & modularity",
       "Thoughtful, accessible interfaces",
@@ -745,8 +752,8 @@ export const profileInfo: ProfileInfoData = {
     ],
   },
   quickFacts: [
-    { label: "OPEN TO", value: "Junior Roles · Internships · Freelance" },
-    { label: "WORK SETUP", value: "Remote-friendly · Hybrid" },
+    { label: "OPEN TO", value: AVAILABILITY.openTo },
+    { label: "WORK SETUP", value: AVAILABILITY.workSetup },
     { label: "PROJECT STYLE", value: "Product-focused web applications" },
     { label: "CORE FOCUS", value: "UI Engineering + Full-Stack Architecture" },
     { label: "INTERESTS", value: "SaaS · Dashboards · Developer Tools" },

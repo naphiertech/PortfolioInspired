@@ -16,6 +16,7 @@ import {
   Compass,
 } from "lucide-react";
 import { useUISound } from "@/context/SoundContext";
+import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import {
   getPortfolioPageContext,
   getSuggestedQuestions,
@@ -136,7 +137,7 @@ function ChatWidgetContent() {
     {
       role: "assistant",
       content:
-        "Hello! I am Naphier's AI Assistant. Ask me anything about his technical projects, full-stack architecture, experience, or certifications!",
+        `Hello! I am ${AUTHOR_INFO.shortName}'s AI Assistant. Ask me anything about his technical projects, full-stack architecture, experience, or certifications!`,
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -200,7 +201,7 @@ function ChatWidgetContent() {
           role: "assistant",
           content:
             data.reply ||
-            "I could not generate a response right now. Please feel free to email Naphier at naphiera@gmail.com!",
+            `I could not generate a response right now. Please feel free to email ${AUTHOR_INFO.shortName} at ${SOCIAL_PROFILES.email}!`,
         },
       ]);
     } catch {
@@ -209,7 +210,7 @@ function ChatWidgetContent() {
         {
           role: "assistant",
           content:
-            "Sorry, I am having trouble connecting right now. Please feel free to email Naphier directly at naphiera@gmail.com!",
+            `Sorry, I am having trouble connecting right now. Please feel free to email ${AUTHOR_INFO.shortName} directly at ${SOCIAL_PROFILES.email}!`,
         },
       ]);
     } finally {
@@ -266,7 +267,7 @@ function ChatWidgetContent() {
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="font-sans text-xs font-semibold text-ink leading-none">
-                    Naphier AI
+                    {AUTHOR_INFO.shortName} AI
                   </h3>
                   <span className="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase bg-surface border border-border-hairline text-muted-foreground">
                     {pageContext.pageType === "project_detail"

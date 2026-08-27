@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { AUTHOR_INFO, GITHUB_USERNAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
 
 interface ContributionDay {
   date: string;
@@ -43,7 +44,7 @@ export function GithubContributions() {
 
     async function fetchContributions() {
       try {
-        const res = await fetch("/api/github-contributions?username=naphiertech");
+        const res = await fetch(`/api/github-contributions?username=${GITHUB_USERNAME}`);
         if (!res.ok) throw new Error("Failed to fetch contributions");
         const json = await res.json();
         if (isMounted) {
@@ -73,12 +74,12 @@ export function GithubContributions() {
     return (
       <div className="w-full mt-4 pt-1 font-mono text-[11px] text-muted-foreground flex items-center justify-between">
         <a
-          href="https://github.com/naphiertech"
+          href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-ink transition-colors"
         >
-          View real contributions on @naphiertech ↗
+          View real contributions on {AUTHOR_INFO.handle} ↗
         </a>
       </div>
     );
@@ -182,12 +183,12 @@ export function GithubContributions() {
         </div>
 
         <a
-          href="https://github.com/naphiertech"
+          href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground/70 hover:text-ink transition-colors duration-150 text-[10px] sm:text-[11px]"
         >
-          @naphiertech ↗
+          {AUTHOR_INFO.handle} ↗
         </a>
       </div>
 

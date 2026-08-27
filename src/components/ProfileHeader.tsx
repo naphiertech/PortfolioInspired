@@ -7,6 +7,7 @@ import { SoundToggle } from "./SoundToggle";
 import { GithubContributions } from "./GithubContributions";
 import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
+import { AUTHOR_INFO, AVAILABILITY, EDUCATION, SITE_NAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
 
 export function ProfileHeader() {
   const [animationFrame, setAnimationFrame] = useState(0);
@@ -92,7 +93,7 @@ export function ProfileHeader() {
               <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
             </span>
             <span className="text-[11px] font-mono font-medium leading-none">
-              Available for work
+              {AVAILABILITY.label}
             </span>
           </div>
 
@@ -111,12 +112,12 @@ export function ProfileHeader() {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface border border-border-hairline shadow-md cursor-pointer group transition-transform duration-200"
-          title="Naphier Awalie"
+          title={SITE_NAME}
         >
           {/* Static Base Image */}
           <NextImage
             src="/profile/ezgif-frame-001.png"
-            alt="Naphier Awalie"
+            alt={SITE_NAME}
             fill
             sizes="100px"
             priority
@@ -140,7 +141,7 @@ export function ProfileHeader() {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight">
-              Naphier Awalie
+              {SITE_NAME}
             </h1>
             {/* Inline Sparkles SVG */}
             <svg
@@ -162,12 +163,12 @@ export function ProfileHeader() {
           {/* Handle & Subtitle */}
           <div className="flex items-center flex-wrap gap-x-3 gap-y-1.5 mt-1.5">
             <a
-              href="https://github.com/naphiertech"
+              href={SOCIAL_PROFILES.github}
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-200"
             >
-              @naphiertech
+              {AUTHOR_INFO.handle}
             </a>
             <span className="text-border-hairline">•</span>
             <div className="flex items-center gap-1 text-xs text-muted-foreground font-sans">
@@ -191,7 +192,7 @@ export function ProfileHeader() {
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              <span>Zamboanga City, Philippines</span>
+              <span>{AUTHOR_INFO.location}</span>
             </div>
             <span className="text-border-hairline">•</span>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -210,7 +211,7 @@ export function ProfileHeader() {
           </div>
 
           <p className="font-sans text-xs sm:text-[13px] text-muted-foreground mt-1.5 leading-relaxed">
-            BS Information Technology @ ZPPSU • Full-Stack & UI/UX Developer
+            {EDUCATION.degree} @ {EDUCATION.abbreviation} • {AUTHOR_INFO.profileRole}
           </p>
         </div>
       </div>
@@ -219,7 +220,7 @@ export function ProfileHeader() {
       <div className="flex items-center flex-wrap gap-2.5 mt-5 pt-1">
         {/* Schedule a Call */}
         <a
-          href="mailto:naphiera@gmail.com?subject=Let's%20Schedule%20a%20Call"
+          href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
           className="tactile-btn gap-1.5"
         >
           <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +230,7 @@ export function ProfileHeader() {
         </a>
 
         {/* Send Email */}
-        <a href="mailto:naphiera@gmail.com" className="tactile-btn gap-1.5">
+        <a href={`mailto:${SOCIAL_PROFILES.email}`} className="tactile-btn gap-1.5">
           <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
@@ -251,7 +252,7 @@ export function ProfileHeader() {
 
         {/* GitHub */}
         <a
-          href="https://github.com/naphiertech"
+          href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
           className="tactile-btn gap-1.5"

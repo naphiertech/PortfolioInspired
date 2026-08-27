@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { GITHUB_USERNAME } from "@/lib/siteConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const username = searchParams.get("username") || "naphiertech";
+    const username = searchParams.get("username") || GITHUB_USERNAME;
 
     // Return cached data if fresh
     const now = Date.now();

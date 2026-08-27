@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
+import { SITE_NAME, SITE_DEFAULT_TITLE, SITE_TAGLINE } from "@/lib/siteConfig";
 
-export const alt = "Naphier Awalie — Full-Stack Developer";
+export const alt = SITE_DEFAULT_TITLE;
 export const size = {
   width: 1200,
   height: 630,
@@ -66,7 +67,7 @@ export default async function Image() {
               lineHeight: 1.1,
             }}
           >
-            Naphier Awalie
+            {SITE_NAME}
           </h1>
           <p
             style={{
@@ -77,7 +78,7 @@ export default async function Image() {
               maxWidth: "800px",
             }}
           >
-            IT Student & Full-Stack Developer crafting high-performance, accessible, and clean digital solutions.
+            {`${SITE_TAGLINE} crafting high-performance, accessible, and clean digital solutions.`}
           </p>
         </div>
 

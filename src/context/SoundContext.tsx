@@ -21,6 +21,7 @@ interface SoundContextType {
   playOpen: () => void;
   playClose: () => void;
   playSnap: () => void;
+  playDissolve: (volumeScale?: number, durationSeconds?: number) => void;
   playRestore: () => void;
 }
 
@@ -30,33 +31,40 @@ const STORAGE_KEY = "naphier_sound_enabled";
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const soundEnabledRef = useRef(true);
   const pathname = usePathname();
   const isFirstRender = useRef(true);
 
   // Initialize sound settings & unlock listener
   useEffect(() => {
+    soundEnabledRef.current = true;
     soundEngine.initUnlockListener();
 
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored !== null) {
+        soundEnabledRef.current = stored === "true";
         setIsSoundEnabled(stored === "true");
       }
     } catch {
       // Ignore localStorage read errors
     }
+    return () => {
+      soundEnabledRef.current = false;
+      soundEngine.stopDissolves();
+    };
   }, []);
 
   const toggleSound = useCallback(() => {
-    setIsSoundEnabled((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem(STORAGE_KEY, String(next));
-      } catch {
-        // Ignore localStorage write errors
-      }
-      return next;
-    });
+    const next = !soundEnabledRef.current;
+    soundEnabledRef.current = next;
+    if (!next) soundEngine.stopDissolves();
+    setIsSoundEnabled(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, String(next));
+    } catch {
+      // Ignore localStorage write errors
+    }
   }, []);
 
   const playHover = useCallback(() => {
@@ -98,6 +106,12 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     soundEngine.playSnap();
   }, [isSoundEnabled]);
 
+  // A running async snap keeps this callback, so read the latest preference.
+  const playDissolve = useCallback((volumeScale = 1, durationSeconds?: number) => {
+    if (!soundEnabledRef.current) return;
+    soundEngine.playDissolve(volumeScale, durationSeconds);
+  }, []);
+
   const playRestore = useCallback(() => {
     if (!isSoundEnabled) return;
     soundEngine.playRestore();
@@ -124,6 +138,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
         playOpen,
         playClose,
         playSnap,
+        playDissolve,
         playRestore,
       }}
     >
@@ -132,7 +147,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useUISound() {
+export function useUISound(): SoundContextType {
   const context = useContext(SoundContext);
   if (!context) {
     // Fallback safe no-op object if used outside provider
@@ -146,6 +161,7 @@ export function useUISound() {
       playOpen: () => {},
       playClose: () => {},
       playSnap: () => {},
+      playDissolve: () => {},
       playRestore: () => {},
     };
   }

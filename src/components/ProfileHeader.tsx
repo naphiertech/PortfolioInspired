@@ -8,6 +8,7 @@ import { GithubContributions } from "./GithubContributions";
 import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { SnapTrigger } from "./SnapTrigger";
+import { SnappedFragment } from "./SnappedFragment";
 import { AUTHOR_INFO, AVAILABILITY, EDUCATION, SITE_NAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
 
 export function ProfileHeader() {
@@ -88,7 +89,10 @@ export function ProfileHeader() {
       <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-muted-foreground tracking-tight">
-            {"// developer & it student"}
+            {"// developer"}
+            <SnappedFragment id="header-eyebrow-student">
+              {" & it student"}
+            </SnappedFragment>
           </span>
         </div>
 
@@ -217,7 +221,10 @@ export function ProfileHeader() {
           </div>
 
           <p className="font-sans text-xs sm:text-[13px] text-muted-foreground mt-1.5 leading-relaxed">
-            {EDUCATION.degree} @ {EDUCATION.abbreviation} • {AUTHOR_INFO.profileRole}
+            {EDUCATION.degree} @ {EDUCATION.abbreviation} • Full-Stack
+            <SnappedFragment id="header-bio-uiux">
+              {" & UI/UX"}
+            </SnappedFragment> Developer
           </p>
         </div>
       </div>

@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Target, Layers, Workflow, Terminal } from "lucide-react";
+import { Target, Layers, Workflow } from "lucide-react";
 import { profileInfo } from "@/lib/data";
+import { SnappedFragment } from "./SnappedFragment";
 import {
   staggeredGridVariants,
   gridItemVariants,
-  contentBlockVariants,
   easeOutCubic,
 } from "@/lib/motion";
 
@@ -118,13 +118,13 @@ export function ProfileInfoBlock() {
                 </span>
               </div>
               <p className="font-sans text-xs text-muted-foreground leading-relaxed">
-                {profileInfo.currentFocus.description}
+                Building accessible<SnappedFragment id="focus-qualifiers">{", performant, and polished"}</SnappedFragment> digital experiences while strengthening <SnappedFragment id="focus-realworld">{"real-world "}</SnappedFragment>full-stack skills.
               </p>
             </div>
 
             <div className="mt-2.5 pt-2 border-t border-border-hairline/40">
               <span className="font-mono text-[11px] text-muted-foreground/90 dark:text-emerald-400/90 select-text">
-                {profileInfo.currentFocus.terminalLine}
+                &gt; learn · build<SnappedFragment id="terminal-iterate">{" · iterate"}</SnappedFragment> · ship
               </span>
             </div>
           </motion.article>
@@ -168,9 +168,53 @@ export function ProfileInfoBlock() {
                     {currentGroup.items.map((item) => (
                       <span
                         key={item}
-                        className="inline-flex items-center px-2 py-0.5 rounded-[4px] bg-muted-subtle border border-border-hairline text-[11px] font-sans font-medium text-ink/90 group-hover:text-ink transition-colors w-fit"
+                        className="inline-block px-2 py-0.5 rounded-[4px] bg-muted-subtle border border-border-hairline text-[11px] font-sans font-medium text-ink/90 group-hover:text-ink transition-colors w-fit"
                       >
-                        {item}
+                        {item === "Full-Stack Web Apps" ? (
+                          <>
+                            <SnappedFragment id="build-fullstack">
+                              {"Full-Stack "}
+                            </SnappedFragment>
+                            Web Apps
+                          </>
+                        ) : item === "Responsive Interfaces" ? (
+                          <>
+                            <SnappedFragment id="build-responsive">
+                              {"Responsive "}
+                            </SnappedFragment>
+                            Interfaces
+                          </>
+                        ) : item === "Dashboards & Portals" ? (
+                          <>
+                            Dashboards
+                            <SnappedFragment id="build-portals">
+                              {" & Portals"}
+                            </SnappedFragment>
+                          </>
+                        ) : item === "APIs & Integrations" ? (
+                          <>
+                            APIs
+                            <SnappedFragment id="build-integrations">
+                              {" & Integrations"}
+                            </SnappedFragment>
+                          </>
+                        ) : item === "UI Systems & Tooling" ? (
+                          <>
+                            UI Systems
+                            <SnappedFragment id="build-tooling">
+                              {" & Tooling"}
+                            </SnappedFragment>
+                          </>
+                        ) : item === "Database Tools" ? (
+                          <>
+                            <SnappedFragment id="build-db">
+                              {"Database "}
+                            </SnappedFragment>
+                            Tools
+                          </>
+                        ) : (
+                          item
+                        )}
                       </span>
                     ))}
                   </motion.div>
@@ -220,7 +264,33 @@ export function ProfileInfoBlock() {
                     >
                       ›
                     </span>
-                    <span>{principle}</span>
+                    <span>
+                      {principle === "Clean architecture & modularity" ? (
+                        <>
+                          Clean architecture
+                          <SnappedFragment id="how-modularity">
+                            {" & modularity"}
+                          </SnappedFragment>
+                        </>
+                      ) : principle === "Thoughtful, accessible interfaces" ? (
+                        <>
+                          Thoughtful
+                          <SnappedFragment id="how-accessible">
+                            {", accessible"}
+                          </SnappedFragment>
+                          {" interfaces"}
+                        </>
+                      ) : principle === "Fast iteration & continuous learning" ? (
+                        <>
+                          Fast iteration
+                          <SnappedFragment id="how-continuous">
+                            {" & continuous learning"}
+                          </SnappedFragment>
+                        </>
+                      ) : (
+                        principle
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -262,48 +332,6 @@ export function ProfileInfoBlock() {
           ))}
         </div>
       </div>
-
-      {/* Bottom Row: Compact Quick Facts Strip with Clean Responsive Grid & Desktop Dividers */}
-      <motion.aside
-        initial={shouldReduceMotion ? false : "hidden"}
-        whileInView={shouldReduceMotion ? undefined : "visible"}
-        viewport={{ once: true, amount: 0.15 }}
-        variants={shouldReduceMotion ? undefined : contentBlockVariants}
-        className="p-2.5 sm:p-3 rounded-md bg-surface/30 border border-border-hairline"
-        aria-label="Quick Facts"
-      >
-        <div className="flex items-center gap-1.5 mb-2 pb-1 border-b border-border-hairline/40">
-          <Terminal
-            className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 flex-shrink-0"
-            aria-hidden="true"
-          />
-          <span className="font-mono text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-            &lt;QUICK-FACTS/&gt;
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-0 lg:divide-x lg:divide-border-hairline/40">
-          {profileInfo.quickFacts.map((fact, idx) => (
-            <div
-              key={fact.label}
-              className={`space-y-0.5 min-w-0 ${
-                idx === profileInfo.quickFacts.length - 1
-                  ? "col-span-2 lg:col-span-1"
-                  : ""
-              } ${idx > 0 ? "lg:pl-3" : ""} ${
-                idx < profileInfo.quickFacts.length - 1 ? "lg:pr-3" : ""
-              }`}
-            >
-              <span className="block font-mono text-[9px] text-muted-foreground/70 tracking-wider">
-                {fact.label}
-              </span>
-              <span className="block font-sans text-[11px] sm:text-xs font-medium text-ink leading-snug break-words">
-                {fact.value}
-              </span>
-            </div>
-          ))}
-        </div>
-      </motion.aside>
     </div>
   );
 }

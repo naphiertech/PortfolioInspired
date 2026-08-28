@@ -33,6 +33,25 @@ export const ELIGIBLE_DOCK_IDS = [
 
 export type EligibleDockId = (typeof ELIGIBLE_DOCK_IDS)[number];
 
+export const ELIGIBLE_TEXT_FRAGMENT_IDS = [
+  "focus-qualifiers", // ", performant, and polished"
+  "focus-realworld", // "real-world "
+  "terminal-iterate", // " · iterate"
+  "how-modularity", // " & modularity"
+  "how-accessible", // ", accessible"
+  "how-continuous", // " & continuous learning"
+  "header-eyebrow-student", // " & it student"
+  "header-bio-uiux", // " & UI/UX"
+  "build-portals", // " & Portals"
+  "build-integrations", // " & Integrations"
+  "build-tooling", // " & Tooling"
+  "build-fullstack", // "Full-Stack "
+  "build-responsive", // "Responsive "
+  "build-db", // "Database "
+] as const;
+
+export type EligibleTextFragmentId = (typeof ELIGIBLE_TEXT_FRAGMENT_IDS)[number];
+
 export interface SectionBounds {
   id: string;
   top: number;
@@ -51,18 +70,22 @@ interface SnapContextType {
   snappedSectionIds: string[];
   snappingDockItems: string[];
   snappedDockItems: string[];
+  snappingTextFragmentIds: string[];
+  snappedTextFragmentIds: string[];
   restoringSectionIds: string[];
   activeDustBounds: SectionBounds[];
+  isSnappedText: (id: string) => boolean;
   triggerSnap: () => void;
   triggerRestore: () => void;
   registerSection: (id: string, el: HTMLElement | null) => void;
   registerDockItem: (name: string, el: HTMLElement | null) => void;
+  registerTextRef: (id: string, el: HTMLElement | null) => void;
 }
 
 const SnapContext = createContext<SnapContextType | undefined>(undefined);
 
 export function SnapProvider({ children }: { children: React.ReactNode }) {
-  const { playSnap, playRestore } = useUISound();
+  const { playSnap, playRestore, playDissolve } = useUISound();
 
   const [isSnapped, setIsSnapped] = useState(false);
   const [isSnapping, setIsSnapping] = useState(false);
@@ -74,11 +97,14 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
   const [snappedSectionIds, setSnappedSectionIds] = useState<string[]>([]);
   const [snappingDockItems, setSnappingDockItems] = useState<string[]>([]);
   const [snappedDockItems, setSnappedDockItems] = useState<string[]>([]);
+  const [snappingTextFragmentIds, setSnappingTextFragmentIds] = useState<string[]>([]);
+  const [snappedTextFragmentIds, setSnappedTextFragmentIds] = useState<string[]>([]);
   const [restoringSectionIds, setRestoringSectionIds] = useState<string[]>([]);
   const [activeDustBounds, setActiveDustBounds] = useState<SectionBounds[]>([]);
 
   const sectionRefs = useRef<Map<string, HTMLElement>>(new Map());
   const dockRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const textRefs = useRef<Map<string, HTMLElement>>(new Map());
 
   const registerSection = useCallback((id: string, el: HTMLElement | null) => {
     if (el) {
@@ -95,6 +121,21 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
       dockRefs.current.delete(name);
     }
   }, []);
+
+  const registerTextRef = useCallback((id: string, el: HTMLElement | null) => {
+    if (el) {
+      textRefs.current.set(id, el);
+    } else {
+      textRefs.current.delete(id);
+    }
+  }, []);
+
+  const isSnappedText = useCallback(
+    (id: string) => {
+      return snappedTextFragmentIds.includes(id);
+    },
+    [snappedTextFragmentIds]
+  );
 
   const triggerSnap = useCallback(async () => {
     if (isSnapping || isRestoring || isSnapped) return;
@@ -120,6 +161,13 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     const shuffledDock = [...ELIGIBLE_DOCK_IDS].sort(() => Math.random() - 0.5);
     const selectedDock = shuffledDock.slice(0, targetDockCount);
 
+    // Randomly select 3 to 5 semantic text fragments
+    const targetTextCount = Math.floor(Math.random() * 3) + 3;
+    const shuffledText = [...ELIGIBLE_TEXT_FRAGMENT_IDS].sort(
+      () => Math.random() - 0.5
+    );
+    const selectedTextIds = shuffledText.slice(0, targetTextCount);
+
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -135,12 +183,21 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         if (el) {
           el.scrollIntoView({ behavior: "instant", block: "center" });
         }
+        if (el?.isConnected) playDissolve(0.7, 0.4);
         await new Promise((resolve) => setTimeout(resolve, 250));
         setSnappedSectionIds((prev) => [...prev, id]);
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
+      selectedDock.forEach((dockName) => {
+        const dockEl =
+          dockRefs.current.get(dockName) ||
+          document.getElementById(`dock-item-${dockName.toLowerCase()}`);
+        if (dockEl?.isConnected) playDissolve(0.5 / selectedDock.length, 0.4);
+      });
       setSnappedDockItems(selectedDock);
+      setSnappedTextFragmentIds(selectedTextIds);
+
       window.scrollTo({ top: 0, behavior: "instant" });
       setIsSnapped(true);
       setIsSnapping(false);
@@ -180,8 +237,9 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         setActiveDustBounds(bounds);
       }
 
-      // Trigger original dissolution animation on this section
+      // Trigger original dissolution animation on this section AND start dissolve audio simultaneously
       setSnappingSectionIds([id]);
+      if (el?.isConnected) playDissolve(1, 1.35);
 
       // Original dust dissolution duration (1400ms)
       await new Promise((resolve) => setTimeout(resolve, 1400));
@@ -218,7 +276,9 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         setActiveDustBounds(dockBounds);
       }
 
+      // Trigger dock dust animation AND start dock dissolve audio simultaneously
       setSnappingDockItems(selectedDock);
+      selectedDock.forEach(() => playDissolve(0.55 / selectedDock.length, 1.1));
 
       // Dock dust timing (1100ms)
       await new Promise((resolve) => setTimeout(resolve, 1100));
@@ -240,10 +300,43 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     // Wait for scroll back to finish (~800ms)
     await new Promise((resolve) => setTimeout(resolve, 800));
 
+    // 7. Secondary Text Disintegration (Semantic-preserving word/phrase dust dissolution)
+    const textBounds: SectionBounds[] = [];
+    selectedTextIds.forEach((id) => {
+      const el =
+        textRefs.current.get(id) || document.getElementById(`snap-text-${id}`);
+      if (el && el.isConnected) {
+        const rect = el.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          textBounds.push({
+            id: `text-${id}`,
+            top: rect.top + window.scrollY,
+            left: rect.left + window.scrollX,
+            width: rect.width,
+            height: rect.height,
+          });
+        }
+      }
+    });
+
+    if (textBounds.length > 0) {
+      setActiveDustBounds(textBounds);
+    }
+
+    setSnappingTextFragmentIds(selectedTextIds);
+    setSnappedTextFragmentIds(selectedTextIds);
+    playDissolve(0.35, 0.7);
+
+    // Quick text dust timing (650ms)
+    await new Promise((resolve) => setTimeout(resolve, 650));
+
+    setSnappingTextFragmentIds([]);
+    setActiveDustBounds([]);
+
     setIsSnapped(true);
     setIsSnapping(false);
     setCurrentStep(0);
-  }, [isSnapping, isRestoring, isSnapped, playSnap]);
+  }, [isSnapping, isRestoring, isSnapped, playSnap, playDissolve]);
 
   const triggerRestore = useCallback(async () => {
     if (isSnapping || isRestoring || !isSnapped) return;
@@ -264,6 +357,8 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     if (prefersReduced) {
       setSnappedSectionIds([]);
       setSnappedDockItems([]);
+      setSnappedTextFragmentIds([]);
+      setSnappingTextFragmentIds([]);
       setIsSnapped(false);
       setIsRestoring(false);
       setCurrentStep(0);
@@ -274,6 +369,8 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     setRestoringSectionIds(previouslySnappedSections);
     setSnappedSectionIds([]); // instantly bring back section DOM
     setSnappedDockItems([]); // instantly restore dock items
+    setSnappedTextFragmentIds([]); // instantly trigger text rematerialization
+    setSnappingTextFragmentIds([]);
 
     // Allow rematerialization transition to settle (850ms)
     setTimeout(() => {
@@ -294,9 +391,11 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const sRefs = sectionRefs.current;
     const dRefs = dockRefs.current;
+    const tRefs = textRefs.current;
     return () => {
       sRefs.clear();
       dRefs.clear();
+      tRefs.clear();
     };
   }, []);
 
@@ -312,12 +411,16 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         snappedSectionIds,
         snappingDockItems,
         snappedDockItems,
+        snappingTextFragmentIds,
+        snappedTextFragmentIds,
         restoringSectionIds,
         activeDustBounds,
+        isSnappedText,
         triggerSnap,
         triggerRestore,
         registerSection,
         registerDockItem,
+        registerTextRef,
       }}
     >
       {children}
@@ -338,12 +441,16 @@ export function useSnap() {
       snappedSectionIds: [],
       snappingDockItems: [],
       snappedDockItems: [],
+      snappingTextFragmentIds: [],
+      snappedTextFragmentIds: [],
       restoringSectionIds: [],
       activeDustBounds: [],
+      isSnappedText: () => false,
       triggerSnap: () => {},
       triggerRestore: () => {},
       registerSection: () => {},
       registerDockItem: () => {},
+      registerTextRef: () => {},
     };
   }
   return context;

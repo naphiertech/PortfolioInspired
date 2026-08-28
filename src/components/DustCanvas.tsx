@@ -80,9 +80,20 @@ export function DustCanvas() {
 
     activeDustBounds.forEach((bound: SectionBounds) => {
       const area = bound.width * bound.height;
-      const density = isMobile ? 0.00045 : 0.0011;
-      const maxCount = isMobile ? 180 : 600;
-      const count = Math.min(maxCount, Math.max(isMobile ? 60 : 100, Math.floor(area * density)));
+      const isText = bound.id.startsWith("text-");
+      const density = isMobile
+        ? isText
+          ? 0.003
+          : 0.00045
+        : isText
+        ? 0.006
+        : 0.0011;
+      const minCount = isText ? (isMobile ? 16 : 24) : isMobile ? 60 : 100;
+      const maxCount = isText ? (isMobile ? 38 : 60) : isMobile ? 180 : 600;
+      const count = Math.min(
+        maxCount,
+        Math.max(minCount, Math.floor(area * density))
+      );
 
       for (let i = 0; i < count; i++) {
         const relX = Math.random();

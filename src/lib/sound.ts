@@ -9,6 +9,11 @@ class WebAudioSoundEngine {
   private isUnlocked = false;
   private lastHoverTime = 0;
   private readonly hoverCooldownMs = 45;
+  private dissolveVariation = 0;
+  private activeDissolves = new Set<{
+    source: AudioBufferSourceNode;
+    gain: GainNode;
+  }>();
 
   private getContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
@@ -322,6 +327,122 @@ class WebAudioSoundEngine {
     } catch {
       // Fail silently
     }
+  }
+
+  /**
+   * Dissolve: Cinematic disintegration texture spanning the full dust animation duration.
+   * Begins with a subtle textured onset, sweeps the filtered noise as elements break apart,
+   * and decays naturally as particles drift away. 100% procedural synthetic audio.
+   */
+  public playDissolve(volumeScale = 1, customDuration?: number) {
+    try {
+      const ctx = this.getContext();
+      if (!ctx || ctx.state !== "running") return;
+
+      const t = ctx.currentTime;
+      // Procedural variation step across successive voices
+      this.dissolveVariation = (this.dissolveVariation + 0.61803398875) % 1;
+      const variation = this.dissolveVariation;
+
+      // Base duration matches dust duration (~1.3s for sections, ~1.05s for dock)
+      const duration = customDuration ?? (1.25 + variation * 0.15);
+      const attack = 0.12 + Math.random() * 0.06;
+      const peakTime = t + Math.min(0.5, duration * 0.4);
+      const smoothing = 0.4 + Math.random() * 0.25;
+
+      const bufferSize = Math.ceil(ctx.sampleRate * (duration + 0.05));
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      let softNoise = 0;
+
+      for (let i = 0; i < bufferSize; i++) {
+        const whiteNoise = Math.random() * 2 - 1;
+        // Subtle micro-granular fluctuation to simulate breaking dust particles
+        const grain = Math.sin(i * 0.035 * (1 + variation)) * 0.1;
+        softNoise = softNoise * smoothing + whiteNoise * (1 - smoothing);
+        output[i] = (softNoise * 0.75 + whiteNoise * 0.25 + grain) * 0.9;
+      }
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+
+      // 1. Highpass filter to eliminate sub-rumble and keep dust crisp
+      const highpass = ctx.createBiquadFilter();
+      highpass.type = "highpass";
+      const hpBase = 160 + variation * 80;
+      highpass.frequency.setValueAtTime(hpBase, t);
+      highpass.frequency.linearRampToValueAtTime(hpBase + 120, t + duration);
+      highpass.Q.setValueAtTime(0.7, t);
+
+      // 2. Sweeping Lowpass/Bandpass filter matching the disintegration envelope
+      const lowpass = ctx.createBiquadFilter();
+      lowpass.type = "lowpass";
+      const lpStart = 750 + variation * 300;
+      const lpPeak = 2400 + variation * 800;
+      const lpEnd = 380 + Math.random() * 200;
+
+      lowpass.frequency.setValueAtTime(lpStart, t);
+      lowpass.frequency.exponentialRampToValueAtTime(lpPeak, peakTime);
+      lowpass.frequency.exponentialRampToValueAtTime(Math.max(100, lpEnd), t + duration);
+      lowpass.Q.setValueAtTime(1.1 + variation * 0.6, t);
+
+      // 3. Amplitude envelope: subtle onset -> peak disintegration -> natural airy decay
+      const gain = ctx.createGain();
+      const peakVolume = 0.046 * Math.max(0, Math.min(1, volumeScale));
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(peakVolume * 0.4, t + attack * 0.5);
+      gain.gain.exponentialRampToValueAtTime(peakVolume, peakTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+      gain.gain.linearRampToValueAtTime(0, t + duration + 0.02);
+
+      // 4. Subtle stereo field placement
+      const pan = typeof ctx.createStereoPanner === "function" ? ctx.createStereoPanner() : null;
+      if (pan) {
+        const panPos = (Math.random() - 0.5) * 0.55;
+        pan.pan.setValueAtTime(panPos, t);
+        pan.pan.linearRampToValueAtTime(panPos * 0.5, t + duration);
+      }
+
+      source.connect(highpass);
+      highpass.connect(lowpass);
+      lowpass.connect(gain);
+      gain.connect(pan || ctx.destination);
+      pan?.connect(ctx.destination);
+
+      const voice = { source, gain };
+      this.activeDissolves.add(voice);
+      source.onended = () => {
+        this.activeDissolves.delete(voice);
+        source.disconnect();
+        highpass.disconnect();
+        lowpass.disconnect();
+        gain.disconnect();
+        pan?.disconnect();
+      };
+
+      source.start(t);
+      source.stop(t + duration + 0.03);
+    } catch {
+      // Audio must never interrupt the snap sequence.
+    }
+  }
+
+  /** Fade out only dissolve tails; existing snap/restore sounds are untouched. */
+  public stopDissolves() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    this.activeDissolves.forEach(({ source, gain }) => {
+      try {
+        const currentGain = gain.gain.value;
+        gain.gain.cancelScheduledValues(t);
+        gain.gain.setValueAtTime(currentGain, t);
+        gain.gain.linearRampToValueAtTime(0, t + 0.02);
+        source.stop(t + 0.025);
+      } catch {
+        // A voice may already have finished.
+      }
+    });
+    this.activeDissolves.clear();
   }
 
   /**

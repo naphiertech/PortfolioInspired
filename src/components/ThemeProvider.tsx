@@ -44,10 +44,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setResolvedTheme(resolved);
 
       const root = document.documentElement;
-      if (resolved === "dark") {
+      const isDark = root.classList.contains("dark");
+      if (resolved === "dark" && !isDark) {
         root.classList.add("dark");
         root.classList.remove("light");
-      } else {
+      } else if (resolved === "light" && isDark) {
         root.classList.add("light");
         root.classList.remove("dark");
       }
@@ -124,10 +125,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       Math.max(y, window.innerHeight - y)
     );
 
+    // Suppress all DOM CSS transitions so the GPU compositor exclusively animates the snapshot
+    document.documentElement.classList.add("theme-transitioning");
+
     try {
       const transition = (
         document as unknown as {
-          startViewTransition: (cb: () => void) => { ready: Promise<void> };
+          startViewTransition: (cb: () => void) => {
+            ready: Promise<void>;
+            finished: Promise<void>;
+          };
         }
       ).startViewTransition(() => {
         applyThemeUpdate();
@@ -146,13 +153,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
               duration: 450,
               easing: "cubic-bezier(0.16, 1, 0.3, 1)",
               pseudoElement: "::view-transition-new(root)",
+              fill: "forwards",
             }
           );
         })
         .catch(() => {
           // Gracefully handled if browser transition gets canceled
         });
+
+      transition.finished
+        .finally(() => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              document.documentElement.classList.remove("theme-transitioning");
+            });
+          });
+        });
     } catch {
+      document.documentElement.classList.remove("theme-transitioning");
       applyThemeUpdate();
     }
   };

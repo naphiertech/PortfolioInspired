@@ -117,7 +117,7 @@
   }
 }
 
-/* 60fps Hardware-Accelerated Circular View Transitions */
+/* High-Refresh-Rate View Transitions (60Hz / 90Hz / 120Hz+) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none !important;
@@ -133,6 +133,15 @@
 
 ::view-transition-new(root) {
   z-index: 99999 !important;
+  will-change: clip-path;
+}
+
+/* Suppress DOM transitions during View Transition so the GPU compositor animates the visual snapshot exclusively */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: none !important;
 }
 
 /* Custom Scrollbar */

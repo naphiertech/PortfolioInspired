@@ -7,6 +7,7 @@ import { DustCanvas } from "@/components/DustCanvas";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
+import { SnapRouteGuard } from "@/components/SnapRouteGuard";
 import {
   SITE_URL,
   SITE_DEFAULT_TITLE,
@@ -141,7 +142,9 @@ export default function RootLayout({
 
               {/* Centered Page Shell Container (760px reading anchor) */}
               <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between">
-                <main className="w-full">{children}</main>
+                <main className="w-full">
+                  <SnapRouteGuard>{children}</SnapRouteGuard>
+                </main>
 
                 {/* Minimalist Tech Footer */}
                 <footer className="w-full mt-20 pt-8 border-t border-border-divider flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">

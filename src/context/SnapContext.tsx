@@ -9,6 +9,10 @@ import React, {
   useEffect,
 } from "react";
 import { useUISound } from "./SoundContext";
+import {
+  getSnappedDockIdForPathname,
+  RouteSnapStatus,
+} from "@/lib/snapRouteMap";
 
 export const ELIGIBLE_SECTION_IDS = [
   "about",
@@ -60,10 +64,13 @@ export interface SectionBounds {
   height: number;
 }
 
+export const SNAP_SESSION_STORAGE_KEY = "naphier_snap_session_v1";
+
 interface SnapContextType {
   isSnapped: boolean;
   isSnapping: boolean;
   isRestoring: boolean;
+  isSessionInitialized: boolean;
   currentStep: number;
   totalSteps: number;
   snappingSectionIds: string[];
@@ -75,6 +82,8 @@ interface SnapContextType {
   restoringSectionIds: string[];
   activeDustBounds: SectionBounds[];
   isSnappedText: (id: string) => boolean;
+  isRouteSnapped: (pathname: string) => boolean;
+  getRouteSnapStatus: (pathname: string) => RouteSnapStatus;
   triggerSnap: () => void;
   triggerRestore: () => void;
   registerSection: (id: string, el: HTMLElement | null) => void;
@@ -90,6 +99,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
   const [isSnapped, setIsSnapped] = useState(false);
   const [isSnapping, setIsSnapping] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [isSessionInitialized, setIsSessionInitialized] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [totalSteps, setTotalSteps] = useState(4);
 
@@ -105,6 +115,34 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
   const sectionRefs = useRef<Map<string, HTMLElement>>(new Map());
   const dockRefs = useRef<Map<string, HTMLElement>>(new Map());
   const textRefs = useRef<Map<string, HTMLElement>>(new Map());
+
+  // Restore session-only snap state upon client initialization
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const rawSession = sessionStorage.getItem(SNAP_SESSION_STORAGE_KEY);
+        if (rawSession) {
+          const data = JSON.parse(rawSession);
+          if (data && data.isSnapped) {
+            setIsSnapped(true);
+            if (Array.isArray(data.snappedSectionIds)) {
+              setSnappedSectionIds(data.snappedSectionIds);
+            }
+            if (Array.isArray(data.snappedDockItems)) {
+              setSnappedDockItems(data.snappedDockItems);
+            }
+            if (Array.isArray(data.snappedTextFragmentIds)) {
+              setSnappedTextFragmentIds(data.snappedTextFragmentIds);
+            }
+          }
+        }
+      }
+    } catch {
+      // Safely ignore storage serialization errors
+    } finally {
+      setIsSessionInitialized(true);
+    }
+  }, []);
 
   const registerSection = useCallback((id: string, el: HTMLElement | null) => {
     if (el) {
@@ -136,6 +174,71 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     },
     [snappedTextFragmentIds]
   );
+
+  /**
+   * Universal 3-state resolution for route snap status:
+   * - "normal": Route is not snap-eligible (e.g. "/") or item is not currently snapped
+   * - "unknown": Snap-eligible route whose session state has not been verified from sessionStorage yet
+   * - "snapped": Snap-eligible route that was disintegrated in the active session
+   */
+  const getRouteSnapStatus = useCallback(
+    (pathname: string): RouteSnapStatus => {
+      const dockId = getSnappedDockIdForPathname(pathname);
+      // Non-snap-eligible routes are never blocked
+      if (!dockId) return "normal";
+
+      // If browser session state has not been checked from sessionStorage yet
+      if (!isSessionInitialized) return "unknown";
+
+      // If active session is snapped and not restoring, and the dock item is snapped
+      if (isSnapped && !isRestoring && snappedDockItems.includes(dockId)) {
+        return "snapped";
+      }
+
+      return "normal";
+    },
+    [isSessionInitialized, isSnapped, isRestoring, snappedDockItems]
+  );
+
+  /**
+   * Boolean helper for convenience.
+   */
+  const isRouteSnapped = useCallback(
+    (pathname: string): boolean => {
+      return getRouteSnapStatus(pathname) === "snapped";
+    },
+    [getRouteSnapStatus]
+  );
+
+  const saveToSession = (
+    sections: string[],
+    dockItems: string[],
+    textIds: string[]
+  ) => {
+    try {
+      if (typeof window === "undefined") return;
+      sessionStorage.setItem(
+        SNAP_SESSION_STORAGE_KEY,
+        JSON.stringify({
+          isSnapped: true,
+          snappedSectionIds: sections,
+          snappedDockItems: dockItems,
+          snappedTextFragmentIds: textIds,
+        })
+      );
+    } catch {
+      // Ignore storage errors
+    }
+  };
+
+  const clearSession = () => {
+    try {
+      if (typeof window === "undefined") return;
+      sessionStorage.removeItem(SNAP_SESSION_STORAGE_KEY);
+    } catch {
+      // Ignore storage errors
+    }
+  };
 
   const triggerSnap = useCallback(async () => {
     if (isSnapping || isRestoring || isSnapped) return;
@@ -202,6 +305,9 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
       setIsSnapped(true);
       setIsSnapping(false);
       setCurrentStep(0);
+
+      // Persist active session
+      saveToSession(selectedSections, selectedDock, selectedTextIds);
       return;
     }
 
@@ -294,11 +400,11 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     // 5. Short pause before returning to top (400ms)
     await new Promise((resolve) => setTimeout(resolve, 400));
 
-    // 6. Smoothly scroll back to hero / top
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
-    // Wait for scroll back to finish (~800ms)
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    // 6. Smoothly scroll back to hero / top if on home page
+    if (typeof window !== "undefined" && window.location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      await new Promise((resolve) => setTimeout(resolve, 800));
+    }
 
     // 7. Secondary Text Disintegration (Semantic-preserving word/phrase dust dissolution)
     const textBounds: SectionBounds[] = [];
@@ -336,6 +442,9 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     setIsSnapped(true);
     setIsSnapping(false);
     setCurrentStep(0);
+
+    // Persist active session state
+    saveToSession(selectedSections, selectedDock, selectedTextIds);
   }, [isSnapping, isRestoring, isSnapped, playSnap, playDissolve]);
 
   const triggerRestore = useCallback(async () => {
@@ -344,15 +453,20 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     setIsRestoring(true);
     playRestore();
 
+    // Clear session storage on restore
+    clearSession();
+
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Keep/return viewport at hero/top
-    window.scrollTo({
-      top: 0,
-      behavior: prefersReduced ? "instant" : "smooth",
-    });
+    // Return viewport to top if on home page
+    if (typeof window !== "undefined" && window.location.pathname === "/") {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReduced ? "instant" : "smooth",
+      });
+    }
 
     if (prefersReduced) {
       setSnappedSectionIds([]);
@@ -405,6 +519,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         isSnapped,
         isSnapping,
         isRestoring,
+        isSessionInitialized,
         currentStep,
         totalSteps,
         snappingSectionIds,
@@ -416,6 +531,8 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         restoringSectionIds,
         activeDustBounds,
         isSnappedText,
+        isRouteSnapped,
+        getRouteSnapStatus,
         triggerSnap,
         triggerRestore,
         registerSection,
@@ -435,6 +552,7 @@ export function useSnap() {
       isSnapped: false,
       isSnapping: false,
       isRestoring: false,
+      isSessionInitialized: true,
       currentStep: 0,
       totalSteps: 4,
       snappingSectionIds: [],
@@ -446,6 +564,8 @@ export function useSnap() {
       restoringSectionIds: [],
       activeDustBounds: [],
       isSnappedText: () => false,
+      isRouteSnapped: () => false,
+      getRouteSnapStatus: () => "normal" as RouteSnapStatus,
       triggerSnap: () => {},
       triggerRestore: () => {},
       registerSection: () => {},

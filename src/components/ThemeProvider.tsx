@@ -71,6 +71,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       "startViewTransition" in document &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const targetResolved: "light" | "dark" =
+      newTheme === "system"
+        ? mediaQuery.matches
+          ? "dark"
+          : "light"
+        : newTheme;
+
+    if (newTheme === theme && targetResolved === resolvedTheme) {
+      return;
+    }
+
     const applyThemeUpdate = () => {
       setThemeState(newTheme);
       try {
@@ -79,17 +91,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         // Ignore localStorage errors
       }
 
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const resolved =
-        newTheme === "system"
-          ? mediaQuery.matches
-            ? "dark"
-            : "light"
-          : newTheme;
-
-      setResolvedTheme(resolved);
+      setResolvedTheme(targetResolved);
       const root = document.documentElement;
-      if (resolved === "dark") {
+      if (targetResolved === "dark") {
         root.classList.add("dark");
         root.classList.remove("light");
       } else {
@@ -106,7 +110,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     let x = event?.clientX ?? 0;
     let y = event?.clientY ?? 0;
 
-    if (!x && !y && event?.currentTarget) {
+    if (event?.currentTarget && (event.currentTarget as HTMLElement).getBoundingClientRect) {
       const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
       x = rect.left + rect.width / 2;
       y = rect.top + rect.height / 2;
@@ -120,29 +124,37 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       Math.max(y, window.innerHeight - y)
     );
 
-    const transition = (
-      document as unknown as {
-        startViewTransition: (cb: () => void) => { ready: Promise<void> };
-      }
-    ).startViewTransition(() => {
-      applyThemeUpdate();
-    });
-
-    transition.ready.then(() => {
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 450,
-          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-          pseudoElement: "::view-transition-new(root)",
+    try {
+      const transition = (
+        document as unknown as {
+          startViewTransition: (cb: () => void) => { ready: Promise<void> };
         }
-      );
-    });
+      ).startViewTransition(() => {
+        applyThemeUpdate();
+      });
+
+      transition.ready
+        .then(() => {
+          document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 450,
+              easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+              pseudoElement: "::view-transition-new(root)",
+            }
+          );
+        })
+        .catch(() => {
+          // Gracefully handled if browser transition gets canceled
+        });
+    } catch {
+      applyThemeUpdate();
+    }
   };
 
   return (

@@ -122,16 +122,17 @@
 ::view-transition-new(root) {
   animation: none !important;
   mix-blend-mode: normal !important;
-  height: 100%;
-  overflow: clip;
+  display: block !important;
+  height: 100% !important;
+  overflow: clip !important;
 }
 
 ::view-transition-old(root) {
-  z-index: 1;
+  z-index: 1 !important;
 }
 
 ::view-transition-new(root) {
-  z-index: 9999;
+  z-index: 99999 !important;
 }
 
 /* Custom Scrollbar */
@@ -425,20 +426,4 @@
   }
 }
 
-/* ==========================================================================
-   Circular View Transition (Explosion / Expanding Wave Theme Switcher)
-   ========================================================================== */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-::view-transition-old(root) {
-  z-index: 1;
-}
-
-::view-transition-new(root) {
-  z-index: 99999;
-}
 

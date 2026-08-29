@@ -251,8 +251,7 @@ export function DustCanvas() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-[9999]"
-      style={{ willChange: "transform" }}
+      className="fixed inset-0 pointer-events-none z-[60]"
     />
   );
 }

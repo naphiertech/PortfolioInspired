@@ -30,6 +30,7 @@ interface NavItemLinkProps {
   isDesktopPointer: boolean;
   isSnapping?: boolean;
   isRestoring?: boolean;
+  isSnapActive?: boolean;
   onRegisterRef?: (el: HTMLElement | null) => void;
 }
 
@@ -42,6 +43,7 @@ function NavItemLink({
   isDesktopPointer,
   isSnapping = false,
   isRestoring = false,
+  isSnapActive = false,
   onRegisterRef,
 }: NavItemLinkProps) {
   const [offset, setOffset] = useState({ x: 0, y: 0, scale: 1 });
@@ -75,7 +77,7 @@ function NavItemLink({
 
   return (
     <motion.div
-      layout
+      layout={isSnapActive ? "size" : false}
       id={`dock-item-${item.name.toLowerCase()}`}
       initial={
         isRestoring
@@ -88,7 +90,6 @@ function NavItemLink({
               opacity: 0,
               filter: "blur(2.5px) brightness(1.2)",
               scale: 0.95,
-              width: "auto",
               transition: { duration: 1.0, ease: "easeOut" },
             }
           : isRestoring
@@ -99,12 +100,7 @@ function NavItemLink({
               filter: "blur(0px)",
               transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
             }
-          : {
-              opacity: 1,
-              scale: 1,
-              width: "auto",
-              filter: "blur(0px)",
-            }
+          : undefined
       }
       exit={{
         opacity: 0,
@@ -176,13 +172,22 @@ export function NavigationDock() {
   const pathname = usePathname();
   const { playHover, playClick } = useUISound();
   const {
+    isSnapped,
+    isSnapping,
+    isRestoring,
     snappingDockItems,
     snappedDockItems,
-    isRestoring,
     registerDockItem,
   } = useSnap();
   const shouldReduceMotion = useReducedMotion();
   const [isDesktopPointer, setIsDesktopPointer] = useState(false);
+
+  const isSnapActive =
+    isSnapped ||
+    isSnapping ||
+    isRestoring ||
+    snappedDockItems.length > 0 ||
+    snappingDockItems.length > 0;
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -226,7 +231,7 @@ export function NavigationDock() {
   return (
     <div className="fixed bottom-7 sm:bottom-7 left-0 right-0 flex justify-center z-50 pointer-events-none max-sm:bottom-4">
       <motion.nav
-        layout
+        layout={isSnapActive ? "size" : false}
         transition={{
           layout: shouldReduceMotion
             ? { duration: 0 }
@@ -235,7 +240,7 @@ export function NavigationDock() {
         className="nav-dock pointer-events-auto flex items-center justify-center gap-0.5 sm:gap-1"
         aria-label="Bottom Quick Navigation"
       >
-        <AnimatePresence mode="popLayout" initial={false}>
+        <AnimatePresence initial={false}>
           {navItems.map((item) => {
             const isActive =
               item.href === "/"
@@ -261,6 +266,7 @@ export function NavigationDock() {
                 isDesktopPointer={isDesktopPointer}
                 isSnapping={isSnapping}
                 isRestoring={isRestoring}
+                isSnapActive={isSnapActive}
                 onRegisterRef={
                   !isHome
                     ? (el) => registerDockItem(item.name, el)

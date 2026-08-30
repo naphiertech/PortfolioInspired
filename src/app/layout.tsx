@@ -9,6 +9,8 @@ import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
 import { SnapRouteGuard } from "@/components/SnapRouteGuard";
 import { Analytics } from "@vercel/analytics/next";
+import { TechnicalGrid } from "@/components/TechnicalGrid";
+import { EditorialDivider } from "@/components/EditorialDivider";
 import {
   SITE_URL,
   SITE_DEFAULT_TITLE,
@@ -141,14 +143,18 @@ export default function RootLayout({
             <SnapProvider>
               <PWARegister />
 
+              {/* Architectural Technical Editorial Grid Layer */}
+              <TechnicalGrid />
+
               {/* Centered Page Shell Container (760px reading anchor) */}
-              <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between">
+              <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between z-10">
                 <main className="w-full">
                   <SnapRouteGuard>{children}</SnapRouteGuard>
                 </main>
 
-                {/* Minimalist Tech Footer */}
-                <footer className="w-full mt-20 pt-8 border-t border-border-divider flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
+                {/* Minimalist Tech Footer with Editorial Rail */}
+                <EditorialDivider className="mt-16 mb-6" />
+                <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
                   <p>
                     &copy; 2026 {SITE_NAME}. Designed with precision & craft.
                   </p>

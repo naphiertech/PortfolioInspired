@@ -10,6 +10,7 @@ import {
   FileText,
 } from "lucide-react";
 import { TechIcon } from "@/components/TechIcon";
+import { EditorialDivider } from "@/components/EditorialDivider";
 import { coreTechStack, workCapabilities } from "@/lib/data";
 import { AUTHOR_INFO, AVAILABILITY, SOCIAL_PROFILES } from "@/lib/siteConfig";
 
@@ -97,8 +98,11 @@ export function WorkClient() {
         </p>
       </div>
 
+      {/* Horizontal Structural Rail before Capabilities */}
+      <EditorialDivider className="my-8 sm:my-10" />
+
       {/* Section: <WHAT-I-CAN-HELP-WITH/> */}
-      <section className="space-y-4 pt-2">
+      <section className="space-y-4">
         <div className="flex items-center gap-2">
           <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
             &lt;what-i-can-help-with/&gt;
@@ -141,8 +145,11 @@ export function WorkClient() {
         </p>
       </section>
 
+      {/* Horizontal Structural Rail before Collaboration */}
+      <EditorialDivider className="my-8 sm:my-10" />
+
       {/* Section: <LET'S-WORK-TOGETHER/> */}
-      <section className="space-y-5 pt-2 border-t border-border-hairline/60">
+      <section className="space-y-5">
         <div className="flex items-center gap-2 pt-2">
           <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
             &lt;let&apos;s-work-together/&gt;

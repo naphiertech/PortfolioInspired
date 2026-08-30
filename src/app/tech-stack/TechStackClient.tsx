@@ -13,6 +13,7 @@ import {
 } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
+import { EditorialDivider } from "@/components/EditorialDivider";
 import { useUISound } from "@/context/SoundContext";
 
 const categorySyntaxMap: Record<string, string> = {
@@ -164,6 +165,9 @@ export function TechStackClient() {
           {techStackIntro.footer}
         </p>
       </div>
+
+      {/* Horizontal Structural Rail before Tech Atlas */}
+      <EditorialDivider className="mb-6 sm:mb-8" />
 
       {/* Editorial Tech Atlas (Full-Width Catalog Rows) */}
       <div className="divide-y divide-black/[0.05] dark:divide-white/[0.05] border-y border-black/[0.06] dark:border-white/[0.06]">

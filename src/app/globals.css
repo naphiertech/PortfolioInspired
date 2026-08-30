@@ -25,6 +25,13 @@
   --border-reticle: rgba(255, 255, 255, 0.9);
   --border-divider: rgba(255, 255, 255, 0.06);
 
+  /* Technical Editorial Grid (Dark-first empirical) */
+  --grid-guide: rgba(255, 255, 255, 0.04);
+  --grid-guide-subtle: rgba(255, 255, 255, 0.02);
+  --grid-crosshair: rgba(255, 255, 255, 0.22);
+  --grid-dot: rgba(255, 255, 255, 0.04);
+  --grid-hatch: rgba(255, 255, 255, 0.015);
+
   --status-active: #ffffff;
   --status-ping: rgba(255, 255, 255, 0.5);
   --metric-star: #eab308;
@@ -72,6 +79,13 @@
   --border-dashed: rgba(0, 0, 0, 0.12);
   --border-reticle: rgba(0, 0, 0, 0.9);
   --border-divider: rgba(0, 0, 0, 0.06);
+
+  /* Technical Editorial Grid (Light extension) */
+  --grid-guide: rgba(0, 0, 0, 0.045);
+  --grid-guide-subtle: rgba(0, 0, 0, 0.025);
+  --grid-crosshair: rgba(0, 0, 0, 0.22);
+  --grid-dot: rgba(0, 0, 0, 0.045);
+  --grid-hatch: rgba(0, 0, 0, 0.015);
 
   --status-active: #09090b;
   --status-ping: rgba(0, 0, 0, 0.4);
@@ -434,5 +448,29 @@ html.theme-transitioning *::after {
     opacity: 1 !important;
   }
 }
+
+/* Technical CAD Dot Grid Texture */
+.bg-technical-dots {
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Subtle Architectural Diagonal Hatch for outer margin gutters */
+.bg-architectural-hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 6px,
+    var(--grid-hatch) 6px,
+    var(--grid-hatch) 7px
+  );
+}
+
+/* Editorial Section Divider with subtle CAD border */
+.editorial-section-divider {
+  border-top: 1px solid var(--grid-guide);
+  position: relative;
+}
+
 
 

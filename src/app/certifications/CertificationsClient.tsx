@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Award } from "lucide-react";
 import { certifications } from "@/lib/data";
+import { EditorialDivider } from "@/components/EditorialDivider";
 
 function GoogleLogo({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -102,6 +103,9 @@ export function CertificationsClient() {
           </span>
         </div>
       </div>
+
+      {/* Horizontal Structural Rail */}
+      <EditorialDivider className="my-8 sm:my-10" />
 
       {/* Certifications Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

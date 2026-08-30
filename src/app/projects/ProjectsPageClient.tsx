@@ -7,6 +7,7 @@ import { fullProjects } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { ProjectMedia } from "@/components/ProjectMedia";
+import { EditorialDivider } from "@/components/EditorialDivider";
 import { useUISound } from "@/context/SoundContext";
 
 export function ProjectsPageClient() {
@@ -40,6 +41,9 @@ export function ProjectsPageClient() {
           </span>
         </div>
       </div>
+
+      {/* Horizontal Structural Rail */}
+      <EditorialDivider className="mb-10 sm:mb-12" />
 
       {/* 2-Column Responsive CAD Project Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

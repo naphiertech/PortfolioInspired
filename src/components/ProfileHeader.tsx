@@ -8,6 +8,7 @@ import { GithubContributions } from "./GithubContributions";
 import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { SnapTrigger } from "./SnapTrigger";
+import { EditorialDivider } from "./EditorialDivider";
 import {
   AUTHOR_INFO,
   AVAILABILITY,
@@ -332,8 +333,14 @@ export function ProfileHeader() {
         </div>
       </div>
 
+      {/* Horizontal Structural Rail before Developer Profile Matrix */}
+      <EditorialDivider className="mt-8 mb-6 sm:mt-10 sm:mb-7" />
+
       {/* Structured Developer Profile Matrix (Current Focus, Capabilities, Principles) */}
       <ProfileInfoBlock />
+
+      {/* Horizontal Structural Rail before GitHub Graph */}
+      <EditorialDivider className="mt-6 mb-6 sm:mt-8 sm:mb-7" />
 
       {/* Real GitHub Contribution Graph */}
       <GithubContributions />

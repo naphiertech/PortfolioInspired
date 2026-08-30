@@ -7,6 +7,7 @@ import { FullProjectItem } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { ProjectMedia } from "@/components/ProjectMedia";
+import { EditorialDivider } from "@/components/EditorialDivider";
 import { useUISound } from "@/context/SoundContext";
 
 interface ProjectDetailClientProps {
@@ -129,8 +130,11 @@ export function ProjectDetailClient({
         />
       </div>
 
+      {/* Horizontal Structural Rail before About */}
+      <EditorialDivider className="my-8 sm:my-10" />
+
       {/* Section: <about-project/> */}
-      <section className="space-y-3 pt-2">
+      <section className="space-y-3">
         <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
           &lt;about-project/&gt;
         </span>
@@ -139,8 +143,11 @@ export function ProjectDetailClient({
         </div>
       </section>
 
+      {/* Horizontal Structural Rail before Stack */}
+      <EditorialDivider className="my-8 sm:my-10" />
+
       {/* Section: <tech-stack/> */}
-      <section className="space-y-3 pt-2">
+      <section className="space-y-3">
         <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
           &lt;tech-stack/&gt;
         </span>
@@ -163,115 +170,128 @@ export function ProjectDetailClient({
 
       {/* Section: <key-features/> */}
       {project.features && project.features.length > 0 && (
-        <section className="space-y-4 pt-2">
-          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
-            &lt;key-features/&gt;
-          </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {project.features.map((feature, idx) => (
-              <div
-                key={idx}
-                className="flex items-start gap-2.5 p-3 rounded-lg bg-surface/30 border border-border-hairline font-sans text-xs sm:text-[13px] text-ink leading-relaxed"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60 flex-shrink-0 mt-1.5" />
-                <span>{feature}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+        <>
+          <EditorialDivider className="my-8 sm:my-10" />
+          <section className="space-y-4">
+            <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
+              &lt;key-features/&gt;
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {project.features.map((feature, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-2.5 p-3 rounded-lg bg-surface/30 border border-border-hairline font-sans text-xs sm:text-[13px] text-ink leading-relaxed"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60 flex-shrink-0 mt-1.5" />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
       {/* Section: <gallery/> (Responsive Screenshot Gallery) */}
       {galleryImages.length > 0 && (
-        <section className="space-y-4 pt-2">
-          <div className="flex items-center justify-between">
-            <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-              &lt;gallery/&gt;
-            </span>
-            <span className="font-mono text-[11px] text-muted-foreground">
-              {galleryImages.length} additional screens
-            </span>
-          </div>
+        <>
+          <EditorialDivider className="my-8 sm:my-10" />
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
+                &lt;gallery/&gt;
+              </span>
+              <span className="font-mono text-[11px] text-muted-foreground">
+                {galleryImages.length} additional screens
+              </span>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {galleryImages.map((screen, idx) => (
-              <div
-                key={idx}
-                className="cad-project-card group relative aspect-video w-full rounded-md overflow-hidden bg-surface border border-border-hairline shadow-sm"
-              >
-                <div className="cad-reticle cad-reticle--tl" />
-                <div className="cad-reticle cad-reticle--tr" />
-                <div className="cad-reticle cad-reticle--br" />
-                <div className="cad-reticle cad-reticle--bl" />
-                <ProjectMedia
-                  src={screen}
-                  alt={`${project.title} screenshot ${idx + 1}`}
-                  sizes="(max-width: 640px) 100vw, 360px"
-                  className="border-0 rounded-none"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {galleryImages.map((screen, idx) => (
+                <div
+                  key={idx}
+                  className="cad-project-card group relative aspect-video w-full rounded-md overflow-hidden bg-surface border border-border-hairline shadow-sm"
+                >
+                  <div className="cad-reticle cad-reticle--tl" />
+                  <div className="cad-reticle cad-reticle--tr" />
+                  <div className="cad-reticle cad-reticle--br" />
+                  <div className="cad-reticle cad-reticle--bl" />
+                  <ProjectMedia
+                    src={screen}
+                    alt={`${project.title} screenshot ${idx + 1}`}
+                    sizes="(max-width: 640px) 100vw, 360px"
+                    className="border-0 rounded-none"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
       {/* Section: <technical-decisions/> */}
       {project.technicalDecisions && project.technicalDecisions.length > 0 && (
-        <section className="space-y-3.5 pt-2" aria-label="Technical Decisions">
-          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
-            &lt;technical-decisions/&gt;
-          </span>
-          <div className="space-y-3">
-            {project.technicalDecisions.map((decision, idx) => (
-              <div
-                key={idx}
-                className="p-4 sm:p-4.5 rounded-lg bg-surface/30 border border-border-hairline space-y-1.5 transition-colors"
-              >
-                <h3 className="font-sans text-sm sm:text-[14px] font-semibold text-ink leading-snug">
-                  {decision.title}
-                </h3>
-                <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
-                  {decision.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <>
+          <EditorialDivider className="my-8 sm:my-10" />
+          <section className="space-y-3.5" aria-label="Technical Decisions">
+            <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
+              &lt;technical-decisions/&gt;
+            </span>
+            <div className="space-y-3">
+              {project.technicalDecisions.map((decision, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 sm:p-4.5 rounded-lg bg-surface/30 border border-border-hairline space-y-1.5 transition-colors"
+                >
+                  <h3 className="font-sans text-sm sm:text-[14px] font-semibold text-ink leading-snug">
+                    {decision.title}
+                  </h3>
+                  <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
+                    {decision.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
       {/* Section: <what-i-learned/> */}
       {project.learnings && project.learnings.length > 0 && (
-        <section className="space-y-3.5 pt-2" aria-label="What I Learned">
-          <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
-            &lt;what-i-learned/&gt;
-          </span>
-          <div className="space-y-3">
-            {project.learnings.map((learning, idx) => (
-              <div
-                key={idx}
-                className="flex items-start gap-3.5 p-4 sm:p-4.5 rounded-lg bg-surface/30 border border-border-hairline transition-colors"
-              >
-                <span className="font-mono text-xs font-semibold text-brand/80 dark:text-brand/90 flex-shrink-0 mt-0.5 select-none">
-                  {String(idx + 1).padStart(2, "0")}
-                </span>
-                <div className="space-y-1">
-                  <h3 className="font-sans text-sm sm:text-[14px] font-semibold text-ink leading-snug">
-                    {learning.title}
-                  </h3>
-                  <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
-                    {learning.description}
-                  </p>
+        <>
+          <EditorialDivider className="my-8 sm:my-10" />
+          <section className="space-y-3.5" aria-label="What I Learned">
+            <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
+              &lt;what-i-learned/&gt;
+            </span>
+            <div className="space-y-3">
+              {project.learnings.map((learning, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-3.5 p-4 sm:p-4.5 rounded-lg bg-surface/30 border border-border-hairline transition-colors"
+                >
+                  <span className="font-mono text-xs font-semibold text-brand/80 dark:text-brand/90 flex-shrink-0 mt-0.5 select-none">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                  <div className="space-y-1">
+                    <h3 className="font-sans text-sm sm:text-[14px] font-semibold text-ink leading-snug">
+                      {learning.title}
+                    </h3>
+                    <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
+                      {learning.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
       {/* Bottom Navigation: Previous / All / Next Project */}
+      <EditorialDivider className="my-8 sm:my-10" />
       <nav
         aria-label="Project Navigation"
-        className="pt-6 border-t border-border-hairline/60 space-y-4"
+        className="space-y-4"
       >
         <div className="flex items-center justify-between flex-wrap gap-3 font-mono text-xs">
           {prevProject ? (

@@ -21,6 +21,13 @@ const config: Config = {
           subtle: "var(--bg-muted-subtle)",
           foreground: "var(--text-muted)",
         },
+        grid: {
+          guide: "var(--grid-guide)",
+          "guide-subtle": "var(--grid-guide-subtle)",
+          crosshair: "var(--grid-crosshair)",
+          dot: "var(--grid-dot)",
+          hatch: "var(--grid-hatch)",
+        },
         ink: "var(--text-ink)",
         body: "var(--text-body)",
         faint: "var(--text-faint)",

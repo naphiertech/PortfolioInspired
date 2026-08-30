@@ -8,6 +8,7 @@ import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
 import { SnapRouteGuard } from "@/components/SnapRouteGuard";
+import { Analytics } from "@vercel/analytics/next";
 import {
   SITE_URL,
   SITE_DEFAULT_TITLE,
@@ -171,6 +172,9 @@ export default function RootLayout({
 
               {/* AI Assistant Chat Widget */}
               <ChatWidget />
+
+              {/* Vercel Web Analytics */}
+              <Analytics />
             </SnapProvider>
           </SoundProvider>
         </ThemeProvider>

@@ -86,7 +86,7 @@ export function ProfileHeader() {
   return (
     <section className="relative w-full select-none mb-16">
       {/* Top Portfolio Visual Banner */}
-      <div className="relative w-full h-36 sm:h-44 md:h-48 rounded-2xl overflow-hidden border border-border-hairline bg-surface/40 shadow-xs">
+      <div className="relative w-full h-44 sm:h-44 md:h-48 rounded-2xl overflow-hidden border border-border-hairline bg-surface/40 shadow-xs">
         {/* Custom Header Background Image */}
         <NextImage
           src="/background-header/background.png"
@@ -99,17 +99,23 @@ export function ProfileHeader() {
 
         {/* Subtle Theme-Aware Bottom Vignette for Seamless Portrait Transition */}
         <div className="absolute inset-0 bg-gradient-to-t from-page/80 via-transparent to-transparent z-10 pointer-events-none" />
+
+        {/* Mobile-Only Floating Theme & Sound Controls (Top Right of Cover) */}
+        <div className="absolute top-2.5 right-2.5 z-20 flex sm:hidden items-center gap-1.5 p-1 rounded-xl bg-page/70 backdrop-blur-md border border-border-hairline shadow-xs">
+          <SoundToggle />
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Profile Header Content Container */}
       <div className="px-1 sm:px-2">
-        {/* Upper Row: Overlapping Portrait on Left + Status & Controls on Right */}
-        <div className="flex items-end justify-between gap-3 -mt-10 sm:-mt-12 md:-mt-14 mb-3.5 relative z-20">
-          {/* Overlapping Profile Avatar with Animated Frames - Shifted slightly left */}
+        {/* Upper Row: Overlapping Portrait + Desktop Status & Controls */}
+        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-3 -mt-14 sm:-mt-12 md:-mt-14 mb-4 sm:mb-3.5 relative z-20">
+          {/* Overlapping Profile Avatar with Animated Frames */}
           <div
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl ring-4 ring-page bg-surface border border-border-hairline overflow-hidden shadow-md flex-shrink-0 cursor-pointer group transition-transform duration-200 ml-2 sm:ml-3"
+            className="relative w-28 h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl ring-4 ring-page bg-surface border border-border-hairline overflow-hidden shadow-lg flex-shrink-0 cursor-pointer group transition-transform duration-200 sm:ml-3"
             title={SITE_NAME}
           >
             {/* Static Base Image */}
@@ -135,8 +141,8 @@ export function ProfileHeader() {
             )}
           </div>
 
-          {/* Upper-Right Utility & Status Area */}
-          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end pb-0.5">
+          {/* Desktop-Only Upper-Right Utility & Status Area */}
+          <div className="hidden sm:flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end pb-0.5">
             {/* Live Availability Status Indicator */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
               <span className="relative flex h-1.5 w-1.5">
@@ -156,10 +162,10 @@ export function ProfileHeader() {
         </div>
 
         {/* Profile Information Hierarchy */}
-        <div className="space-y-3">
-          {/* Name & Handle */}
-          <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight flex items-center gap-1.5">
+        <div className="space-y-4 sm:space-y-3 text-center sm:text-left">
+          {/* Name & Handle & Mobile Availability Badge */}
+          <div className="flex flex-col items-center sm:items-start">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight flex items-center justify-center sm:justify-start gap-1.5">
               <span>{SITE_NAME}</span>
               <span className="text-muted-foreground/60 text-lg sm:text-xl select-none" aria-hidden="true">✧</span>
             </h1>
@@ -171,17 +177,29 @@ export function ProfileHeader() {
             >
               {AUTHOR_INFO.handle}
             </a>
+
+            {/* Mobile-Only Availability Status (Positioned directly under identity) */}
+            <div className="flex sm:hidden items-center justify-center mt-2.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-2xs">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
+                </span>
+                <span className="text-[11px] font-mono font-medium leading-none whitespace-nowrap">
+                  {AVAILABILITY.label}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Short Bio */}
-          <p className="font-sans text-xs sm:text-[13px] text-body max-w-xl leading-relaxed">
+          <p className="font-sans text-xs sm:text-[13px] text-body max-w-md sm:max-w-xl mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
             Full-stack developer building practical web products with thoughtful interfaces and reliable systems.
           </p>
 
-          {/* Compact Metadata Row */}
-          <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground pt-0.5">
+          {/* Profile Details (Location, Live Time, Education) */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center sm:justify-start gap-2.5 sm:gap-x-4 sm:gap-y-2 text-xs text-muted-foreground pt-1 sm:pt-0.5 max-w-xs sm:max-w-none mx-auto sm:mx-0 sm:flex-wrap">
             {/* Location */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <svg
                 className="w-3.5 h-3.5 text-muted-foreground/70 flex-shrink-0"
                 fill="none"
@@ -205,8 +223,8 @@ export function ProfileHeader() {
               <span>{AUTHOR_INFO.location}</span>
             </div>
 
-            {/* Local Time - No duplicated GMT+8 string */}
-            <div className="flex items-center gap-1.5">
+            {/* Local Time */}
+            <div className="flex items-center gap-2">
               <svg
                 className="w-3.5 h-3.5 text-muted-foreground/70 flex-shrink-0"
                 fill="none"
@@ -221,7 +239,7 @@ export function ProfileHeader() {
             </div>
 
             {/* Education */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <svg
                 className="w-3.5 h-3.5 text-muted-foreground/70 flex-shrink-0"
                 fill="none"
@@ -241,14 +259,14 @@ export function ProfileHeader() {
             </div>
           </div>
 
-          {/* Reworked CTA Hierarchy Row with Apart Easter Egg Trigger */}
+          {/* Action Buttons Group with Profile-First Hierarchy */}
           <div className="relative pt-2">
-            {/* Action Buttons Group */}
-            <div className="flex items-center flex-wrap gap-2.5 pr-14 sm:pr-20">
-              {/* Primary Action: Schedule a Call */}
+            {/* Mobile Vertical Stack / Desktop Horizontal Flow */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-2.5 sm:pr-14 sm:pr-20">
+              {/* Primary Action: Schedule a Call (Full-width on mobile) */}
               <a
                 href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-ink text-page font-sans text-xs font-semibold hover:opacity-90 transition-all shadow-xs active:scale-[0.98] cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-ink text-page font-sans text-xs font-semibold hover:opacity-90 transition-all shadow-xs active:scale-[0.98] cursor-pointer"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -256,36 +274,39 @@ export function ProfileHeader() {
                 <span>Schedule a Call</span>
               </a>
 
-              {/* Secondary Action: Send Email */}
-              <a
-                href={`mailto:${SOCIAL_PROFILES.email}`}
-                className="tactile-btn gap-1.5 text-xs px-3.5 py-2"
-              >
-                <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span>Send Email</span>
-              </a>
+              {/* Mobile 2-Column Grid / Desktop Inline Flex */}
+              <div className="grid grid-cols-2 gap-2.5 sm:contents">
+                {/* Secondary Action: Send Email */}
+                <a
+                  href={`mailto:${SOCIAL_PROFILES.email}`}
+                  className="tactile-btn gap-1.5 text-xs px-3.5 py-2.5 sm:py-2 h-auto sm:h-7 w-full sm:w-auto justify-center"
+                >
+                  <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span>Send Email</span>
+                </a>
 
-              {/* Quieter Action: Resume */}
-              <a
-                href="/resume/IT_Resume_ATS.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tactile-btn gap-1.5 text-xs px-3 py-2 text-muted-foreground hover:text-ink"
-              >
-                <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span>Resume</span>
-              </a>
+                {/* Secondary Action: Resume */}
+                <a
+                  href="/resume/IT_Resume_ATS.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tactile-btn gap-1.5 text-xs px-3 py-2.5 sm:py-2 h-auto sm:h-7 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"
+                >
+                  <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Resume</span>
+                </a>
+              </div>
 
-              {/* Quieter Action: GitHub */}
+              {/* Third Action: GitHub (Full-width on mobile / inline on desktop) */}
               <a
                 href={SOCIAL_PROFILES.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="tactile-btn gap-1.5 text-xs px-3 py-2 text-muted-foreground hover:text-ink"
+                className="tactile-btn gap-1.5 text-xs px-3 py-2.5 sm:py-2 h-auto sm:h-7 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"
               >
                 <svg className="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24">
                   <path
@@ -298,10 +319,15 @@ export function ProfileHeader() {
               </a>
             </div>
 
-            {/* Subtle 2-Line Monospace Dev-Annotation Easter Egg Trigger - Positioned cleanly on far right */}
-            <div className="absolute right-0 bottom-1 sm:bottom-2 pointer-events-auto rotate-45 origin-center opacity-65 hover:opacity-100 transition-all duration-200">
+            {/* Desktop Easter Egg Trigger */}
+            <div className="hidden sm:block absolute right-0 bottom-1 sm:bottom-2 pointer-events-auto rotate-45 origin-center opacity-65 hover:opacity-100 transition-all duration-200">
               <SnapTrigger />
             </div>
+          </div>
+
+          {/* Mobile-Only Easter Egg Trigger */}
+          <div className="flex sm:hidden justify-center pt-2 pb-1 pointer-events-auto opacity-65 hover:opacity-100 transition-all duration-200">
+            <SnapTrigger />
           </div>
         </div>
       </div>

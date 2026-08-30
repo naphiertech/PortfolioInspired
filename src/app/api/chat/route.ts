@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { buildPortfolioSystemPrompt, PortfolioPageContext } from "@/lib/portfolioContext";
+import {
+  buildPortfolioSystemPrompt,
+  PortfolioPageContext,
+} from "@/lib/portfolioContext";
+import { classifyVisitorIntent } from "@/lib/chatIntentGate";
+import { inspectGeneratedOutput } from "@/lib/chatOutputGuard";
 
 export async function POST(req: Request) {
   try {
@@ -18,6 +23,24 @@ export async function POST(req: Request) {
       );
     }
 
+    // 1. Extract latest user query for Pre-Generation Intent Gate
+    const lastUserMessage =
+      [...messages].reverse().find((m) => m.role === "user")?.content || "";
+
+    // 2. Application-Level Pre-Generation Intent Gate (Layer 1)
+    const gateResult = classifyVisitorIntent(lastUserMessage);
+
+    if (
+      gateResult.classification === "OUT_OF_SCOPE" ||
+      gateResult.classification === "SENSITIVE_REQUEST"
+    ) {
+      // Intercept and return the fixed portfolio redirect immediately.
+      // Deny-by-default: zero Gemini API call, zero token usage, zero prompt-injection risk.
+      return NextResponse.json({
+        reply: gateResult.suggestedReply,
+      });
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey || apiKey === "your_gemini_api_key_here") {
       return NextResponse.json(
@@ -29,7 +52,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Build authoritative dynamic system prompt grounded in src/lib/data.ts and active page context
+    // 3. Build Hardened Authoritative System Prompt (Layer 2)
     const systemInstruction = buildPortfolioSystemPrompt(pageContext);
 
     // Map messages array to Gemini contents format
@@ -72,7 +95,7 @@ export async function POST(req: Request) {
               },
               generationConfig: {
                 maxOutputTokens: 600,
-                temperature: 0.7,
+                temperature: 0.5,
               },
             }),
           },
@@ -99,10 +122,11 @@ export async function POST(req: Request) {
       );
     }
 
-    // Clean up excessive whitespace while preserving markdown links and structure
-    replyText = replyText.trim();
+    // 4. Application-Level Post-Generation Output Guard (Layer 3)
+    const guardResult = inspectGeneratedOutput(replyText);
+    const finalReply = guardResult.sanitizedReply.trim();
 
-    return NextResponse.json({ reply: replyText });
+    return NextResponse.json({ reply: finalReply });
   } catch (error: unknown) {
     console.error("Error in chat API route:", error);
     return NextResponse.json(

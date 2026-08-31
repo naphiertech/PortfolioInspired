@@ -124,7 +124,7 @@ export function TechStackClient() {
           <span>cd .. / home</span>
         </Link>
 
-        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
           <div>
             <div className="flex items-center gap-2.5">
               <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink tracking-tight">
@@ -146,6 +146,9 @@ export function TechStackClient() {
           </div>
         </div>
       </div>
+
+      {/* Structural Horizon Rail */}
+      <EditorialDivider className="mb-7" />
 
       {/* Natural Editorial Intro */}
       <div className="mb-7 space-y-2.5 font-sans text-xs sm:text-[13px] leading-relaxed">

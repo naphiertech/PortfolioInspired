@@ -16,6 +16,7 @@ import {
   Compass,
 } from "lucide-react";
 import { useUISound } from "@/context/SoundContext";
+import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import {
   getPortfolioPageContext,
@@ -128,6 +129,8 @@ function ChatWidgetContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { playHover, playClick, playOpen, playClose } = useUISound();
+  const { mode } = usePresentationMode();
+  const isFocus = mode === "focus";
 
   // Compute active route context and suggestions
   const pageContext = getPortfolioPageContext(pathname, searchParams);
@@ -229,23 +232,29 @@ function ChatWidgetContent() {
   return (
     <>
       {/* Floating Tactile Launcher Button */}
-      <div className="fixed bottom-[78px] right-4 sm:bottom-7 sm:right-8 z-50">
+      <div
+        className={`fixed z-50 transition-all duration-200 ${
+          isFocus
+            ? "bottom-4 right-3.5 sm:bottom-7 sm:right-8"
+            : "bottom-[74px] right-3.5 sm:bottom-7 sm:right-8"
+        }`}
+      >
         <button
           onClick={toggleChat}
           onMouseEnter={playHover}
-          className="tactile-btn gap-2 h-9 px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/90 backdrop-blur-md"
+          className="tactile-btn gap-1.5 sm:gap-2 h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/95 backdrop-blur-md cursor-pointer"
           aria-label={isOpen ? "Close AI Assistant" : "Open AI Assistant"}
           aria-expanded={isOpen}
         >
           {isOpen ? (
             <>
-              <X className="w-4 h-4 text-ink" />
-              <span className="text-xs font-mono font-medium">Close</span>
+              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-ink" />
+              <span className="text-[11px] sm:text-xs font-mono font-medium">Close</span>
             </>
           ) : (
             <>
-              <Sparkles className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs font-sans font-medium">Chat with AI</span>
+              <Sparkles className="w-3.5 h-3.5 text-brand/80" />
+              <span className="text-[11px] sm:text-xs font-sans font-medium">AI Chat</span>
             </>
           )}
         </button>
@@ -254,7 +263,9 @@ function ChatWidgetContent() {
       {/* Floating Chat Modal Panel */}
       {isOpen && (
         <div
-          className="fixed bottom-[125px] right-3 left-3 sm:left-auto sm:bottom-20 sm:right-8 sm:w-[390px] h-[calc(100dvh-150px)] max-h-[520px] rounded-xl bg-page border border-border-hairline shadow-2xl z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
+          className={`fixed right-3 left-3 sm:left-auto sm:right-8 sm:w-[390px] h-[calc(100dvh-130px)] max-h-[520px] rounded-xl bg-page border border-border-hairline shadow-2xl z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200 ${
+            isFocus ? "bottom-14 sm:bottom-20" : "bottom-[120px] sm:bottom-20"
+          }`}
           role="dialog"
           aria-label="AI Assistant Chat"
         >

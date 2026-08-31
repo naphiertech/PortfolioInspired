@@ -26,11 +26,11 @@
   --border-divider: rgba(255, 255, 255, 0.06);
 
   /* Technical Editorial Grid System Tokens */
-  --grid-guide: rgba(255, 255, 255, 0.04);
-  --grid-guide-subtle: rgba(255, 255, 255, 0.02);
-  --grid-crosshair: rgba(255, 255, 255, 0.22);
-  --grid-dot: rgba(255, 255, 255, 0.04);
-  --grid-hatch: rgba(255, 255, 255, 0.015);
+  --grid-guide: rgba(255, 255, 255, 0.22);
+  --grid-guide-subtle: rgba(255, 255, 255, 0.10);
+  --grid-crosshair: rgba(255, 255, 255, 0.85);
+  --grid-dot: rgba(255, 255, 255, 0.08);
+  --grid-hatch: rgba(255, 255, 255, 0.03);
   
   /* Shared Structural Layout Dimensions */
   --grid-width-default: 760px;
@@ -90,11 +90,11 @@
   --border-divider: rgba(0, 0, 0, 0.06);
 
   /* Technical Editorial Grid (Light extension) */
-  --grid-guide: rgba(0, 0, 0, 0.045);
-  --grid-guide-subtle: rgba(0, 0, 0, 0.025);
-  --grid-crosshair: rgba(0, 0, 0, 0.22);
-  --grid-dot: rgba(0, 0, 0, 0.045);
-  --grid-hatch: rgba(0, 0, 0, 0.015);
+  --grid-guide: rgba(0, 0, 0, 0.20);
+  --grid-guide-subtle: rgba(0, 0, 0, 0.08);
+  --grid-crosshair: rgba(0, 0, 0, 0.85);
+  --grid-dot: rgba(0, 0, 0, 0.08);
+  --grid-hatch: rgba(0, 0, 0, 0.03);
 
   --status-active: #09090b;
   --status-ping: rgba(0, 0, 0, 0.4);
@@ -475,11 +475,61 @@ html.theme-transitioning *::after {
   );
 }
 
-/* Editorial Section Divider with subtle CAD border */
-.editorial-section-divider {
-  border-top: 1px solid var(--grid-guide);
-  position: relative;
+/* CAD Drafting Blueprint Grid Line Utilities */
+.grid-line-v {
+  pointer-events: none;
+  user-select: none;
+  width: 0px;
+  border-right: 1px solid var(--grid-guide);
+  mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
 }
+
+.grid-line-v-subtle {
+  pointer-events: none;
+  user-select: none;
+  width: 0px;
+  border-right: 1px solid var(--grid-guide-subtle);
+  mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
+}
+
+.grid-line-h {
+  pointer-events: none;
+  user-select: none;
+  height: 0px;
+  border-bottom: 1px solid var(--grid-guide);
+  mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
+  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
+}
+
+.grid-line-h-subtle {
+  pointer-events: none;
+  user-select: none;
+  height: 0px;
+  border-bottom: 1px solid var(--grid-guide-subtle);
+  mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
+  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
+}
+
+.grid-intersection {
+  pointer-events: none;
+  user-select: none;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background-color: var(--grid-crosshair);
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.light .grid-intersection {
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+}
+
+
 
 
 

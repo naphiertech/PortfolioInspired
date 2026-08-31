@@ -1,68 +1,61 @@
 import React from "react";
+import { GridReticle } from "./GridReticle";
 
 /**
  * TechnicalGrid
  *
- * Document-scoped architectural & technical grid layer.
- * Positioned absolute within the PortfolioShell container to track the
- * full scrollable document height, moving naturally with page content.
+ * CAD Drafting Blueprint structural grid layer.
+ * Positioned absolute within PortfolioShell, running from top: 0 to bottom: 0
+ * for the entire scrollable height of the document.
  *
- * - Zero React state / Zero runtime scroll overhead
- * - pointer-events: none (completely un-interactive)
- * - Layered behind content (-z-10)
- * - Dual-theme compatible (low-contrast dark & light tokens)
+ * - 1px dashed vertical guide rails
+ * - Full-viewport 1px dashed horizon line
+ * - Precision 3px circular intersection dots
  */
 export function TechnicalGrid() {
   return (
     <div
-      className="absolute inset-0 pointer-events-none -z-10 select-none"
+      className="absolute inset-0 pointer-events-none -z-10 select-none overflow-visible"
       aria-hidden="true"
     >
       {/* 1. Extended Outer Blueprint Margin Guides (Large Desktops ≥1024px & ≥1280px) */}
       <div className="absolute inset-y-0 -left-12 -right-12 xl:-left-24 xl:-right-24 hidden lg:block">
-        {/* Outer Left Blueprint Line */}
-        <div className="absolute left-0 top-0 bottom-0 w-px bg-grid-guide-subtle" />
+        {/* Outer Left Blueprint Guide */}
+        <div className="grid-line-v-subtle absolute left-0 top-0 bottom-0" />
 
-        {/* Outer Right Blueprint Line */}
-        <div className="absolute right-0 top-0 bottom-0 w-px bg-grid-guide-subtle" />
-
-        {/* Top Header Horizon Line Extension (48px / pt-12 baseline) */}
-        <div className="absolute top-12 left-0 right-0 h-px bg-grid-guide-subtle" />
+        {/* Outer Right Blueprint Guide */}
+        <div className="grid-line-v-subtle absolute right-0 top-0 bottom-0" />
 
         {/* Faint Architectural Dot Grid in Outer Margin Gutters (Desktop ≥1280px) */}
         <div className="absolute left-0 top-0 bottom-0 w-24 bg-technical-dots opacity-40 dark:opacity-20 hidden xl:block" />
         <div className="absolute right-0 top-0 bottom-0 w-24 bg-technical-dots opacity-40 dark:opacity-20 hidden xl:block" />
 
-        {/* CAD Crosshairs at Outer Horizon Intersections */}
-        <span className="absolute -left-[4.5px] top-[43.5px] font-mono text-[9px] text-grid-crosshair leading-none">
-          +
-        </span>
-        <span className="absolute -right-[4.5px] top-[43.5px] font-mono text-[9px] text-grid-crosshair leading-none">
-          +
-        </span>
+        {/* Outer Horizon Intersection Dots */}
+        <GridReticle variant="dot" className="left-0 top-0" />
+        <GridReticle variant="dot" className="left-full top-0" />
       </div>
 
-      {/* 2. Main Reading Measure / Content Envelope */}
+      {/* 2. Main Content Envelope */}
       <div className="w-full h-full relative">
-        {/* Outer Left Guide Line (Aligns with shell outer edge) */}
-        <div className="absolute left-0 top-0 bottom-0 w-px bg-grid-guide" />
+        {/* Left Guide Rail (Aligns with shell outer edge) */}
+        <div className="grid-line-v absolute left-0 top-0 bottom-0" />
 
-        {/* Outer Right Guide Line (Aligns with shell outer edge) */}
-        <div className="absolute right-0 top-0 bottom-0 w-px bg-grid-guide" />
+        {/* Right Guide Rail (Aligns with shell outer edge) */}
+        <div className="grid-line-v absolute right-0 top-0 bottom-0" />
 
-        {/* Top Header Horizon Line (48px / pt-12 baseline) */}
-        <div className="absolute top-12 left-0 right-0 h-px bg-grid-guide" />
+        {/* Top Document Horizon Line spanning 100vw */}
+        <div
+          className="grid-line-h absolute top-0"
+          style={{
+            width: "100vw",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        />
 
-        {/* CAD Drafting Intersection Reticles (+) at Horizon */}
-        {/* Outer Left (+) */}
-        <span className="absolute -left-[4.5px] top-[43.5px] font-mono text-[9px] text-grid-crosshair leading-none">
-          +
-        </span>
-
-        {/* Outer Right (+) */}
-        <span className="absolute -right-[4.5px] top-[43.5px] font-mono text-[9px] text-grid-crosshair leading-none">
-          +
-        </span>
+        {/* Precision 3px Circular Dots at Top Document Boundary */}
+        <GridReticle variant="dot" className="left-0 top-0" />
+        <GridReticle variant="dot" className="left-full top-0" />
       </div>
     </div>
   );

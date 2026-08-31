@@ -45,7 +45,7 @@ export function FocusCapabilities() {
   return (
     <section aria-label="Core skills overview" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3.5">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3 sm:mb-3.5">
         <span className="tracking-wider text-muted-foreground/80 font-medium">
           [ 01 // SKILLS ]
         </span>
@@ -54,34 +54,36 @@ export function FocusCapabilities() {
         </span>
       </div>
 
-      {/* 3-Column Structural Grid on Desktop / Vertical Stack on Tablet & Mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-divider">
+      {/* --- DESKTOP 3-COLUMN / MOBILE CLEAN STACKED GROUPS --- */}
+      <div className="flex flex-col md:grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-divider">
         {capabilityPillars.map((pillar) => {
           const Icon = pillar.icon;
           return (
             <div
               key={pillar.id}
-              className="py-5 md:py-4 px-0 md:px-5 first:md:pl-0 last:md:pr-0 flex flex-col justify-between min-w-0"
+              className="py-4 md:py-4 px-0 md:px-5 first:pt-0 first:md:pl-0 last:pb-0 last:md:pr-0 flex flex-col justify-between min-w-0"
             >
               <div>
+                {/* Domain Header */}
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs text-muted-foreground/60">
                     {pillar.id}.
                   </span>
                   <div className="flex items-center gap-2 font-sans font-bold text-sm sm:text-[15px] text-ink">
                     <Icon className="w-4 h-4 text-brand flex-shrink-0" aria-hidden="true" />
-                    <span className="truncate">{pillar.domain}</span>
+                    <span>{pillar.domain}</span>
                   </div>
                 </div>
 
-                <ul className="mt-3 space-y-2">
+                {/* Readable Bullet Items */}
+                <ul className="mt-2.5 sm:mt-3 space-y-2">
                   {pillar.items.map((item, idx) => (
                     <li
                       key={idx}
-                      className="text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed flex items-start gap-2"
+                      className="text-[13px] sm:text-[13px] text-ink/85 font-sans leading-relaxed flex items-start gap-2"
                     >
                       <span className="text-muted-foreground/40 font-mono text-xs select-none mt-0.5 flex-shrink-0">
-                        -
+                        •
                       </span>
                       <span className="min-w-0">{item}</span>
                     </li>

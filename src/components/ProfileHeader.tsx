@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import NextImage from "next/image";
+import { useTheme } from "./ThemeProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
 import { GithubContributions } from "./GithubContributions";
@@ -18,44 +19,51 @@ import {
 } from "@/lib/siteConfig";
 
 export function ProfileHeader() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const [animationFrame, setAnimationFrame] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
   const currentFrameRef = useRef(0);
+  const isInitialMount = useRef(true);
 
+  // Sync ref with state
   useEffect(() => {
     currentFrameRef.current = animationFrame;
   }, [animationFrame]);
 
-  // Preload animation frames for smooth caching
+  // Set initial frame on mount based on active theme
+  useEffect(() => {
+    if (isInitialMount.current && resolvedTheme) {
+      const initial = resolvedTheme === "dark" ? 240 : 0;
+      setAnimationFrame(initial);
+      currentFrameRef.current = initial;
+      isInitialMount.current = false;
+    }
+  }, [resolvedTheme]);
+
+  // Preload animation frames for smooth 60fps caching
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const framesToPreload: number[] = [];
-    for (let i = 4; i <= 240; i += 8) {
-      framesToPreload.push(i);
-    }
-    if (!framesToPreload.includes(240)) {
-      framesToPreload.push(240);
-    }
-
-    framesToPreload.forEach((frame) => {
+    for (let i = 1; i <= 240; i++) {
       const img = document.createElement("img");
-      img.src = `/profile/ezgif-frame-${String(frame).padStart(3, "0")}.png`;
-    });
+      img.src = `/profile/ezgif-frame-${String(i).padStart(3, "0")}.png`;
+    }
   }, []);
 
-  // Frame animation on hover/interaction
+  // Frame animation driven by dark/light theme switching (Butter-smooth 60fps)
   useEffect(() => {
+    if (isInitialMount.current) return;
+
     let animationFrameId: number;
     let lastTime = performance.now();
-    const fps = 24;
-    const interval = 1000 / fps;
+    const fps = 60;
+    const interval = 1000 / fps; // ~16.67ms per frame tick
 
     const animate = (time: number) => {
       const current = currentFrameRef.current;
 
-      if (isHovered && current >= 240) return;
-      if (!isHovered && current <= 0) return;
+      if (isDark && current >= 240) return;
+      if (!isDark && current <= 0) return;
 
       const delta = time - lastTime;
 
@@ -63,12 +71,12 @@ export function ProfileHeader() {
         lastTime = time - (delta % interval);
 
         setAnimationFrame((prev) => {
-          const basePrev = Math.round(prev / 4) * 4;
-          if (isHovered) {
-            const next = basePrev + 8;
+          // Smooth 2-frame advancement per tick for continuous 60fps motion (~2 seconds)
+          if (isDark) {
+            const next = prev + 2;
             return next > 240 ? 240 : next;
           } else {
-            const next = basePrev - 8;
+            const next = prev - 2;
             return next < 0 ? 0 : next;
           }
         });
@@ -82,7 +90,7 @@ export function ProfileHeader() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isHovered]);
+  }, [isDark]);
 
   return (
     <section className="relative w-full select-none mb-16">
@@ -114,10 +122,8 @@ export function ProfileHeader() {
         <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-3 -mt-14 sm:-mt-12 md:-mt-14 mb-4 sm:mb-3.5 relative z-20">
           {/* Overlapping Profile Avatar with Animated Frames */}
           <div
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             className="relative w-28 h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl ring-4 ring-page bg-surface border border-border-hairline overflow-hidden shadow-lg flex-shrink-0 cursor-pointer group transition-transform duration-200 sm:ml-3"
-            title={SITE_NAME}
+            title={`${SITE_NAME} (${isDark ? "Dark theme sunglasses" : "Light theme"})`}
           >
             {/* Static Base Image */}
             <NextImage

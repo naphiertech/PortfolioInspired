@@ -41,7 +41,7 @@ export function FocusTechStack() {
       </div>
 
       {/* Domain Rows: 180px Label + Left-Aligned Wrapped Badges */}
-      <div className="divide-y divide-border-divider border-y border-border-divider">
+      <div className="divide-y divide-border-divider">
         {techGroups.map((group) => (
           <div
             key={group.domain}

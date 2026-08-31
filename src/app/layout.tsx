@@ -12,7 +12,6 @@ import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
 import { Analytics } from "@vercel/analytics/next";
-import { TechnicalGrid } from "@/components/TechnicalGrid";
 import { PortfolioShell } from "@/components/PortfolioShell";
 import {
   SITE_URL,
@@ -149,9 +148,6 @@ export default async function RootLayout({
             <SnapProvider>
               <PresentationModeProvider initialMode={initialMode}>
                 <PWARegister />
-
-                {/* Architectural Technical Editorial Grid Layer */}
-                <TechnicalGrid />
 
                 {/* Mode-Aware Centered Page Shell Container */}
                 <PortfolioShell>{children}</PortfolioShell>

@@ -24,6 +24,7 @@ export interface GitHubContributionsResponse {
   success: boolean;
   data?: {
     username: string;
+    year: number;
     total: number;
     totalText: string;
     weeks: ContributionWeek[];
@@ -33,15 +34,18 @@ export interface GitHubContributionsResponse {
   error?: string;
 }
 
-// In-memory cache for 1 hour
-let cachedData: {
+// In-memory cache keyed by username and year for 1 hour
+interface CachedPayload {
   username: string;
+  year: number;
   total: number;
   totalText: string;
   weeks: ContributionWeek[];
   months: MonthLabel[];
   updatedAt: string;
-} | null = null;
+}
+
+let cachedData: CachedPayload | null = null;
 let lastFetchTime = 0;
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
@@ -49,10 +53,16 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const username = searchParams.get("username") || GITHUB_USERNAME;
+    const currentYear = new Date().getFullYear();
 
-    // Return cached data if fresh
+    // Return cached data if fresh and matches current year
     const now = Date.now();
-    if (cachedData && cachedData.username === username && now - lastFetchTime < CACHE_TTL) {
+    if (
+      cachedData &&
+      cachedData.username === username &&
+      cachedData.year === currentYear &&
+      now - lastFetchTime < CACHE_TTL
+    ) {
       return NextResponse.json(
         { success: true, data: cachedData },
         {
@@ -63,7 +73,11 @@ export async function GET(req: Request) {
       );
     }
 
-    const githubUrl = `https://github.com/users/${encodeURIComponent(username)}/contributions`;
+    // Query GitHub specifically for the full calendar year (Jan 1 to Dec 31)
+    const githubUrl = `https://github.com/users/${encodeURIComponent(
+      username,
+    )}/contributions?from=${currentYear}-01-01&to=${currentYear}-12-31`;
+
     const response = await fetch(githubUrl, {
       headers: {
         "User-Agent":
@@ -79,22 +93,7 @@ export async function GET(req: Request) {
 
     const html = await response.text();
 
-    // 1. Extract total count from h2 (e.g. "480 contributions in the last year")
-    const h2Match = html.match(/([0-9,]+)\s+contributions\s+in\s+the\s+last\s+year/i);
-    let total = 0;
-    let totalText = "contributions in the last year";
-    if (h2Match) {
-      total = parseInt(h2Match[1].replace(/,/g, ""), 10);
-      totalText = `${total.toLocaleString()} contributions in the last year`;
-    } else {
-      const fallbackMatch = html.match(/([0-9,]+)\s+contributions/i);
-      if (fallbackMatch) {
-        total = parseInt(fallbackMatch[1].replace(/,/g, ""), 10);
-        totalText = `${total.toLocaleString()} contributions in the last year`;
-      }
-    }
-
-    // 2. Extract tooltips map: id -> text
+    // 1. Extract tooltips map: id -> text
     const tooltipMap: Record<string, string> = {};
     const tooltipRegex = /<tool-tip[^>]*for="([^"]+)"[^>]*>([\s\S]*?)<\/tool-tip>/gi;
     let tMatch;
@@ -102,12 +101,12 @@ export async function GET(req: Request) {
       tooltipMap[tMatch[1]] = tMatch[2].replace(/\s+/g, " ").trim();
     }
 
-    // 3. Extract table rows & cells
-    // GitHub's table structure: <tbody> with <tr> for each day of week (0 to 6) or weekly columns
-    // We can extract all <td data-date="..." data-level="..."> with their dates
-    const days: ContributionDay[] = [];
+    // 2. Parse GitHub days for the current year into a map
+    const githubDayMap = new Map<string, { level: number; count: number; tooltip: string }>();
     const tdRegex = /<td([^>]+)>/gi;
     let tdMatch;
+    const yearPrefix = `${currentYear}-`;
+
     while ((tdMatch = tdRegex.exec(html)) !== null) {
       const attrs = tdMatch[1];
       const dateMatch = attrs.match(/data-date="([^"]+)"/);
@@ -116,6 +115,12 @@ export async function GET(req: Request) {
 
       if (dateMatch && levelMatch) {
         const dateStr = dateMatch[1];
+
+        // Strictly accept only dates in currentYear
+        if (!dateStr.startsWith(yearPrefix)) {
+          continue;
+        }
+
         const level = parseInt(levelMatch[1], 10);
         const id = idMatch ? idMatch[1] : "";
         const tooltip = tooltipMap[id] || "";
@@ -128,49 +133,79 @@ export async function GET(req: Request) {
           count = level;
         }
 
-        const dateObj = new Date(dateStr + "T00:00:00Z");
-        const dayOfWeek = dateObj.getUTCDay(); // 0 = Sunday, 6 = Saturday
-
-        days.push({
-          date: dateStr,
+        githubDayMap.set(dateStr, {
           level,
           count,
-          tooltip: tooltip || `${count} contribution(s) on ${dateStr}`,
-          dayOfWeek,
+          tooltip: tooltip || `${count} contribution${count === 1 ? "" : "s"} on ${dateStr}`,
         });
       }
     }
 
-    // Sort days chronologically
-    days.sort((a, b) => (a.date > b.date ? 1 : -1));
+    // 3. Construct the complete 365/366 calendar-year date array (Jan 1 -> Dec 31)
+    const allYearDays: ContributionDay[] = [];
+    const curDate = new Date(Date.UTC(currentYear, 0, 1));
+    const endDate = new Date(Date.UTC(currentYear, 11, 31));
 
-    // 4. Organize days into weekly columns (Sunday to Saturday)
+    while (curDate <= endDate) {
+      const yyyy = curDate.getUTCFullYear();
+      const mm = String(curDate.getUTCMonth() + 1).padStart(2, "0");
+      const dd = String(curDate.getUTCDate()).padStart(2, "0");
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+      const dayOfWeek = curDate.getUTCDay(); // 0 = Sun, 6 = Sat
+
+      if (githubDayMap.has(dateStr)) {
+        const data = githubDayMap.get(dateStr)!;
+        allYearDays.push({
+          date: dateStr,
+          level: data.level,
+          count: data.count,
+          tooltip: data.tooltip,
+          dayOfWeek,
+        });
+      } else {
+        // Future date or day with 0 contributions
+        allYearDays.push({
+          date: dateStr,
+          level: 0,
+          count: 0,
+          tooltip: `No contributions on ${dateStr}`,
+          dayOfWeek,
+        });
+      }
+
+      curDate.setUTCDate(curDate.getUTCDate() + 1);
+    }
+
+    // 4. Compute total contributions for the current year
+    const total = allYearDays.reduce((sum, d) => sum + d.count, 0);
+    const totalText = `${total.toLocaleString()} contributions in ${currentYear}`;
+
+    // 5. Organize into 52-53 weekly columns (Sunday -> Saturday)
     const weeks: ContributionWeek[] = [];
     let currentWeek: (ContributionDay | null)[] = Array(7).fill(null);
 
-    // If the first day is not Sunday, pad earlier days with null
-    if (days.length > 0) {
-      const firstDayOfWeek = days[0].dayOfWeek;
+    if (allYearDays.length > 0) {
+      // Pad leading days before Jan 1 if Jan 1 is not Sunday
+      const firstDayOfWeek = allYearDays[0].dayOfWeek;
       for (let i = 0; i < firstDayOfWeek; i++) {
         currentWeek[i] = null;
       }
 
-      for (const day of days) {
+      for (const day of allYearDays) {
         currentWeek[day.dayOfWeek] = day;
         if (day.dayOfWeek === 6) {
-          // Saturday is end of week
           weeks.push({ days: [...currentWeek] });
           currentWeek = Array(7).fill(null);
         }
       }
 
-      // If last week wasn't added because it ended before Saturday
+      // If last week has trailing days (Dec 31 is not Saturday)
       if (currentWeek.some((d) => d !== null)) {
         weeks.push({ days: [...currentWeek] });
       }
     }
 
-    // 5. Extract month labels with week index positions
+    // 6. Generate the 12 month labels (Jan .. Dec) mapped to week column positions
     const monthNames = [
       "Jan",
       "Feb",
@@ -202,8 +237,9 @@ export async function GET(req: Request) {
       }
     });
 
-    const parsedData = {
+    const parsedData: CachedPayload = {
       username,
+      year: currentYear,
       total,
       totalText,
       weeks,

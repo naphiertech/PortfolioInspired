@@ -24,7 +24,7 @@ export function FocusSelectedWork() {
       </div>
 
       {/* Structural Records List */}
-      <div className="divide-y divide-border-divider border-y border-border-divider">
+      <div className="divide-y divide-border-divider">
         {projects.map((project) => {
           const primaryDecision = project.technicalDecisions?.[0];
           const displayTech = project.techStack?.slice(0, 6) || project.tags?.slice(0, 6) || [];

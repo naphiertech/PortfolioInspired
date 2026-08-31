@@ -25,12 +25,21 @@
   --border-reticle: rgba(255, 255, 255, 0.9);
   --border-divider: rgba(255, 255, 255, 0.06);
 
-  /* Technical Editorial Grid (Dark-first empirical) */
+  /* Technical Editorial Grid System Tokens */
   --grid-guide: rgba(255, 255, 255, 0.04);
   --grid-guide-subtle: rgba(255, 255, 255, 0.02);
   --grid-crosshair: rgba(255, 255, 255, 0.22);
   --grid-dot: rgba(255, 255, 255, 0.04);
   --grid-hatch: rgba(255, 255, 255, 0.015);
+  
+  /* Shared Structural Layout Dimensions */
+  --grid-width-default: 760px;
+  --grid-width-focus: 1020px;
+  --grid-pad-mobile: 1rem;       /* 16px (px-4) */
+  --grid-pad-sm: 1.5rem;          /* 24px (sm:px-6) */
+  --grid-pad-md: 2rem;            /* 32px (md:px-8) */
+  --grid-wing-lg: 3rem;           /* 48px (w-12) */
+  --grid-wing-xl: 6rem;           /* 96px (w-24) */
 
   --status-active: #ffffff;
   --status-ping: rgba(255, 255, 255, 0.5);

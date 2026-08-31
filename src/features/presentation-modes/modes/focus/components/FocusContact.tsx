@@ -30,7 +30,7 @@ export function FocusContact() {
       </div>
 
       {/* Main Structural Contact Row */}
-      <div className="py-5 sm:py-6 border-y border-border-divider flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <div className="py-2 sm:py-3 flex flex-col md:flex-row md:items-center justify-between gap-5">
         {/* Left Side: Headline & Availability Details */}
         <div className="flex-1 min-w-0">
           <h3 className="font-sans font-bold text-base sm:text-lg text-ink tracking-tight">

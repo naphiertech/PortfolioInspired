@@ -55,7 +55,7 @@ export function FocusCapabilities() {
       </div>
 
       {/* 3-Column Structural Grid on Desktop / Vertical Stack on Tablet & Mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-divider border-y border-border-divider">
+      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-divider">
         {capabilityPillars.map((pillar) => {
           const Icon = pillar.icon;
           return (

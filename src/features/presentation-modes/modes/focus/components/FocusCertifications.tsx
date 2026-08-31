@@ -21,7 +21,7 @@ export function FocusCertifications() {
       </div>
 
       {/* 2-Column Grid on Large Screens / 1-Column on Tablet & Mobile */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border-divider border-y border-border-divider">
+      <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border-divider">
         {/* Left Column: First half */}
         <div className="divide-y divide-border-divider/60 lg:pr-6">
           {col1.map((cert, idx) => (

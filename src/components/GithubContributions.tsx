@@ -22,6 +22,7 @@ interface MonthLabel {
 
 interface ContributionData {
   username: string;
+  year?: number;
   total: number;
   totalText: string;
   weeks: ContributionWeek[];
@@ -179,7 +180,7 @@ export function GithubContributions() {
         <div className="flex items-center gap-1.5">
           <span className="text-[#38bdf8] dark:text-[#38bdf8] font-medium">Total</span>
           <span className="text-ink font-semibold">{data.total.toLocaleString()}</span>
-          <span>contributions in the last year</span>
+          <span>contributions in {data.year || new Date().getFullYear()}</span>
         </div>
 
         <a

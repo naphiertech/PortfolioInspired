@@ -101,7 +101,7 @@ export function FocusTechStackPage() {
       <EditorialDivider className="mb-6" />
 
       {/* Domain-Grouped Technology Ledger */}
-      <div className="divide-y divide-border-divider border-y border-border-divider">
+      <div className="divide-y divide-border-divider">
         {techSections.map((section) => {
           const syntaxTag = categorySyntaxMap[section.title] || `<${section.title.toUpperCase()}/>`;
 

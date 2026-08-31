@@ -9,11 +9,11 @@ interface EditorialDividerProps {
 /**
  * EditorialDivider
  *
- * Horizontal structural rail component for the technical/editorial grid.
- * Spans across the content column and extends out toward the vertical guide rails
- * with CAD drafting reticle crosshairs (+) at guide intersections.
+ * Horizontal structural rail component for the unified technical grid.
+ * Spans from the left vertical rail to the right vertical rail across the full
+ * envelope of PortfolioShell, with CAD drafting reticles (+) at guide intersections.
  *
- * - Responsive: full grid on desktop, simplified on mobile
+ * - Perfectly synchronized with PortfolioShell responsive padding (px-4 sm:px-6 md:px-8)
  * - Low-contrast, theme-aware (--grid-guide & --grid-crosshair)
  * - pointer-events: none (completely non-blocking)
  */
@@ -27,9 +27,9 @@ export function EditorialDivider({
       className={`w-full relative flex items-center justify-center pointer-events-none select-none ${className}`}
       aria-hidden="true"
     >
-      {/* Container matching full reading column width */}
-      <div className="w-full relative -mx-4 sm:-mx-6 px-4 sm:px-6">
-        {/* 1. Main Horizontal Rail spanning full 760px envelope */}
+      {/* Container expanding to the exact outer rails of PortfolioShell */}
+      <div className="w-full relative -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8">
+        {/* 1. Main Horizontal Rail spanning from left rail to right rail */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-grid-guide" />
 
         {/* 2. Extended Architectural Wings on Desktop (reaching outer blueprint guides) */}
@@ -40,7 +40,7 @@ export function EditorialDivider({
           </>
         )}
 
-        {/* 3. CAD Reticle Crosshairs (+) at Structural Guide Intersections */}
+        {/* 3. CAD Reticle Crosshairs (+) at Structural Rail Intersections */}
         {withCrosshairs && (
           <>
             {/* Outer Left Margin Guide Intersection (+) */}
@@ -50,27 +50,12 @@ export function EditorialDivider({
               </span>
             )}
 
-            {/* Reading Measure Left Edge (+) */}
+            {/* Left Vertical Rail Intersection (+) */}
             <span className="absolute -left-[4.5px] top-1/2 -translate-y-[5.5px] font-mono text-[9px] text-grid-crosshair leading-none">
               +
             </span>
 
-            {/* Content Margin Left (+) */}
-            <span className="absolute left-[11.5px] sm:left-[19.5px] top-1/2 -translate-y-[5.5px] font-mono text-[9px] text-grid-crosshair leading-none hidden sm:block">
-              +
-            </span>
-
-            {/* Internal Secondary Center Axis (+) */}
-            <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-[5.5px] font-mono text-[9px] text-grid-crosshair leading-none hidden md:block">
-              +
-            </span>
-
-            {/* Content Margin Right (+) */}
-            <span className="absolute right-[11.5px] sm:right-[19.5px] top-1/2 -translate-y-[5.5px] font-mono text-[9px] text-grid-crosshair leading-none hidden sm:block">
-              +
-            </span>
-
-            {/* Reading Measure Right Edge (+) */}
+            {/* Right Vertical Rail Intersection (+) */}
             <span className="absolute -right-[4.5px] top-1/2 -translate-y-[5.5px] font-mono text-[9px] text-grid-crosshair leading-none">
               +
             </span>

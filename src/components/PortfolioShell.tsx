@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { SnapRouteGuard } from "@/components/SnapRouteGuard";
 import { EditorialDivider } from "@/components/EditorialDivider";
+import { TechnicalGrid } from "@/components/TechnicalGrid";
 import { SITE_NAME } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
 
@@ -28,7 +29,10 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         isFocus ? "max-w-[1020px]" : "max-w-reading"
       }`}
     >
-      <main className="w-full">
+      {/* Document-Scoped Architectural Technical Grid */}
+      <TechnicalGrid />
+
+      <main className="w-full relative z-10">
         <SnapRouteGuard>{children}</SnapRouteGuard>
       </main>
 

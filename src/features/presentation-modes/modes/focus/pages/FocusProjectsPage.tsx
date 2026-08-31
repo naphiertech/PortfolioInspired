@@ -59,7 +59,7 @@ export function FocusProjectsPage() {
       <EditorialDivider className="mb-6" />
 
       {/* Structured Systems Ledger */}
-      <div className="divide-y divide-border-divider border-y border-border-divider">
+      <div className="divide-y divide-border-divider">
         {fullProjects.map((project, idx) => {
           const indexString = String(idx + 1).padStart(2, "0");
           const primaryDecision = project.technicalDecisions?.[0];

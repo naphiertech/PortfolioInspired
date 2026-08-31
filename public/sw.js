@@ -60,6 +60,15 @@ self.addEventListener("fetch", (event) => {
   // Only handle standard GET requests on the same origin
   if (request.method !== "GET" || url.origin !== location.origin) return;
 
+  // Never cache or intercept any requests on local development environments
+  if (
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1" ||
+    location.hostname.endsWith(".local")
+  ) {
+    return;
+  }
+
   // Exclude API requests (like /api/chat) from cache first strategies
   if (url.pathname.startsWith("/api/")) {
     event.respondWith(networkOnly(request));

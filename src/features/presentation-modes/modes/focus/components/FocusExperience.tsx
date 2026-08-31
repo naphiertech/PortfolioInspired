@@ -17,7 +17,7 @@ export function FocusExperience() {
       </div>
 
       {/* Chronological Balanced Rows: 160px Period + Full Content Column */}
-      <div className="divide-y divide-border-divider border-y border-border-divider">
+      <div className="divide-y divide-border-divider">
         {experiences.map((exp, index) => (
           <div
             key={`${exp.year}-${index}`}

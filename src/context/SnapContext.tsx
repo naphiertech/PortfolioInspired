@@ -86,6 +86,7 @@ interface SnapContextType {
   getRouteSnapStatus: (pathname: string) => RouteSnapStatus;
   triggerSnap: () => void;
   triggerRestore: () => void;
+  resetSnapState: () => void;
   registerSection: (id: string, el: HTMLElement | null) => void;
   registerDockItem: (name: string, el: HTMLElement | null) => void;
   registerTextRef: (id: string, el: HTMLElement | null) => void;
@@ -115,6 +116,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
   const sectionRefs = useRef<Map<string, HTMLElement>>(new Map());
   const dockRefs = useRef<Map<string, HTMLElement>>(new Map());
   const textRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const isAbortedRef = useRef<boolean>(false);
 
   // Restore session-only snap state upon client initialization
   useEffect(() => {
@@ -142,6 +144,28 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsSessionInitialized(true);
     }
+  }, []);
+
+  /**
+   * Immediate silent reset of all snap states.
+   * Cancels in-flight snap animations, clears sessionStorage, and restores navigation dock.
+   */
+  const resetSnapState = useCallback(() => {
+    isAbortedRef.current = true;
+    clearSession();
+
+    setIsSnapped(false);
+    setIsSnapping(false);
+    setIsRestoring(false);
+    setCurrentStep(0);
+    setSnappingSectionIds([]);
+    setSnappedSectionIds([]);
+    setSnappingDockItems([]);
+    setSnappedDockItems([]);
+    setSnappingTextFragmentIds([]);
+    setSnappedTextFragmentIds([]);
+    setRestoringSectionIds([]);
+    setActiveDustBounds([]);
   }, []);
 
   const registerSection = useCallback((id: string, el: HTMLElement | null) => {
@@ -535,6 +559,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         getRouteSnapStatus,
         triggerSnap,
         triggerRestore,
+        resetSnapState,
         registerSection,
         registerDockItem,
         registerTextRef,
@@ -568,6 +593,7 @@ export function useSnap() {
       getRouteSnapStatus: () => "normal" as RouteSnapStatus,
       triggerSnap: () => {},
       triggerRestore: () => {},
+      resetSnapState: () => {},
       registerSection: () => {},
       registerDockItem: () => {},
       registerTextRef: () => {},

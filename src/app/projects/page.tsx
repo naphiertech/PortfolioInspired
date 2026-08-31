@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProjectsPageClient } from "@/app/projects/ProjectsPageClient";
+import { ProjectsPresentationRoot } from "@/features/presentation-modes/components/ProjectsPresentationRoot";
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -25,5 +25,5 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectsPage() {
-  return <ProjectsPageClient />;
+  return <ProjectsPresentationRoot />;
 }

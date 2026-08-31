@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CertificationsClient } from "./CertificationsClient";
+import { CertificationsPresentationRoot } from "@/features/presentation-modes/components/CertificationsPresentationRoot";
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -25,5 +25,5 @@ export const metadata: Metadata = {
 };
 
 export default function CertificationsPage() {
-  return <CertificationsClient />;
+  return <CertificationsPresentationRoot />;
 }

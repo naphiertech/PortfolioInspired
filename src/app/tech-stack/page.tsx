@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
-import { TechStackClient } from "./TechStackClient";
+import { TechStackPresentationRoot } from "@/features/presentation-modes/components/TechStackPresentationRoot";
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export default function TechStackPage() {
         </div>
       }
     >
-      <TechStackClient />
+      <TechStackPresentationRoot />
     </Suspense>
   );
 }

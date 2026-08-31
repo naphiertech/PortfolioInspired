@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { WorkClient } from "./WorkClient";
+import { WorkPresentationRoot } from "@/features/presentation-modes/components/WorkPresentationRoot";
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -25,5 +25,5 @@ export const metadata: Metadata = {
 };
 
 export default function WorkPage() {
-  return <WorkClient />;
+  return <WorkPresentationRoot />;
 }

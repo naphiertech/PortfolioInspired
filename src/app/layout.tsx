@@ -1,16 +1,19 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SoundProvider } from "@/context/SoundContext";
 import { SnapProvider } from "@/context/SnapContext";
+import { PresentationModeProvider } from "@/features/presentation-modes/context/PresentationModeContext";
+import { resolveInitialPresentationMode } from "@/features/presentation-modes/lib/resolveMode";
+import { PRESENTATION_COOKIE_NAME } from "@/features/presentation-modes/types/config";
 import { DustCanvas } from "@/components/DustCanvas";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
-import { SnapRouteGuard } from "@/components/SnapRouteGuard";
 import { Analytics } from "@vercel/analytics/next";
 import { TechnicalGrid } from "@/components/TechnicalGrid";
-import { EditorialDivider } from "@/components/EditorialDivider";
+import { PortfolioShell } from "@/components/PortfolioShell";
 import {
   SITE_URL,
   SITE_DEFAULT_TITLE,
@@ -20,7 +23,6 @@ import {
   AUTHOR_INFO,
   EDUCATION,
 } from "@/lib/siteConfig";
-import { BUILD_INFO } from "@/lib/buildInfo";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -110,11 +112,15 @@ export const viewport: Viewport = {
   themeColor: "#0b0d0e",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const cookieMode = cookieStore.get(PRESENTATION_COOKIE_NAME)?.value;
+  const initialMode = resolveInitialPresentationMode({ cookieMode });
+
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <head>
@@ -141,46 +147,30 @@ export default function RootLayout({
         <ThemeProvider>
           <SoundProvider>
             <SnapProvider>
-              <PWARegister />
+              <PresentationModeProvider initialMode={initialMode}>
+                <PWARegister />
 
-              {/* Architectural Technical Editorial Grid Layer */}
-              <TechnicalGrid />
+                {/* Architectural Technical Editorial Grid Layer */}
+                <TechnicalGrid />
 
-              {/* Centered Page Shell Container (760px reading anchor) */}
-              <div className="max-w-reading mx-auto px-4 sm:px-6 pt-12 pb-32 relative min-h-screen flex flex-col justify-between z-10">
-                <main className="w-full">
-                  <SnapRouteGuard>{children}</SnapRouteGuard>
-                </main>
+                {/* Mode-Aware Centered Page Shell Container */}
+                <PortfolioShell>{children}</PortfolioShell>
 
-                {/* Minimalist Tech Footer with Editorial Rail */}
-                <EditorialDivider className="mt-16 mb-6" />
-                <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
-                  <p>
-                    &copy; 2026 {SITE_NAME}. Designed with precision & craft.
-                  </p>
-                  <p className="flex items-center gap-1.5 text-muted-foreground/80">
-                    <span>Portfolio build ·</span>
-                    <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
-                      {BUILD_INFO.formattedDate}
-                    </time>
-                  </p>
-                </footer>
-              </div>
+                {/* High-Performance Canvas for Snap Dust Disintegration */}
+                <DustCanvas />
 
-              {/* High-Performance Canvas for Snap Dust Disintegration */}
-              <DustCanvas />
+                {/* Bottom Progressive Blur Overlay */}
+                <div className="bottom-progressive-blur" aria-hidden="true" />
 
-              {/* Bottom Progressive Blur Overlay */}
-              <div className="bottom-progressive-blur" aria-hidden="true" />
+                {/* Persistent Floating Navigation Dock */}
+                <NavigationDock />
 
-              {/* Persistent Floating Navigation Dock */}
-              <NavigationDock />
+                {/* Global AI Chat Assistant */}
+                <ChatWidget />
 
-              {/* AI Assistant Chat Widget */}
-              <ChatWidget />
-
-              {/* Vercel Web Analytics */}
-              <Analytics />
+                {/* Vercel Web Analytics */}
+                <Analytics />
+              </PresentationModeProvider>
             </SnapProvider>
           </SoundProvider>
         </ThemeProvider>

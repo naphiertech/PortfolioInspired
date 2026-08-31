@@ -13,6 +13,8 @@ import {
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useUISound } from "@/context/SoundContext";
 import { useSnap } from "@/context/SnapContext";
+import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
+import { PresentationModeSwitcher } from "@/features/presentation-modes/components/PresentationModeSwitcher";
 import { dockSpring, magneticSpring } from "@/lib/motion";
 
 interface NavItem {
@@ -170,6 +172,7 @@ function NavItemLink({
 
 export function NavigationDock() {
   const pathname = usePathname();
+  const { mode } = usePresentationMode();
   const { playHover, playClick } = useUISound();
   const {
     isSnapped,
@@ -200,6 +203,11 @@ export function NavigationDock() {
     }
   }, []);
 
+  // Focus Mode uses its own dedicated top navigation, not the Default bottom dock
+  if (mode === "focus") {
+    return null;
+  }
+
   const navItems: NavItem[] = [
     {
       name: "Home",
@@ -229,7 +237,13 @@ export function NavigationDock() {
   ];
 
   return (
-    <div className="fixed bottom-7 sm:bottom-7 left-0 right-0 flex justify-center z-50 pointer-events-none max-sm:bottom-4">
+    <div className="fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-50 pointer-events-none max-sm:bottom-4 px-3">
+      {/* Separate Circular Presentation Mode Switcher */}
+      <div className="pointer-events-auto flex-shrink-0">
+        <PresentationModeSwitcher variant="dock" />
+      </div>
+
+      {/* Main Navigation Dock */}
       <motion.nav
         layout={isSnapActive ? "size" : false}
         transition={{

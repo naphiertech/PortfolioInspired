@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fullProjects, getProjectBySlug } from "@/lib/data";
 import { SITE_URL, SITE_NAME, AUTHOR_INFO } from "@/lib/siteConfig";
-import ProjectDetailClient from "./ProjectDetailClient";
+import { ProjectDetailPresentationRoot } from "@/features/presentation-modes/components/ProjectDetailPresentationRoot";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -110,7 +110,7 @@ export default async function ProjectPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ProjectDetailClient
+      <ProjectDetailPresentationRoot
         project={project}
         prevProject={prevProject}
         nextProject={nextProject}

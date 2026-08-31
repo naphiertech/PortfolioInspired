@@ -5,6 +5,7 @@ const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
@@ -33,6 +34,7 @@ const config: Config = {
         faint: "var(--text-faint)",
         brand: "var(--text-brand)",
         border: {
+          DEFAULT: "var(--border-hairline)",
           hairline: "var(--border-hairline)",
           dashed: "var(--border-dashed)",
           reticle: "var(--border-reticle)",

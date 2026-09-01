@@ -21,19 +21,13 @@ export function FooterGrid() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-8 select-none mb-10 pt-6"
+      className="w-full space-y-6 select-none mb-10"
       aria-label="Connect and Memberships"
     >
-      {/* Top Divider Hairline Draw */}
-      <motion.div
-        variants={shouldReduceMotion ? undefined : sectionLineVariants}
-        className="h-[1px] w-full bg-border-divider origin-left"
-      />
-
       {/* 2-Column Matrix for Lower Half Sections */}
       <motion.div
         variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8"
       >
         {/* Column 1: Memberships */}
         <motion.div

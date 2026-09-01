@@ -16,6 +16,7 @@ import {
 
 export const ELIGIBLE_SECTION_IDS = [
   "about",
+  "now",
   "currently-building",
   "latest-activity",
   "recent-projects",

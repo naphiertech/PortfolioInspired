@@ -38,6 +38,12 @@ export function Recommendations() {
 
   const currentRec = !isEmpty ? approvedRecs[activeIndex] : null;
 
+  // If zero published recommendations exist: hide the section completely.
+  // When real published recommendations exist, the section appears automatically.
+  if (isEmpty) {
+    return null;
+  }
+
   return (
     <motion.section
       initial={shouldReduceMotion ? false : "hidden"}

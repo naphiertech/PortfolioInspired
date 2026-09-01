@@ -100,7 +100,7 @@ export function Certifications() {
         label="CERTIFICATIONS"
         description="Programs and achievements that reflect my continued learning."
         actionHref="/certifications"
-        actionLabel="all certifications"
+        actionLabel="view all certifications"
         className="mb-6 pb-2 border-b border-border-hairline/40"
       />
 

@@ -32,7 +32,7 @@ export function ExperienceTimeline() {
     if (role.includes("Front-End")) {
       return <Layout className="w-3.5 h-3.5 sm:w-4 sm:h-4" />;
     }
-    if (role.includes("BS Information Technology")) {
+    if (role.includes("BS Information Technology") || role.includes("Information Technology")) {
       return <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />;
     }
     if (role.includes("Hello World")) {
@@ -54,12 +54,8 @@ export function ExperienceTimeline() {
       <SectionHeader
         label="EXPERIENCE-TIMELINE"
         description="A timeline of my growth, from my first line of code to where I am today."
-        actionComponent={
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border-hairline text-muted-foreground font-mono text-[10px] font-medium shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-status-breathe" />
-            <span>MY JOURNEY</span>
-          </div>
-        }
+        actionHref="/work"
+        actionLabel="view work & experience"
         className="mb-6 pb-2 border-b border-border-hairline/40"
       />
 
@@ -72,7 +68,7 @@ export function ExperienceTimeline() {
           {/* 
             UNIFIED CONTINUOUS VERTICAL SPINE:
             Single continuous unbroken line running from the PRESENT node (top)
-            all the way down to the 2022 node (bottom).
+            all the way down through the milestones to 2022.
             Anchored precisely at left-6 (mobile) and left-10 (desktop).
           */}
           <div

@@ -96,27 +96,27 @@ export function Gallery() {
         className="mb-4 pb-2 border-b border-border-hairline/40"
       />
 
-      {/* Horizontal Strip */}
+      {/* Horizontal Strip (Compact 4-image preview) */}
       <motion.div
         variants={shouldReduceMotion ? undefined : contentBlockVariants}
         ref={scrollContainerRef}
         className="flex gap-3 overflow-x-auto scrollbar-hide py-1"
       >
-        {galleryImages.map((src, idx) => (
+        {galleryImages.slice(0, 4).map((src, idx) => (
           <div
             key={idx}
             onClick={() => {
               playOpen();
               setActiveIdx(idx);
             }}
-            className="relative flex-shrink-0 w-36 h-28 sm:w-48 sm:h-34 rounded-[4px] overflow-hidden bg-surface border border-border-hairline cursor-pointer group"
+            className="relative flex-shrink-0 w-36 h-28 sm:w-48 sm:h-36 rounded-lg overflow-hidden bg-surface border border-border-hairline cursor-pointer group shadow-2xs"
           >
             <Image
               src={src}
               alt={`Event photo ${idx + 1}`}
               fill
-              sizes="200px"
-              className="object-cover opacity-80 grayscale transition-all duration-200 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105"
+              sizes="(max-width: 640px) 150px, 200px"
+              className="object-cover opacity-85 grayscale transition-all duration-200 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105"
             />
           </div>
         ))}

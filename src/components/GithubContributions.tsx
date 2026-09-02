@@ -101,7 +101,7 @@ export function GithubContributions() {
 
   return (
     <div className="w-full mt-5 pt-1 select-none">
-      <div className="overflow-x-auto scrollbar-none pb-1 -mx-2 px-2">
+      <div className="overflow-x-auto scrollbar-hide [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden pb-1 -mx-2 px-2">
         <div className="inline-block min-w-max">
           {/* Month Labels Header */}
           <div className="relative h-4 mb-1.5 font-mono text-[10px] text-muted-foreground/80">

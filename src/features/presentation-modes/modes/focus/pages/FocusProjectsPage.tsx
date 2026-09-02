@@ -35,8 +35,8 @@ export function FocusProjectsPage() {
           <span>cd .. / home</span>
         </Link>
 
-        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none">
-          <span className="tracking-wider text-muted-foreground/80 font-medium">
+        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none">
+          <span className="tracking-wider font-medium">
             [ 02 // PROJECTS ]
           </span>
           <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -46,10 +46,10 @@ export function FocusProjectsPage() {
 
         <div className="flex items-start sm:items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="font-sans text-2xl sm:text-3xl font-extrabold text-ink tracking-tight">
+            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-ink tracking-tight">
               Projects
             </h1>
-            <p className="font-mono text-xs sm:text-[13px] text-muted-foreground mt-1">
+            <p className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400 mt-1">
               Web applications, logistics tools, and developer platforms.
             </p>
           </div>
@@ -78,7 +78,7 @@ export function FocusProjectsPage() {
                       {indexString}.
                     </span>
 
-                    <h2 className="font-sans font-bold text-base sm:text-lg text-ink tracking-tight">
+                    <h2 className="font-sans font-semibold text-base sm:text-lg text-ink tracking-tight">
                       <Link
                         href={`/projects/${project.slug}`}
                         onMouseEnter={playHover}
@@ -96,16 +96,16 @@ export function FocusProjectsPage() {
                       <ProjectStatusBadge status={project.status} size="sm" />
                     )}
 
-                    <span className="font-mono text-xs text-muted-foreground/60 ml-auto">
+                    <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 ml-auto">
                       {project.year}
                     </span>
                   </div>
 
-                  <p className="font-mono text-xs text-muted-foreground/80 mb-2">
+                  <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mb-2">
                     {project.category} {project.role ? `· ${project.role}` : ""}
                   </p>
 
-                  <p className="text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed">
+                  <p className="text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6]">
                     {project.overview}
                   </p>
 
@@ -114,7 +114,7 @@ export function FocusProjectsPage() {
                     {displayTech.map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-0.5 rounded bg-surface/50 border border-border-hairline text-[11px] font-mono text-muted-foreground select-none"
+                        className="px-2 py-0.5 rounded bg-surface/60 border border-border-hairline text-[11.5px] font-mono text-zinc-600 dark:text-zinc-400 select-none"
                       >
                         {tech}
                       </span>
@@ -170,10 +170,10 @@ export function FocusProjectsPage() {
                     </div>
 
                     <div>
-                      <h3 className="text-xs sm:text-[13px] text-ink font-bold leading-snug">
+                      <h3 className="text-xs sm:text-sm text-ink font-semibold leading-snug">
                         {primaryDecision.title}
                       </h3>
-                      <p className="text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed mt-1.5">
+                      <p className="text-[13.5px] sm:text-sm text-zinc-700 dark:text-zinc-300 font-sans leading-[1.55] mt-1.5">
                         {primaryDecision.description}
                       </p>
                     </div>

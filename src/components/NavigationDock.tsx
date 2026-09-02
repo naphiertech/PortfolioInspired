@@ -203,8 +203,8 @@ export function NavigationDock() {
     }
   }, []);
 
-  // Focus Mode uses its own dedicated top navigation, not the Default bottom dock
-  if (mode === "focus") {
+  // Focus and Minimal modes do not use the Default bottom dock
+  if (mode === "focus" || mode === "minimal") {
     return null;
   }
 

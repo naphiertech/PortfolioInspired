@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   X,
   Send,
@@ -226,6 +227,13 @@ function ChatWidgetContent() {
     handleSendMessage(input);
   };
 
+  const shouldReduceMotion = useReducedMotion();
+
+  // Hide AI Chat while in Minimal Mode
+  if (mode === "minimal") {
+    return null;
+  }
+
   // Determine whether conversation is empty (only initial welcome message exists)
   const isConversationEmpty = messages.length <= 1;
 
@@ -260,15 +268,24 @@ function ChatWidgetContent() {
         </button>
       </div>
 
-      {/* Floating Chat Modal Panel */}
-      {isOpen && (
-        <div
-          className={`fixed right-3 left-3 sm:left-auto sm:right-8 sm:w-[390px] h-[calc(100dvh-130px)] max-h-[520px] rounded-xl bg-page border border-border-hairline shadow-2xl z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200 ${
-            isFocus ? "bottom-14 sm:bottom-20" : "bottom-[120px] sm:bottom-20"
-          }`}
-          role="dialog"
-          aria-label="AI Assistant Chat"
-        >
+      {/* Floating Chat Modal Panel with Fluid AnimatePresence */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: shouldReduceMotion ? 0 : 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: shouldReduceMotion ? 0 : 6 }}
+            transition={{
+              duration: shouldReduceMotion ? 0.08 : 0.22,
+              ease: [0.23, 1, 0.32, 1] as const,
+            }}
+            style={{ transformOrigin: "bottom right" }}
+            className={`fixed right-3 left-3 sm:left-auto sm:right-8 sm:w-[390px] h-[calc(100dvh-130px)] max-h-[520px] rounded-xl bg-page border border-border-hairline shadow-2xl z-50 flex flex-col overflow-hidden will-change-[transform,opacity] ${
+              isFocus ? "bottom-14 sm:bottom-20" : "bottom-[120px] sm:bottom-20"
+            }`}
+            role="dialog"
+            aria-label="AI Assistant Chat"
+          >
           {/* Header */}
           <div className="p-3.5 border-b border-border-hairline bg-surface/40 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2">
@@ -453,10 +470,11 @@ function ChatWidgetContent() {
               <Send className="w-3.5 h-3.5" />
             </button>
           </form>
-        </div>
+        </motion.div>
       )}
-    </>
-  );
+    </AnimatePresence>
+  </>
+);
 }
 
 export function ChatWidget() {

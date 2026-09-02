@@ -45,8 +45,8 @@ export function FocusCapabilities() {
   return (
     <section aria-label="Core skills overview" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3 sm:mb-3.5">
-        <span className="tracking-wider text-muted-foreground/80 font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3 sm:mb-3.5">
+        <span className="tracking-wider font-medium">
           [ 01 // SKILLS ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -69,7 +69,7 @@ export function FocusCapabilities() {
                   <span className="font-mono text-xs text-muted-foreground/60">
                     {pillar.id}.
                   </span>
-                  <div className="flex items-center gap-2 font-sans font-bold text-sm sm:text-[15px] text-ink">
+                  <div className="flex items-center gap-2 font-sans font-semibold text-sm sm:text-base text-ink">
                     <Icon className="w-4 h-4 text-brand flex-shrink-0" aria-hidden="true" />
                     <span>{pillar.domain}</span>
                   </div>
@@ -80,9 +80,9 @@ export function FocusCapabilities() {
                   {pillar.items.map((item, idx) => (
                     <li
                       key={idx}
-                      className="text-[13px] sm:text-[13px] text-ink/85 font-sans leading-relaxed flex items-start gap-2"
+                      className="text-[14px] sm:text-[14.5px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] flex items-start gap-2"
                     >
-                      <span className="text-muted-foreground/40 font-mono text-xs select-none mt-0.5 flex-shrink-0">
+                      <span className="text-zinc-400 dark:text-zinc-500 font-mono text-xs select-none mt-0.5 flex-shrink-0">
                         •
                       </span>
                       <span className="min-w-0">{item}</span>

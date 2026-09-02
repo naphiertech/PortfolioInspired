@@ -47,8 +47,8 @@ export function FocusProjectDetailPage({
         </Link>
 
         {/* Project Eyebrow */}
-        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none">
-          <span className="tracking-wider text-muted-foreground/80 font-medium">
+        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none">
+          <span className="tracking-wider font-medium">
             [ PROJECT // {project.slug.toUpperCase()} ]
           </span>
           <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -68,7 +68,7 @@ export function FocusProjectDetailPage({
             )}
           </div>
 
-          <div className="flex items-center flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
+          <div className="flex items-center flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
             <span>{project.category}</span>
             <span className="text-border">·</span>
             <span>{project.year}</span>
@@ -94,10 +94,10 @@ export function FocusProjectDetailPage({
       <div className="space-y-8">
         {/* 01 // OVERVIEW */}
         <section aria-label="Project overview">
-          <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-2.5">
+          <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-2.5">
             01 // OVERVIEW & PURPOSE
           </div>
-          <p className="text-sm sm:text-[15px] text-ink/85 font-sans leading-relaxed">
+          <p className="text-[15px] sm:text-base text-zinc-700 dark:text-zinc-300 font-sans leading-[1.65]">
             {project.fullDescription || project.overview}
           </p>
         </section>
@@ -107,7 +107,7 @@ export function FocusProjectDetailPage({
         {/* 02 // WHY THESE CHOICES? */}
         {project.technicalDecisions && project.technicalDecisions.length > 0 && (
           <section aria-label="Technical choices">
-            <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3.5">
+            <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
               02 // WHY THESE CHOICES?
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -121,10 +121,10 @@ export function FocusProjectDetailPage({
                       <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>CHOICE {String(idx + 1).padStart(2, "0")}</span>
                     </div>
-                    <h3 className="font-sans font-bold text-xs sm:text-[13px] text-ink leading-snug">
+                    <h3 className="font-sans font-semibold text-sm sm:text-[15px] text-ink leading-snug">
                       {decision.title}
                     </h3>
-                    <p className="font-sans text-xs sm:text-[13px] text-ink/80 leading-relaxed mt-1.5">
+                    <p className="font-sans text-[13.5px] sm:text-sm text-zinc-700 dark:text-zinc-300 leading-[1.55] mt-1.5">
                       {decision.description}
                     </p>
                   </div>
@@ -140,7 +140,7 @@ export function FocusProjectDetailPage({
 
         {/* 03 // TECH STACK */}
         <section aria-label="Technology stack">
-          <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3">
+          <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3">
             03 // TECH STACK
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -149,7 +149,7 @@ export function FocusProjectDetailPage({
                 key={tech}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface/50 border border-border-hairline text-xs font-mono text-ink/90 select-none"
               >
-                <TechIcon name={tech} className="w-3.5 h-3.5 text-muted-foreground/80 flex-shrink-0" />
+                <TechIcon name={tech} className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 flex-shrink-0" />
                 <span>{tech}</span>
               </span>
             ))}
@@ -161,14 +161,14 @@ export function FocusProjectDetailPage({
         {/* 04 // KEY FEATURES */}
         {project.features && project.features.length > 0 && (
           <section aria-label="Key features">
-            <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3">
+            <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3">
               04 // KEY FEATURES
             </div>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {project.features.map((feature, idx) => (
                 <li
                   key={idx}
-                  className="text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed flex items-start gap-2 p-2.5 rounded bg-surface/20 border border-border-hairline"
+                  className="text-[13.5px] sm:text-sm text-zinc-700 dark:text-zinc-300 font-sans leading-relaxed flex items-start gap-2 p-2.5 rounded bg-surface/20 border border-border-hairline"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
                   <span>{feature}</span>

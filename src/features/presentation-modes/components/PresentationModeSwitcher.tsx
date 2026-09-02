@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { ChevronDown, LayoutTemplate } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { PRESENTATION_MODES } from "../types/config";
 import { PresentationMode } from "../types/presentation";
@@ -9,18 +10,17 @@ import { useUISound } from "@/context/SoundContext";
 import { useViewHint } from "../hooks/useViewHint";
 
 interface PresentationModeSwitcherProps {
-  variant?: "dock" | "focus-nav";
+  variant?: "dock" | "focus-nav" | "minimal";
   className?: string;
 }
 
 /**
  * PresentationModeSwitcher
  *
- * Presentation-aware switcher supporting two placement variants:
+ * Presentation-aware switcher supporting three placement variants:
  * 1. "dock": Separate circular floating button beside the bottom NavigationDock (Default Mode).
- *    Popover opens upward from the dock element with a subtle left hint ("Try another view →").
  * 2. "focus-nav": Solid/near-solid technical control inside the Focus top navigation header (Focus Mode).
- *    Popover opens downward with a subtle upward-pointing hint ("↑ Try another view") directly below.
+ * 3. "minimal": Quiet, understated control inside the Minimal header (Minimal Mode).
  */
 export function PresentationModeSwitcher({
   variant = "dock",
@@ -29,6 +29,7 @@ export function PresentationModeSwitcher({
   const { mode, setMode } = usePresentationMode();
   const { playClick, playHover } = useUISound();
   const { hasDismissedHint, dismissHint } = useViewHint();
+  const shouldReduceMotion = useReducedMotion();
 
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
@@ -37,7 +38,7 @@ export function PresentationModeSwitcher({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Only render active, implemented modes (Default & Focus)
+  // Only render active, implemented modes (Default, Focus, Minimal)
   const availableModes = Object.values(PRESENTATION_MODES).filter(
     (m) => m.isAvailable
   );
@@ -98,35 +99,32 @@ export function PresentationModeSwitcher({
         dismissHint();
         setIsOpen(true);
         setFocusedIndex(
-          availableModes.findIndex((m) => m.id === mode) || 0
+          availableModes.findIndex((item) => item.id === mode)
         );
       }
       return;
     }
 
     switch (e.key) {
-      case "Escape":
-        e.preventDefault();
-        closePopover();
-        triggerRef.current?.focus();
-        break;
-
       case "ArrowDown":
         e.preventDefault();
-        setFocusedIndex((prev) =>
-          prev < availableModes.length - 1 ? prev + 1 : 0
-        );
+        setFocusedIndex((prev) => (prev + 1) % availableModes.length);
         break;
-
       case "ArrowUp":
         e.preventDefault();
         setFocusedIndex((prev) =>
-          prev > 0 ? prev - 1 : availableModes.length - 1
+          prev <= 0 ? availableModes.length - 1 : prev - 1
         );
         break;
-
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        if (focusedIndex >= 0 && focusedIndex < availableModes.length) {
+          handleSelectMode(availableModes[focusedIndex].id);
+        }
+        break;
+      case "Escape":
       case "Tab":
-        // Non-modal popover closes gracefully on Tab out
         closePopover();
         break;
     }
@@ -228,89 +226,128 @@ export function PresentationModeSwitcher({
         </div>
       )}
 
-      {/* Popover Listbox */}
-      {isOpen && (
-        <div
-          role="listbox"
-          aria-label="Available Presentation Modes"
-          className={`absolute w-60 sm:w-64 p-1 rounded-md bg-page border border-border-hairline shadow-tactile animate-in fade-in zoom-in-95 duration-100 outline-none z-50 pointer-events-auto ${
-            variant === "dock"
-              ? "bottom-full mb-3 left-0 sm:left-auto sm:right-0 origin-bottom-left sm:origin-bottom-right"
-              : "top-full mt-1.5 right-0 origin-top-right"
+      {/* 3. MINIMAL VARIANT: Quiet, understated text trigger */}
+      {variant === "minimal" && (
+        <button
+          ref={triggerRef}
+          type="button"
+          onClick={handleToggleOpen}
+          onMouseEnter={playHover}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-label={`Presentation mode: ${currentConfig.label}. Click to switch.`}
+          className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-mono text-zinc-600 dark:text-[#9e998e] hover:text-zinc-900 hover:dark:text-[#dedad0] transition-colors outline-none cursor-pointer border border-transparent hover:border-zinc-200 dark:hover:border-white/[0.08] ${
+            isOpen ? "border-zinc-200 dark:border-white/[0.08] text-zinc-900 dark:text-[#eae6df] bg-zinc-100 dark:bg-[#141514]" : ""
           }`}
         >
-          {/* Popover Header */}
-          <div className="px-2.5 py-1 border-b border-border-divider mb-1">
-            <span className="font-mono text-[10px] text-muted-foreground/60 tracking-widest uppercase">
-              VIEW MODE
-            </span>
-          </div>
-
-          {/* Mode Options */}
-          <div className="space-y-0.5">
-            {availableModes.map((item, index) => {
-              const isSelected = item.id === mode;
-              const isFocused = index === focusedIndex;
-
-              return (
-                <button
-                  key={item.id}
-                  ref={(el) => {
-                    optionRefs.current[index] = el;
-                  }}
-                  type="button"
-                  role="option"
-                  aria-selected={isSelected}
-                  tabIndex={isFocused ? 0 : -1}
-                  onClick={() => handleSelectMode(item.id)}
-                  onMouseEnter={() => {
-                    playHover();
-                    setFocusedIndex(index);
-                  }}
-                  className={`w-full text-left px-2.5 py-2 rounded flex items-start gap-2.5 transition-colors outline-none cursor-pointer ${
-                    isSelected
-                      ? "bg-surface text-ink font-medium"
-                      : isFocused
-                      ? "bg-surface-hover/80 text-ink"
-                      : "text-muted-foreground hover:bg-surface-hover/60 hover:text-ink"
-                  }`}
-                >
-                  {/* Status Indicator Icon */}
-                  <span
-                    className={`text-xs mt-0.5 flex-shrink-0 ${
-                      isSelected
-                        ? item.id === "focus"
-                          ? "text-emerald-500 font-bold"
-                          : "text-brand font-bold"
-                        : "text-muted-foreground/40"
-                    }`}
-                    aria-hidden="true"
-                  >
-                    {isSelected ? "●" : "○"}
-                  </span>
-
-                  {/* Text Details */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-semibold uppercase text-ink">
-                        {item.label}
-                      </span>
-                      {isSelected && (
-                        <span className="font-mono text-[9px] text-muted-foreground/60 uppercase tracking-widest">
-                          ACTIVE
-                        </span>
-                      )}
-                    </div>
-                    <p className="font-sans text-[11px] text-muted-foreground leading-snug mt-0.5">
-                      {item.description}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+          <span>View</span>
+          <ChevronDown
+            className={`w-3 h-3 text-zinc-400 dark:text-[#827d73] transition-transform duration-150 ${
+              isOpen ? "rotate-180 text-zinc-900 dark:text-[#eae6df]" : ""
+            }`}
+            aria-hidden="true"
+          />
+        </button>
       )}
+
+      {/* Popover Listbox */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            role="listbox"
+            aria-label="Available Presentation Modes"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{
+              duration: shouldReduceMotion ? 0.05 : 0.18,
+              ease: [0.23, 1, 0.32, 1] as const,
+            }}
+            style={{
+              transformOrigin:
+                variant === "dock"
+                  ? "bottom left"
+                  : "top right",
+            }}
+            className={`absolute w-60 sm:w-64 p-1 rounded-md bg-page border border-border-hairline shadow-tactile outline-none z-50 pointer-events-auto will-change-[transform,opacity] ${
+              variant === "dock"
+                ? "bottom-full mb-3 left-0 sm:left-auto sm:right-0"
+                : "top-full mt-1.5 right-0"
+            }`}
+          >
+            {/* Popover Header */}
+            <div className="px-2.5 py-1 border-b border-border-divider mb-1">
+              <span className="font-mono text-[10px] text-muted-foreground/60 tracking-widest uppercase">
+                VIEW MODE
+              </span>
+            </div>
+
+            {/* Mode Options */}
+            <div className="space-y-0.5">
+              {availableModes.map((item, index) => {
+                const isSelected = item.id === mode;
+                const isFocused = index === focusedIndex;
+
+                return (
+                  <button
+                    key={item.id}
+                    ref={(el) => {
+                      optionRefs.current[index] = el;
+                    }}
+                    type="button"
+                    role="option"
+                    aria-selected={isSelected}
+                    tabIndex={isFocused ? 0 : -1}
+                    onClick={() => handleSelectMode(item.id)}
+                    onMouseEnter={() => {
+                      playHover();
+                      setFocusedIndex(index);
+                    }}
+                    className={`w-full text-left px-2.5 py-2 rounded flex items-start gap-2.5 transition-colors outline-none cursor-pointer ${
+                      isSelected
+                        ? "bg-surface text-ink font-medium"
+                        : isFocused
+                        ? "bg-surface-hover/80 text-ink"
+                        : "text-muted-foreground hover:bg-surface-hover/60 hover:text-ink"
+                    }`}
+                  >
+                    {/* Status Indicator Icon */}
+                    <span
+                      className={`text-xs mt-0.5 flex-shrink-0 ${
+                        isSelected
+                          ? item.id === "focus"
+                            ? "text-emerald-500 font-bold"
+                            : "text-brand font-bold"
+                          : "text-muted-foreground/40"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {isSelected ? "●" : "○"}
+                    </span>
+
+                    {/* Text Details */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-semibold uppercase text-ink">
+                          {item.label}
+                        </span>
+                        {isSelected && (
+                          <span className="font-mono text-[9px] text-muted-foreground/60 uppercase tracking-widest">
+                            ACTIVE
+                          </span>
+                        )}
+                      </div>
+                      <p className="font-sans text-[11px] text-muted-foreground leading-snug mt-0.5">
+                        {item.description}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -14,8 +14,8 @@ export function FocusSelectedWork() {
   return (
     <section aria-label="Selected projects" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3.5">
-        <span className="tracking-wider text-muted-foreground/80 font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
+        <span className="tracking-wider font-medium">
           [ 02 // PROJECTS ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -38,7 +38,7 @@ export function FocusSelectedWork() {
               <div className="w-full min-w-0 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap mb-1.5">
-                    <h3 className="font-sans font-bold text-base sm:text-lg text-ink tracking-tight">
+                    <h3 className="font-sans font-semibold text-base sm:text-lg text-ink tracking-tight">
                       <Link
                         href={`/projects/${project.slug}`}
                         className="hover:text-brand transition-colors inline-flex items-center gap-1.5 group/title"
@@ -54,16 +54,16 @@ export function FocusSelectedWork() {
                       <ProjectStatusBadge status={project.status} size="sm" />
                     )}
 
-                    <span className="font-mono text-xs text-muted-foreground/60 ml-auto">
+                    <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 ml-auto">
                       {project.year}
                     </span>
                   </div>
 
-                  <p className="font-mono text-xs text-muted-foreground/80 mb-2">
+                  <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mb-2">
                     {project.category}
                   </p>
 
-                  <p className="text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed">
+                  <p className="text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6]">
                     {project.overview}
                   </p>
 
@@ -72,7 +72,7 @@ export function FocusSelectedWork() {
                     {displayTech.map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-0.5 rounded bg-surface/50 border border-border-hairline text-[11px] font-mono text-muted-foreground select-none"
+                        className="px-2 py-0.5 rounded bg-surface/60 border border-border-hairline text-[11.5px] font-mono text-zinc-600 dark:text-zinc-400 select-none"
                       >
                         {tech}
                       </span>
@@ -126,10 +126,10 @@ export function FocusSelectedWork() {
                     </div>
 
                     <div>
-                      <h4 className="text-xs sm:text-[13px] text-ink font-bold leading-snug">
+                      <h4 className="text-xs sm:text-sm text-ink font-semibold leading-snug">
                         {primaryDecision.title}
                       </h4>
-                      <p className="text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed mt-1.5">
+                      <p className="text-[13.5px] sm:text-sm text-zinc-700 dark:text-zinc-300 font-sans leading-[1.55] mt-1.5">
                         {primaryDecision.description}
                       </p>
                     </div>

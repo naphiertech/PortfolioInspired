@@ -20,6 +20,7 @@ import {
 
 interface PresentationModeContextValue {
   mode: PresentationMode;
+  previousMode: PresentationMode | null;
   setMode: (mode: PresentationMode) => void;
 }
 
@@ -43,50 +44,64 @@ export function PresentationModeProvider({
   initialMode = DEFAULT_PRESENTATION_MODE,
 }: PresentationModeProviderProps) {
   const [mode, setModeState] = useState<PresentationMode>(initialMode);
+  const [previousMode, setPreviousMode] = useState<PresentationMode | null>(null);
   const { isSnapped, isSnapping, isRestoring, resetSnapState } = useSnap();
 
-  // If initial mode is focus or active mode becomes focus while snapped, normalize immediately
+  // If initial mode is focus/minimal or active mode becomes focus/minimal while snapped, normalize immediately
   useEffect(() => {
-    if (mode === "focus" && (isSnapped || isSnapping || isRestoring)) {
+    if (
+      (mode === "focus" || mode === "minimal") &&
+      (isSnapped || isSnapping || isRestoring)
+    ) {
       resetSnapState();
     }
   }, [mode, isSnapped, isSnapping, isRestoring, resetSnapState]);
 
-  const setMode = useCallback((newMode: PresentationMode) => {
-    setModeState(newMode);
+  const setMode = useCallback(
+    (newMode: PresentationMode) => {
+      setPreviousMode(mode);
+      setModeState(newMode);
 
-    // If entering Focus mode, immediately clear and reset any active Default snap state
-    if (newMode === "focus") {
-      resetSnapState();
-    }
-
-    try {
-      // 1. Authoritative Server-Readable Cookie Persistence
-      document.cookie = `${PRESENTATION_COOKIE_NAME}=${newMode}; path=/; max-age=${PRESENTATION_COOKIE_MAX_AGE}; SameSite=Lax`;
-
-      // 2. Clean URL Synchronization
-      if (typeof window !== "undefined") {
-        const url = new URL(window.location.href);
-        if (newMode === DEFAULT_PRESENTATION_MODE) {
-          url.searchParams.delete(PRESENTATION_QUERY_PARAM);
-        } else {
-          if (url.searchParams.has(PRESENTATION_QUERY_PARAM)) {
-            url.searchParams.set(PRESENTATION_QUERY_PARAM, newMode);
-          }
-        }
-        window.history.replaceState({}, "", url.toString());
+      // If entering Focus or Minimal mode, immediately clear and reset any active Default snap state
+      if (newMode === "focus" || newMode === "minimal") {
+        resetSnapState();
       }
-    } catch {
-      // Ignore storage errors in restricted contexts
-    }
-  }, [resetSnapState]);
+
+      try {
+        // 1. Authoritative Server-Readable Cookie Persistence
+        document.cookie = `${PRESENTATION_COOKIE_NAME}=${newMode}; path=/; max-age=${PRESENTATION_COOKIE_MAX_AGE}; SameSite=Lax`;
+
+        // 2. Clean URL Synchronization & One-Page Minimal Redirect
+        if (typeof window !== "undefined") {
+          if (newMode === "minimal" && window.location.pathname !== "/") {
+            window.location.href = "/";
+            return;
+          }
+
+          const url = new URL(window.location.href);
+          if (newMode === DEFAULT_PRESENTATION_MODE) {
+            url.searchParams.delete(PRESENTATION_QUERY_PARAM);
+          } else {
+            if (url.searchParams.has(PRESENTATION_QUERY_PARAM)) {
+              url.searchParams.set(PRESENTATION_QUERY_PARAM, newMode);
+            }
+          }
+          window.history.replaceState({}, "", url.toString());
+        }
+      } catch {
+        // Ignore storage errors in restricted contexts
+      }
+    },
+    [mode, resetSnapState]
+  );
 
   const value = useMemo<PresentationModeContextValue>(
     () => ({
       mode,
+      previousMode,
       setMode,
     }),
-    [mode, setMode]
+    [mode, previousMode, setMode]
   );
 
   return (

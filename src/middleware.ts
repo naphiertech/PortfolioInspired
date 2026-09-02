@@ -19,6 +19,31 @@ import {
  */
 export function middleware(request: NextRequest) {
   const queryMode = request.nextUrl.searchParams.get(PRESENTATION_QUERY_PARAM);
+  const cookieMode = request.cookies.get(PRESENTATION_COOKIE_NAME)?.value;
+
+  const effectiveMode =
+    queryMode && isValidPresentationMode(queryMode)
+      ? queryMode
+      : cookieMode && isValidPresentationMode(cookieMode)
+      ? cookieMode
+      : null;
+
+  // Minimal is strictly one page: redirect any deep route requests back to "/"
+  if (effectiveMode === "minimal" && request.nextUrl.pathname !== "/") {
+    const redirectUrl = new URL("/", request.url);
+    if (queryMode) {
+      redirectUrl.searchParams.set(PRESENTATION_QUERY_PARAM, "minimal");
+    }
+    const response = NextResponse.redirect(redirectUrl);
+    if (queryMode) {
+      response.cookies.set(PRESENTATION_COOKIE_NAME, "minimal", {
+        path: "/",
+        maxAge: PRESENTATION_COOKIE_MAX_AGE,
+        sameSite: "lax",
+      });
+    }
+    return response;
+  }
 
   if (queryMode && isValidPresentationMode(queryMode)) {
     // Forward the cookie in request headers so Server Components read it in the current cycle

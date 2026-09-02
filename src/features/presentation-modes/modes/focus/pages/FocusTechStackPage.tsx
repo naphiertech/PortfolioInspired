@@ -77,8 +77,8 @@ export function FocusTechStackPage() {
           <span>cd .. / home</span>
         </Link>
 
-        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none">
-          <span className="tracking-wider text-muted-foreground/80 font-medium">
+        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none">
+          <span className="tracking-wider font-medium">
             [ 03 // TECH STACK ]
           </span>
           <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -88,10 +88,10 @@ export function FocusTechStackPage() {
 
         <div className="flex items-start sm:items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="font-sans text-2xl sm:text-3xl font-extrabold text-ink tracking-tight">
+            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-ink tracking-tight">
               Tech Stack & Tooling
             </h1>
-            <p className="font-mono text-xs sm:text-[13px] text-muted-foreground mt-1">
+            <p className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400 mt-1">
               Languages, frameworks, databases, and developer tools I work with.
             </p>
           </div>
@@ -115,7 +115,7 @@ export function FocusTechStackPage() {
                 <span className="font-mono text-xs sm:text-[13px] font-semibold text-ink block">
                   {section.title}
                 </span>
-                <span className="font-caps text-[10px] text-muted-foreground/60 tracking-wider font-mono">
+                <span className="font-caps text-[10px] text-zinc-400 dark:text-zinc-500 tracking-wider font-mono">
                   {syntaxTag}
                 </span>
               </div>
@@ -134,13 +134,13 @@ export function FocusTechStackPage() {
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors select-none ${
                         isSelected
                           ? "bg-ink text-page font-semibold border border-ink shadow-xs"
-                          : "bg-surface/50 border border-border-hairline text-ink/90 hover:border-border hover:text-ink"
+                          : "bg-surface/60 border border-border-hairline text-zinc-700 dark:text-zinc-300 hover:border-border hover:text-ink"
                       }`}
                     >
                       <TechIcon
                         name={tech}
                         className={`w-3.5 h-3.5 flex-shrink-0 ${
-                          isSelected ? "text-page" : "text-muted-foreground/80"
+                          isSelected ? "text-page" : "text-zinc-500 dark:text-zinc-400"
                         }`}
                       />
                       <span>{tech}</span>

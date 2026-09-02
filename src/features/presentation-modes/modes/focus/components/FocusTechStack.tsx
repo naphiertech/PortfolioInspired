@@ -31,8 +31,8 @@ export function FocusTechStack() {
   return (
     <section aria-label="Technologies used" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3.5">
-        <span className="tracking-wider text-muted-foreground/80 font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
+        <span className="tracking-wider font-medium">
           [ 03 // TECH STACK ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -59,9 +59,9 @@ export function FocusTechStack() {
               {group.items.map((tech) => (
                 <span
                   key={tech}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface/50 border border-border-hairline text-xs font-mono text-ink/90 hover:border-border transition-colors select-none"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface/60 border border-border-hairline text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:border-border transition-colors select-none"
                 >
-                  <TechIcon name={tech} className="w-3.5 h-3.5 text-muted-foreground/80 flex-shrink-0" />
+                  <TechIcon name={tech} className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 flex-shrink-0" />
                   <span>{tech}</span>
                 </span>
               ))}

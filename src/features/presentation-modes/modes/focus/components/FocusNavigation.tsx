@@ -74,7 +74,7 @@ export function FocusNavigation() {
     >
       <div className="w-full flex items-center justify-between gap-2">
         {/* --- DESKTOP ROUTE LINKS (≥ sm) --- */}
-        <div className="hidden sm:flex items-center gap-x-5 font-mono text-xs">
+        <div className="hidden sm:flex items-center gap-x-6 font-mono text-xs sm:text-[12.5px]">
           {focusNavItems.map((item) => {
             const isActive =
               item.href === "/"
@@ -87,10 +87,10 @@ export function FocusNavigation() {
                 href={item.href}
                 onMouseEnter={playHover}
                 onClick={playClick}
-                className={`relative py-1 uppercase tracking-wider text-xs transition-colors ${
+                className={`relative py-1 uppercase tracking-wider transition-colors ${
                   isActive
-                    ? "text-ink font-bold"
-                    : "text-muted-foreground hover:text-ink"
+                    ? "text-ink font-semibold"
+                    : "text-zinc-500 dark:text-zinc-400 hover:text-ink"
                 }`}
               >
                 <span>{item.name}</span>
@@ -108,7 +108,7 @@ export function FocusNavigation() {
         {/* --- MOBILE ACTIVE SECTION BADGE (< sm) --- */}
         <div className="flex sm:hidden items-center gap-1.5 font-mono text-xs">
           <span className="w-1.5 h-1.5 rounded-full bg-brand animate-status-breathe" />
-          <span className="font-bold text-ink text-[11px] tracking-wider uppercase">
+          <span className="font-semibold text-ink text-xs tracking-wider uppercase">
             FOCUS // {currentActiveItem.name}
           </span>
         </div>

@@ -27,6 +27,12 @@ export function ProjectDetailPresentationRoot({
   const { mode } = usePresentationMode();
   const shouldReduceMotion = useReducedMotion();
 
+  React.useEffect(() => {
+    if (mode === "minimal" && typeof window !== "undefined") {
+      window.location.href = "/";
+    }
+  }, [mode]);
+
   const transitionConfig = shouldReduceMotion
     ? { duration: 0 }
     : {

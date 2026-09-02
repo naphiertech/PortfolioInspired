@@ -7,8 +7,8 @@ export function FocusExperience() {
   return (
     <section aria-label="Work experience" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3.5">
-        <span className="tracking-wider text-muted-foreground/80 font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
+        <span className="tracking-wider font-medium">
           [ 04 // EXPERIENCE ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -38,17 +38,17 @@ export function FocusExperience() {
             {/* Right Column: Role, Company & Readable Line-Length Description */}
             <div className="min-w-0 flex flex-col">
               <div className="flex items-baseline gap-2 flex-wrap">
-                <h3 className="font-sans font-bold text-sm sm:text-base text-ink">
+                <h3 className="font-sans font-semibold text-sm sm:text-base text-ink">
                   {exp.role}
                 </h3>
-                <span className="text-muted-foreground/40 font-mono text-xs select-none">·</span>
-                <span className="font-mono text-xs text-muted-foreground">
+                <span className="text-zinc-400 dark:text-zinc-500 font-mono text-xs select-none">·</span>
+                <span className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400">
                   {exp.company}
                 </span>
               </div>
 
               {exp.description && (
-                <p className="mt-1.5 text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed max-w-2xl">
+                <p className="mt-1.5 text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-2xl">
                   {exp.description}
                 </p>
               )}

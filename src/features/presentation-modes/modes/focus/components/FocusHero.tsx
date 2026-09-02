@@ -90,8 +90,8 @@ export function FocusHero() {
   return (
     <section aria-label="Identity and candidate overview" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3 sm:mb-3.5">
-        <span className="tracking-wider text-muted-foreground/80 font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3 sm:mb-3.5">
+        <span className="tracking-wider font-medium">
           [ 00 // PROFILE ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -104,10 +104,10 @@ export function FocusHero() {
         {/* Top Header Row: Name & Title on Left, Avatar on Right */}
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-ink font-sans leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink font-sans leading-tight">
               {AUTHOR_INFO.name}
             </h1>
-            <p className="font-mono text-xs sm:text-base text-brand font-medium tracking-tight mt-0.5 sm:mt-1">
+            <p className="font-sans text-sm sm:text-base text-brand font-semibold tracking-normal mt-0.5 sm:mt-1">
               {AUTHOR_INFO.jobTitle}
             </p>
           </div>
@@ -138,7 +138,7 @@ export function FocusHero() {
         </div>
 
         {/* Positioning Statement */}
-        <p className="mt-3 text-xs sm:text-[15px] text-ink/85 leading-relaxed font-sans max-w-3xl">
+        <p className="mt-3 text-[14.5px] sm:text-[15.5px] text-zinc-700 dark:text-zinc-300 leading-[1.6] font-sans max-w-3xl">
           {SITE_DEFAULT_DESCRIPTION}
         </p>
 
@@ -153,10 +153,10 @@ export function FocusHero() {
         </div>
 
         {/* Metadata: Clean vertical stack on mobile (< sm), single wrapped row on desktop (≥ sm) */}
-        <div className="mt-3 sm:mt-3.5 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-x-4 sm:gap-y-2 font-mono text-xs text-muted-foreground">
+        <div className="mt-3 sm:mt-3.5 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-x-4 sm:gap-y-2 font-mono text-xs text-zinc-500 dark:text-zinc-400">
           {/* Location */}
-          <span className="inline-flex items-center gap-1.5 text-muted-foreground/90">
-            <MapPin className="w-3.5 h-3.5 text-muted-foreground/60 flex-shrink-0" aria-hidden="true" />
+          <span className="inline-flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
+            <MapPin className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500 flex-shrink-0" aria-hidden="true" />
             <span>{AUTHOR_INFO.city}, PH</span>
           </span>
 
@@ -166,8 +166,8 @@ export function FocusHero() {
           </div>
 
           {/* Degree */}
-          <span className="inline-flex items-center gap-1.5 text-muted-foreground/90">
-            <GraduationCap className="w-3.5 h-3.5 text-muted-foreground/60 flex-shrink-0" aria-hidden="true" />
+          <span className="inline-flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
+            <GraduationCap className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500 flex-shrink-0" aria-hidden="true" />
             <span>
               {EDUCATION.shortDegree} @ {EDUCATION.abbreviation}
             </span>

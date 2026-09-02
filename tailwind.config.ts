@@ -47,6 +47,13 @@ const config: Config = {
         sans: ["Figtree", "Inter", "system-ui", "-apple-system", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace", "Menlo", "monospace"],
         caps: ["Carrois Gothic SC", "JetBrains Mono", "monospace"],
+        serif: [
+          "var(--font-eb-garamond)",
+          "EB Garamond",
+          "Georgia",
+          "Times New Roman",
+          "serif",
+        ],
       },
       maxWidth: {
         reading: "760px",

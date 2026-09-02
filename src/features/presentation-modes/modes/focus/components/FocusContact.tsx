@@ -20,8 +20,8 @@ export function FocusContact() {
   return (
     <section aria-label="Contact and availability" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3.5">
-        <span className="tracking-wider text-muted-foreground/80 font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
+        <span className="tracking-wider font-medium">
           [ 06 // CONTACT ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -33,10 +33,10 @@ export function FocusContact() {
       <div className="py-2 sm:py-3 flex flex-col md:flex-row md:items-center justify-between gap-5">
         {/* Left Side: Headline & Availability Details */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-sans font-bold text-base sm:text-lg text-ink tracking-tight">
+          <h3 className="font-sans font-semibold text-base sm:text-lg text-ink tracking-tight">
             Available for work and collaboration.
           </h3>
-          <p className="mt-1.5 text-xs sm:text-[13px] text-ink/75 font-sans leading-relaxed max-w-xl">
+          <p className="mt-1.5 text-sm sm:text-[14.5px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-xl">
             Open to {AVAILABILITY.openTo} ({AVAILABILITY.workSetup}). Based in {AUTHOR_INFO.location}.
           </p>
         </div>
@@ -56,14 +56,14 @@ export function FocusContact() {
           <button
             type="button"
             onClick={handleCopyEmail}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-md bg-surface/50 border border-border-hairline text-muted-foreground hover:text-ink hover:border-border text-xs font-mono transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-md bg-surface/50 border border-border-hairline text-zinc-600 dark:text-zinc-400 hover:text-ink hover:border-border text-xs font-mono transition-colors"
             title="Copy email address"
             aria-label="Copy email address"
           >
             {copied ? (
               <>
                 <Check className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
-                <span className="text-emerald-500 font-sans text-xs">Copied</span>
+                <span className="text-emerald-500 font-sans text-xs font-medium">Copied</span>
               </>
             ) : (
               <>
@@ -80,15 +80,15 @@ export function FocusContact() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-surface/50 border border-border-hairline text-ink font-medium font-sans text-xs hover:bg-surface hover:border-border transition-colors"
           >
-            <FileText className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
+            <FileText className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" aria-hidden="true" />
             <span>Resume</span>
-            <ArrowUpRight className="w-3 h-3 text-muted-foreground/60" aria-hidden="true" />
+            <ArrowUpRight className="w-3 h-3 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
           </a>
         </div>
       </div>
 
       {/* Secondary Social Channels Row */}
-      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
+      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400">
         <div className="flex items-center gap-3.5">
           <a
             href={SOCIAL_PROFILES.github}
@@ -111,7 +111,7 @@ export function FocusContact() {
           </a>
         </div>
 
-        <span className="text-muted-foreground/60 text-[11px]">
+        <span className="text-zinc-500 dark:text-zinc-400 text-[11px]">
           {AUTHOR_INFO.location}
         </span>
       </div>

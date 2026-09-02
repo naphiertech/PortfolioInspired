@@ -11,8 +11,8 @@ export function FocusCertifications() {
   return (
     <section aria-label="Certifications" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none mb-3.5">
-        <span className="tracking-wider text-muted-foreground/80 font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
+        <span className="tracking-wider font-medium">
           [ 05 // CERTIFICATIONS ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -28,10 +28,10 @@ export function FocusCertifications() {
             <div key={`${cert.name}-${idx}`} className="py-3.5 first:pt-3.5 last:pb-3.5 flex flex-col justify-between">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-sans font-bold text-xs sm:text-[13px] text-ink leading-snug">
+                  <h4 className="font-sans font-semibold text-[13.5px] sm:text-sm text-ink leading-snug">
                     {cert.name}
                   </h4>
-                  <p className="font-mono text-xs text-muted-foreground/80 mt-0.5">
+                  <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                     {cert.issuer}
                   </p>
                 </div>
@@ -51,8 +51,8 @@ export function FocusCertifications() {
               </div>
 
               {cert.code && (
-                <div className="mt-2 font-mono text-[11px] text-muted-foreground/70 flex items-center gap-1.5">
-                  <span className="text-muted-foreground/40">ID:</span>
+                <div className="mt-2 font-mono text-[11px] sm:text-[11.5px] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <span className="text-zinc-400 dark:text-zinc-500">ID:</span>
                   <span className="text-ink/80 tracking-wide">{cert.code}</span>
                 </div>
               )}
@@ -66,10 +66,10 @@ export function FocusCertifications() {
             <div key={`${cert.name}-${idx}`} className="py-3.5 first:pt-3.5 last:pb-3.5 flex flex-col justify-between">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-sans font-bold text-xs sm:text-[13px] text-ink leading-snug">
+                  <h4 className="font-sans font-semibold text-[13.5px] sm:text-sm text-ink leading-snug">
                     {cert.name}
                   </h4>
-                  <p className="font-mono text-xs text-muted-foreground/80 mt-0.5">
+                  <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                     {cert.issuer}
                   </p>
                 </div>
@@ -89,8 +89,8 @@ export function FocusCertifications() {
               </div>
 
               {cert.code && (
-                <div className="mt-2 font-mono text-[11px] text-muted-foreground/70 flex items-center gap-1.5">
-                  <span className="text-muted-foreground/40">ID:</span>
+                <div className="mt-2 font-mono text-[11px] sm:text-[11.5px] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <span className="text-zinc-400 dark:text-zinc-500">ID:</span>
                   <span className="text-ink/80 tracking-wide">{cert.code}</span>
                 </div>
               )}

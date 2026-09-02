@@ -86,8 +86,8 @@ export function FocusCertificationsPage() {
           <span>cd .. / home</span>
         </Link>
 
-        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none">
-          <span className="tracking-wider text-muted-foreground/80 font-medium">
+        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none">
+          <span className="tracking-wider font-medium">
             [ 05 // CERTIFICATIONS ]
           </span>
           <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -97,10 +97,10 @@ export function FocusCertificationsPage() {
 
         <div className="flex items-start sm:items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="font-sans text-2xl sm:text-3xl font-extrabold text-ink tracking-tight">
+            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-ink tracking-tight">
               Certifications
             </h1>
-            <p className="font-mono text-xs sm:text-[13px] text-muted-foreground mt-1">
+            <p className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400 mt-1">
               Technical credentials from Google and DICT.
             </p>
           </div>
@@ -121,10 +121,10 @@ export function FocusCertificationsPage() {
                 <div className="flex items-start gap-2.5 min-w-0">
                   <div className="flex-shrink-0 mt-0.5">{getIssuerLogo(cert)}</div>
                   <div className="min-w-0">
-                    <h2 className="font-sans font-bold text-xs sm:text-[13px] text-ink leading-snug">
+                    <h2 className="font-sans font-semibold text-[13.5px] sm:text-sm text-ink leading-snug">
                       {cert.name}
                     </h2>
-                    <p className="font-mono text-xs text-muted-foreground/80 mt-0.5">
+                    <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                       {cert.issuer}
                     </p>
                   </div>
@@ -146,8 +146,8 @@ export function FocusCertificationsPage() {
             </div>
 
             {cert.code && (
-              <div className="mt-3 pt-2.5 border-t border-border-divider/80 font-mono text-[11px] text-muted-foreground/70 flex items-center justify-between">
-                <span className="text-muted-foreground/50">VERIFICATION ID:</span>
+              <div className="mt-3 pt-2.5 border-t border-border-divider/80 font-mono text-[11px] sm:text-[11.5px] text-zinc-500 dark:text-zinc-400 flex items-center justify-between">
+                <span className="text-zinc-400 dark:text-zinc-500">VERIFICATION ID:</span>
                 <span className="text-ink/85 font-medium tracking-wide">{cert.code}</span>
               </div>
             )}

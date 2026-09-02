@@ -35,8 +35,8 @@ export function FocusWorkPage() {
           <span>cd .. / home</span>
         </Link>
 
-        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/70 select-none">
-          <span className="tracking-wider text-muted-foreground/80 font-medium">
+        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none">
+          <span className="tracking-wider font-medium">
             [ 04 // EXPERIENCE ]
           </span>
           <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
@@ -46,10 +46,10 @@ export function FocusWorkPage() {
 
         <div className="flex items-start sm:items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="font-sans text-2xl sm:text-3xl font-extrabold text-ink tracking-tight">
+            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-ink tracking-tight">
               Experience & Education
             </h1>
-            <p className="font-mono text-xs sm:text-[13px] text-muted-foreground mt-1">
+            <p className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400 mt-1">
               Work history, development projects, and academic background.
             </p>
           </div>
@@ -70,7 +70,7 @@ export function FocusWorkPage() {
 
       {/* 01 // WORK HISTORY */}
       <section aria-label="Work history">
-        <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3.5">
+        <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
           01 // WORK HISTORY
         </div>
 
@@ -95,17 +95,17 @@ export function FocusWorkPage() {
               {/* Content Column */}
               <div className="min-w-0 flex flex-col">
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <h3 className="font-sans font-bold text-sm sm:text-base text-ink">
+                  <h3 className="font-sans font-semibold text-sm sm:text-base text-ink">
                     {exp.role}
                   </h3>
-                  <span className="text-muted-foreground/40 font-mono text-xs select-none">·</span>
-                  <span className="font-mono text-xs text-muted-foreground">
+                  <span className="text-zinc-400 dark:text-zinc-500 font-mono text-xs select-none">·</span>
+                  <span className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400">
                     {exp.company}
                   </span>
                 </div>
 
                 {exp.description && (
-                  <p className="mt-1.5 text-xs sm:text-[13px] text-ink/80 font-sans leading-relaxed max-w-3xl">
+                  <p className="mt-1.5 text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-3xl">
                     {exp.description}
                   </p>
                 )}
@@ -119,7 +119,7 @@ export function FocusWorkPage() {
 
       {/* 02 // EDUCATION */}
       <section aria-label="Education">
-        <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3.5">
+        <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
           02 // EDUCATION
         </div>
 
@@ -127,15 +127,15 @@ export function FocusWorkPage() {
           <div className="flex items-start gap-3 min-w-0">
             <GraduationCap className="w-5 h-5 text-brand flex-shrink-0 mt-0.5" aria-hidden="true" />
             <div>
-              <h3 className="font-sans font-bold text-sm sm:text-base text-ink">
+              <h3 className="font-sans font-semibold text-sm sm:text-base text-ink">
                 {EDUCATION.degree}
               </h3>
-              <p className="font-mono text-xs text-muted-foreground mt-0.5">
+              <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                 {EDUCATION.institution} · {EDUCATION.department}
               </p>
             </div>
           </div>
-          <span className="font-mono text-xs text-muted-foreground/70 flex-shrink-0 sm:text-right">
+          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 flex-shrink-0 sm:text-right">
             {EDUCATION.period}
           </span>
         </div>
@@ -145,16 +145,16 @@ export function FocusWorkPage() {
 
       {/* 03 // WORK OPPORTUNITIES */}
       <section aria-label="Work opportunities">
-        <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3.5">
+        <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
           03 // WORK OPPORTUNITIES
         </div>
 
         <div className="p-4 sm:p-5 rounded-md border border-border-hairline bg-surface/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="min-w-0">
-            <h3 className="font-sans font-bold text-base text-ink">
+            <h3 className="font-sans font-semibold text-base text-ink">
               Ready for web engineering and freelance roles
             </h3>
-            <p className="text-xs sm:text-[13px] text-ink/75 font-sans leading-relaxed mt-1">
+            <p className="text-[13.5px] sm:text-sm text-zinc-700 dark:text-zinc-300 font-sans leading-relaxed mt-1">
               {AVAILABILITY.workSetup} · Based in {AUTHOR_INFO.location}.
             </p>
           </div>

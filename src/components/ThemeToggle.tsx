@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useTheme, Theme } from "./ThemeProvider";
 import { useUISound } from "@/context/SoundContext";
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { playTheme } = useUISound();
+  const shouldReduceMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export function ThemeToggle() {
 
   return (
     <div
-      className="inline-flex items-center rounded-[6px] bg-surface p-0.5 border border-border-hairline shadow-sm"
+      className="inline-flex items-center rounded-[6px] bg-surface p-0.5 border border-border-hairline shadow-sm relative"
       role="group"
       aria-label="Theme selector"
     >
@@ -64,15 +66,30 @@ export function ThemeToggle() {
               playTheme();
               setTheme(t.key, e);
             }}
-            className={`flex items-center justify-center h-5 w-5 rounded-[4px] transition-all duration-150 cursor-pointer ${
+            className={`relative flex items-center justify-center h-5 w-5 rounded-[4px] cursor-pointer z-10 transition-colors duration-150 ${
               isActive
-                ? "bg-page text-ink shadow-[0_1px_2px_rgba(0,0,0,0.1)] border border-border-hairline"
-                : "text-muted-foreground/60 hover:text-ink hover:bg-surface-hover"
+                ? "text-ink"
+                : "text-muted-foreground/60 hover:text-ink hover:bg-surface-hover/40"
             }`}
             title={`${t.label}${isActive ? ` (Active: ${resolvedTheme})` : ""}`}
             aria-label={t.label}
             aria-pressed={isActive}
           >
+            {isActive && (
+              <motion.div
+                layoutId="theme-active-indicator"
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : {
+                        type: "spring",
+                        stiffness: 450,
+                        damping: 32,
+                      }
+                }
+                className="absolute inset-0 rounded-[4px] bg-page border border-border-hairline shadow-[0_1px_2px_rgba(0,0,0,0.1)] -z-10"
+              />
+            )}
             {t.icon}
           </button>
         );

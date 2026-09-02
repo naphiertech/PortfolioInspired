@@ -120,10 +120,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       y = window.innerHeight / 2;
     }
 
+    const maxW = Math.max(window.innerWidth, document.documentElement.clientWidth);
+    const maxH = Math.max(window.innerHeight, document.documentElement.clientHeight);
     const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
+      Math.max(x, maxW - x),
+      Math.max(y, maxH - y)
+    ) + 24;
 
     // Suppress all DOM CSS transitions so the GPU compositor exclusively animates the snapshot
     document.documentElement.classList.add("theme-transitioning");
@@ -150,8 +152,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
               ],
             },
             {
-              duration: 1200,
-              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              duration: 420,
+              easing: "cubic-bezier(0.4, 0, 0.2, 1)",
               pseudoElement: "::view-transition-new(root)",
               fill: "forwards",
             }
@@ -163,11 +165,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
       transition.finished
         .finally(() => {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              document.documentElement.classList.remove("theme-transitioning");
-            });
-          });
+          document.documentElement.classList.remove("theme-transitioning");
         });
     } catch {
       document.documentElement.classList.remove("theme-transitioning");

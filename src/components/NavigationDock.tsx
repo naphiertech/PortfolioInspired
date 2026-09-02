@@ -281,11 +281,7 @@ export function NavigationDock() {
                 isSnapping={isSnapping}
                 isRestoring={isRestoring}
                 isSnapActive={isSnapActive}
-                onRegisterRef={
-                  !isHome
-                    ? (el) => registerDockItem(item.name, el)
-                    : undefined
-                }
+                onRegisterRef={(el) => registerDockItem(item.name, el)}
               />
             );
           })}

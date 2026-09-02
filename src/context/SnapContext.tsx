@@ -201,21 +201,15 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
   );
 
   /**
-   * Universal 3-state resolution for route snap status:
-   * - "normal": Route is not snap-eligible (e.g. "/") or item is not currently snapped
-   * - "unknown": Snap-eligible route whose session state has not been verified from sessionStorage yet
-   * - "snapped": Snap-eligible route that was disintegrated in the active session
+   * Universal 3-state resolution for route snap status
    */
   const getRouteSnapStatus = useCallback(
     (pathname: string): RouteSnapStatus => {
       const dockId = getSnappedDockIdForPathname(pathname);
-      // Non-snap-eligible routes are never blocked
       if (!dockId) return "normal";
 
-      // If browser session state has not been checked from sessionStorage yet
       if (!isSessionInitialized) return "unknown";
 
-      // If active session is snapped and not restoring, and the dock item is snapped
       if (isSnapped && !isRestoring && snappedDockItems.includes(dockId)) {
         return "snapped";
       }
@@ -225,9 +219,6 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     [isSessionInitialized, isSnapped, isRestoring, snappedDockItems]
   );
 
-  /**
-   * Boolean helper for convenience.
-   */
   const isRouteSnapped = useCallback(
     (pathname: string): boolean => {
       return getRouteSnapStatus(pathname) === "snapped";
@@ -265,35 +256,160 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  /**
+   * Dynamically filters eligible section IDs to only those currently mounted,
+   * connected in the DOM, and with non-zero dimensions.
+   */
+  const getAvailableSnapSections = useCallback((): string[] => {
+    return ELIGIBLE_SECTION_IDS.filter((id) => {
+      const el =
+        sectionRefs.current.get(id) ||
+        (typeof document !== "undefined"
+          ? document.getElementById(`section-${id}`)
+          : null);
+      if (!el || !el.isConnected) return false;
+      const rect = el.getBoundingClientRect();
+      return rect.height > 10;
+    });
+  }, []);
+
+  /**
+   * Smoothly scrolls to target element and waits for scroll motion to stabilize
+   * using requestAnimationFrame delta checks rather than blind fixed timeouts.
+   */
+  const waitForScrollStabilization = useCallback(
+    (el: HTMLElement, maxWaitMs = 1500): Promise<boolean> => {
+      if (!el || !el.isConnected) return Promise.resolve(false);
+
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      return new Promise((resolve) => {
+        let lastTop = el.getBoundingClientRect().top;
+        let stableFrames = 0;
+        const startTime = performance.now();
+
+        const checkStability = () => {
+          if (isAbortedRef.current || !el.isConnected) {
+            resolve(false);
+            return;
+          }
+
+          const currentTop = el.getBoundingClientRect().top;
+          if (Math.abs(currentTop - lastTop) < 0.5) {
+            stableFrames++;
+          } else {
+            stableFrames = 0;
+          }
+          lastTop = currentTop;
+
+          const elapsed = performance.now() - startTime;
+
+          // Require at least 3 consecutive stable frames AND minimum 300ms for visual comfort
+          if ((stableFrames >= 3 && elapsed >= 300) || elapsed >= maxWaitMs) {
+            resolve(true);
+          } else {
+            requestAnimationFrame(checkStability);
+          }
+        };
+
+        requestAnimationFrame(checkStability);
+      });
+    },
+    []
+  );
+
+  /**
+   * Captures fresh bounding coordinates after scroll stabilization with retry safety.
+   */
+  const getFreshBounds = useCallback(
+    async (id: string, el: HTMLElement): Promise<SectionBounds | null> => {
+      if (!el || !el.isConnected) return null;
+
+      let rect = el.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) {
+        await new Promise((r) => requestAnimationFrame(r));
+        if (!el.isConnected) return null;
+        rect = el.getBoundingClientRect();
+      }
+
+      if (rect.width <= 0 || rect.height <= 0) return null;
+
+      return {
+        id,
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+        height: rect.height,
+      };
+    },
+    []
+  );
+
   const triggerSnap = useCallback(async () => {
     if (isSnapping || isRestoring || isSnapped) return;
 
+    // Reset abort flag for this run
+    isAbortedRef.current = false;
     setIsSnapping(true);
     setCurrentStep(0);
     playSnap();
 
     // 1. Initial dramatic pause (~650ms) after snap sound
     await new Promise((resolve) => setTimeout(resolve, 650));
+    if (isAbortedRef.current) return;
 
-    // 2. Randomly select either 4 or 5 UNIQUE eligible sections
-    const targetSectionCount = Math.random() < 0.5 ? 4 : 5;
+    // 2. Select ONLY from currently mounted and available sections in the DOM
+    const availableSections = getAvailableSnapSections();
+    if (availableSections.length === 0) {
+      setIsSnapping(false);
+      return;
+    }
+
+    const targetSectionCount = Math.min(
+      availableSections.length,
+      Math.random() < 0.5 ? 4 : 5
+    );
     setTotalSteps(targetSectionCount);
 
-    const shuffledSections = [...ELIGIBLE_SECTION_IDS].sort(
+    const shuffledSections = [...availableSections].sort(
       () => Math.random() - 0.5
     );
     const selectedSections = shuffledSections.slice(0, targetSectionCount);
 
-    // Randomly select 1 or 2 eligible dock items
-    const targetDockCount = Math.random() < 0.5 ? 1 : 2;
-    const shuffledDock = [...ELIGIBLE_DOCK_IDS].sort(() => Math.random() - 0.5);
+    // Select eligible dock items that are mounted in the DOM
+    const availableDock = ELIGIBLE_DOCK_IDS.filter((name) => {
+      const dockEl =
+        dockRefs.current.get(name) ||
+        (typeof document !== "undefined"
+          ? document.getElementById(`dock-item-${name.toLowerCase()}`)
+          : null);
+      return dockEl && dockEl.isConnected;
+    });
+
+    const targetDockCount = Math.min(
+      availableDock.length,
+      Math.random() < 0.5 ? 1 : 2
+    );
+    const shuffledDock = [...availableDock].sort(() => Math.random() - 0.5);
     const selectedDock = shuffledDock.slice(0, targetDockCount);
 
-    // Randomly select 3 to 5 semantic text fragments
-    const targetTextCount = Math.floor(Math.random() * 3) + 3;
-    const shuffledText = [...ELIGIBLE_TEXT_FRAGMENT_IDS].sort(
-      () => Math.random() - 0.5
+    // Select eligible text fragments that are mounted in the DOM
+    const availableText = ELIGIBLE_TEXT_FRAGMENT_IDS.filter((id) => {
+      const el =
+        textRefs.current.get(id) ||
+        (typeof document !== "undefined"
+          ? document.getElementById(`snap-text-${id}`)
+          : null);
+      if (!el || !el.isConnected) return false;
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+
+    const targetTextCount = Math.min(
+      availableText.length,
+      Math.floor(Math.random() * 3) + 3
     );
+    const shuffledText = [...availableText].sort(() => Math.random() - 0.5);
     const selectedTextIds = shuffledText.slice(0, targetTextCount);
 
     const prefersReduced =
@@ -302,19 +418,22 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
 
     if (prefersReduced) {
       // Reduced motion: Fast cycle with simple opacity fade
+      const reducedSnapped: string[] = [];
       for (let i = 0; i < selectedSections.length; i++) {
+        if (isAbortedRef.current) return;
         const id = selectedSections[i];
         setCurrentStep(i + 1);
         const el =
           sectionRefs.current.get(id) ||
           document.getElementById(`section-${id}`);
-        if (el) {
+        if (el && el.isConnected) {
           el.scrollIntoView({ behavior: "instant", block: "center" });
+          playDissolve(0.7, 0.4);
+          await new Promise((resolve) => setTimeout(resolve, 250));
+          reducedSnapped.push(id);
+          setSnappedSectionIds((prev) => [...prev, id]);
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
-        if (el?.isConnected) playDissolve(0.7, 0.4);
-        await new Promise((resolve) => setTimeout(resolve, 250));
-        setSnappedSectionIds((prev) => [...prev, id]);
-        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       selectedDock.forEach((dockName) => {
@@ -332,57 +451,58 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
       setCurrentStep(0);
 
       // Persist active session
-      saveToSession(selectedSections, selectedDock, selectedTextIds);
+      saveToSession(reducedSnapped, selectedDock, selectedTextIds);
       return;
     }
 
-    // 3. Cinematic Sequence: Process sections ONE AT A TIME with original timing
-    for (let i = 0; i < selectedSections.length; i++) {
-      const id = selectedSections[i];
-      setCurrentStep(i + 1);
+    // 3. Cinematic Sequence: Process sections ONE AT A TIME with synchronized scroll & bounds
+    const successfullySnappedSections: string[] = [];
 
+    for (let i = 0; i < selectedSections.length; i++) {
+      if (isAbortedRef.current) return;
+
+      const id = selectedSections[i];
       const el =
         sectionRefs.current.get(id) ||
         document.getElementById(`section-${id}`);
 
-      if (el) {
-        // Smoothly scroll that section into view
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!el || !el.isConnected) {
+        // Target is not available; skip safely
+        continue;
       }
 
-      // Pause so user sees the section clearly
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setCurrentStep(i + 1);
 
-      // Capture section bounding box for the Canvas dust simulation
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        const bounds: SectionBounds[] = [
-          {
-            id,
-            top: rect.top + window.scrollY,
-            left: rect.left + window.scrollX,
-            width: rect.width,
-            height: rect.height,
-          },
-        ];
-        setActiveDustBounds(bounds);
+      // Step A: Smoothly scroll and wait for physical stabilization
+      const isStabilized = await waitForScrollStabilization(el);
+      if (!isStabilized || isAbortedRef.current) return;
+
+      // Step B: Measure fresh bounds from stabilized element
+      const bounds = await getFreshBounds(id, el);
+      if (!bounds || isAbortedRef.current) {
+        continue;
       }
 
-      // Trigger original dissolution animation on this section AND start dissolve audio simultaneously
+      // Step C: Trigger dust simulation on canvas & start dissolution audio
+      setActiveDustBounds([bounds]);
       setSnappingSectionIds([id]);
-      if (el?.isConnected) playDissolve(1, 1.35);
+      if (el.isConnected) playDissolve(1, 1.35);
 
-      // Original dust dissolution duration (1400ms)
+      // Step D: Dust dissolution animation duration (1400ms)
       await new Promise((resolve) => setTimeout(resolve, 1400));
+      if (isAbortedRef.current) return;
 
-      // Collapse and hide section after dust completes
+      // Step E: Transition section to snapped state and begin height collapse
+      successfullySnappedSections.push(id);
       setSnappedSectionIds((prev) => [...prev, id]);
       setSnappingSectionIds([]);
       setActiveDustBounds([]);
 
-      // Short pause before moving to next section (350ms)
-      await new Promise((resolve) => setTimeout(resolve, 350));
+      // Step F: Wait for height collapse transition (500ms) to settle DOM layout
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
+
+    if (isAbortedRef.current) return;
 
     // 4. Navigation Dock Snap (Fixed on screen without scrolling away)
     if (selectedDock.length > 0) {
@@ -391,90 +511,132 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         const dockEl =
           dockRefs.current.get(dockName) ||
           document.getElementById(`dock-item-${dockName.toLowerCase()}`);
-        if (dockEl) {
+        if (dockEl && dockEl.isConnected) {
           const rect = dockEl.getBoundingClientRect();
-          dockBounds.push({
-            id: `dock-${dockName}`,
-            top: rect.top + window.scrollY,
-            left: rect.left + window.scrollX,
-            width: rect.width,
-            height: rect.height,
-          });
+          if (rect.width > 0 && rect.height > 0) {
+            dockBounds.push({
+              id: `dock-${dockName}`,
+              top: rect.top + window.scrollY,
+              left: rect.left + window.scrollX,
+              width: rect.width,
+              height: rect.height,
+            });
+          }
         }
       });
 
       if (dockBounds.length > 0) {
         setActiveDustBounds(dockBounds);
+        setSnappingDockItems(selectedDock);
+        selectedDock.forEach(() =>
+          playDissolve(0.55 / selectedDock.length, 1.1)
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 1100));
+        if (isAbortedRef.current) return;
+
+        setSnappedDockItems(selectedDock);
+        setSnappingDockItems([]);
+        setActiveDustBounds([]);
+
+        // Wait 500ms for dock collapse animation to settle
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
-
-      // Trigger dock dust animation AND start dock dissolve audio simultaneously
-      setSnappingDockItems(selectedDock);
-      selectedDock.forEach(() => playDissolve(0.55 / selectedDock.length, 1.1));
-
-      // Dock dust timing (1100ms)
-      await new Promise((resolve) => setTimeout(resolve, 1100));
-
-      setSnappedDockItems(selectedDock);
-      setSnappingDockItems([]);
-      setActiveDustBounds([]);
-
-      // Wait 500ms for smooth dock collapse animation to settle
-      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
-    // 5. Short pause before returning to top (400ms)
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    if (isAbortedRef.current) return;
+
+    // 5. Short pause before returning to top (300ms)
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    if (isAbortedRef.current) return;
 
     // 6. Smoothly scroll back to hero / top if on home page
     if (typeof window !== "undefined" && window.location.pathname === "/") {
       window.scrollTo({ top: 0, behavior: "smooth" });
-      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      // Wait for viewport to reach top with RAF
+      await new Promise((resolve) => {
+        const startTime = performance.now();
+        const checkTop = () => {
+          if (
+            isAbortedRef.current ||
+            window.scrollY <= 10 ||
+            performance.now() - startTime >= 800
+          ) {
+            resolve(true);
+          } else {
+            requestAnimationFrame(checkTop);
+          }
+        };
+        requestAnimationFrame(checkTop);
+      });
     }
+
+    if (isAbortedRef.current) return;
 
     // 7. Secondary Text Disintegration (Semantic-preserving word/phrase dust dissolution)
-    const textBounds: SectionBounds[] = [];
-    selectedTextIds.forEach((id) => {
-      const el =
-        textRefs.current.get(id) || document.getElementById(`snap-text-${id}`);
-      if (el && el.isConnected) {
-        const rect = el.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
-          textBounds.push({
-            id: `text-${id}`,
-            top: rect.top + window.scrollY,
-            left: rect.left + window.scrollX,
-            width: rect.width,
-            height: rect.height,
-          });
+    if (selectedTextIds.length > 0) {
+      const textBounds: SectionBounds[] = [];
+      selectedTextIds.forEach((id) => {
+        const el =
+          textRefs.current.get(id) ||
+          document.getElementById(`snap-text-${id}`);
+        if (el && el.isConnected) {
+          const rect = el.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            textBounds.push({
+              id: `text-${id}`,
+              top: rect.top + window.scrollY,
+              left: rect.left + window.scrollX,
+              width: rect.width,
+              height: rect.height,
+            });
+          }
         }
-      }
-    });
+      });
 
-    if (textBounds.length > 0) {
-      setActiveDustBounds(textBounds);
+      if (textBounds.length > 0) {
+        setActiveDustBounds(textBounds);
+        setSnappingTextFragmentIds(selectedTextIds);
+        setSnappedTextFragmentIds(selectedTextIds);
+        playDissolve(0.35, 0.7);
+
+        // Quick text dust timing (650ms)
+        await new Promise((resolve) => setTimeout(resolve, 650));
+        if (isAbortedRef.current) return;
+
+        setSnappingTextFragmentIds([]);
+        setActiveDustBounds([]);
+      }
     }
 
-    setSnappingTextFragmentIds(selectedTextIds);
-    setSnappedTextFragmentIds(selectedTextIds);
-    playDissolve(0.35, 0.7);
+    if (!isAbortedRef.current) {
+      setIsSnapped(true);
+      setIsSnapping(false);
+      setCurrentStep(0);
 
-    // Quick text dust timing (650ms)
-    await new Promise((resolve) => setTimeout(resolve, 650));
-
-    setSnappingTextFragmentIds([]);
-    setActiveDustBounds([]);
-
-    setIsSnapped(true);
-    setIsSnapping(false);
-    setCurrentStep(0);
-
-    // Persist active session state
-    saveToSession(selectedSections, selectedDock, selectedTextIds);
-  }, [isSnapping, isRestoring, isSnapped, playSnap, playDissolve]);
+      // Persist active session state
+      saveToSession(
+        successfullySnappedSections,
+        selectedDock,
+        selectedTextIds
+      );
+    }
+  }, [
+    isSnapping,
+    isRestoring,
+    isSnapped,
+    playSnap,
+    playDissolve,
+    getAvailableSnapSections,
+    waitForScrollStabilization,
+    getFreshBounds,
+  ]);
 
   const triggerRestore = useCallback(async () => {
     if (isSnapping || isRestoring || !isSnapped) return;
 
+    isAbortedRef.current = true;
     setIsRestoring(true);
     playRestore();
 

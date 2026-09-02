@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown, LayoutTemplate } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { usePresentationMode } from "../context/PresentationModeContext";
@@ -10,17 +11,18 @@ import { useUISound } from "@/context/SoundContext";
 import { useViewHint } from "../hooks/useViewHint";
 
 interface PresentationModeSwitcherProps {
-  variant?: "dock" | "focus-nav" | "minimal";
+  variant?: "dock" | "focus-nav" | "minimal" | "default" | "focus";
   className?: string;
 }
 
 /**
  * PresentationModeSwitcher
  *
- * Presentation-aware switcher supporting three placement variants:
- * 1. "dock": Separate circular floating button beside the bottom NavigationDock (Default Mode).
- * 2. "focus-nav": Solid/near-solid technical control inside the Focus top navigation header (Focus Mode).
- * 3. "minimal": Quiet, understated control inside the Minimal header (Minimal Mode).
+ * Mode-aware presentation switcher featuring:
+ * 1. Full-screen blurred backdrop that dims and prevents interaction with background chrome.
+ * 2. Three distinct mode-specific visual presentations (Default dock-style, Focus technical document, Minimal Roman-serif).
+ * 3. Direct root portaling ensuring popovers are always crystal sharp above the backdrop blur in all modes.
+ * 4. Unified presentation state, cookies, routing, keyboard navigation, and accessibility.
  */
 export function PresentationModeSwitcher({
   variant = "dock",
@@ -33,10 +35,32 @@ export function PresentationModeSwitcher({
 
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
+  const [mounted, setMounted] = useState(false);
+  const [popoverPos, setPopoverPos] = useState<{
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+  }>({});
 
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Normalize variant to match mode or explicit setting
+  const resolvedVariant: "dock" | "focus-nav" | "minimal" =
+    variant === "default"
+      ? "dock"
+      : variant === "focus"
+      ? "focus-nav"
+      : variant === "minimal"
+      ? "minimal"
+      : variant;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Only render active, implemented modes (Default, Focus, Minimal)
   const availableModes = Object.values(PRESENTATION_MODES).filter(
@@ -48,19 +72,64 @@ export function PresentationModeSwitcher({
   const closePopover = useCallback(() => {
     setIsOpen(false);
     setFocusedIndex(-1);
+    // Return focus to trigger upon closing
+    triggerRef.current?.focus();
   }, []);
 
-  // Close when clicking outside container
+  // Compute fixed position for the portaled popover relative to the trigger button
+  const updatePopoverPosition = useCallback(() => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const isMobile = window.innerWidth < 640;
+
+    if (resolvedVariant === "dock") {
+      setPopoverPos({
+        bottom: Math.max(16, window.innerHeight - rect.top + 12),
+        left: isMobile ? 16 : Math.max(16, rect.left),
+      });
+    } else {
+      // focus-nav or minimal
+      setPopoverPos({
+        top: rect.bottom + 6,
+        right: Math.max(16, window.innerWidth - rect.right),
+      });
+    }
+  }, [resolvedVariant]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    updatePopoverPosition();
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, { passive: true });
+    return () => {
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition);
+    };
+  }, [isOpen, updatePopoverPosition]);
+
+  // Lock body scroll while modal backdrop is active
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
+
+  // Close when clicking outside container or popover
   useEffect(() => {
     if (!isOpen) return;
 
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node;
       if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        (containerRef.current && containerRef.current.contains(target)) ||
+        (popoverRef.current && popoverRef.current.contains(target))
       ) {
-        closePopover();
+        return;
       }
+      closePopover();
     };
 
     document.addEventListener("mousedown", handlePointerDown);
@@ -116,6 +185,14 @@ export function PresentationModeSwitcher({
           prev <= 0 ? availableModes.length - 1 : prev - 1
         );
         break;
+      case "Home":
+        e.preventDefault();
+        setFocusedIndex(0);
+        break;
+      case "End":
+        e.preventDefault();
+        setFocusedIndex(availableModes.length - 1);
+        break;
       case "Enter":
       case " ":
         e.preventDefault();
@@ -125,6 +202,7 @@ export function PresentationModeSwitcher({
         break;
       case "Escape":
       case "Tab":
+        e.preventDefault();
         closePopover();
         break;
     }
@@ -140,28 +218,107 @@ export function PresentationModeSwitcher({
   const handleToggleOpen = () => {
     playClick();
     dismissHint();
+    if (!isOpen) {
+      setFocusedIndex(availableModes.findIndex((item) => item.id === mode));
+    }
     setIsOpen((prev) => !prev);
   };
 
   return (
-    <div
-      ref={containerRef}
-      onKeyDown={handleKeyDown}
-      className={`relative select-none flex items-center ${className}`}
-    >
-      {/* 1. DOCK VARIANT: Circular button beside the main navigation dock */}
-      {variant === "dock" && (
-        <>
-          {/* Subtle contextual hint pointing rightward toward the circular button */}
-          {!hasDismissedHint && !isOpen && (
-            <div className="hidden sm:flex items-center gap-1.5 font-mono text-xs text-muted-foreground/80 tracking-wide pointer-events-none select-none animate-in fade-in duration-300 mr-2.5 whitespace-nowrap">
-              <span>Try another view</span>
-              <span className="text-muted-foreground/60 font-sans" aria-hidden="true">
-                →
-              </span>
-            </div>
-          )}
+    <>
+      {/* Switcher Trigger in Page Flow / Dock */}
+      <div
+        ref={containerRef}
+        onKeyDown={handleKeyDown}
+        className={`relative select-none flex items-center ${
+          isOpen ? "z-[70]" : "z-30"
+        } ${className}`}
+      >
+        {/* ========================================================================= */}
+        {/* 1. DEFAULT VARIANT: Circular companion button for bottom navigation dock */}
+        {/* ========================================================================= */}
+        {resolvedVariant === "dock" && (
+          <>
+            {/* Contextual hint pointing rightward toward the circular button */}
+            {!hasDismissedHint && !isOpen && (
+              <div className="hidden sm:flex items-center gap-1.5 font-mono text-xs text-muted-foreground/80 tracking-wide pointer-events-none select-none animate-in fade-in duration-300 mr-2.5 whitespace-nowrap">
+                <span>Try another view</span>
+                <span className="text-muted-foreground/60 font-sans" aria-hidden="true">
+                  →
+                </span>
+              </div>
+            )}
 
+            <button
+              ref={triggerRef}
+              type="button"
+              onClick={handleToggleOpen}
+              onMouseEnter={playHover}
+              aria-haspopup="listbox"
+              aria-expanded={isOpen}
+              aria-label="Change presentation view"
+              title="Change view"
+              className={`h-[54px] w-[54px] rounded-full bg-dock backdrop-blur-[16px] border border-border-hairline shadow-nav-dock flex items-center justify-center text-ink/80 hover:text-ink hover:border-border hover:scale-105 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer ${
+                isOpen
+                  ? "border-ink/40 text-ink bg-surface shadow-md scale-105"
+                  : ""
+              }`}
+            >
+              <LayoutTemplate className="w-[18px] h-[18px] text-ink/80 transition-transform" />
+            </button>
+          </>
+        )}
+
+        {/* ========================================================================= */}
+        {/* 2. FOCUS VARIANT: Solid structured dropdown button in Focus top header     */}
+        {/* ========================================================================= */}
+        {resolvedVariant === "focus-nav" && (
+          <div className="relative inline-flex flex-col items-center">
+            <button
+              ref={triggerRef}
+              type="button"
+              onClick={handleToggleOpen}
+              onMouseEnter={playHover}
+              aria-haspopup="listbox"
+              aria-expanded={isOpen}
+              aria-label={`Presentation mode: ${currentConfig.shortLabel || currentConfig.label}. Click to switch.`}
+              className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md bg-surface border border-border-hairline text-ink/90 hover:bg-surface-hover hover:border-border hover:text-ink shadow-xs text-xs font-mono tracking-wider transition-colors outline-none focus-visible:ring-1 focus-visible:ring-brand cursor-pointer ${
+                isOpen ? "border-border text-ink bg-surface-hover shadow-sm" : ""
+              }`}
+            >
+              <LayoutTemplate className="w-3.5 h-3.5 text-muted-foreground/80 flex-shrink-0" />
+              <span className="text-emerald-500 text-[9px]" aria-hidden="true">
+                ●
+              </span>
+              <span className="font-semibold uppercase text-[11px]">
+                VIEW: {currentConfig.shortLabel || currentConfig.label}
+              </span>
+              <ChevronDown
+                className={`w-3 h-3 text-muted-foreground/60 transition-transform duration-150 ${
+                  isOpen ? "rotate-180 text-ink" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {/* Contextual hint directly BELOW the VIEW: FOCUS control, pointing UPWARD */}
+            {!hasDismissedHint && !isOpen && (
+              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none select-none animate-in fade-in duration-300 z-20 whitespace-nowrap">
+                <span className="text-muted-foreground/70 text-[11px] leading-none mb-0.5" aria-hidden="true">
+                  ↑
+                </span>
+                <span className="font-mono text-[10px] sm:text-[11px] text-muted-foreground/85 tracking-wide">
+                  Try another view
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* 3. MINIMAL VARIANT: Quiet, understated Roman-serif text trigger            */}
+        {/* ========================================================================= */}
+        {resolvedVariant === "minimal" && (
           <button
             ref={triggerRef}
             type="button"
@@ -169,186 +326,283 @@ export function PresentationModeSwitcher({
             onMouseEnter={playHover}
             aria-haspopup="listbox"
             aria-expanded={isOpen}
-            aria-label="Change presentation view"
-            title="Change view"
-            className={`h-[54px] w-[54px] rounded-full bg-dock backdrop-blur-[16px] border border-border-hairline shadow-nav-dock flex items-center justify-center text-ink/80 hover:text-ink hover:border-border hover:scale-105 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer ${
+            aria-label={`Presentation mode: ${currentConfig.label}. Click to switch.`}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-sm font-serif text-zinc-700 dark:text-[#c4bfb6] hover:text-zinc-950 hover:dark:text-white transition-colors outline-none cursor-pointer border border-transparent hover:border-zinc-200 dark:hover:border-white/[0.08] ${
               isOpen
-                ? "border-ink/40 text-ink bg-surface shadow-md scale-105"
+                ? "border-zinc-300/90 dark:border-white/[0.12] text-zinc-950 dark:text-[#f0ede6] bg-zinc-100/80 dark:bg-[#181816]"
                 : ""
             }`}
           >
-            <LayoutTemplate className="w-[18px] h-[18px] text-ink/80 transition-transform" />
-          </button>
-        </>
-      )}
-
-      {/* 2. FOCUS NAV VARIANT: Solid/near-solid dropdown button in Focus top header */}
-      {variant === "focus-nav" && (
-        <div className="relative inline-flex flex-col items-center">
-          <button
-            ref={triggerRef}
-            type="button"
-            onClick={handleToggleOpen}
-            onMouseEnter={playHover}
-            aria-haspopup="listbox"
-            aria-expanded={isOpen}
-            aria-label={`Presentation mode: ${currentConfig.shortLabel || currentConfig.label}. Click to switch.`}
-            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md bg-surface border border-border-hairline text-ink/90 hover:bg-surface-hover hover:border-border hover:text-ink shadow-xs text-xs font-mono tracking-wider transition-colors outline-none focus-visible:ring-1 focus-visible:ring-brand cursor-pointer ${
-              isOpen ? "border-border text-ink bg-surface-hover" : ""
-            }`}
-          >
-            <LayoutTemplate className="w-3.5 h-3.5 text-muted-foreground/80 flex-shrink-0" />
-            <span className="text-emerald-500 text-[9px]" aria-hidden="true">
-              ●
-            </span>
-            <span className="font-semibold uppercase text-[11px]">
-              VIEW: {currentConfig.shortLabel || currentConfig.label}
-            </span>
+            <span className="tracking-wide">View</span>
             <ChevronDown
-              className={`w-3 h-3 text-muted-foreground/60 transition-transform duration-150 ${
-                isOpen ? "rotate-180 text-ink" : ""
+              className={`w-3 h-3 text-zinc-400 dark:text-[#827d73] transition-transform duration-150 ${
+                isOpen ? "rotate-180 text-zinc-800 dark:text-[#eae6df]" : ""
               }`}
               aria-hidden="true"
             />
           </button>
-
-          {/* Contextual hint directly BELOW the VIEW: FOCUS control, pointing UPWARD */}
-          {!hasDismissedHint && !isOpen && (
-            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none select-none animate-in fade-in duration-300 z-20 whitespace-nowrap">
-              <span className="text-muted-foreground/70 text-[11px] leading-none mb-0.5" aria-hidden="true">
-                ↑
-              </span>
-              <span className="font-mono text-[10px] sm:text-[11px] text-muted-foreground/85 tracking-wide">
-                Try another view
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 3. MINIMAL VARIANT: Quiet, understated text trigger */}
-      {variant === "minimal" && (
-        <button
-          ref={triggerRef}
-          type="button"
-          onClick={handleToggleOpen}
-          onMouseEnter={playHover}
-          aria-haspopup="listbox"
-          aria-expanded={isOpen}
-          aria-label={`Presentation mode: ${currentConfig.label}. Click to switch.`}
-          className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-mono text-zinc-600 dark:text-[#9e998e] hover:text-zinc-900 hover:dark:text-[#dedad0] transition-colors outline-none cursor-pointer border border-transparent hover:border-zinc-200 dark:hover:border-white/[0.08] ${
-            isOpen ? "border-zinc-200 dark:border-white/[0.08] text-zinc-900 dark:text-[#eae6df] bg-zinc-100 dark:bg-[#141514]" : ""
-          }`}
-        >
-          <span>View</span>
-          <ChevronDown
-            className={`w-3 h-3 text-zinc-400 dark:text-[#827d73] transition-transform duration-150 ${
-              isOpen ? "rotate-180 text-zinc-900 dark:text-[#eae6df]" : ""
-            }`}
-            aria-hidden="true"
-          />
-        </button>
-      )}
-
-      {/* Popover Listbox */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            role="listbox"
-            aria-label="Available Presentation Modes"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{
-              duration: shouldReduceMotion ? 0.05 : 0.18,
-              ease: [0.23, 1, 0.32, 1] as const,
-            }}
-            style={{
-              transformOrigin:
-                variant === "dock"
-                  ? "bottom left"
-                  : "top right",
-            }}
-            className={`absolute w-60 sm:w-64 p-1 rounded-md bg-page border border-border-hairline shadow-tactile outline-none z-50 pointer-events-auto will-change-[transform,opacity] ${
-              variant === "dock"
-                ? "bottom-full mb-3 left-0 sm:left-auto sm:right-0"
-                : "top-full mt-1.5 right-0"
-            }`}
-          >
-            {/* Popover Header */}
-            <div className="px-2.5 py-1 border-b border-border-divider mb-1">
-              <span className="font-mono text-[10px] text-muted-foreground/60 tracking-widest uppercase">
-                VIEW MODE
-              </span>
-            </div>
-
-            {/* Mode Options */}
-            <div className="space-y-0.5">
-              {availableModes.map((item, index) => {
-                const isSelected = item.id === mode;
-                const isFocused = index === focusedIndex;
-
-                return (
-                  <button
-                    key={item.id}
-                    ref={(el) => {
-                      optionRefs.current[index] = el;
-                    }}
-                    type="button"
-                    role="option"
-                    aria-selected={isSelected}
-                    tabIndex={isFocused ? 0 : -1}
-                    onClick={() => handleSelectMode(item.id)}
-                    onMouseEnter={() => {
-                      playHover();
-                      setFocusedIndex(index);
-                    }}
-                    className={`w-full text-left px-2.5 py-2 rounded flex items-start gap-2.5 transition-colors outline-none cursor-pointer ${
-                      isSelected
-                        ? "bg-surface text-ink font-medium"
-                        : isFocused
-                        ? "bg-surface-hover/80 text-ink"
-                        : "text-muted-foreground hover:bg-surface-hover/60 hover:text-ink"
-                    }`}
-                  >
-                    {/* Status Indicator Icon */}
-                    <span
-                      className={`text-xs mt-0.5 flex-shrink-0 ${
-                        isSelected
-                          ? item.id === "focus"
-                            ? "text-emerald-500 font-bold"
-                            : "text-brand font-bold"
-                          : "text-muted-foreground/40"
-                      }`}
-                      aria-hidden="true"
-                    >
-                      {isSelected ? "●" : "○"}
-                    </span>
-
-                    {/* Text Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-xs font-semibold uppercase text-ink">
-                          {item.label}
-                        </span>
-                        {isSelected && (
-                          <span className="font-mono text-[9px] text-muted-foreground/60 uppercase tracking-widest">
-                            ACTIVE
-                          </span>
-                        )}
-                      </div>
-                      <p className="font-sans text-[11px] text-muted-foreground leading-snug mt-0.5">
-                        {item.description}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
         )}
-      </AnimatePresence>
-    </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* PORTALED FULL-SCREEN BACKDROP & POPOVER (At root level: z-[60] & z-[70])   */}
+      {/* ========================================================================= */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {isOpen && (
+              <>
+                {/* 1. Full-Screen Blurred Backdrop (z-[60]) */}
+                <motion.div
+                  key="presentation-switcher-backdrop"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0.05 : 0.18,
+                    ease: "easeOut",
+                  }}
+                  onClick={closePopover}
+                  className="fixed inset-0 z-[60] bg-black/15 dark:bg-black/50 backdrop-blur-[6px] pointer-events-auto cursor-default select-none"
+                  aria-hidden="true"
+                />
+
+                {/* 2. Mode-Specific Popover Menu (z-[70]) */}
+                <motion.div
+                  key="presentation-switcher-popover"
+                  ref={popoverRef}
+                  role="listbox"
+                  aria-label="Available Presentation Modes"
+                  initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.98 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0.05 : 0.18,
+                    ease: [0.23, 1, 0.32, 1] as const,
+                  }}
+                  style={{
+                    position: "fixed",
+                    top: popoverPos.top !== undefined ? `${popoverPos.top}px` : undefined,
+                    bottom: popoverPos.bottom !== undefined ? `${popoverPos.bottom}px` : undefined,
+                    left: popoverPos.left !== undefined ? `${popoverPos.left}px` : undefined,
+                    right: popoverPos.right !== undefined ? `${popoverPos.right}px` : undefined,
+                    transformOrigin:
+                      resolvedVariant === "dock"
+                        ? "bottom left"
+                        : "top right",
+                  }}
+                  className={`fixed outline-none z-[70] pointer-events-auto will-change-[transform,opacity] ${
+                    resolvedVariant === "dock"
+                      ? "w-64 sm:w-72 p-2 rounded-2xl bg-surface dark:bg-[#141618] border border-border shadow-2xl"
+                      : resolvedVariant === "focus-nav"
+                      ? "w-64 sm:w-72 p-1.5 rounded-md bg-surface dark:bg-[#141618] border border-border shadow-2xl font-mono"
+                      : "w-60 sm:w-64 p-3 rounded-none sm:rounded-sm bg-[#faf8f5] dark:bg-[#181816] border border-zinc-300 dark:border-white/[0.15] shadow-2xl font-serif"
+                  }`}
+                  onKeyDown={handleKeyDown}
+                >
+                  {/* --- POPOVER HEADER (Mode-specific) --- */}
+                  {resolvedVariant === "dock" && (
+                    <div className="px-2.5 py-1.5 border-b border-border-divider/70 mb-1.5 flex items-center justify-between">
+                      <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase">
+                        VIEW MODE
+                      </span>
+                      <span className="font-mono text-[9px] text-brand font-medium">● ACTIVE</span>
+                    </div>
+                  )}
+
+                  {resolvedVariant === "focus-nav" && (
+                    <div className="px-2.5 py-1.5 border-b border-border-divider flex items-center justify-between mb-1">
+                      <span className="font-mono text-[10px] text-muted-foreground/70 tracking-wider uppercase">
+                        [ PRESENTATION ]
+                      </span>
+                      <span className="font-mono text-[10px] text-muted-foreground/50">
+                        03 MODES
+                      </span>
+                    </div>
+                  )}
+
+                  {resolvedVariant === "minimal" && (
+                    <div className="pb-1.5 border-b border-zinc-200/90 dark:border-white/[0.08] mb-2 flex items-center justify-between">
+                      <span className="font-serif italic text-xs text-zinc-600 dark:text-[#9e998e]">
+                        View
+                      </span>
+                      <span className="font-serif text-[11px] text-zinc-400 dark:text-[#787369]">
+                        presentation
+                      </span>
+                    </div>
+                  )}
+
+                  {/* --- MODE SELECTION ITEMS (Mode-specific) --- */}
+                  <div className="space-y-1">
+                    {availableModes.map((item, index) => {
+                      const isSelected = item.id === mode;
+                      const isFocused = index === focusedIndex;
+
+                      // 1. DEFAULT POPOVER ITEM
+                      if (resolvedVariant === "dock") {
+                        return (
+                          <button
+                            key={item.id}
+                            ref={(el) => {
+                              optionRefs.current[index] = el;
+                            }}
+                            type="button"
+                            role="option"
+                            aria-selected={isSelected}
+                            tabIndex={isFocused ? 0 : -1}
+                            onClick={() => handleSelectMode(item.id)}
+                            onMouseEnter={() => {
+                              playHover();
+                              setFocusedIndex(index);
+                            }}
+                            className={`w-full text-left p-2.5 rounded-xl flex items-start gap-2.5 transition-colors outline-none cursor-pointer border ${
+                              isSelected
+                                ? "bg-surface-hover/90 border-border text-ink shadow-2xs"
+                                : isFocused
+                                ? "bg-surface-hover/80 border-transparent text-ink"
+                                : "border-transparent text-muted-foreground hover:bg-surface-hover/60 hover:text-ink"
+                            }`}
+                          >
+                            <span
+                              className={`text-xs mt-0.5 flex-shrink-0 ${
+                                isSelected
+                                  ? item.id === "focus"
+                                    ? "text-emerald-500 font-bold"
+                                    : "text-brand font-bold"
+                                  : "text-muted-foreground/40"
+                              }`}
+                              aria-hidden="true"
+                            >
+                              {isSelected ? "●" : "○"}
+                            </span>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <span className="font-mono text-xs font-semibold uppercase text-ink">
+                                  {item.label}
+                                </span>
+                                {isSelected && (
+                                  <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest font-semibold">
+                                    ACTIVE
+                                  </span>
+                                )}
+                              </div>
+                              <p className="font-sans text-[11.5px] text-muted-foreground leading-snug mt-0.5">
+                                {item.description}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      }
+
+                      // 2. FOCUS POPOVER ITEM (Technical Document / Ledger)
+                      if (resolvedVariant === "focus-nav") {
+                        return (
+                          <button
+                            key={item.id}
+                            ref={(el) => {
+                              optionRefs.current[index] = el;
+                            }}
+                            type="button"
+                            role="option"
+                            aria-selected={isSelected}
+                            tabIndex={isFocused ? 0 : -1}
+                            onClick={() => handleSelectMode(item.id)}
+                            onMouseEnter={() => {
+                              playHover();
+                              setFocusedIndex(index);
+                            }}
+                            className={`w-full text-left px-2.5 py-2 rounded-sm border transition-colors outline-none cursor-pointer ${
+                              isSelected
+                                ? "bg-surface-hover/90 border-border text-ink shadow-2xs"
+                                : isFocused
+                                ? "bg-surface-hover/60 border-transparent text-ink"
+                                : "border-transparent text-muted-foreground hover:bg-surface-hover/40 hover:text-ink"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`font-mono text-xs font-semibold ${
+                                    isSelected ? "text-brand" : "text-muted-foreground/60"
+                                  }`}
+                                >
+                                  {String(index + 1).padStart(2, "0")}
+                                </span>
+                                <span
+                                  className={`font-mono text-xs font-bold uppercase ${
+                                    isSelected ? "text-ink" : "text-ink/80"
+                                  }`}
+                                >
+                                  {item.label}
+                                </span>
+                              </div>
+                              {isSelected && (
+                                <span className="font-mono text-[9px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider">
+                                  [ ACTIVE ]
+                                </span>
+                              )}
+                            </div>
+                            <p className="font-sans text-[11.5px] text-muted-foreground leading-snug mt-1 pl-6">
+                              {item.description}
+                            </p>
+                          </button>
+                        );
+                      }
+
+                      // 3. MINIMAL POPOVER ITEM (Roman-serif Editorial)
+                      return (
+                        <button
+                          key={item.id}
+                          ref={(el) => {
+                            optionRefs.current[index] = el;
+                          }}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          tabIndex={isFocused ? 0 : -1}
+                          onClick={() => handleSelectMode(item.id)}
+                          onMouseEnter={() => {
+                            playHover();
+                            setFocusedIndex(index);
+                          }}
+                          className={`w-full text-left py-1.5 px-2 rounded-none transition-colors outline-none cursor-pointer ${
+                            isSelected
+                              ? "bg-zinc-200/80 dark:bg-white/[0.08] text-zinc-950 dark:text-[#f0ede6]"
+                              : isFocused
+                              ? "bg-zinc-100 dark:bg-white/[0.05] text-zinc-950 dark:text-[#ede9e2]"
+                              : "text-zinc-600 dark:text-[#a8a399] hover:bg-zinc-100/60 dark:hover:bg-white/[0.04] hover:text-zinc-950 hover:dark:text-[#ede9e2]"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-zinc-700 dark:text-[#c4bfb6]">
+                                {isSelected ? "•" : "○"}
+                              </span>
+                              <span className="font-serif text-sm font-medium text-zinc-900 dark:text-[#ede9e2]">
+                                {item.label}
+                              </span>
+                            </div>
+                            {isSelected && (
+                              <span className="font-serif italic text-[11px] text-zinc-500 dark:text-[#9c978e]">
+                                (active)
+                              </span>
+                            )}
+                          </div>
+                          <p className="font-serif text-[11.5px] text-zinc-600 dark:text-[#9c978e] leading-snug mt-0.5 italic pl-4">
+                            {item.description}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
+    </>
   );
 }
 

@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
  */
 export function MinimalHeader() {
   return (
-    <header className="w-full flex items-center justify-between pt-2 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08] select-none">
+    <header className="w-full relative flex items-center justify-between pt-2 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08] select-none z-[70]">
       {/* Quiet Identity Label */}
       <span className="font-mono text-xs text-zinc-500 dark:text-[#827d73] tracking-wide">
         naphiernode

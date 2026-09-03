@@ -22,7 +22,6 @@ export const ELIGIBLE_SECTION_IDS = [
   "recent-projects",
   "tech-stack",
   "experience",
-  "certifications",
   "recommendations",
   "gallery",
 ] as const;

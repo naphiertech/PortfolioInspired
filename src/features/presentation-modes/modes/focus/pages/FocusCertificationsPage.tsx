@@ -154,6 +154,16 @@ export function FocusCertificationsPage() {
           </div>
         ))}
       </div>
+
+      {/* Philosophy / Technical Milestone Quote */}
+      <div className="pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
+        <div className="border-l-2 border-border-hairline pl-3 italic text-muted-foreground/90 font-mono text-[11.5px]">
+          “Certifications are milestones, but real learning never stops.”
+        </div>
+        <span className="font-mono text-[11px] text-muted-foreground/60 tracking-wider font-medium sm:text-right">
+          KEEP BUILDING
+        </span>
+      </div>
     </div>
   );
 }

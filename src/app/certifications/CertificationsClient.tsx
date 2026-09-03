@@ -162,6 +162,16 @@ export function CertificationsClient() {
           </div>
         ))}
       </div>
+
+      {/* Editorial Milestone Philosophy Quote */}
+      <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
+        <div className="border-l-2 border-border-hairline pl-3 italic text-muted-foreground/90">
+          “Certifications are milestones, but real learning never stops.”
+        </div>
+        <span className="font-mono text-[11px] text-muted-foreground/60 tracking-wider font-medium sm:text-right">
+          Keep Building
+        </span>
+      </div>
     </div>
   );
 }

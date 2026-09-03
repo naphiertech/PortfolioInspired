@@ -6,7 +6,6 @@ import { FocusCapabilities } from "./components/FocusCapabilities";
 import { FocusSelectedWork } from "./components/FocusSelectedWork";
 import { FocusTechStack } from "./components/FocusTechStack";
 import { FocusExperience } from "./components/FocusExperience";
-import { FocusCertifications } from "./components/FocusCertifications";
 import { FocusContact } from "./components/FocusContact";
 
 /**
@@ -51,11 +50,7 @@ export function FocusModeLayout() {
       {/* Structural Divider */}
       <EditorialDivider className="my-6 sm:my-7" />
 
-      {/* 05 // VERIFIED CREDENTIALS */}
-      <FocusCertifications />
 
-      {/* Structural Divider */}
-      <EditorialDivider className="my-6 sm:my-7" />
 
       {/* 06 // CONTACT & AVAILABILITY */}
       <FocusContact />

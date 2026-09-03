@@ -5,7 +5,6 @@ import { NowSection } from "@/components/NowSection";
 import { RecentProjects } from "@/components/RecentProjects";
 import { TechStack } from "@/components/TechStack";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
-import { Certifications } from "@/components/Certifications";
 import { Recommendations } from "@/components/Recommendations";
 import { Gallery } from "@/components/Gallery";
 import { FooterGrid } from "@/components/FooterGrid";
@@ -60,11 +59,6 @@ export function DefaultModeLayout() {
         <ExperienceTimeline />
       </SnapSectionWrapper>
 
-      {/* 7. Key Certifications (Top 3 Credentials) */}
-      <SnapSectionWrapper id="certifications">
-        <EditorialDivider className="mb-10 sm:mb-12" />
-        <Certifications />
-      </SnapSectionWrapper>
 
       {/* 8. Recommendations (Rendered only when real approved recommendations exist) */}
       {hasApprovedRecommendations && (

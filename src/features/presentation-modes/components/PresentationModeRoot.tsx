@@ -14,21 +14,13 @@ import { MinimalModeLayout } from "../modes/minimal/MinimalModeLayout";
  * context state updates, ensuring a layout is always mounted with zero blank frames.
  */
 export function PresentationModeRoot() {
-  const { mode, previousMode, clearPreviousMode } = usePresentationMode();
+  const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
-
-  const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget && isSwitch) {
-      clearPreviousMode();
-    }
-  };
 
   return (
     <div
       key={mode}
       data-mode={mode}
-      data-previous-mode={previousMode ?? undefined}
-      onAnimationEnd={handleAnimationEnd}
       className={`w-full presentation-mode-enter ${
         isSwitch ? "presentation-mode-switch" : ""
       }`}

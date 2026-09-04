@@ -585,23 +585,76 @@ html.theme-transitioning *::after {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
 }
 
-/* Presentation Mode Layout Entrance Animation */
-@keyframes presentationFadeIn {
+/* ========================================================================= */
+/* Presentation Mode Layout Entrance & Deliberate Transformation Animations  */
+/* Timing: 520ms perceived duration with restrained, high-end deceleration.  */
+/* Safe on mobile: 0-frame-drop 220ms lightweight transform without blur/zoom */
+/* ========================================================================= */
+
+@keyframes presentationFadeInMobile {
   from {
     opacity: 0;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes presentationDesktopInitial {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes presentationDesktopTransform {
+  0% {
+    opacity: 0.25;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .presentation-mode-enter {
-  animation: presentationFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: opacity;
+  animation: presentationFadeInMobile 0.20s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+@media (min-width: 640px) {
+  .presentation-mode-enter {
+    animation: presentationDesktopInitial 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: opacity, transform;
+  }
+
+  .presentation-mode-enter.presentation-mode-switch {
+    animation: presentationDesktopTransform 0.50s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transform-origin: top center;
+    will-change: opacity, transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presentation-mode-enter,
+  .presentation-mode-enter.presentation-mode-switch,
+  .animate-fade-in {
+    animation: presentationFadeInMobile 0.05s ease-out both !important;
+    transform: none !important;
+    filter: none !important;
+    will-change: opacity;
+  }
 }
 
 .animate-fade-in {
-  animation: presentationFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: presentationFadeInMobile 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: opacity;
 }
 

@@ -28,7 +28,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
 
   return (
     <div
-      className={`w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 transition-all duration-300 ease-out ${
+      className={`w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 transition-[max-width,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
         isMinimal
           ? "max-w-[640px] px-5 sm:px-6 md:px-8 pt-8 pb-20"
           : isFocus
@@ -36,30 +36,39 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
           : "max-w-reading px-4 sm:px-6 md:px-8 pt-12 pb-32"
       }`}
     >
-      {/* Document-Scoped Architectural Technical Grid (Hidden in Minimal) */}
-      {!isMinimal && <TechnicalGrid />}
+      {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal) */}
+      <div
+        className={`transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+          isMinimal ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+        aria-hidden="true"
+      >
+        <TechnicalGrid />
+      </div>
 
       <main className="w-full relative z-10">
         <SnapRouteGuard>{children}</SnapRouteGuard>
       </main>
 
       {/* Minimalist Tech Footer with Editorial Rail (Default and Focus only) */}
-      {!isMinimal && (
-        <>
-          <EditorialDivider className="mt-16 mb-6" />
-          <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
-            <p>
-              &copy; 2026 {SITE_NAME}. Designed with precision & craft.
-            </p>
-            <p className="flex items-center gap-1.5 text-muted-foreground/80">
-              <span>Portfolio build ·</span>
-              <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
-                {BUILD_INFO.formattedDate}
-              </time>
-            </p>
-          </footer>
-        </>
-      )}
+      <div
+        className={`transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+          isMinimal ? "opacity-0 pointer-events-none h-0 overflow-hidden" : "opacity-100"
+        }`}
+      >
+        <EditorialDivider className="mt-16 mb-6" />
+        <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
+          <p>
+            &copy; 2026 {SITE_NAME}. Designed with precision & craft.
+          </p>
+          <p className="flex items-center gap-1.5 text-muted-foreground/80">
+            <span>Portfolio build ·</span>
+            <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
+              {BUILD_INFO.formattedDate}
+            </time>
+          </p>
+        </footer>
+      </div>
     </div>
   );
 }

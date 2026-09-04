@@ -172,7 +172,7 @@ function NavItemLink({
 
 export function NavigationDock() {
   const pathname = usePathname();
-  const { mode } = usePresentationMode();
+  const { mode, previousMode } = usePresentationMode();
   const { playHover, playClick } = useUISound();
   const {
     isSnapped,
@@ -184,6 +184,9 @@ export function NavigationDock() {
   } = useSnap();
   const shouldReduceMotion = useReducedMotion();
   const [isDesktopPointer, setIsDesktopPointer] = useState(false);
+
+  const isEnteringDefault =
+    previousMode !== null && previousMode !== "default" && mode === "default";
 
   const isSnapActive =
     isSnapped ||
@@ -203,10 +206,7 @@ export function NavigationDock() {
     }
   }, []);
 
-  // Focus and Minimal modes do not use the Default bottom dock
-  if (mode === "focus" || mode === "minimal") {
-    return null;
-  }
+  const isDefaultMode = mode === "default";
 
   const navItems: NavItem[] = [
     {
@@ -237,7 +237,28 @@ export function NavigationDock() {
   ];
 
   return (
-    <div className="fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-[70] pointer-events-none max-sm:bottom-4 px-3">
+    <AnimatePresence>
+      {isDefaultMode && (
+        <motion.div
+          key="navigation-dock-root"
+          initial={
+            isEnteringDefault && !shouldReduceMotion
+              ? { opacity: 0, y: 16 }
+              : false
+          }
+          animate={{ opacity: 1, y: 0 }}
+          exit={
+            !shouldReduceMotion
+              ? {
+                  opacity: 0,
+                  y: 16,
+                  transition: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                }
+              : { opacity: 0, transition: { duration: 0.05 } }
+          }
+          transition={{ duration: 0.44, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-[70] pointer-events-none max-sm:bottom-4 px-3 will-change-[transform,opacity]"
+        >
       {/* Separate Circular Presentation Mode Switcher */}
       <div className="pointer-events-auto flex-shrink-0 z-[70]">
         <PresentationModeSwitcher variant="dock" />
@@ -287,7 +308,9 @@ export function NavigationDock() {
           })}
         </AnimatePresence>
       </motion.nav>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

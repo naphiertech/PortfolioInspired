@@ -7,8 +7,10 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useRef,
   ReactNode,
 } from "react";
+import { usePathname } from "next/navigation";
 import { useSnap } from "@/context/SnapContext";
 import { PresentationMode } from "../types/presentation";
 import {
@@ -22,6 +24,7 @@ interface PresentationModeContextValue {
   mode: PresentationMode;
   previousMode: PresentationMode | null;
   setMode: (mode: PresentationMode) => void;
+  clearPreviousMode: () => void;
 }
 
 const PresentationModeContext = createContext<PresentationModeContextValue | null>(null);
@@ -47,6 +50,17 @@ export function PresentationModeProvider({
   const [previousMode, setPreviousMode] = useState<PresentationMode | null>(null);
   const { isSnapped, isSnapping, isRestoring, resetSnapState } = useSnap();
 
+  const pathname = usePathname();
+  const prevPathnameRef = useRef(pathname);
+
+  // When navigating between different routes, clear previousMode so deep pages don't re-trigger mode switch animations
+  useEffect(() => {
+    if (prevPathnameRef.current !== pathname) {
+      prevPathnameRef.current = pathname;
+      setPreviousMode(null);
+    }
+  }, [pathname]);
+
   // If initial mode is focus/minimal or active mode becomes focus/minimal while snapped, normalize immediately
   useEffect(() => {
     if (
@@ -56,6 +70,10 @@ export function PresentationModeProvider({
       resetSnapState();
     }
   }, [mode, isSnapped, isSnapping, isRestoring, resetSnapState]);
+
+  const clearPreviousMode = useCallback(() => {
+    setPreviousMode(null);
+  }, []);
 
   const setMode = useCallback(
     (newMode: PresentationMode) => {
@@ -100,8 +118,9 @@ export function PresentationModeProvider({
       mode,
       previousMode,
       setMode,
+      clearPreviousMode,
     }),
-    [mode, previousMode, setMode]
+    [mode, previousMode, setMode, clearPreviousMode]
   );
 
   return (

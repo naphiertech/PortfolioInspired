@@ -188,3 +188,50 @@ export const draftingSweepVariants: Variants = {
     },
   },
 };
+
+/**
+ * Presentation Mode Transition Tokens & Stagger Variants
+ * Provides coordinated, progressive reveal across presentation layout switches.
+ * Timing: ~400-540ms perceived duration with restrained, high-end deceleration.
+ */
+export const presentationEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+export const presentationContainerVariants: Variants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.04,
+      delayChildren: 0.015,
+    },
+  },
+};
+
+export const presentationItemVariants: Variants = {
+  initial: {
+    opacity: 0,
+    y: 6,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.46,
+      ease: presentationEase,
+    },
+  },
+};
+
+export const presentationNavVariants: Variants = {
+  initial: {
+    opacity: 0,
+    y: -6,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.40,
+      ease: presentationEase,
+    },
+  },
+};

@@ -11,6 +11,11 @@ import { MinimalStack } from "./components/MinimalStack";
 import { MinimalCurrent } from "./components/MinimalCurrent";
 import { MinimalContributions } from "./components/MinimalContributions";
 import { MinimalConnect } from "./components/MinimalConnect";
+import {
+  presentationContainerVariants,
+  presentationItemVariants,
+  presentationNavVariants,
+} from "@/lib/motion";
 
 /**
  * MinimalModeLayout
@@ -19,64 +24,108 @@ import { MinimalConnect } from "./components/MinimalConnect";
  * - Old-style Roman serif typography (EB Garamond) scoped to this layout
  * - Narrow centered reading width (~640px) with generous whitespace
  * - Only 6 curated sections: Intro, Selected Work, What I Work With, Currently, GitHub Contributions, Connect
- * - Subtle editorial page reveal animation on active mode switch (opacity 0->1, y 12->0, blur 2px->0)
+ * - Subtle editorial progressive reveal animation on active mode switch
  */
 export function MinimalModeLayout() {
   const { previousMode, mode } = usePresentationMode();
   const shouldReduceMotion = useReducedMotion();
+  const isDesktop = typeof window !== "undefined" ? window.innerWidth >= 640 : true;
 
   // Active intentional transition into Minimal from another mode (Default or Focus)
   const isEnteringMinimal =
-    previousMode !== null && previousMode !== "minimal" && mode === "minimal";
-
-  const contentVariants = {
-    initial: {
-      opacity: 0,
-      y: shouldReduceMotion ? 0 : 12,
-      filter: shouldReduceMotion ? "none" : "blur(2px)",
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: {
-        duration: shouldReduceMotion ? 0.05 : 0.4,
-        ease: [0.22, 1, 0.36, 1] as const,
-      },
-    },
-  };
+    isDesktop &&
+    !shouldReduceMotion &&
+    previousMode !== null &&
+    previousMode !== "minimal" &&
+    mode === "minimal";
 
   return (
     <div
       className={`${ebGaramond.variable} font-serif w-full max-w-[640px] mx-auto text-zinc-800 dark:text-[#beb9ad] selection:bg-[#343532] selection:text-[#eae6df] transition-colors duration-200`}
     >
-      {/* 1. Header with View Switcher & Theme Toggle - Remains stable */}
-      <MinimalHeader />
+      {/* 1. Header with View Switcher & Theme Toggle */}
+      <motion.div
+        variants={
+          isEnteringMinimal
+            ? presentationNavVariants
+            : undefined
+        }
+      >
+        <MinimalHeader />
+      </motion.div>
 
-      {/* 2. Main Minimal Content - Subtle editorial page reveal */}
+      {/* 2. Main Minimal Content - Progressive editorial reveal */}
       <motion.div
         initial={isEnteringMinimal ? "initial" : false}
         animate="animate"
-        variants={contentVariants}
+        variants={presentationContainerVariants}
         className="w-full will-change-[transform,opacity]"
       >
         {/* 2. Introduction & Identity */}
-        <MinimalIntro />
+        <motion.div
+          variants={
+            isEnteringMinimal && !shouldReduceMotion
+              ? presentationItemVariants
+              : undefined
+          }
+        >
+          <MinimalIntro />
+        </motion.div>
 
         {/* 3. Selected Work */}
-        <MinimalProjects />
+        <motion.div
+          variants={
+            isEnteringMinimal && !shouldReduceMotion
+              ? presentationItemVariants
+              : undefined
+          }
+        >
+          <MinimalProjects />
+        </motion.div>
 
         {/* 4. What I Work With */}
-        <MinimalStack />
+        <motion.div
+          variants={
+            isEnteringMinimal && !shouldReduceMotion
+              ? presentationItemVariants
+              : undefined
+          }
+        >
+          <MinimalStack />
+        </motion.div>
 
         {/* 5. Currently */}
-        <MinimalCurrent />
+        <motion.div
+          variants={
+            isEnteringMinimal && !shouldReduceMotion
+              ? presentationItemVariants
+              : undefined
+          }
+        >
+          <MinimalCurrent />
+        </motion.div>
 
         {/* 6. GitHub Contributions */}
-        <MinimalContributions />
+        <motion.div
+          variants={
+            isEnteringMinimal && !shouldReduceMotion
+              ? presentationItemVariants
+              : undefined
+          }
+        >
+          <MinimalContributions />
+        </motion.div>
 
         {/* 7. Connect & Minimal Footer */}
-        <MinimalConnect />
+        <motion.div
+          variants={
+            isEnteringMinimal && !shouldReduceMotion
+              ? presentationItemVariants
+              : undefined
+          }
+        >
+          <MinimalConnect />
+        </motion.div>
       </motion.div>
     </div>
   );

@@ -12,7 +12,14 @@ import { FocusProjectsPage } from "../modes/focus/pages/FocusProjectsPage";
  * Dispatches between Default CAD project gallery and Focus engineering index.
  */
 export function ProjectsPresentationRoot() {
-  const { mode } = usePresentationMode();
+  const { mode, previousMode, clearPreviousMode } = usePresentationMode();
+  const isSwitch = previousMode !== null && previousMode !== mode;
+
+  const handleAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget && isSwitch) {
+      clearPreviousMode();
+    }
+  };
 
   React.useEffect(() => {
     if (mode === "minimal" && typeof window !== "undefined") {
@@ -21,7 +28,15 @@ export function ProjectsPresentationRoot() {
   }, [mode]);
 
   return (
-    <div key={mode} className="w-full presentation-mode-enter">
+    <div
+      key={mode}
+      data-mode={mode}
+      data-previous-mode={previousMode ?? undefined}
+      onAnimationEnd={handleAnimationEnd}
+      className={`w-full presentation-mode-enter ${
+        isSwitch ? "presentation-mode-switch" : ""
+      }`}
+    >
       {mode === "focus" ? <FocusProjectsPage /> : <ProjectsPageClient />}
     </div>
   );

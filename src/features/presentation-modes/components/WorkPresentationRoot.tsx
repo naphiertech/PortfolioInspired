@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { WorkClient } from "@/app/work/WorkClient";
 import { FocusWorkPage } from "../modes/focus/pages/FocusWorkPage";
@@ -14,7 +13,6 @@ import { FocusWorkPage } from "../modes/focus/pages/FocusWorkPage";
  */
 export function WorkPresentationRoot() {
   const { mode } = usePresentationMode();
-  const shouldReduceMotion = useReducedMotion();
 
   React.useEffect(() => {
     if (mode === "minimal" && typeof window !== "undefined") {
@@ -22,26 +20,10 @@ export function WorkPresentationRoot() {
     }
   }, [mode]);
 
-  const transitionConfig = shouldReduceMotion
-    ? { duration: 0 }
-    : {
-        duration: 0.18,
-        ease: "easeOut" as const,
-      };
-
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={mode}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={transitionConfig}
-        className="w-full"
-      >
-        {mode === "focus" ? <FocusWorkPage /> : <WorkClient />}
-      </motion.div>
-    </AnimatePresence>
+    <div key={mode} className="w-full presentation-mode-enter">
+      {mode === "focus" ? <FocusWorkPage /> : <WorkClient />}
+    </div>
   );
 }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { ProjectsPageClient } from "@/app/projects/ProjectsPageClient";
 import { FocusProjectsPage } from "../modes/focus/pages/FocusProjectsPage";
@@ -14,7 +13,6 @@ import { FocusProjectsPage } from "../modes/focus/pages/FocusProjectsPage";
  */
 export function ProjectsPresentationRoot() {
   const { mode } = usePresentationMode();
-  const shouldReduceMotion = useReducedMotion();
 
   React.useEffect(() => {
     if (mode === "minimal" && typeof window !== "undefined") {
@@ -22,26 +20,10 @@ export function ProjectsPresentationRoot() {
     }
   }, [mode]);
 
-  const transitionConfig = shouldReduceMotion
-    ? { duration: 0 }
-    : {
-        duration: 0.18,
-        ease: "easeOut" as const,
-      };
-
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={mode}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={transitionConfig}
-        className="w-full"
-      >
-        {mode === "focus" ? <FocusProjectsPage /> : <ProjectsPageClient />}
-      </motion.div>
-    </AnimatePresence>
+    <div key={mode} className="w-full presentation-mode-enter">
+      {mode === "focus" ? <FocusProjectsPage /> : <ProjectsPageClient />}
+    </div>
   );
 }
 

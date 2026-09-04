@@ -145,11 +145,14 @@ export function PresentationModeSwitcher({
     (newMode: PresentationMode) => {
       playClick();
       dismissHint();
-      closePopover();
 
       if (newMode === mode) {
+        closePopover();
         return;
       }
+
+      setIsOpen(false);
+      setFocusedIndex(-1);
 
       // Universal in-place switch: reset scroll to top immediately during layout transition
       if (typeof window !== "undefined") {

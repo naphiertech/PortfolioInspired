@@ -296,7 +296,7 @@ export function ProfileHeader() {
 
                 {/* Secondary Action: Resume */}
                 <a
-                  href="/resume/IT_Resume_ATS.pdf"
+                  href="/resume/naphier_awalie_resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="tactile-btn gap-1.5 text-xs px-3 py-2.5 sm:py-2 h-auto sm:h-7 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"

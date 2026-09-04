@@ -197,7 +197,7 @@ export function FooterGrid() {
             </a>
 
             <a
-              href="/resume/IT_Resume_ATS.pdf"
+              href="/resume/naphier_awalie_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-surface/50 text-muted-foreground hover:text-ink transition-colors"

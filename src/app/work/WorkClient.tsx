@@ -192,7 +192,7 @@ export function WorkClient() {
           </Link>
 
           <a
-            href="/resume/IT_Resume_ATS.pdf"
+            href="/resume/naphier_awalie_resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="tactile-btn gap-2 h-9 px-4 rounded-md"

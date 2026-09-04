@@ -8,6 +8,8 @@ export const SITE_URL = "https://naphiernode.vercel.app";
 export const SITE_NAME = "Naphier Awalie";
 export const GITHUB_USERNAME = "naphiertech";
 
+export const RESUME_PATH = "/resume/naphier_awalie_resume.pdf";
+
 export const SOCIAL_PROFILES = {
   github: `https://github.com/${GITHUB_USERNAME}`,
   linkedin: "https://www.linkedin.com/in/naphier-awalie-0551983b5/",

@@ -190,7 +190,7 @@ export function FocusHero() {
             </a>
 
             <a
-              href="/resume.pdf"
+              href="/resume/naphier_awalie_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-surface/50 border border-border-hairline text-ink font-medium font-sans text-xs hover:bg-surface-hover hover:border-border active:scale-[0.98] transition-all shadow-xs"
@@ -237,7 +237,7 @@ export function FocusHero() {
             </a>
 
             <a
-              href="/resume.pdf"
+              href="/resume/naphier_awalie_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-surface/50 border border-border-hairline text-ink font-medium font-sans text-xs hover:bg-surface-hover hover:border-border transition-colors"

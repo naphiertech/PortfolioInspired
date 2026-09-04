@@ -74,7 +74,7 @@ export function MinimalConnect() {
         </a>
         <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
         <a
-          href="/resume/IT_Resume_ATS.pdf"
+          href="/resume/naphier_awalie_resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"

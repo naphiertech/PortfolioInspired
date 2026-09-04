@@ -169,7 +169,7 @@ export function FocusWorkPage() {
             </a>
 
             <a
-              href="/resume.pdf"
+              href="/resume/naphier_awalie_resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-surface/50 border border-border-hairline text-ink font-medium font-sans text-xs hover:bg-surface hover:border-border transition-colors"

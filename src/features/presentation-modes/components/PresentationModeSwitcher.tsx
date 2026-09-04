@@ -28,7 +28,14 @@ export function PresentationModeSwitcher({
   variant = "dock",
   className = "",
 }: PresentationModeSwitcherProps) {
-  const { mode, setMode } = usePresentationMode();
+  const {
+    mode,
+    setMode,
+    starsEnabled,
+    toggleStars,
+    gridEnabled,
+    toggleGrid,
+  } = usePresentationMode();
   const { playClick, playHover } = useUISound();
   const { hasDismissedHint, dismissHint } = useViewHint();
   const shouldReduceMotion = useReducedMotion();
@@ -163,6 +170,8 @@ export function PresentationModeSwitcher({
     [mode, setMode, playClick, closePopover, dismissHint]
   );
 
+  const totalNavItems = availableModes.length + 2;
+
   // Keyboard navigation within the popover
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) {
@@ -180,12 +189,12 @@ export function PresentationModeSwitcher({
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setFocusedIndex((prev) => (prev + 1) % availableModes.length);
+        setFocusedIndex((prev) => (prev + 1) % totalNavItems);
         break;
       case "ArrowUp":
         e.preventDefault();
         setFocusedIndex((prev) =>
-          prev <= 0 ? availableModes.length - 1 : prev - 1
+          prev <= 0 ? totalNavItems - 1 : prev - 1
         );
         break;
       case "Home":
@@ -194,13 +203,19 @@ export function PresentationModeSwitcher({
         break;
       case "End":
         e.preventDefault();
-        setFocusedIndex(availableModes.length - 1);
+        setFocusedIndex(totalNavItems - 1);
         break;
       case "Enter":
       case " ":
         e.preventDefault();
         if (focusedIndex >= 0 && focusedIndex < availableModes.length) {
           handleSelectMode(availableModes[focusedIndex].id);
+        } else if (focusedIndex === availableModes.length) {
+          playClick();
+          toggleStars();
+        } else if (focusedIndex === availableModes.length + 1) {
+          playClick();
+          toggleGrid();
         }
         break;
       case "Escape":
@@ -599,6 +614,421 @@ export function PresentationModeSwitcher({
                       );
                     })}
                   </div>
+
+                  {/* --- ANIMATIONS SECTION (Mode-specific) --- */}
+
+                  {/* 1. DEFAULT VARIANT ANIMATIONS */}
+                  {resolvedVariant === "dock" && (
+                    <div className="mt-2 pt-2 border-t border-border-divider/70">
+                      <div className="px-2.5 py-1 mb-0.5 flex items-center justify-between">
+                        <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase">
+                          ANIMATIONS
+                        </span>
+                      </div>
+                      <button
+                        ref={(el) => {
+                          optionRefs.current[availableModes.length] = el;
+                        }}
+                        type="button"
+                        role="switch"
+                        aria-checked={starsEnabled}
+                        tabIndex={focusedIndex === availableModes.length ? 0 : -1}
+                        aria-label="Toggle Stars Background"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick();
+                          toggleStars();
+                        }}
+                        onMouseEnter={() => {
+                          playHover();
+                          setFocusedIndex(availableModes.length);
+                        }}
+                        className={`w-full text-left p-2.5 rounded-xl flex items-center justify-between transition-colors outline-none cursor-pointer border ${
+                          focusedIndex === availableModes.length
+                            ? "bg-surface-hover/80 border-border text-ink"
+                            : "border-transparent hover:bg-surface-hover/60 text-muted-foreground hover:text-ink"
+                        } group`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span
+                            className={`text-xs transition-colors duration-200 select-none ${
+                              starsEnabled
+                                ? "text-amber-400 dark:text-amber-300"
+                                : "text-muted-foreground/40"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ✧
+                          </span>
+                          <div className="flex flex-col">
+                            <span className="font-mono text-xs font-semibold uppercase text-ink">
+                              Stars Background
+                            </span>
+                            <span className="font-sans text-[11px] text-muted-foreground leading-tight mt-0.5">
+                              Subtle cosmic starfield
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Modern Rounded Toggle Switch */}
+                        <div
+                          className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                            starsEnabled
+                              ? "bg-emerald-500"
+                              : "bg-muted-foreground/20 dark:bg-zinc-700"
+                          }`}
+                          aria-hidden="true"
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                              starsEnabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </div>
+                      </button>
+
+                      {/* Flickering Grid Toggle */}
+                      <button
+                        ref={(el) => {
+                          optionRefs.current[availableModes.length + 1] = el;
+                        }}
+                        type="button"
+                        role="switch"
+                        aria-checked={gridEnabled}
+                        tabIndex={focusedIndex === availableModes.length + 1 ? 0 : -1}
+                        aria-label="Toggle Flickering Grid"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick();
+                          toggleGrid();
+                        }}
+                        onMouseEnter={() => {
+                          playHover();
+                          setFocusedIndex(availableModes.length + 1);
+                        }}
+                        className={`w-full text-left p-2.5 rounded-xl flex items-center justify-between transition-colors outline-none cursor-pointer border mt-1 ${
+                          focusedIndex === availableModes.length + 1
+                            ? "bg-surface-hover/80 border-border text-ink"
+                            : "border-transparent hover:bg-surface-hover/60 text-muted-foreground hover:text-ink"
+                        } group`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span
+                            className={`text-xs transition-colors duration-200 select-none ${
+                              gridEnabled
+                                ? "text-cyan-400 dark:text-cyan-300"
+                                : "text-muted-foreground/40"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ▦
+                          </span>
+                          <div className="flex flex-col">
+                            <span className="font-mono text-xs font-semibold uppercase text-ink">
+                              Flickering Grid
+                            </span>
+                            <span className="font-sans text-[11px] text-muted-foreground leading-tight mt-0.5">
+                              Technical blueprint grid
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Modern Rounded Toggle Switch */}
+                        <div
+                          className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                            gridEnabled
+                              ? "bg-emerald-500"
+                              : "bg-muted-foreground/20 dark:bg-zinc-700"
+                          }`}
+                          aria-hidden="true"
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                              gridEnabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </div>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* 2. FOCUS VARIANT ANIMATIONS */}
+                  {resolvedVariant === "focus-nav" && (
+                    <div className="mt-2 pt-1.5 border-t border-border-divider">
+                      <div className="px-2.5 py-1 mb-0.5 flex items-center justify-between">
+                        <span className="font-mono text-[10px] text-muted-foreground/70 tracking-wider uppercase">
+                          [ ANIMATIONS ]
+                        </span>
+                      </div>
+                      <button
+                        ref={(el) => {
+                          optionRefs.current[availableModes.length] = el;
+                        }}
+                        type="button"
+                        role="switch"
+                        aria-checked={starsEnabled}
+                        tabIndex={focusedIndex === availableModes.length ? 0 : -1}
+                        aria-label="Toggle Stars Background"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick();
+                          toggleStars();
+                        }}
+                        onMouseEnter={() => {
+                          playHover();
+                          setFocusedIndex(availableModes.length);
+                        }}
+                        className={`w-full text-left px-2.5 py-2 rounded-sm border transition-colors outline-none cursor-pointer flex items-center justify-between group ${
+                          focusedIndex === availableModes.length
+                            ? "bg-surface-hover/60 border-border text-ink"
+                            : "border-transparent hover:bg-surface-hover/40 text-muted-foreground hover:text-ink"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className={`font-mono text-xs transition-colors ${
+                              starsEnabled
+                                ? "text-amber-500 dark:text-amber-400"
+                                : "text-muted-foreground/50"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ✧
+                          </span>
+                          <span className="font-mono text-xs font-bold uppercase text-ink/90">
+                            STARS BACKGROUND
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span
+                            className={`font-mono text-[10px] font-bold tracking-wider ${
+                              starsEnabled
+                                ? "text-emerald-500 dark:text-emerald-400"
+                                : "text-muted-foreground/50"
+                            }`}
+                          >
+                            {starsEnabled ? "[ ON ]" : "[ OFF ]"}
+                          </span>
+                          <div
+                            className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-150 ${
+                              starsEnabled
+                                ? "bg-emerald-500"
+                                : "bg-muted-foreground/25 dark:bg-zinc-700"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-3 w-3 mt-0.5 ml-0.5 transform rounded-full bg-white shadow-xs transition duration-150 ${
+                                starsEnabled ? "translate-x-3" : "translate-x-0"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Flickering Grid Toggle */}
+                      <button
+                        ref={(el) => {
+                          optionRefs.current[availableModes.length + 1] = el;
+                        }}
+                        type="button"
+                        role="switch"
+                        aria-checked={gridEnabled}
+                        tabIndex={focusedIndex === availableModes.length + 1 ? 0 : -1}
+                        aria-label="Toggle Flickering Grid"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick();
+                          toggleGrid();
+                        }}
+                        onMouseEnter={() => {
+                          playHover();
+                          setFocusedIndex(availableModes.length + 1);
+                        }}
+                        className={`w-full text-left px-2.5 py-2 rounded-sm border transition-colors outline-none cursor-pointer flex items-center justify-between group mt-0.5 ${
+                          focusedIndex === availableModes.length + 1
+                            ? "bg-surface-hover/60 border-border text-ink"
+                            : "border-transparent hover:bg-surface-hover/40 text-muted-foreground hover:text-ink"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className={`font-mono text-xs transition-colors ${
+                              gridEnabled
+                                ? "text-cyan-500 dark:text-cyan-400"
+                                : "text-muted-foreground/50"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ▦
+                          </span>
+                          <span className="font-mono text-xs font-bold uppercase text-ink/90">
+                            FLICKERING GRID
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span
+                            className={`font-mono text-[10px] font-bold tracking-wider ${
+                              gridEnabled
+                                ? "text-emerald-500 dark:text-emerald-400"
+                                : "text-muted-foreground/50"
+                            }`}
+                          >
+                            {gridEnabled ? "[ ON ]" : "[ OFF ]"}
+                          </span>
+                          <div
+                            className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-150 ${
+                              gridEnabled
+                                ? "bg-emerald-500"
+                                : "bg-muted-foreground/25 dark:bg-zinc-700"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-3 w-3 mt-0.5 ml-0.5 transform rounded-full bg-white shadow-xs transition duration-150 ${
+                                gridEnabled ? "translate-x-3" : "translate-x-0"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* 3. MINIMAL VARIANT ANIMATIONS */}
+                  {resolvedVariant === "minimal" && (
+                    <div className="mt-2.5 pt-2 border-t border-zinc-200/90 dark:border-white/[0.08]">
+                      <div className="px-2 pb-1 flex items-center justify-between">
+                        <span className="font-serif italic text-xs text-zinc-600 dark:text-[#9e998e]">
+                          Animations
+                        </span>
+                      </div>
+                      <button
+                        ref={(el) => {
+                          optionRefs.current[availableModes.length] = el;
+                        }}
+                        type="button"
+                        role="switch"
+                        aria-checked={starsEnabled}
+                        tabIndex={focusedIndex === availableModes.length ? 0 : -1}
+                        aria-label="Toggle Stars Background"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick();
+                          toggleStars();
+                        }}
+                        onMouseEnter={() => {
+                          playHover();
+                          setFocusedIndex(availableModes.length);
+                        }}
+                        className={`w-full text-left py-1.5 px-2 rounded-none transition-colors outline-none cursor-pointer flex items-center justify-between ${
+                          focusedIndex === availableModes.length
+                            ? "bg-zinc-100 dark:bg-white/[0.05] text-zinc-950 dark:text-[#ede9e2]"
+                            : "text-zinc-600 dark:text-[#a8a399] hover:bg-zinc-100/60 dark:hover:bg-white/[0.04] hover:text-zinc-950 hover:dark:text-[#ede9e2]"
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-xs select-none transition-colors ${
+                              starsEnabled
+                                ? "text-amber-500/90 dark:text-amber-300/80"
+                                : "text-zinc-400 dark:text-[#6a665e]"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ✧
+                          </span>
+                          <span className="font-serif text-sm font-medium text-zinc-900 dark:text-[#ede9e2]">
+                            Stars Background
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="font-serif italic text-[11px] text-zinc-500 dark:text-[#9c978e]">
+                            {starsEnabled ? "(on)" : "(off)"}
+                          </span>
+                          <div
+                            className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${
+                              starsEnabled
+                                ? "bg-zinc-800 dark:bg-zinc-300"
+                                : "bg-zinc-300 dark:bg-zinc-700"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-3 w-3 mt-0.5 ml-0.5 transform rounded-full bg-white dark:bg-zinc-900 shadow-xs transition duration-200 ${
+                                starsEnabled ? "translate-x-3" : "translate-x-0"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Flickering Grid Toggle */}
+                      <button
+                        ref={(el) => {
+                          optionRefs.current[availableModes.length + 1] = el;
+                        }}
+                        type="button"
+                        role="switch"
+                        aria-checked={gridEnabled}
+                        tabIndex={focusedIndex === availableModes.length + 1 ? 0 : -1}
+                        aria-label="Toggle Flickering Grid"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playClick();
+                          toggleGrid();
+                        }}
+                        onMouseEnter={() => {
+                          playHover();
+                          setFocusedIndex(availableModes.length + 1);
+                        }}
+                        className={`w-full text-left py-1.5 px-2 rounded-none transition-colors outline-none cursor-pointer flex items-center justify-between mt-0.5 ${
+                          focusedIndex === availableModes.length + 1
+                            ? "bg-zinc-100 dark:bg-white/[0.05] text-zinc-950 dark:text-[#ede9e2]"
+                            : "text-zinc-600 dark:text-[#a8a399] hover:bg-zinc-100/60 dark:hover:bg-white/[0.04] hover:text-zinc-950 hover:dark:text-[#ede9e2]"
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`text-xs select-none transition-colors ${
+                              gridEnabled
+                                ? "text-cyan-500/90 dark:text-cyan-300/80"
+                                : "text-zinc-400 dark:text-[#6a665e]"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ▦
+                          </span>
+                          <span className="font-serif text-sm font-medium text-zinc-900 dark:text-[#ede9e2]">
+                            Flickering Grid
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="font-serif italic text-[11px] text-zinc-500 dark:text-[#9c978e]">
+                            {gridEnabled ? "(on)" : "(off)"}
+                          </span>
+                          <div
+                            className={`relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${
+                              gridEnabled
+                                ? "bg-zinc-800 dark:bg-zinc-300"
+                                : "bg-zinc-300 dark:bg-zinc-700"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-3 w-3 mt-0.5 ml-0.5 transform rounded-full bg-white dark:bg-zinc-900 shadow-xs transition duration-200 ${
+                                gridEnabled ? "translate-x-3" : "translate-x-0"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               </>
             )}

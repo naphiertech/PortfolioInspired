@@ -95,7 +95,7 @@ export function ProfileHeader() {
   return (
     <section className="relative w-full select-none mb-16">
       {/* Top Portfolio Visual Banner */}
-      <div className="relative w-full h-44 sm:h-44 md:h-48 rounded-2xl overflow-hidden border border-border-hairline bg-surface/40 shadow-xs">
+      <div className="group relative w-full h-44 sm:h-44 md:h-48 rounded-2xl overflow-hidden border border-border-hairline bg-surface/40 shadow-xs">
         {/* Custom Header Background Image */}
         <NextImage
           src="/background-header/background.png"
@@ -103,7 +103,7 @@ export function ProfileHeader() {
           fill
           priority
           sizes="(max-width: 768px) 100vw, 760px"
-          className="object-cover object-center"
+          className="object-cover object-center grayscale transition-all duration-500 ease-out group-hover:grayscale-0 hover:grayscale-0"
         />
 
         {/* Subtle Theme-Aware Bottom Vignette for Seamless Portrait Transition */}

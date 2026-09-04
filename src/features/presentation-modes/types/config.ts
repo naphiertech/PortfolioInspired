@@ -6,6 +6,12 @@ export const PRESENTATION_COOKIE_NAME = "naphier_presentation_mode";
 export const PRESENTATION_QUERY_PARAM = "mode";
 export const PRESENTATION_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
+export const STARS_COOKIE_NAME = "naphier_stars_background";
+export const STARS_STORAGE_KEY = "naphier_stars_background";
+
+export const GRID_COOKIE_NAME = "naphier_flickering_grid";
+export const GRID_STORAGE_KEY = "naphier_flickering_grid";
+
 export const PRESENTATION_MODES: Record<PresentationMode, PresentationModeConfig> = {
   default: {
     id: "default",

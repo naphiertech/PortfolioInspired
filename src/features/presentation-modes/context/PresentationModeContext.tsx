@@ -18,6 +18,10 @@ import {
   PRESENTATION_COOKIE_NAME,
   PRESENTATION_COOKIE_MAX_AGE,
   PRESENTATION_QUERY_PARAM,
+  STARS_COOKIE_NAME,
+  STARS_STORAGE_KEY,
+  GRID_COOKIE_NAME,
+  GRID_STORAGE_KEY,
 } from "../types/config";
 
 interface PresentationModeContextValue {
@@ -25,6 +29,12 @@ interface PresentationModeContextValue {
   previousMode: PresentationMode | null;
   setMode: (mode: PresentationMode) => void;
   clearPreviousMode: () => void;
+  starsEnabled: boolean;
+  setStarsEnabled: (enabled: boolean) => void;
+  toggleStars: () => void;
+  gridEnabled: boolean;
+  setGridEnabled: (enabled: boolean) => void;
+  toggleGrid: () => void;
 }
 
 const PresentationModeContext = createContext<PresentationModeContextValue | null>(null);
@@ -32,6 +42,8 @@ const PresentationModeContext = createContext<PresentationModeContextValue | nul
 export interface PresentationModeProviderProps {
   children: ReactNode;
   initialMode: PresentationMode;
+  initialStarsEnabled?: boolean;
+  initialGridEnabled?: boolean;
 }
 
 /**
@@ -45,8 +57,12 @@ export interface PresentationModeProviderProps {
 export function PresentationModeProvider({
   children,
   initialMode = DEFAULT_PRESENTATION_MODE,
+  initialStarsEnabled = false,
+  initialGridEnabled = false,
 }: PresentationModeProviderProps) {
   const [mode, setModeState] = useState<PresentationMode>(initialMode);
+  const [starsEnabled, setStarsEnabledState] = useState<boolean>(initialStarsEnabled);
+  const [gridEnabled, setGridEnabledState] = useState<boolean>(initialGridEnabled);
   const [previousMode, setPreviousMode] = useState<PresentationMode | null>(null);
   const { isSnapped, isSnapping, isRestoring, resetSnapState } = useSnap();
 
@@ -113,14 +129,75 @@ export function PresentationModeProvider({
     [mode, resetSnapState]
   );
 
+  // Client-side localStorage synchronization for animation settings
+  useEffect(() => {
+    try {
+      const storedStars = localStorage.getItem(STARS_STORAGE_KEY);
+      if (storedStars !== null) {
+        setStarsEnabledState(storedStars === "true");
+      }
+      const storedGrid = localStorage.getItem(GRID_STORAGE_KEY);
+      if (storedGrid !== null) {
+        setGridEnabledState(storedGrid === "true");
+      }
+    } catch {
+      // Ignore storage errors in restricted contexts
+    }
+  }, []);
+
+  const setStarsEnabled = useCallback((enabled: boolean) => {
+    setStarsEnabledState(enabled);
+    try {
+      document.cookie = `${STARS_COOKIE_NAME}=${enabled}; path=/; max-age=${PRESENTATION_COOKIE_MAX_AGE}; SameSite=Lax`;
+      localStorage.setItem(STARS_STORAGE_KEY, String(enabled));
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
+  const toggleStars = useCallback(() => {
+    setStarsEnabled(!starsEnabled);
+  }, [setStarsEnabled, starsEnabled]);
+
+  const setGridEnabled = useCallback((enabled: boolean) => {
+    setGridEnabledState(enabled);
+    try {
+      document.cookie = `${GRID_COOKIE_NAME}=${enabled}; path=/; max-age=${PRESENTATION_COOKIE_MAX_AGE}; SameSite=Lax`;
+      localStorage.setItem(GRID_STORAGE_KEY, String(enabled));
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
+  const toggleGrid = useCallback(() => {
+    setGridEnabled(!gridEnabled);
+  }, [setGridEnabled, gridEnabled]);
+
   const value = useMemo<PresentationModeContextValue>(
     () => ({
       mode,
       previousMode,
       setMode,
       clearPreviousMode,
+      starsEnabled,
+      setStarsEnabled,
+      toggleStars,
+      gridEnabled,
+      setGridEnabled,
+      toggleGrid,
     }),
-    [mode, previousMode, setMode, clearPreviousMode]
+    [
+      mode,
+      previousMode,
+      setMode,
+      clearPreviousMode,
+      starsEnabled,
+      setStarsEnabled,
+      toggleStars,
+      gridEnabled,
+      setGridEnabled,
+      toggleGrid,
+    ]
   );
 
   return (

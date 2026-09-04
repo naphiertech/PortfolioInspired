@@ -6,8 +6,10 @@ import { SoundProvider } from "@/context/SoundContext";
 import { SnapProvider } from "@/context/SnapContext";
 import { PresentationModeProvider } from "@/features/presentation-modes/context/PresentationModeContext";
 import { resolveInitialPresentationMode } from "@/features/presentation-modes/lib/resolveMode";
-import { PRESENTATION_COOKIE_NAME } from "@/features/presentation-modes/types/config";
+import { PRESENTATION_COOKIE_NAME, STARS_COOKIE_NAME, GRID_COOKIE_NAME } from "@/features/presentation-modes/types/config";
 import { DustCanvas } from "@/components/DustCanvas";
+import { FlickeringGrid } from "@/components/FlickeringGrid";
+import { StarsBackground } from "@/components/StarsBackground";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
@@ -118,7 +120,11 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const cookieMode = cookieStore.get(PRESENTATION_COOKIE_NAME)?.value;
+  const cookieStars = cookieStore.get(STARS_COOKIE_NAME)?.value;
+  const cookieGrid = cookieStore.get(GRID_COOKIE_NAME)?.value;
   const initialMode = resolveInitialPresentationMode({ cookieMode });
+  const initialStarsEnabled = cookieStars === "true";
+  const initialGridEnabled = cookieGrid === "true";
 
   return (
     <html lang="en" suppressHydrationWarning className="dark">
@@ -146,10 +152,20 @@ export default async function RootLayout({
         <ThemeProvider>
           <SoundProvider>
             <SnapProvider>
-              <PresentationModeProvider initialMode={initialMode}>
+              <PresentationModeProvider
+                initialMode={initialMode}
+                initialStarsEnabled={initialStarsEnabled}
+                initialGridEnabled={initialGridEnabled}
+              >
                 <PWARegister />
 
-                {/* Mode-Aware Centered Page Shell Container */}
+                {/* 1. Global Flickering Blueprint Grid Layer (Behind stars and content) */}
+                <FlickeringGrid />
+
+                {/* 2. Ambient Global Stars Background Canvas (Fixed behind content) */}
+                <StarsBackground />
+
+                {/* 3. Mode-Aware Centered Page Shell Container */}
                 <PortfolioShell>{children}</PortfolioShell>
 
                 {/* High-Performance Canvas for Snap Dust Disintegration */}

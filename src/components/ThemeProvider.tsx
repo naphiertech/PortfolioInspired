@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 
 export type Theme = "light" | "dark" | "system";
 
@@ -16,6 +17,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("system");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
+  const activeTransitionRef = React.useRef(0);
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -103,32 +105,65 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    if (!isAppearanceTransition || !event) {
+    // If visual theme does not change, update state without animating the screen
+    if (targetResolved === resolvedTheme) {
       applyThemeUpdate();
       return;
     }
 
-    let x = event?.clientX ?? 0;
-    let y = event?.clientY ?? 0;
+    if (!isAppearanceTransition) {
+      applyThemeUpdate();
+      return;
+    }
+
+    // Determine coordinates (x, y) for origin of circular reveal
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
 
     if (event?.currentTarget && (event.currentTarget as HTMLElement).getBoundingClientRect) {
       const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
       x = rect.left + rect.width / 2;
       y = rect.top + rect.height / 2;
-    } else if (!x && !y) {
-      x = window.innerWidth / 2;
-      y = window.innerHeight / 2;
+    } else if (event && (event.clientX || event.clientY)) {
+      x = event.clientX;
+      y = event.clientY;
+    } else if (typeof document !== "undefined") {
+      const toggles = document.querySelectorAll<HTMLElement>('[aria-label="Theme selector"]');
+      for (const el of toggles) {
+        const rect = el.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+          break;
+        }
+      }
     }
 
     const maxW = Math.max(window.innerWidth, document.documentElement.clientWidth);
     const maxH = Math.max(window.innerHeight, document.documentElement.clientHeight);
-    const endRadius = Math.hypot(
-      Math.max(x, maxW - x),
-      Math.max(y, maxH - y)
-    ) + 24;
+    const endRadius = Math.ceil(
+      Math.hypot(
+        Math.max(x, maxW - x),
+        Math.max(y, maxH - y)
+      )
+    ) + 32;
+
+    const transitionId = ++activeTransitionRef.current;
 
     // Suppress all DOM CSS transitions so the GPU compositor exclusively animates the snapshot
+    document.documentElement.style.setProperty("--theme-clip-x", `${x}px`);
+    document.documentElement.style.setProperty("--theme-clip-y", `${y}px`);
+    document.documentElement.style.setProperty("--theme-clip-radius", `${endRadius}px`);
     document.documentElement.classList.add("theme-transitioning");
+
+    const cleanup = () => {
+      if (activeTransitionRef.current === transitionId) {
+        document.documentElement.classList.remove("theme-transitioning");
+        document.documentElement.style.removeProperty("--theme-clip-x");
+        document.documentElement.style.removeProperty("--theme-clip-y");
+        document.documentElement.style.removeProperty("--theme-clip-radius");
+      }
+    };
 
     try {
       const transition = (
@@ -139,25 +174,37 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           };
         }
       ).startViewTransition(() => {
-        applyThemeUpdate();
+        try {
+          flushSync(() => {
+            applyThemeUpdate();
+          });
+        } catch {
+          applyThemeUpdate();
+        }
       });
 
       transition.ready
-        .then(() => {
-          document.documentElement.animate(
-            {
-              clipPath: [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${endRadius}px at ${x}px ${y}px)`,
-              ],
-            },
-            {
-              duration: 420,
-              easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-              pseudoElement: "::view-transition-new(root)",
-              fill: "forwards",
-            }
-          );
+        .then(async () => {
+          try {
+            const anim = document.documentElement.animate(
+              {
+                clipPath: [
+                  `circle(0px at ${x}px ${y}px)`,
+                  `circle(${endRadius}px at ${x}px ${y}px)`,
+                ],
+              },
+              {
+                duration: 480,
+                easing: "cubic-bezier(0.32, 0.72, 0, 1)",
+                pseudoElement: "::view-transition-new(root)",
+                fill: "forwards",
+              }
+            );
+            await anim.finished;
+          } catch {
+            // In browsers where WAAPI on pseudoElement is unsupported (e.g. Safari 18),
+            // the CSS animation @keyframes theme-reveal in globals.css takes over seamlessly.
+          }
         })
         .catch(() => {
           // Gracefully handled if browser transition gets canceled
@@ -165,10 +212,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
       transition.finished
         .finally(() => {
-          document.documentElement.classList.remove("theme-transitioning");
+          cleanup();
         });
     } catch {
-      document.documentElement.classList.remove("theme-transitioning");
+      cleanup();
       applyThemeUpdate();
     }
   };

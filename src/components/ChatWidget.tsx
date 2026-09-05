@@ -229,8 +229,8 @@ function ChatWidgetContent() {
 
   const shouldReduceMotion = useReducedMotion();
 
-  // Hide AI Chat while in Minimal Mode
-  if (mode === "minimal") {
+  // Hide floating AI Chat while in Minimal Mode or Agent Folio Mode
+  if (mode === "minimal" || mode === "agent") {
     return null;
   }
 

@@ -4,7 +4,7 @@
  * Future modes ("blueprint" | "story") will be added as union members
  * only when their respective layouts and systems are implemented.
  */
-export type PresentationMode = "default" | "focus" | "minimal";
+export type PresentationMode = "default" | "focus" | "minimal" | "agent";
 
 export interface PresentationModeConfig {
   id: PresentationMode;

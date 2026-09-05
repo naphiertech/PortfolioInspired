@@ -8,7 +8,7 @@ export interface OutputGuardResult {
 
 /**
  * Checks if the generated text contains any prohibited code blocks, syntax patterns,
- * executable structures, or implementation snippets.
+ * executable structures, system prompt disclosures, or implementation snippets.
  */
 export function inspectGeneratedOutput(generatedText: string): OutputGuardResult {
   if (!generatedText) {
@@ -71,11 +71,57 @@ export function inspectGeneratedOutput(generatedText: string): OutputGuardResult
     violations.push("shell_command");
   }
 
+  // 6. System Prompt Disclosure / Internal Instructions Leak
+  const promptLeakPatterns = [
+    /GUIDELINES FOR RESPONSES/i,
+    /STRICT ZERO-CODE POLICY/i,
+    /AUTHORITATIVE PROFILE/i,
+    /ACTIVE VISITOR CONTEXT/i,
+    /You are the personal AI Assistant for/i,
+    /AUTHORITATIVE PROJECTS \(SINGLE SOURCE OF TRUTH\)/i,
+    /\b(system\s+prompt|system\s+instructions?|developer\s+mode\s+instructions?|internal\s+guidelines?)\b/i,
+    /\b(grounded AI|You are Agent Folio)\b/i,
+  ];
+
+  for (const pattern of promptLeakPatterns) {
+    if (pattern.test(text)) {
+      violations.push("prompt_leak");
+      break;
+    }
+  }
+
+  // 7. Unverified External Link Check (Enforce only authorized portfolio domains)
+  const linkMatches = text.match(/https?:\/\/[^\s\)]+/g);
+  if (linkMatches) {
+    const allowedHosts = [
+      "github.com",
+      "linkedin.com",
+      "vercel.app",
+      "assetlink-supabase-landing.vercel.app",
+      "mkbridertrack.vercel.app",
+      "naphier.tech",
+      "localhost",
+    ];
+    for (const link of linkMatches) {
+      try {
+        const host = new URL(link).hostname.toLowerCase();
+        const allowed = allowedHosts.some((h) => host === h || host.endsWith("." + h));
+        if (!allowed) {
+          violations.push(`unverified_external_url: ${link}`);
+          break;
+        }
+      } catch {
+        violations.push(`malformed_url: ${link}`);
+        break;
+      }
+    }
+  }
+
   // If any violation is detected, discard the entire model output and return the standard portfolio redirect
   if (violations.length > 0) {
     return {
       isSafe: false,
-      sanitizedReply: `I’m ${AUTHOR_INFO.shortName}’s portfolio assistant, so I only answer questions about his projects, skills, experience, and background. You can ask how his projects work or what technologies he used to build them.`,
+      sanitizedReply: `I’m here to help you explore ${AUTHOR_INFO.shortName}’s portfolio. I can answer questions about his projects, skills, experience, and background.`,
       violations,
     };
   }
@@ -84,5 +130,23 @@ export function inspectGeneratedOutput(generatedText: string): OutputGuardResult
     isSafe: true,
     sanitizedReply: text,
     violations: [],
+  };
+}
+
+/**
+ * Validates model generation, returning a normalized boolean and sanitized text
+ */
+export function validateAssistantResponse(generatedText: string): {
+  valid: boolean;
+  sanitizedText: string;
+  reason?: string;
+  violations: string[];
+} {
+  const result = inspectGeneratedOutput(generatedText);
+  return {
+    valid: result.isSafe,
+    sanitizedText: result.sanitizedReply,
+    reason: result.violations.join(", ") || undefined,
+    violations: result.violations,
   };
 }

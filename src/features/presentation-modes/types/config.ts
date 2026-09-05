@@ -37,6 +37,14 @@ export const PRESENTATION_MODES: Record<PresentationMode, PresentationModeConfig
     description: "One-page personal profile",
     isAvailable: true,
   },
+  agent: {
+    id: "agent",
+    label: "Agent Folio",
+    shortLabel: "Agent",
+    tagline: "Conversational portfolio workspace",
+    description: "Interactive AI agent to explore projects, tech stack, and background",
+    isAvailable: true,
+  },
 };
 
 /**
@@ -45,6 +53,6 @@ export const PRESENTATION_MODES: Record<PresentationMode, PresentationModeConfig
 export function isValidPresentationMode(value: unknown): value is PresentationMode {
   return (
     typeof value === "string" &&
-    (value === "default" || value === "focus" || value === "minimal")
+    (value === "default" || value === "focus" || value === "minimal" || value === "agent")
   );
 }

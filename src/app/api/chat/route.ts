@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       [...messages].reverse().find((m) => m.role === "user")?.content || "";
 
     // 2. Application-Level Pre-Generation Intent Gate (Layer 1)
-    const gateResult = classifyVisitorIntent(lastUserMessage);
+    const gateResult = classifyVisitorIntent(lastUserMessage, messages);
 
     if (
       gateResult.classification === "OUT_OF_SCOPE" ||
@@ -52,8 +52,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // 3. Build Hardened Authoritative System Prompt (Layer 2)
-    const systemInstruction = buildPortfolioSystemPrompt(pageContext);
+    // 3. Build Hardened Authoritative System Prompt with Grounded Relational Retrieval (Layer 2)
+    const systemInstruction = buildPortfolioSystemPrompt(
+      pageContext,
+      lastUserMessage,
+      messages,
+    );
 
     // Map messages array to Gemini contents format
     const formattedContents = messages.map(
@@ -94,8 +98,8 @@ export async function POST(req: Request) {
                 ],
               },
               generationConfig: {
-                maxOutputTokens: 600,
-                temperature: 0.5,
+                maxOutputTokens: 1200,
+                temperature: 0.4,
               },
             }),
           },

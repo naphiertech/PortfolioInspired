@@ -13,7 +13,7 @@ import {
   getCanonicalTechName,
 } from "./data";
 import { AUTHOR_INFO, AVAILABILITY, EDUCATION, GITHUB_USERNAME, SOCIAL_PROFILES } from "./siteConfig";
-import { retrieveGroundedContext, CONFIGURED_AI_MODELS } from "./portfolioKnowledge";
+import { retrieveGroundedContext } from "./portfolioKnowledge";
 
 export interface PortfolioPageContext {
   pathname: string;

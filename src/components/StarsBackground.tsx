@@ -56,7 +56,7 @@ export function StarsBackground() {
   }, [starsEnabled]);
 
   // Generate starfield data (once on mount or upon significant layout dimensions)
-  const initStars = (width: number, height: number) => {
+  const initStars = (width: number) => {
     const isMobile = width < 768;
     const count = isMobile ? Math.floor(35 + Math.random() * 10) : Math.floor(75 + Math.random() * 20);
 
@@ -123,7 +123,7 @@ export function StarsBackground() {
 
       // Initialize stars if empty
       if (starsRef.current.length === 0) {
-        initStars(width, height);
+        initStars(width);
       }
     };
 

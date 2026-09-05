@@ -5,6 +5,9 @@ import {
 } from "@/lib/portfolioContext";
 import { classifyVisitorIntent } from "@/lib/chatIntentGate";
 import { inspectGeneratedOutput } from "@/lib/chatOutputGuard";
+import { tryDeterministicAnswer } from "@/lib/deterministicResponder";
+import { normalizeUserQuery } from "@/lib/queryNormalizer";
+import { retrieveGroundedContext } from "@/lib/portfolioKnowledge";
 
 export async function POST(req: Request) {
   try {
@@ -34,22 +37,49 @@ export async function POST(req: Request) {
       gateResult.classification === "OUT_OF_SCOPE" ||
       gateResult.classification === "SENSITIVE_REQUEST"
     ) {
-      // Intercept and return the fixed portfolio redirect immediately.
       // Deny-by-default: zero Gemini API call, zero token usage, zero prompt-injection risk.
       return NextResponse.json({
         reply: gateResult.suggestedReply,
       });
     }
 
+    // 2.5 Local Fault-Tolerant Deterministic Fallback
+    // Return instant, verified structured answers without calling Gemini when the intent is factual
+    const deterministicRes = tryDeterministicAnswer(
+      gateResult.normalizedQuery || normalizeUserQuery(lastUserMessage),
+      messages,
+      pageContext
+    );
+
+    if (deterministicRes.answered && deterministicRes.reply) {
+      return NextResponse.json({
+        reply: deterministicRes.reply,
+      });
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey || apiKey === "your_gemini_api_key_here") {
-      return NextResponse.json(
-        {
-          error:
-            "API key is not configured. Please paste your Gemini API key in the .env file.",
-        },
-        { status: 500 },
+      // Graceful local fallback when external LLM API key is not configured
+      const grounded = retrieveGroundedContext(
+        gateResult.normalizedQuery?.normalizedText || lastUserMessage,
+        messages,
+        pageContext,
       );
+
+      let fallbackText = "";
+      if (grounded.matchedProjects.length > 0) {
+        const p = grounded.matchedProjects[0];
+        fallbackText = `I am currently operating in local portfolio mode. Regarding **[${p.title}](/projects/${p.slug})**: ${p.overview}\n\n**Technologies:** ${p.techStack.join(", ")}.`;
+      } else if (grounded.matchedTechs.length > 0) {
+        const tech = grounded.matchedTechs[0];
+        const projs = grounded.techToProjectsMap[tech] || [];
+        fallbackText = `I am currently operating in local portfolio mode. Naphier uses **${tech}**${projs.length > 0 ? ` across projects including ${projs.join(", ")}` : ""}.`;
+      } else {
+        fallbackText = `I am currently operating in local portfolio mode without an active external AI connection. You can ask me directly about Naphier's featured projects ([MKBRiderTrack](/projects/mkb-ridertrack), [AssetLink](/projects/assetlink), [MovieStream](/projects/moviestream), [Naphix-Resume](/projects/naphix-resume)), tech stack, experience, or contact information!`;
+      }
+
+      const guardResult = inspectGeneratedOutput(fallbackText);
+      return NextResponse.json({ reply: guardResult.sanitizedReply.trim() });
     }
 
     // 3. Build Hardened Authoritative System Prompt with Grounded Relational Retrieval (Layer 2)
@@ -119,11 +149,23 @@ export async function POST(req: Request) {
     }
 
     if (!replyText) {
-      console.error("Gemini API Error Response:", lastError);
-      return NextResponse.json(
-        { error: "Could not generate a response from Gemini." },
-        { status: 500 },
+      console.warn("Gemini API unavailable or failed:", lastError);
+      const grounded = retrieveGroundedContext(
+        gateResult.normalizedQuery?.normalizedText || lastUserMessage,
+        messages,
+        pageContext,
       );
+
+      let fallbackText = "";
+      if (grounded.matchedProjects.length > 0) {
+        const p = grounded.matchedProjects[0];
+        fallbackText = `Regarding **[${p.title}](/projects/${p.slug})**: ${p.overview}\n\n**Core Tech:** ${p.techStack.join(", ")}.`;
+      } else {
+        fallbackText = `I am temporarily operating in local fallback mode. You can ask me directly about Naphier's projects (MKBRiderTrack, AssetLink, MovieStream, Naphix-Resume), his tech stack, AI models, experience, or contact details!`;
+      }
+
+      const guardResult = inspectGeneratedOutput(fallbackText);
+      return NextResponse.json({ reply: guardResult.sanitizedReply.trim() });
     }
 
     // 4. Application-Level Post-Generation Output Guard (Layer 3)
@@ -133,14 +175,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ reply: finalReply });
   } catch (error: unknown) {
     console.error("Error in chat API route:", error);
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "An internal error occurred.",
-      },
-      { status: 500 },
-    );
+    return NextResponse.json({
+      reply:
+        "I am currently operating in local mode. Feel free to ask about Naphier's projects (MKBRiderTrack, AssetLink, MovieStream, Naphix-Resume), technical skills, or experience!",
+    });
   }
 }

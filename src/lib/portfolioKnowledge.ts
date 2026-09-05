@@ -2,19 +2,12 @@ import {
   fullProjects,
   techSections,
   experiences,
-  certifications,
-  currentBuild,
-  coreTechStack,
-  profileInfo,
-  memberOf,
   FullProjectItem,
   getProjectBySlug,
   getProjectsUsingTech,
-  getCanonicalTechName,
-  normalizeTechName,
 } from "./data";
-import { AUTHOR_INFO, AVAILABILITY, EDUCATION, GITHUB_USERNAME, SOCIAL_PROFILES } from "./siteConfig";
-import { PortfolioPageContext, ValidatedLink, validatePortfolioLink } from "./portfolioContext";
+import { EDUCATION, SOCIAL_PROFILES } from "./siteConfig";
+import { PortfolioPageContext, ValidatedLink } from "./portfolioContext";
 
 /**
  * Concrete AI architecture and model configuration currently implemented in this portfolio.

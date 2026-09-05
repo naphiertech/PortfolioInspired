@@ -1,6 +1,7 @@
 import { fullProjects, coreTechStack } from "./data";
-import { AUTHOR_INFO, SOCIAL_PROFILES } from "./siteConfig";
+import { AUTHOR_INFO } from "./siteConfig";
 import { extractConversationContext } from "./portfolioKnowledge";
+import { normalizeUserQuery, NormalizedQuery } from "./queryNormalizer";
 
 export type IntentClassification =
   | "PORTFOLIO_ALLOWED"
@@ -17,6 +18,8 @@ export type DetailedIntent =
   | "CONTACT_QUERY"
   | "NAVIGATION"
   | "FOLLOW_UP"
+  | "GREETING"
+  | "AMBIGUOUS"
   | "OUT_OF_SCOPE"
   | "PROMPT_INJECTION"
   | "CODE_GENERATION";
@@ -31,6 +34,7 @@ export interface IntentGateResult {
     name?: string;
     slug?: string;
   };
+  normalizedQuery?: NormalizedQuery;
 }
 
 export interface ChatMessage {
@@ -114,7 +118,7 @@ export function isPromptInjection(text: string): boolean {
     // System message injection
     /\b(system\s+message|system\s+instruction|system\s+prompt|developer\s+prompt)\s*:\s*/i,
     // Hidden instructions / reveal system prompt
-    /(reveal|show|print|repeat|output|what\s+is|what\s+are|display)\s+(me\s+)?(your\s+)?(system\s+prompt|hidden\s+instructions|hidden\s+context|internal\s+prompt|initial\s+prompt|raw\s+instructions|system\s+instructions|secret\s+instructions)/i,
+    /(reveal|show|print|repeat|output|what\s+is|what\s+are|display)\s+(me\s+)?(your\s+)?(all\s+)?(hidden\s+|secret\s+|internal\s+|initial\s+|system\s+)*(system\s+prompt|instructions|context|prompt|rules|directives)/i,
     /repeat\s+(everything\s+)?(above|before\s+this|the\s+system\s+prompt)/i,
     // Output javascript / python only
     /(output|generate|write|print|give\s+me)\s+(javascript|python|code|html|css|sql|json)\s+only/i,
@@ -148,12 +152,14 @@ export function isPromptInjection(text: string): boolean {
  */
 export function isCodeOrImplementationRequest(text: string): boolean {
   const lower = text.toLowerCase().trim();
-
   const codeGenPatterns = [
-    // "write me a python script", "generate code", "give me code for a website"
-    /\b(give\s+me|write|generate|create|build|show\s+me|provide|produce|code|implement|craft|scaffold|draft|supply|output|make)\s+(me\s+)?(a\s+|some\s+|an\s+)?(hello\s+world|code|script|function|component|program|snippet|template|example|class|query|html|css|javascript|typescript|python|java|php|sql|bash|shell|powershell|c\+\+|rust|golang|api|endpoint|server|app|calculator|game|website|login\s+page|database\s+schema)\b/i,
-    // "write a sql query for me"
-    /\bwrite\s+(a\s+)?(sql\s+query|database\s+query|python\s+script|bash\s+script|javascript\s+code)\b/i,
+    // "write me a python script", "generate code", "wrtie a pythn scirpt"
+    /\b(give\s+me|write|wrtie|generate|create|build|show\s+me|provide|produce|code|implement|craft|scaffold|draft|supply|output|make)\s+(me\s+)?(a\s+|some\s+|an\s+)?.*(hello\s+world|code|script|scirpt|scraper|skript|crawler|bot|function|component|program|snippet|template|example|class|query|html|css|javascript|typescript|python|java|php|sql|bash|shell|powershell|c\+\+|rust|golang|api|endpoint|server|app|calculator|game|website|login\s+page|database\s+schema)\b/i,
+    // "write a sql query for me", "write a python script"
+    /\b(write|wrtie)\s+(a\s+)?(sql\s+query|database\s+query|python\s+script|pythn\s+scirpt|bash\s+script|javascript\s+code|code)\b/i,
+    // scraper, bot, crawler
+    /\b(scraper|web\s+scraper|bot|crawler)\s+(for|in|using|with)\b/i,
+    /\bfor\s+a\s+(scraper|crawler|bot)\b/i,
     // "hello world in html", "sample code"
     /\bhello\s+world\s+(code|in\s+(html|css|js|ts|python|java|php|sql|bash|c\+\+|rust|golang))\b/i,
     /\b(sample|example|boilerplate|starter)\s+(code|script|function|implementation|snippet)\b/i,
@@ -225,7 +231,6 @@ function matchesKnownProject(text: string): boolean {
   const lower = text.toLowerCase();
   const normalized = lower.replace(/[^a-z0-9]/g, "");
 
-  // Project known aliases
   const projectAliases = [
     "mkbridertrack",
     "mkb",
@@ -257,13 +262,13 @@ function matchesKnownProject(text: string): boolean {
  */
 export function resolveMultiTurnPortfolioContext(
   messages: ChatMessage[],
-  currentQuery?: string
+  currentQuery?: string,
+  normalizedQuery?: NormalizedQuery
 ): { isContextualFollowUp: boolean; referencedEntity?: string } {
   if (!messages || messages.length === 0) {
     return { isContextualFollowUp: false };
   }
 
-  // Determine what query to inspect for anaphora (pronouns, relative follow-up phrases)
   const targetText = currentQuery
     ? currentQuery
     : [...messages].reverse().find((m) => m.role === "user")?.content || "";
@@ -274,31 +279,35 @@ export function resolveMultiTurnPortfolioContext(
 
   const lower = targetText.toLowerCase().trim();
 
-  // Pronouns or anaphoric phrases
-  const anaphoricPatterns = [
-    /\b(what\s+tech|what\s+technologies|what\s+stack|what\s+database|what\s+language)\s+(does\s+it|is\s+used|did\s+he\s+use)\b/i,
-    /\b(can\s+i|how\s+can\s+i|where\s+can\s+i)\s+(see\s+it|view\s+it|test\s+it|visit\s+it|access\s+it|find\s+it|open\s+it)\b/i,
-    /\b(is\s+it|does\s+it)\s+(live|deployed|open\s+source|on\s+github|work|responsive)\b/i,
-    /\b(does\s+it|did\s+it)\s+(use|have)\s+(ai|ml|machine\s+learning|database|auth|realtime|api)\b/i,
-    /\b(what\s+is\s+its|show\s+its|show\s+the|give\s+me\s+the)\s+(link|url|repo|repository|github|features|overview)\b/i,
-    /\b(tell\s+me\s+more|tell\s+me|explain\s+more|what\s+else|elaborate)\s+(about\s+)?(it|that|this|the\s+project|that\s+project|this\s+project)\b/i,
-    /\b(why\s+did\s+he\s+build\s+it|who\s+was\s+it\s+for|what\s+problem\s+does\s+it\s+solve)\b/i,
-    /\b(what\s+about\s+the\s+other\s+one|what\s+about\s+the\s+next\s+one)\b/i,
-    /\bhow\s+does\s+it\s+work\b/i,
-    /\bwhat\s+are\s+its\s+features\b/i,
-  ];
-
   // If the query explicitly mentions a project name or alias, it is a direct query, not an anaphoric follow-up
   if (matchesKnownProject(lower)) {
     return { isContextualFollowUp: false };
   }
 
-  const hasAnaphora = anaphoricPatterns.some((pattern) => pattern.test(lower));
+  // Pronouns or anaphoric phrases
+  const anaphoricPatterns = [
+    /\b(what\s+tech|what\s+technologies|what\s+stack|what\s+database|what\s+language|what\s+did\s+he\s+use)\s+(does\s+it|is\s+used|did\s+he\s+use|for\s+it|for\s+that)?\b/i,
+    /\bwhat\s+did\s+he\s+use\s+for\s+(that|it|this)\b/i,
+    /\b(can\s+i|how\s+can\s+i|where\s+can\s+i)\s+(see\s+it|view\s+it|test\s+it|visit\s+it|access\s+it|find\s+it|open\s+it|check\s+the\s+live)\b/i,
+    /\b(is\s+it|does\s+it)\s+(live|deployed|open\s+source|on\s+github|work|responsive|use\s+ai|have\s+ai)\b/i,
+    /\b(does\s+it|did\s+it)\s+(use|have)\s+(ai|ml|machine\s+learning|database|auth|realtime|api)\b/i,
+    /\b(what\s+is\s+its|show\s+its|show\s+the|give\s+me\s+the)\s+(link|url|repo|repository|github|features|overview)\b/i,
+    /\b(tell\s+me\s+more|tell\s+me|explain\s+more|what\s+else|elaborate)\s*(about\s+)?(it|that|this|the\s+project|that\s+project|this\s+project)?\b/i,
+    /\b(why\s+did\s+he\s+build\s+it|who\s+was\s+it\s+for|what\s+problem\s+does\s+it\s+solve|why\s+did\s+he\s+use\s+supabase)\b/i,
+    /\b(what\s+about\s+the\s+other\s+one|what\s+about\s+the\s+next\s+one|how\s+about\s+the\s+other\s+one|the\s+other\s+one)\b/i,
+    /\b(that\s+project|this\s+project|that\s+app|this\s+app|that\s+one)\b/i,
+    /\bhow\s+does\s+it\s+work\b/i,
+    /\bwhat\s+are\s+its\s+features\b/i,
+  ];
+
+  const hasAnaphora =
+    anaphoricPatterns.some((pattern) => pattern.test(lower)) ||
+    (normalizedQuery?.hasPronoun && (normalizedQuery.conceptScores.technology > 0 || normalizedQuery.conceptScores.navigation > 0 || normalizedQuery.conceptScores.ai > 0 || normalizedQuery.conceptScores.followUp > 0));
+
   if (!hasAnaphora) {
     return { isContextualFollowUp: false };
   }
 
-  // To find the referenced entity, look at prior messages
   const priorMessages = currentQuery ? messages : messages.slice(0, -1);
   if (priorMessages.length === 0) {
     return { isContextualFollowUp: false };
@@ -320,14 +329,12 @@ export function resolveMultiTurnPortfolioContext(
     };
   }
 
-  // Look back at earlier messages to find the referenced portfolio entity
   for (const prior of [...priorMessages].reverse()) {
     if (matchesKnownProject(prior.content)) {
       return { isContextualFollowUp: true, referencedEntity: "project" };
     }
   }
 
-  // Also check if prior conversation was discussing general portfolio topics
   const portfolioKeywords = ["experience", "education", "certifications", "tech stack", "projects", "zppsu", "ai"];
   for (const prior of [...priorMessages].reverse()) {
     const priorLower = prior.content.toLowerCase();
@@ -345,23 +352,59 @@ export function resolveMultiTurnPortfolioContext(
  * Checks if the message is asking legitimate questions about Naphier, his portfolio,
  * his technologies, background, education, work history, or project architecture.
  */
-export function isPortfolioInquiry(text: string, isContextualFollowUp: boolean = false): boolean {
+export function isPortfolioInquiry(
+  text: string,
+  isContextualFollowUp: boolean = false,
+  normalizedQuery?: NormalizedQuery
+): boolean {
   if (isContextualFollowUp) {
     return true;
   }
 
+  if (normalizedQuery) {
+    // 1. Greetings
+    if (normalizedQuery.isGreeting || normalizedQuery.conceptScores.greeting > 0.5) {
+      return true;
+    }
+
+    // 2. High domain scores from universal normalizer
+    const scores = normalizedQuery.conceptScores;
+    if (
+      scores.project >= 0.3 ||
+      scores.technology >= 0.3 ||
+      scores.ai >= 0.3 ||
+      scores.experience >= 0.3 ||
+      scores.education >= 0.3 ||
+      scores.contact >= 0.3 ||
+      scores.navigation >= 0.3 ||
+      scores.generalAbout >= 0.3
+    ) {
+      return true;
+    }
+
+    // 3. Matched entities in vocabulary
+    if (normalizedQuery.matchedEntities.length > 0) {
+      return true;
+    }
+
+    // 4. Inferred intent established
+    if (normalizedQuery.inferredIntent) {
+      return true;
+    }
+  }
+
   const lower = text.toLowerCase().trim();
 
-  // 1. Common friendly greetings or portfolio discovery prompts
+  // Greetings or discovery prompts
   if (
-    /^(hi|hello|hey|greetings|good\s+(morning|afternoon|evening)|what\s+can\s+you\s+do|who\s+are\s+you|help|what\s+can\s+i\s+ask|start)\b/i.test(
+    /^(hi|hello|hey|yo|sup|greetings|howdy|good\s+(morning|afternoon|evening)|what\s+can\s+you\s+do|who\s+are\s+you|help|what\s+can\s+i\s+ask|start)\b/i.test(
       lower
     )
   ) {
     return true;
   }
 
-  // 2. Navigation actions explicitly requested
+  // Navigation actions explicitly requested
   const navigationTriggers = [
     /\b(open|view|show|go\s+to|navigate\s+to)\s+(projects|work|tech\s+stack|technologies|certifications|experience|contact|github|linkedin|resume|cv)\b/i,
     /\b(how\s+to|how\s+can\s+i)\s+(contact|reach|hire|email)\s+(naphier|him)\b/i,
@@ -374,12 +417,12 @@ export function isPortfolioInquiry(text: string, isContextualFollowUp: boolean =
     }
   }
 
-  // 3. Known project matches (including space/hyphen permutations)
+  // Known project matches
   if (matchesKnownProject(lower)) {
     return true;
   }
 
-  // 4. Known developer profile entities
+  // Known developer profile entities
   const profileKeywords = [
     AUTHOR_INFO.name.toLowerCase(),
     AUTHOR_INFO.shortName.toLowerCase(),
@@ -425,9 +468,12 @@ export function isPortfolioInquiry(text: string, isContextualFollowUp: boolean =
     "current build",
     "currently building",
     "what does he do",
+    "gemini",
+    "gemini model",
+    "ai model",
   ];
 
-  // 5. Tech and AI questions related to Naphier or his projects
+  // Tech and AI questions related to Naphier or his projects
   const techQuestionPatterns = [
     /\b(does\s+(he|naphier)|did\s+(he|naphier)|is\s+(he|naphier))\s+(know|use|work\s+with|experience|learn|build|code)\b/i,
     /\bwhat\s+(tech|technologies|tools|languages|frameworks|stack|database|models?)\s+(does|did|is)\s+(he|naphier)\b/i,
@@ -439,9 +485,11 @@ export function isPortfolioInquiry(text: string, isContextualFollowUp: boolean =
     /\bwhat\s+is\s+(assetlink|mkb\s+ridertrack|mkb|ridertrack|naphix\s+resume|naphix|moviestream)\b/i,
     /\bwhat\s+features\s+does\b/i,
     /\bwhich\s+project\s+(uses|has|built\s+with)\b/i,
-    /\bdoes\s+he\s+use\s+(next\.js|react|supabase|tailwind|typescript|postgresql|postgres|tensorflow|gemini|pytorch)\b/i,
+    /\bdoes\s+he\s+use\s+(next\.js|react|supabase|tailwind|typescript|postgresql|postgres|tensorflow|gemini|pytorch|python)\b/i,
     /\bdoes\s+(his\s+portfolio|he|naphier)\s+use\s+(gemini|ai|models?)\b/i,
-    /\bwhat\s+(gemini\s+model|ai\s+model|model|models)\s+does\b/i,
+    /\bwhat\s+(gemini\s+model|ai\s+model|model|models)\s+(does|is|are|he)\b/i,
+    /\bgemini\s+models?\b/i,
+    /\bwhat\s+gemini\b/i,
     /\bwhat\s+did\s+he\s+build\s+(with|using)\b/i,
     /\bwhat\s+ai\s+(stuff|projects|work|tools|models)\b/i,
     /\bwhat('s| is)\s+his\s+(backend|frontend|fullstack|tech)?\s*(stack|toolchain)\b/i,
@@ -454,17 +502,13 @@ export function isPortfolioInquiry(text: string, isContextualFollowUp: boolean =
     }
   }
 
-  // 6. Check for profile keyword
-  const hasProfileKeyword = profileKeywords.some((k) => lower.includes(k));
-  if (hasProfileKeyword) {
+  // Check for profile keyword
+  if (profileKeywords.some((k) => lower.includes(k))) {
     return true;
   }
 
-  // 7. Core stack exploration (e.g. "Does he use Next.js?", "Which project uses Supabase?")
-  const mentionsCoreTech = coreTechStack.some((tech) =>
-    lower.includes(tech.toLowerCase())
-  );
-  if (mentionsCoreTech && /\b(use|used|using|stack|experience|know|projects?|which|where)\b/i.test(lower)) {
+  // Core stack exploration
+  if (coreTechStack.some((tech) => lower.includes(tech.toLowerCase()))) {
     return true;
   }
 
@@ -478,7 +522,8 @@ export function detectDetailedIntent(
   text: string,
   history: ChatMessage[],
   classification: IntentClassification,
-  multiTurnContext: { isContextualFollowUp: boolean; referencedEntity?: string }
+  multiTurnContext: { isContextualFollowUp: boolean; referencedEntity?: string },
+  normalizedQuery?: NormalizedQuery
 ): DetailedIntent {
   if (classification === "SENSITIVE_REQUEST") {
     return "PROMPT_INJECTION";
@@ -491,9 +536,21 @@ export function detectDetailedIntent(
     return "OUT_OF_SCOPE";
   }
 
+  if (normalizedQuery?.isGreeting) {
+    return "GREETING";
+  }
+
+  if (normalizedQuery?.isAmbiguous) {
+    return "AMBIGUOUS";
+  }
+
+  if (normalizedQuery?.inferredIntent) {
+    return normalizedQuery.inferredIntent;
+  }
+
   const lower = text.toLowerCase().trim();
 
-  // 1. Navigation query
+  // Navigation query
   if (
     /\b(can\s+i|how\s+can\s+i|where\s+can\s+i)\s+(see|view|test|visit|access|find|open)\b/i.test(lower) ||
     /\b(open|view|see|check|go\s+to|navigate\s+to|show\s+me|take\s+me\s+to|show\s+the\s+link|show\s+link|live\s+link|repo\s+link)\b/i.test(lower)
@@ -501,12 +558,12 @@ export function detectDetailedIntent(
     return "NAVIGATION";
   }
 
-  // 2. Multi-turn Follow-up
+  // Multi-turn Follow-up
   if (multiTurnContext.isContextualFollowUp) {
     return "FOLLOW_UP";
   }
 
-  // 3. AI / Machine Learning Query
+  // AI / Machine Learning Query
   if (
     /\b(ai|model|models|gemini|llm|machine\s+learning|tensorflow|pytorch|claude|ollama|codex|notebooklm|artificial\s+intelligence)\b/i.test(
       lower
@@ -515,7 +572,7 @@ export function detectDetailedIntent(
     return "AI_QUERY";
   }
 
-  // 4. Technology & Stack Query
+  // Technology & Stack Query
   if (
     /\b(tech|technologies|tools?|stack|backend|frontend|frameworks?|database|databases?|supabase|postgres|postgresql|react|next\.js|nextjs|tailwind|typescript|node|express|fastapi|python|php|laravel|prisma|graphql|leaflet|dexie)\b/i.test(
       lower
@@ -525,7 +582,7 @@ export function detectDetailedIntent(
     return "TECHNOLOGY_QUERY";
   }
 
-  // 5. Project Query
+  // Project Query
   if (
     matchesKnownProject(lower) ||
     /\b(project|projects|app|application|system|build|built|mkb|ridertrack|assetlink|moviestream|naphix)\b/i.test(lower)
@@ -533,14 +590,14 @@ export function detectDetailedIntent(
     return "PROJECT_QUERY";
   }
 
-  // 6. Experience / Career Query
+  // Experience / Career Query
   if (
     /\b(experience|work|job|career|freelance|roles?|working|history|timeline)\b/i.test(lower)
   ) {
     return "EXPERIENCE_QUERY";
   }
 
-  // 7. Education & Certifications
+  // Education & Certifications
   if (
     /\b(education|school|university|degree|zppsu|college|certifications?|certs?|credentials?|hackathon)\b/i.test(
       lower
@@ -549,7 +606,7 @@ export function detectDetailedIntent(
     return "EDUCATION_QUERY";
   }
 
-  // 8. Contact & Availability
+  // Contact & Availability
   if (
     /\b(contact|reach|hire|email|github|linkedin|social|available|availability|location)\b/i.test(
       lower
@@ -562,9 +619,9 @@ export function detectDetailedIntent(
 }
 
 /**
- * Builds a helpful domain-specific suggestion based on mentioned entities
+ * Builds a helpful domain-specific suggestion based on mentioned entities or concepts
  */
-function buildRelevantSuggestion(text: string): string {
+function buildRelevantSuggestion(text: string, normalizedQuery?: NormalizedQuery): string {
   const lower = text.toLowerCase();
 
   for (const p of fullProjects) {
@@ -582,6 +639,11 @@ function buildRelevantSuggestion(text: string): string {
     }
   }
 
+  if (normalizedQuery?.matchedEntities && normalizedQuery.matchedEntities.length > 0) {
+    const e = normalizedQuery.matchedEntities[0];
+    return ` You can ask about his ${e.canonical} work or related projects.`;
+  }
+
   return ` You can ask about his projects, technical stack, certifications, or work availability.`;
 }
 
@@ -596,7 +658,9 @@ export function classifyVisitorIntent(
   message: string,
   history: ChatMessage[] = []
 ): IntentGateResult {
-  const normalized = normalizeInput(message || "");
+  const rawMessage = message || "";
+  const normalizedQuery = normalizeUserQuery(rawMessage);
+  const normalized = normalizedQuery.normalizedText.toLowerCase();
 
   if (!normalized) {
     return {
@@ -604,26 +668,31 @@ export function classifyVisitorIntent(
       detailedIntent: "OUT_OF_SCOPE",
       suggestedReply: `I’m here to help you explore ${AUTHOR_INFO.shortName}’s portfolio. Ask me about his projects, technical stack, experience, or certifications!`,
       reason: "Empty message",
+      normalizedQuery,
     };
   }
 
   // 1. Security & Prompt Injection Check (Top Priority)
-  if (isPromptInjection(normalized)) {
+  // Check BOTH raw input and normalized input to prevent evasions or obfuscations
+  if (isPromptInjection(rawMessage) || isPromptInjection(normalized)) {
     return {
       classification: "SENSITIVE_REQUEST",
       detailedIntent: "PROMPT_INJECTION",
       suggestedReply: `I’m ${AUTHOR_INFO.shortName}’s portfolio assistant, so I only answer questions about his projects, skills, experience, and background. I cannot modify my guidelines or assist with unrelated tasks.`,
       reason: "Prompt injection / role-override attempt detected",
+      normalizedQuery,
     };
   }
 
   // 2. Code Generation / Implementation Check
-  if (isCodeOrImplementationRequest(normalized)) {
+  // Check BOTH raw input and normalized input to catch typo-disguised requests
+  if (isCodeOrImplementationRequest(rawMessage) || isCodeOrImplementationRequest(normalized)) {
     return {
       classification: "OUT_OF_SCOPE",
       detailedIntent: "CODE_GENERATION",
-      suggestedReply: `I’m here to help you explore ${AUTHOR_INFO.shortName}’s portfolio. I can’t generate code or help with unrelated tasks.${buildRelevantSuggestion(normalized)}`,
+      suggestedReply: `I’m here to help you explore ${AUTHOR_INFO.shortName}’s portfolio. I can’t generate code or help with unrelated tasks.${buildRelevantSuggestion(normalized, normalizedQuery)}`,
       reason: "Code generation request detected",
+      normalizedQuery,
     };
   }
 
@@ -636,25 +705,58 @@ export function classifyVisitorIntent(
       detailedIntent: "OUT_OF_SCOPE",
       suggestedReply: `I’m focused on ${AUTHOR_INFO.shortName}’s portfolio, projects, and experience. I can tell you how ${topic} is used in one of his projects, though.`,
       reason: "General programming tutoring detected",
+      normalizedQuery,
     };
   }
 
-  // 4. Multi-turn Context Resolution (Checking if relative follow-up refers to portfolio topic)
-  const multiTurnContext = resolveMultiTurnPortfolioContext(history, normalized);
+  // 4. Check Greetings Locally
+  if (normalizedQuery.isGreeting) {
+    return {
+      classification: "PORTFOLIO_ALLOWED",
+      detailedIntent: "GREETING",
+      suggestedReply: `Hello! I'm Naphier's portfolio agent. You can ask me about his featured projects (like MKBRiderTrack and AssetLink), his tech stack (Next.js, Supabase, React, Python), experience, or certifications. What would you like to explore?`,
+      normalizedQuery,
+    };
+  }
 
-  // 5. Portfolio Relevance Check (Deny by default)
-  if (!isPortfolioInquiry(normalized, multiTurnContext.isContextualFollowUp)) {
-    const suggestion = buildRelevantSuggestion(normalized);
+  // 5. Check Ambiguity Locally
+  if (normalizedQuery.isAmbiguous && normalizedQuery.ambiguousCandidates) {
+    let clarification = "I can help with that! Do you mean Naphier's projects or his work experience?";
+    if (
+      normalizedQuery.ambiguousCandidates.includes("PROJECT_QUERY") &&
+      normalizedQuery.ambiguousCandidates.includes("TECHNOLOGY_QUERY")
+    ) {
+      clarification = "I can help with that! Did you want to see Naphier's projects or explore his tech stack?";
+    }
+
+    return {
+      classification: "PORTFOLIO_ALLOWED",
+      detailedIntent: "AMBIGUOUS",
+      suggestedReply: clarification,
+      normalizedQuery,
+    };
+  }
+
+  // 6. Multi-turn Context Resolution (Checking if relative follow-up refers to portfolio topic)
+  const multiTurnContext = resolveMultiTurnPortfolioContext(history, normalized, normalizedQuery);
+
+  // 7. Portfolio Relevance Check (Deny by default)
+  if (!isPortfolioInquiry(normalized, multiTurnContext.isContextualFollowUp, normalizedQuery)) {
+    const suggestion = buildRelevantSuggestion(normalized, normalizedQuery);
     return {
       classification: "OUT_OF_SCOPE",
       detailedIntent: "OUT_OF_SCOPE",
       suggestedReply: `I’m here to help you explore ${AUTHOR_INFO.shortName}’s portfolio, projects, skills, and background.${suggestion}`,
       reason: "General non-portfolio request detected (deny by default)",
+      normalizedQuery,
     };
   }
 
-  // 6. Allowed Portfolio Inquiry with Discrete Detailed Intent
-  const detailedIntent = detectDetailedIntent(normalized, history, "PORTFOLIO_ALLOWED", multiTurnContext);
+  // 8. Allowed Portfolio Inquiry with Discrete Detailed Intent
+  const detailedIntent: DetailedIntent =
+    normalizedQuery.inferredIntent && normalizedQuery.inferredIntent !== "PORTFOLIO_FACT"
+      ? normalizedQuery.inferredIntent
+      : detectDetailedIntent(normalized, history, "PORTFOLIO_ALLOWED", multiTurnContext, normalizedQuery);
 
   return {
     classification: "PORTFOLIO_ALLOWED",
@@ -665,5 +767,6 @@ export function classifyVisitorIntent(
           name: multiTurnContext.referencedEntity,
         }
       : undefined,
+    normalizedQuery,
   };
 }

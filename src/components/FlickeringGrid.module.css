@@ -1,0 +1,162 @@
+.surface {
+  --ink: 235, 235, 235;
+  --minor: 0.035;
+  --major: 0.065;
+  --cell: 72px;
+  --major-cell: 288px;
+  position: absolute;
+  inset: 0 0 auto;
+  min-height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  color: rgb(var(--ink));
+  opacity: 1;
+  transition: opacity 500ms ease;
+}
+
+.surface[data-theme="light"] {
+  --ink: 35, 35, 35;
+  --minor: 0.04;
+  --major: 0.075;
+}
+
+.surface[data-enabled="false"] { opacity: 0; }
+
+.atmosphere,
+.lattice,
+.guides,
+.drafting {
+  position: absolute;
+  inset: 0;
+}
+
+.atmosphere {
+  background:
+    radial-gradient(ellipse 28% 520px at 0 320px, rgba(var(--ink), 0.028), transparent),
+    radial-gradient(ellipse 30% 640px at 100% 720px, rgba(var(--ink), 0.022), transparent);
+}
+
+/* The half-tile offset puts every layer on the same centerline, not on
+   differently centered tile edges. The origin remains fixed while scrolling. */
+.lattice {
+  background-image:
+    linear-gradient(to right, rgba(var(--ink), var(--major)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--ink), var(--major)) 1px, transparent 1px),
+    linear-gradient(to right, rgba(var(--ink), var(--minor)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--ink), var(--minor)) 1px, transparent 1px);
+  background-size:
+    var(--major-cell) var(--major-cell), var(--major-cell) var(--major-cell),
+    var(--cell) var(--cell), var(--cell) var(--cell);
+  background-position:
+    calc(50% + var(--major-cell) / 2) 72px, calc(50% + var(--major-cell) / 2) 72px,
+    calc(50% + var(--cell) / 2) 72px, calc(50% + var(--cell) / 2) 72px;
+  mask-image: linear-gradient(to right, #000, #000 calc(50% - 432px), rgba(0, 0, 0, 0.38) calc(50% - 340px), rgba(0, 0, 0, 0.38) calc(50% + 340px), #000 calc(50% + 432px), #000);
+}
+
+.guides {
+  inset: 72px max(24px, calc(50% - 432px)) 0;
+  border-inline: 1px dashed rgba(var(--ink), 0.115);
+  background: linear-gradient(to bottom, rgba(var(--ink), 0.08) 1px, transparent 1px) 0 0 / 100% 576px;
+}
+
+.drafting {
+  stroke: currentColor;
+  stroke-width: 0.75;
+  /* Keep construction details in the margins, away from the reading column. */
+  mask-image: linear-gradient(to right, #000, #000 calc(50% - 448px), transparent calc(50% - 380px), transparent calc(50% + 380px), #000 calc(50% + 448px), #000);
+}
+
+/* The pattern paths inherit fill:none, while the rects retain their pattern fill. */
+.drafting pattern { fill: none; }
+.marks { opacity: 0.25; stroke: none; }
+.arcs { opacity: 0.075; stroke: none; }
+
+.note {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 8px;
+  line-height: 1.35;
+  letter-spacing: 0.08em;
+  opacity: 0.3;
+}
+
+.topLeft { top: 28px; left: max(28px, calc(50% - 792px)); }
+.topRight { top: 28px; right: max(28px, calc(50% - 792px)); }
+.coordinate { top: 240px; left: calc(50% - 576px); }
+.sideNote { top: 504px; right: max(28px, calc(50% - 792px)); }
+.bottomLeft { bottom: 72px; left: max(28px, calc(50% - 792px)); }
+.bottomRight { bottom: 72px; right: max(28px, calc(50% - 792px)); }
+.noteRule { width: 20px; height: 1px; margin-top: 8px; background: currentColor; opacity: 0.6; }
+
+.crosshair {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: -9px;
+  left: -9px;
+  transform: translateY(-24px);
+  background: linear-gradient(currentColor, currentColor) center / 1px 18px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 18px 1px no-repeat;
+}
+
+.signal {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  margin: -6px 0 0 -6px;
+  background: linear-gradient(currentColor, currentColor) center / 1px 13px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 13px 1px no-repeat;
+  opacity: 0.08;
+  animation: breathe 19s ease-in-out infinite;
+}
+.signalLeft { left: calc(50% - 576px); top: 216px; }
+.signalRight { left: calc(50% + 576px); top: 648px; animation-delay: -11s; }
+.trace {
+  position: absolute;
+  left: calc(50% + 432px);
+  top: 360px;
+  width: 1px;
+  height: 72px;
+  background: linear-gradient(transparent, rgba(var(--ink), 0.22), transparent);
+  opacity: 0;
+  animation: shimmer 27s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 32%, 64%, 100% { opacity: 0.08; }
+  48% { opacity: 0.3; }
+}
+@keyframes shimmer {
+  0%, 64%, 90%, 100% { opacity: 0; transform: translateY(0); }
+  76% { opacity: 0.7; }
+  89% { opacity: 0; transform: translateY(144px); }
+}
+
+.surface[data-enabled="false"] .signal,
+.surface[data-enabled="false"] .trace,
+.surface[data-paused="true"] .signal,
+.surface[data-paused="true"] .trace { animation-play-state: paused; }
+
+@media (max-width: 1199px) {
+  .note, .arcs { display: none; }
+  .signal { display: none; }
+  .drafting { opacity: 0.65; }
+}
+
+@media (max-width: 767px) {
+  .surface { --cell: 48px; --major-cell: 192px; }
+  .lattice { mask-image: none; opacity: 0.55; }
+  .guides { opacity: 0.45; }
+  .drafting, .trace, .atmosphere { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface { transition: none; }
+  .signal, .trace { animation: none; }
+  .trace { display: none; }
+}

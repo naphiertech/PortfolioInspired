@@ -11,6 +11,7 @@ import { FooterGrid } from "@/components/FooterGrid";
 import { SnapSectionWrapper } from "@/components/SnapSectionWrapper";
 import { EditorialDivider } from "@/components/EditorialDivider";
 import { recommendations } from "@/lib/data";
+import { MusicEdgeDrawer } from "@/features/music-drawer";
 
 /**
  * DefaultModeLayout
@@ -26,6 +27,9 @@ export function DefaultModeLayout() {
 
   return (
     <div className="w-full flex flex-col">
+      {/* Left-Edge Music Folder Drawer (Reusable feature mounted in Default mode, outside Snap eligibility) */}
+      <MusicEdgeDrawer />
+
       {/* 1. Identity & Hero (Permanent - Never snapped) */}
       <ProfileHeader />
 

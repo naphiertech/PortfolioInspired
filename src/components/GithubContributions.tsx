@@ -1,7 +1,100 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AUTHOR_INFO, GITHUB_USERNAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
+
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+interface ContributionTooltipPortalProps {
+  text: string;
+  target: HTMLElement;
+}
+
+function ContributionTooltipPortal({ text, target }: ContributionTooltipPortalProps) {
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    const tooltip = tooltipRef.current;
+    if (!tooltip || !target) return;
+
+    const updatePosition = () => {
+      if (!target.isConnected) return;
+
+      const cellRect = target.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const gap = 8;
+      const padding = 8;
+
+      // If cell is scrolled completely out of viewport, hide tooltip
+      if (
+        cellRect.bottom < 0 ||
+        cellRect.top > viewportHeight ||
+        cellRect.right < 0 ||
+        cellRect.left > viewportWidth
+      ) {
+        tooltip.style.opacity = "0";
+        return;
+      }
+      tooltip.style.opacity = "1";
+
+      // Vertical placement: default above, flip below if not enough room above
+      const spaceAbove = cellRect.top;
+      const placeBelow = spaceAbove < tooltipRect.height + gap + padding;
+
+      let top = placeBelow
+        ? cellRect.bottom + gap
+        : cellRect.top - tooltipRect.height - gap;
+
+      // Prevent vertical overflow outside viewport
+      top = Math.max(padding, Math.min(viewportHeight - tooltipRect.height - padding, top));
+
+      // Horizontal placement: center above cell, clamp within viewport edges
+      const cellCenter = cellRect.left + cellRect.width / 2;
+      let left = cellCenter - tooltipRect.width / 2;
+
+      // Prevent overflow on left and right viewport edges
+      if (left < padding) {
+        left = padding;
+      } else if (left + tooltipRect.width > viewportWidth - padding) {
+        left = viewportWidth - padding - tooltipRect.width;
+      }
+
+      tooltip.style.top = `${top}px`;
+      tooltip.style.left = `${left}px`;
+    };
+
+    updatePosition();
+
+    // Recalculate on window scroll, container scroll (capture phase catches horizontal container scroll), and resize
+    window.addEventListener("scroll", updatePosition, { capture: true, passive: true });
+    window.addEventListener("resize", updatePosition, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updatePosition, { capture: true });
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [target, text]);
+
+  return createPortal(
+    <div
+      ref={tooltipRef}
+      className="fixed z-50 pointer-events-none px-2.5 py-1 bg-surface text-ink border border-border-hairline text-[11px] font-mono rounded-[4px] shadow-lg backdrop-blur-sm whitespace-nowrap"
+      style={{
+        top: 0,
+        left: 0,
+        opacity: 0,
+      }}
+    >
+      {text}
+    </div>,
+    document.body
+  );
+}
 
 interface ContributionDay {
   date: string;
@@ -34,11 +127,15 @@ export function GithubContributions() {
   const [data, setData] = useState<ContributionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [hoveredCell, setHoveredCell] = useState<{
     text: string;
-    x: number;
-    y: number;
+    target: HTMLElement;
   } | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -159,11 +256,9 @@ export function GithubContributions() {
                     style={levelStyle}
                     title={day.tooltip}
                     onMouseEnter={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
                       setHoveredCell({
                         text: day.tooltip,
-                        x: rect.left + rect.width / 2,
-                        y: rect.top,
+                        target: e.currentTarget,
                       });
                     }}
                     onMouseLeave={() => setHoveredCell(null)}
@@ -193,14 +288,12 @@ export function GithubContributions() {
         </a>
       </div>
 
-      {/* Floating Tooltip */}
-      {hoveredCell && (
-        <div
-          className="fixed z-50 pointer-events-none px-2.5 py-1 bg-surface text-ink border border-border-hairline text-[11px] font-mono rounded-[4px] shadow-lg backdrop-blur-sm transform -translate-x-1/2 -translate-y-full -mt-2 whitespace-nowrap"
-          style={{ left: `${hoveredCell.x}px`, top: `${hoveredCell.y}px` }}
-        >
-          {hoveredCell.text}
-        </div>
+      {/* Floating Tooltip Portal (Anchored directly to hovered cell, escaping transformed ancestors) */}
+      {mounted && hoveredCell && typeof document !== "undefined" && (
+        <ContributionTooltipPortal
+          text={hoveredCell.text}
+          target={hoveredCell.target}
+        />
       )}
     </div>
   );

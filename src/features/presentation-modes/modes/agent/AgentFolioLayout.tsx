@@ -19,6 +19,7 @@ import { useUISound } from "@/context/SoundContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PresentationModeSwitcher } from "@/features/presentation-modes/components/PresentationModeSwitcher";
+import { AgentPreviewNotice } from "./components/AgentPreviewNotice";
 import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import {
   extractAndValidateLinks,
@@ -213,6 +214,7 @@ export function AgentFolioLayout() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const suggestedPromptsRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -316,7 +318,7 @@ export function AgentFolioLayout() {
   return (
     <div className="w-full flex-1 flex flex-col justify-between max-w-3xl mx-auto h-[calc(100dvh-32px)] sm:h-[calc(100dvh-48px)] select-none sm:select-auto">
       {/* 1. TOP HEADER: Brand / View Switcher / Theme Toggle */}
-      <header className="w-full flex items-center justify-between pb-3 sm:pb-4 border-b border-border-hairline flex-shrink-0 gap-2">
+      <header className="relative w-full flex items-center justify-between pb-3 sm:pb-4 border-b border-border-hairline flex-shrink-0 gap-2">
         <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-shrink">
           <div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
             <span className="font-mono font-bold text-xs sm:text-sm text-ink tracking-tight truncate">
@@ -354,6 +356,11 @@ export function AgentFolioLayout() {
           <PresentationModeSwitcher variant="agent" />
           <ThemeToggle />
         </div>
+        <AgentPreviewNotice
+          suggestedPromptsRef={suggestedPromptsRef}
+          inputRef={textareaRef}
+          hasMessages={hasMessages}
+        />
       </header>
 
       {/* 2. MAIN CONTENT AREA: Empty Hero OR Message Stream */}
@@ -426,6 +433,7 @@ export function AgentFolioLayout() {
 
           {/* Suggested Prompts */}
           <motion.div
+            ref={suggestedPromptsRef}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.15 }}

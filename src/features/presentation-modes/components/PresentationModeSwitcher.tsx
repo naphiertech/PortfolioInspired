@@ -95,7 +95,7 @@ export function PresentationModeSwitcher({
     if (resolvedVariant === "dock") {
       setPopoverPos({
         bottom: Math.max(16, window.innerHeight - rect.top + 12),
-        left: isMobile ? 16 : Math.max(16, Math.min(rect.left, window.innerWidth - 460 - 16)),
+        left: isMobile ? 16 : Math.max(16, Math.min(rect.left, window.innerWidth - 360 - 16)),
       });
     } else if (resolvedVariant === "agent") {
       setPopoverPos({

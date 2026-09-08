@@ -2,13 +2,14 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, LayoutTemplate, Target, AlignLeft, Bot, Sparkles, Grid } from "lucide-react";
+import { ChevronDown, LayoutTemplate, Target, AlignLeft, Bot, Sparkles, Grid, Plus, ScanLine, Minus, Crosshair, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { PRESENTATION_MODES } from "../types/config";
 import { PresentationMode } from "../types/presentation";
 import { useUISound } from "@/context/SoundContext";
 import { useViewHint } from "../hooks/useViewHint";
+import styles from "./DefaultSwitcherPanel.module.css";
 
 interface PresentationModeSwitcherProps {
   variant?: "dock" | "focus-nav" | "minimal" | "default" | "focus" | "agent";
@@ -94,7 +95,7 @@ export function PresentationModeSwitcher({
     if (resolvedVariant === "dock") {
       setPopoverPos({
         bottom: Math.max(16, window.innerHeight - rect.top + 12),
-        left: isMobile ? 16 : Math.max(16, rect.left),
+        left: isMobile ? 16 : Math.max(16, Math.min(rect.left, window.innerWidth - 460 - 16)),
       });
     } else if (resolvedVariant === "agent") {
       setPopoverPos({
@@ -427,7 +428,7 @@ export function PresentationModeSwitcher({
                 <motion.div
                   key="presentation-switcher-popover"
                   ref={popoverRef}
-                  role="listbox"
+                  role={resolvedVariant === "dock" ? undefined : "listbox"}
                   aria-label="Available Presentation Modes"
                   initial={{
                     opacity: 0,
@@ -450,6 +451,7 @@ export function PresentationModeSwitcher({
                   }}
                   style={{
                     position: "fixed",
+                    maxHeight: resolvedVariant === "dock" ? `calc(100dvh - ${popoverPos.bottom ?? 100}px - 16px)` : undefined,
                     top: popoverPos.top !== undefined ? `${popoverPos.top}px` : undefined,
                     bottom: popoverPos.bottom !== undefined ? `${popoverPos.bottom}px` : undefined,
                     left: popoverPos.left !== undefined ? `${popoverPos.left}px` : undefined,
@@ -463,7 +465,7 @@ export function PresentationModeSwitcher({
                     resolvedVariant === "agent"
                       ? "w-[calc(100vw-32px)] sm:w-80 max-w-[340px] p-2 rounded-xl bg-surface dark:bg-[#121316] border border-border shadow-2xl font-mono text-ink"
                       : resolvedVariant === "dock"
-                      ? "w-64 sm:w-72 p-2 rounded-2xl bg-surface dark:bg-[#141618] border border-border shadow-2xl"
+                      ? styles.panel
                       : resolvedVariant === "focus-nav"
                       ? "w-64 sm:w-72 p-1.5 rounded-md bg-surface dark:bg-[#141618] border border-border shadow-2xl font-mono"
                       : "w-60 sm:w-64 p-3 rounded-none sm:rounded-sm bg-[#faf8f5] dark:bg-[#181816] border border-zinc-300 dark:border-white/[0.15] shadow-2xl font-serif"
@@ -491,14 +493,10 @@ export function PresentationModeSwitcher({
                   )}
 
                   {resolvedVariant === "dock" && (
-                    <div className="px-2.5 py-1.5 border-b border-border-divider/70 mb-1.5 flex items-center justify-between">
-                      <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase">
-                        DEFAULT
-                      </span>
-                      <span className="font-mono text-[9px] text-brand font-medium">● ACTIVE</span>
+                    <div className={styles.sectionHeader}>
+                      <span>PRESENTATION MODE</span><span>/ 01</span>
                     </div>
                   )}
-
                   {resolvedVariant === "focus-nav" && (
                     <div className="px-2.5 py-1.5 border-b border-border-divider flex items-center justify-between mb-1">
                       <span className="font-mono text-[10px] text-muted-foreground/70 tracking-wider uppercase">
@@ -522,7 +520,11 @@ export function PresentationModeSwitcher({
                   )}
 
                   {/* --- MODE SELECTION ITEMS (Mode-specific) --- */}
-                  <div className="space-y-1">
+                  <div
+                    className={resolvedVariant === "dock" ? styles.modeList : "space-y-1"}
+                    role={resolvedVariant === "dock" ? "listbox" : undefined}
+                    aria-label={resolvedVariant === "dock" ? "Available Presentation Modes" : undefined}
+                  >
                     {availableModes.map((item, index) => {
                       const isSelected = item.id === mode;
                       const isFocused = index === focusedIndex;
@@ -596,65 +598,40 @@ export function PresentationModeSwitcher({
                         );
                       }
 
-                      // 2. DEFAULT DOCK POPOVER ITEM
+                      // Default-only technical/editorial rows; shared selection stays unchanged.
                       if (resolvedVariant === "dock") {
+                        const ModeIcon = { default: Plus, focus: ScanLine, minimal: Minus, agent: Crosshair }[item.id];
                         return (
                           <button
                             key={item.id}
-                            ref={(el) => {
-                              optionRefs.current[index] = el;
-                            }}
+                            ref={(el) => { optionRefs.current[index] = el; }}
                             type="button"
                             role="option"
                             aria-selected={isSelected}
                             tabIndex={isFocused ? 0 : -1}
                             onClick={() => handleSelectMode(item.id)}
-                            onMouseEnter={() => {
-                              playHover();
-                              setFocusedIndex(index);
-                            }}
-                            className={`w-full text-left p-2.5 rounded-xl flex items-start gap-2.5 transition-colors outline-none cursor-pointer border ${
-                              isSelected
-                                ? "bg-surface-hover/90 border-border text-ink shadow-2xs"
-                                : isFocused
-                                ? "bg-surface-hover/80 border-transparent text-ink"
-                                : "border-transparent text-muted-foreground hover:bg-surface-hover/60 hover:text-ink"
-                            }`}
+                            onFocus={() => setFocusedIndex(index)}
+                            onMouseEnter={() => { playHover(); setFocusedIndex(index); }}
+                            className={styles.modeRow}
+                            data-focused={isFocused}
                           >
-                            <span
-                              className={`text-xs mt-0.5 flex-shrink-0 ${
-                                isSelected
-                                  ? item.id === "focus"
-                                    ? "text-emerald-500 font-bold"
-                                    : item.id === "agent"
-                                    ? "text-indigo-400 dark:text-indigo-300 font-bold"
-                                    : "text-brand font-bold"
-                                  : "text-muted-foreground/40"
-                              }`}
-                              aria-hidden="true"
-                            >
-                              {isSelected ? "●" : "○"}
+                            <span className={styles.modeMarker} data-grid={item.id === "default"} aria-hidden="true">
+                              <ModeIcon size={23} strokeWidth={1.2} />
                             </span>
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
-                                <span className="font-mono text-xs font-semibold uppercase text-ink">
-                                  {item.label}
-                                </span>
-                                {isSelected && (
-                                  <span className="font-mono text-[9px] text-muted-foreground/70 uppercase tracking-widest font-semibold">
-                                    ACTIVE
-                                  </span>
-                                )}
-                              </div>
-                              <p className="font-sans text-[11.5px] text-muted-foreground leading-snug mt-0.5">
-                                {item.description}
-                              </p>
-                            </div>
+                            <span className={styles.modeCopy}>
+                              <span className={styles.modeTitle}>
+                                {isSelected && <span className={styles.activeDot} aria-hidden="true" />}
+                                {item.label}
+                              </span>
+                              <span className={styles.description}>{item.description}</span>
+                            </span>
+                            <span className={styles.action} aria-hidden="true">
+                              <span>{isSelected ? "ACTIVE" : "SELECT"}</span>
+                              {!isSelected && <ArrowRight size={15} strokeWidth={1.2} />}
+                            </span>
                           </button>
                         );
                       }
-
                       // 2. FOCUS POPOVER ITEM (Technical Document / Ledger)
                       if (resolvedVariant === "focus-nav") {
                         return (
@@ -921,143 +898,48 @@ export function PresentationModeSwitcher({
                     </div>
                   )}
 
-                  {/* 2. DEFAULT DOCK VARIANT ANIMATIONS */}
+                  {/* Default-only visual-layer controls. */}
                   {resolvedVariant === "dock" && (
-                    <div className="mt-2 pt-2 border-t border-border-divider/70">
-                      <div className="px-2.5 py-1 mb-1 flex items-center justify-between">
-                        <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase">
-                          ANIMATIONS
-                        </span>
+                    <section className={styles.layers} aria-label="Visual layers">
+                      <div className={styles.sectionHeader}>
+                        <span>VISUAL LAYERS</span><span>/ 02</span>
                       </div>
-                      <div className="space-y-1">
-                        <button
-                          ref={(el) => {
-                            optionRefs.current[availableModes.length] = el;
-                          }}
-                          type="button"
-                          role="switch"
-                          aria-checked={starsEnabled}
-                          tabIndex={focusedIndex === availableModes.length ? 0 : -1}
-                          aria-label="Toggle Stars Background"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            playClick();
-                            toggleStars();
-                          }}
-                          onMouseEnter={() => {
-                            playHover();
-                            setFocusedIndex(availableModes.length);
-                          }}
-                          className={`w-full text-left p-2.5 rounded-xl flex items-center justify-between transition-colors outline-none cursor-pointer border ${
-                            focusedIndex === availableModes.length
-                              ? "bg-surface-hover/80 border-border text-ink"
-                              : "border-transparent hover:bg-surface-hover/60 text-muted-foreground hover:text-ink"
-                          } group`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div
-                              className={`w-6 h-6 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
-                                starsEnabled
-                                  ? "bg-amber-500/10 dark:bg-amber-400/15 border-amber-500/30 text-amber-500 dark:text-amber-400"
-                                  : "bg-surface-hover/60 dark:bg-zinc-800/60 border-border-hairline text-muted-foreground/50"
-                              }`}
-                              aria-hidden="true"
-                            >
-                              <Sparkles className="w-3.5 h-3.5" />
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-mono text-xs font-semibold uppercase text-ink">
-                                Stars Background
-                              </span>
-                              <span className="font-sans text-[11px] text-muted-foreground leading-tight mt-0.5">
-                                Subtle cosmic starfield
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Modern Rounded Toggle Switch */}
-                          <div
-                            className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border p-0.5 transition-colors duration-200 ease-in-out ${
-                              starsEnabled
-                                ? "bg-emerald-500 border-emerald-600 dark:border-emerald-400/40 shadow-xs"
-                                : "bg-zinc-200 dark:bg-zinc-700/90 border-zinc-300 dark:border-zinc-600 shadow-inner"
-                            }`}
-                            aria-hidden="true"
+                      {[
+                        { title: "Stars Background", description: "Subtle cosmic starfield", enabled: starsEnabled, toggle: toggleStars, Icon: Sparkles },
+                        { title: "Flickering Grid", description: "Technical blueprint grid", enabled: gridEnabled, toggle: toggleGrid, Icon: Grid },
+                      ].map(({ title, description, enabled, toggle, Icon }, offset) => {
+                        const index = availableModes.length + offset;
+                        return (
+                          <button
+                            key={title}
+                            ref={(el) => { optionRefs.current[index] = el; }}
+                            type="button"
+                            role="switch"
+                            aria-checked={enabled}
+                            aria-label={`Toggle ${title}`}
+                            tabIndex={focusedIndex === index ? 0 : -1}
+                            onClick={(event) => { event.stopPropagation(); playClick(); toggle(); }}
+                            onFocus={() => setFocusedIndex(index)}
+                            onMouseEnter={() => { playHover(); setFocusedIndex(index); }}
+                            className={styles.layerRow}
+                            data-focused={focusedIndex === index}
                           >
-                            <span
-                              className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
-                                starsEnabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </div>
-                        </button>
-
-                        {/* Flickering Grid Toggle */}
-                        <button
-                          ref={(el) => {
-                            optionRefs.current[availableModes.length + 1] = el;
-                          }}
-                          type="button"
-                          role="switch"
-                          aria-checked={gridEnabled}
-                          tabIndex={focusedIndex === availableModes.length + 1 ? 0 : -1}
-                          aria-label="Toggle Flickering Grid"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            playClick();
-                            toggleGrid();
-                          }}
-                          onMouseEnter={() => {
-                            playHover();
-                            setFocusedIndex(availableModes.length + 1);
-                          }}
-                          className={`w-full text-left p-2.5 rounded-xl flex items-center justify-between transition-colors outline-none cursor-pointer border ${
-                            focusedIndex === availableModes.length + 1
-                              ? "bg-surface-hover/80 border-border text-ink"
-                              : "border-transparent hover:bg-surface-hover/60 text-muted-foreground hover:text-ink"
-                          } group`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div
-                              className={`w-6 h-6 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
-                                gridEnabled
-                                  ? "bg-cyan-500/10 dark:bg-cyan-400/15 border-cyan-500/30 text-cyan-600 dark:text-cyan-400"
-                                  : "bg-surface-hover/60 dark:bg-zinc-800/60 border-border-hairline text-muted-foreground/50"
-                              }`}
-                              aria-hidden="true"
-                            >
-                              <Grid className="w-3.5 h-3.5" />
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-mono text-xs font-semibold uppercase text-ink">
-                                Flickering Grid
-                              </span>
-                              <span className="font-sans text-[11px] text-muted-foreground leading-tight mt-0.5">
-                                Technical blueprint grid
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Modern Rounded Toggle Switch */}
-                          <div
-                            className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border p-0.5 transition-colors duration-200 ease-in-out ${
-                              gridEnabled
-                                ? "bg-emerald-500 border-emerald-600 dark:border-emerald-400/40 shadow-xs"
-                                : "bg-zinc-200 dark:bg-zinc-700/90 border-zinc-300 dark:border-zinc-600 shadow-inner"
-                            }`}
-                            aria-hidden="true"
-                          >
-                            <span
-                              className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
-                                gridEnabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </div>
-                        </button>
+                            <span className={styles.layerMarker} aria-hidden="true"><Icon size={21} strokeWidth={1.2} /></span>
+                            <span className={styles.modeCopy}>
+                              <span className={styles.layerTitle}>{title}</span>
+                              <span className={styles.description}>{description}</span>
+                            </span>
+                            <span className={styles.toggle} data-enabled={enabled} aria-hidden="true"><span /></span>
+                          </button>
+                        );
+                      })}
+                      <div className={styles.footer} aria-hidden="true">
+                        <Crosshair size={12} strokeWidth={1} />
+                        <span>CUSTOMIZE YOUR EXPERIENCE</span>
+                        <span className={styles.footerRule} />
                       </div>
-                    </div>
+                    </section>
                   )}
-
                   {/* 2. FOCUS VARIANT ANIMATIONS */}
                   {resolvedVariant === "focus-nav" && (
                     <div className="mt-2 pt-1.5 border-t border-border-divider">

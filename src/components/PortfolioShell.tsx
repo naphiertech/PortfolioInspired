@@ -8,6 +8,7 @@ import { EditorialDivider } from "@/components/EditorialDivider";
 import { TechnicalGrid } from "@/components/TechnicalGrid";
 import { SITE_NAME } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
+import { MusicEdgeDrawer } from "@/features/music-drawer";
 
 interface PortfolioShellProps {
   children: ReactNode;
@@ -43,6 +44,9 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
           : "max-w-reading px-4 sm:px-6 md:px-8 pt-12 pb-32"
       }`}
     >
+      {/* Keep one player across Default routes; leaving Default unmounts and stops it. */}
+      {mode === "default" && <MusicEdgeDrawer />}
+
       {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal & Agent Home) */}
       <div
         className={`transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${

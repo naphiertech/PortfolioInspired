@@ -9,6 +9,7 @@ import { TechnicalGrid } from "@/components/TechnicalGrid";
 import { SITE_NAME } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
 import { MusicEdgeDrawer } from "@/features/music-drawer";
+import styles from "./ContentSurfaces.module.css";
 
 interface PortfolioShellProps {
   children: ReactNode;
@@ -34,7 +35,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
 
   return (
     <div
-      className={`w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 transition-[max-width,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+      className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 transition-[max-width,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
         isAgentHome
           ? "max-w-3xl px-3 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 min-h-[100dvh] flex flex-col"
           : isMinimal

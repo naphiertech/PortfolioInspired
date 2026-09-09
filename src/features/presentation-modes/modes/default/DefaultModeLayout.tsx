@@ -1,6 +1,5 @@
 import React from "react";
 import { ProfileHeader } from "@/components/ProfileHeader";
-import { AboutSection } from "@/components/AboutSection";
 import { NowSection } from "@/components/NowSection";
 import { RecentProjects } from "@/components/RecentProjects";
 import { TechStack } from "@/components/TechStack";
@@ -28,12 +27,6 @@ export function DefaultModeLayout() {
     <div className="w-full flex flex-col">
       {/* 1. Identity & Hero (Permanent - Never snapped) */}
       <ProfileHeader />
-
-      {/* 2. About Narrative */}
-      <SnapSectionWrapper id="about">
-        <EditorialDivider className="mb-10 sm:mb-12" />
-        <AboutSection />
-      </SnapSectionWrapper>
 
       {/* 3. Live Focus & Development Activity (Merged Currently Building + Latest Activity) */}
       <SnapSectionWrapper id="now">

@@ -1,0 +1,54 @@
+/* Only elements already declaring a foreground surface receive an opaque
+   equivalent of that shade. The content wrapper itself stays transparent. */
+.content [class~="bg-surface/20"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 20%, var(--bg-page));
+}
+.content [class~="bg-surface/30"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 30%, var(--bg-page));
+}
+.content [class~="bg-surface/40"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 40%, var(--bg-page));
+}
+.content [class~="bg-surface/50"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 50%, var(--bg-page));
+}
+.content [class~="bg-surface/60"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 60%, var(--bg-page));
+}
+.content [class~="bg-surface/70"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 70%, var(--bg-page));
+}
+.content [class~="bg-surface/80"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 80%, var(--bg-page));
+}
+.content [class~="bg-surface/90"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 90%, var(--bg-page));
+}
+.content [class~="bg-surface/95"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 95%, var(--bg-page));
+}
+
+/* Preserve the existing hover shades without reintroducing transparency. */
+.content [class~="hover:bg-surface/50"]:hover {
+  background-color: color-mix(in srgb, var(--bg-surface) 50%, var(--bg-page));
+}
+.content :global(.group):hover [class~="group-hover:bg-surface/60"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 60%, var(--bg-page));
+}
+.content :global(.group):hover [class~="group-hover:bg-surface/70"] {
+  background-color: color-mix(in srgb, var(--bg-surface) 70%, var(--bg-page));
+}
+.content [class~="hover:bg-surface"]:hover {
+  background-color: var(--bg-surface);
+}
+.content [class~="hover:bg-surface-hover"]:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+/* These bordered project cards otherwise have a transparent resting fill. */
+.content :global(.cad-project-card) {
+  background-color: var(--bg-page);
+}
+.content :global(.cad-project-card):hover {
+  background-color: var(--bg-surface-hover);
+}

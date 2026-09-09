@@ -169,21 +169,25 @@ export function ProfileHeader() {
         </div>
 
         {/* Profile Information Hierarchy */}
-        <div className="space-y-4 sm:space-y-3 text-center sm:text-left">
+        <div className="space-y-3 text-center sm:text-left">
           {/* Name & Handle & Mobile Availability Badge */}
           <div className="flex flex-col items-center sm:items-start">
             <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight flex items-center justify-center sm:justify-start gap-1.5">
               <span>{SITE_NAME}</span>
               <span className="text-muted-foreground/60 text-lg sm:text-xl select-none" aria-hidden="true">✧</span>
             </h1>
-            <a
-              href={SOCIAL_PROFILES.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-xs sm:text-[13px] text-muted-foreground hover:text-ink transition-colors inline-block mt-0.5"
-            >
-              {AUTHOR_INFO.handle}
-            </a>
+            <div className="mt-0.5 flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-1 text-xs sm:text-[13px]">
+              <a
+                href={SOCIAL_PROFILES.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-muted-foreground hover:text-ink transition-colors"
+              >
+                {AUTHOR_INFO.handle}
+              </a>
+              <span className="text-muted-foreground/50" aria-hidden="true">|</span>
+              <span className="font-sans text-body">{AUTHOR_INFO.jobTitle}</span>
+            </div>
 
             {/* Mobile-Only Availability Status (Positioned directly under identity) */}
             <div className="flex sm:hidden items-center justify-center mt-2.5">
@@ -198,9 +202,9 @@ export function ProfileHeader() {
             </div>
           </div>
 
-          {/* Short Bio */}
-          <p className="font-sans text-xs sm:text-[13px] text-body max-w-md sm:max-w-xl mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
-            Full-stack developer building practical web products with thoughtful interfaces and reliable systems.
+          {/* Introduction condensed from the former standalone About section */}
+          <p className="font-sans text-sm sm:text-[15px] text-body max-w-2xl mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
+            I&apos;m an IT student who enjoys turning ideas into practical web applications—from school systems and productivity tools to personal projects. I care about clean interfaces, thoughtful user experiences, and reliable functionality, with a growing interest in UI/UX, web animation, and AI-assisted development.
           </p>
 
           {/* Profile Details (Location, Live Time, Education) */}

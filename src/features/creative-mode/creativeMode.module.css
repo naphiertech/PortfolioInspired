@@ -1,0 +1,259 @@
+.host {
+  position: fixed;
+  --creative-launcher-right: 140px;
+  right: var(--creative-launcher-right);
+  bottom: 28px;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  max-width: calc(100vw - 24px);
+  pointer-events: none;
+  color: var(--text-body);
+  font-family: "Figtree", sans-serif;
+  font-size: 12px;
+}
+.panel {
+  pointer-events: auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dashed);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 14%);
+}
+.launcher { pointer-events: auto; }
+.confetti { position: absolute; right: 36px; bottom: 18px; pointer-events: none; }
+.confetti span { position: absolute; width: 3px; height: 6px; background: var(--text-body); border-radius: 1px; }
+.confetti span:nth-child(3n) { background: var(--text-muted); width: 4px; height: 4px; }
+.topToggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border-hairline);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-body);
+  font: 10px/1 "JetBrains Mono", ui-monospace, monospace;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.topToggle:hover { background: var(--bg-surface-hover); color: var(--text-ink); }
+.topToggle:focus-visible { outline: 2px solid var(--text-ink); outline-offset: 2px; }
+/* Reveal below the fixed-size switch so neither toolbar reflow nor neighboring
+   control occlusion is needed, including in the mobile cover-image toolbar. */
+.toggleLabel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 1;
+  max-width: 0;
+  overflow: hidden;
+  padding: 7px 10px;
+  border: 1px solid var(--border-dashed);
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-body);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  opacity: 0;
+  transform: translateY(-3px);
+  pointer-events: none;
+  transition: max-width 220ms ease-out, opacity 220ms ease-out, transform 220ms ease-out;
+}
+.topToggle:focus .toggleLabel,
+.topToggle:active .toggleLabel { max-width: 144px; opacity: 1; transform: translateY(0); }
+@media (hover: hover) {
+  .topToggle:hover .toggleLabel { max-width: 144px; opacity: 1; transform: translateY(0); }
+}
+.host button { cursor: pointer; }
+.host button:hover { background: var(--bg-surface-hover); color: var(--text-ink); }
+.host button:focus-visible { outline: 2px solid var(--text-ink); outline-offset: -3px; }
+.switchTrack {
+  display: flex;
+  align-items: center;
+  width: 28px;
+  height: 16px;
+  padding: 2px;
+  border: 1px solid var(--border-dashed);
+  border-radius: 999px;
+  background: var(--bg-muted);
+  transition: background-color 200ms ease-out;
+}
+.switchKnob {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: transform 200ms ease-out, background-color 200ms ease-out;
+}
+.topToggle[aria-checked="true"] .switchTrack { background: var(--text-ink); }
+.topToggle[aria-checked="true"] .switchKnob { transform: translateX(12px); background: var(--bg-page); }
+.panel {
+  width: 296px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 156px - env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px;
+  border-radius: 10px;
+}
+.panelHeader { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border-dashed); }
+.panelHeader h2 { font: 11px/1.4 "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.13em; color: var(--text-ink); }
+.panelHeader p { margin-top: 5px; color: var(--text-muted); }
+.closeButton { display: grid; place-items: center; width: 32px; height: 32px; margin: -6px -6px 0 0; border-radius: 5px; }
+.fields { display: grid; gap: 14px; padding: 16px 0; }
+.fontField { display: grid; gap: 7px; min-width: 0; }
+.fontField > span { font: 9px/1.4 "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.12em; color: var(--text-muted); }
+.fontField select {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 8px;
+  border: 1px solid var(--border-dashed);
+  border-radius: 6px;
+  background: var(--bg-page);
+  color: var(--text-body);
+  font-family: "Figtree", sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+}
+.fontField select:focus-visible { outline: 2px solid var(--text-ink); outline-offset: 2px; }
+.fontField select:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Original and Agent never receive data-creative-font, so their existing font
+   rules remain completely authoritative. Sizes are still owned by Type Scale. */
+.scope[data-creative-font] :where(p, li, dt, dd, blockquote, a, button, input, textarea, :global(.font-sans), :global(.font-serif)):not([data-creative-font-exempt], [data-creative-font-exempt] *) {
+  font-family: var(--creative-font-body);
+}
+.scope[data-creative-font] :where(h1, h2, h3, h4, h5, h6, :global(.font-display)):not([data-creative-font-exempt], [data-creative-font-exempt] *) {
+  font-family: var(--creative-font-heading);
+  font-weight: var(--creative-font-heading-weight);
+  overflow-wrap: anywhere;
+}
+.scope[data-creative-font] :where(:global(.font-mono), :global(.font-caps), code, pre):not([data-creative-font-exempt], [data-creative-font-exempt] *) {
+  font-family: var(--creative-font-mono);
+}
+/* Focus keeps technical section labels mono; Minimal's editorial headings use
+   the selected display face. Major identity headings always use the pairing. */
+.scope[data-creative-font] h1,
+.scope[data-creative-font][data-creative-presentation="minimal"] :where(h2, h3, h4) {
+  font-family: var(--creative-font-heading);
+  font-weight: var(--creative-font-heading-weight);
+}
+.scope[data-creative-font] [data-creative-font-exempt] { font-family: "Figtree", sans-serif; }
+.field { min-width: 0; border: 0; padding: 0; }
+.field legend { margin-bottom: 7px; font: 9px/1.4 "JetBrains Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); }
+.field:disabled { opacity: 0.45; }
+.segments { display: flex; gap: 3px; padding: 3px; background: var(--bg-page); border: 1px solid var(--border-hairline); border-radius: 6px; }
+.segments label { flex: 1; position: relative; min-width: 0; cursor: pointer; }
+.segments input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.segments span { display: grid; place-items: center; min-height: 32px; padding: 4px 2px; font-size: 11px; text-transform: capitalize; border-radius: 4px; }
+.segments input:checked + span { background: var(--text-ink); color: var(--bg-page); }
+.segments input:focus-visible + span { outline: 2px solid var(--text-ink); outline-offset: 2px; }
+.segments input:disabled { cursor: not-allowed; }
+.hint { margin-top: -8px; color: var(--text-muted); font-size: 10px; line-height: 1.5; }
+.panelFooter { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border-dashed); }
+.panelFooter span { font: 8px/1.4 "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.1em; color: var(--text-muted); }
+.panelFooter p { margin-top: 3px; font-size: 10px; color: var(--text-muted); }
+.panelFooter button, .disabledNote button { min-height: 36px; border: 1px solid var(--border-dashed); border-radius: 5px; padding: 6px 10px; }
+.panelFooter button:disabled { opacity: 0.4; cursor: not-allowed; }
+.disabledNote { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
+
+/* Semantic surface radii use each presentation's mapping. Never add backgrounds
+   to editorial sections, or reshape portraits, icons, dots, and circular UI. */
+.scope[data-creative-mode="on"] :where(
+  div[class~="border"][class*="rounded"], article[class*="rounded"],
+  section[class~="border"][class*="rounded"]
+):not(:has(> img)):not([class~="rounded-full"]) { border-radius: var(--creative-radius-card); }
+.scope[data-creative-mode="on"] :where(a[class*="rounded"], button[class*="rounded"], input[class*="rounded"], textarea[class*="rounded"]):not([class~="rounded-full"]):not(:has(> img)) {
+  border-radius: var(--creative-radius-control);
+}
+.scope[data-creative-mode="on"] :global(.cad-project-card) { border-radius: var(--creative-radius-card); }
+.scope[data-creative-mode="on"] :where([role="dialog"], [role="menu"]) { border-radius: var(--creative-radius-panel); }
+
+/* Remove only Minimal's redundant inner cap; the shell owns its reading width. */
+.scope[data-creative-mode="on"][data-creative-presentation="minimal"] [class~="max-w-[640px]"] { max-width: 100%; }
+
+/* Opt in shared utility rhythms, not fixed dimensions or tiny metadata. */
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="gap-3"]) { gap: calc(0.75rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="gap-4"]) { gap: calc(1rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="gap-6"]) { gap: calc(1.5rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="p-4"]) { padding: calc(1rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="p-5"]) { padding: calc(1.25rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="p-6"]) { padding: calc(1.5rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="mb-16"]) { margin-bottom: calc(4rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="space-y-12"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(3rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="space-y-8"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(2rem * var(--creative-spacing)); }
+
+@media (min-width: 640px) {
+  .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:p-5"]) { padding: calc(1.25rem * var(--creative-spacing)); }
+  .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:p-6"]) { padding: calc(1.5rem * var(--creative-spacing)); }
+  .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:space-y-14"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(3.5rem * var(--creative-spacing)); }
+  .scope[data-creative-mode="on"] :where([class~="sm:text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
+}
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="space-y-6"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(1.5rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="my-6"]) { margin-block: calc(1.5rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"][data-creative-presentation="minimal"]:not([data-creative-spacing="balanced"]) :where(section[class~="py-10"]) { padding-block: calc(2.5rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"][data-creative-presentation="minimal"]:not([data-creative-spacing="balanced"]) :where(section[class~="pb-10"]) { padding-bottom: calc(2.5rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"][data-creative-presentation="minimal"]:not([data-creative-spacing="balanced"]) :where([class~="space-y-4"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(1rem * var(--creative-spacing)); }
+.scope[data-creative-mode="on"] :where([class~="text-[14px]"]) { font-size: calc(14px * var(--creative-type-scale)); }
+.scope[data-creative-mode="on"] :where([class~="text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
+.scope[data-creative-mode="on"][data-creative-presentation="focus"] [class~="font-mono"][class~="text-xs"] { font-size: calc(12px * var(--creative-type-scale)); }
+@media (min-width: 640px) {
+  .scope[data-creative-mode="on"] :where([class~="sm:text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
+  .scope[data-creative-mode="on"] :where([class~="sm:text-[16px]"]) { font-size: calc(16px * var(--creative-type-scale)); }
+  .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:my-7"]) { margin-block: calc(1.75rem * var(--creative-spacing)); }
+}
+
+/* Only semantic content sections and decorative hover targets participate.
+   Snap owns ancestor wrappers; presentation roots, spinners, and functional
+   carousels are deliberately not selected. Subtle leaves existing motion intact. */
+.scope[data-creative-mode="on"][data-creative-motion="off"] :where(section:not([role="dialog"]), :global(.animate-status-breathe), :global(.animate-status-ring)) {
+  animation: none !important;
+}
+.scope[data-creative-mode="on"][data-creative-motion="off"] :where(section:not([role="dialog"]), div[class~="border"][class*="rounded"], :global(.cad-project-card)) {
+  transform: none !important;
+  opacity: 1 !important;
+}
+.scope[data-creative-mode="on"][data-creative-motion="off"] :where(
+  :global(.cad-project-card), :global(.tactile-btn),
+  a[class*="transition-transform"], button[class*="active:scale"],
+  img[class*="group-hover:scale"], svg[class*="group-hover:translate"]
+) {
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+  transition-duration: 0.01s !important;
+}
+.scope[data-creative-mode="on"][data-creative-motion="expressive"] :where(section:not([role="dialog"])) {
+  animation: creativeReveal var(--creative-motion-duration) ease-out both;
+}
+@media (hover: hover) and (pointer: fine) {
+  .scope[data-creative-mode="on"][data-creative-motion="expressive"] :where(a, button):not([role="switch"]):not([aria-haspopup]):not([aria-controls]):not([class~="rounded-full"]) {
+    transition: translate var(--creative-motion-duration) ease-out, scale var(--creative-motion-duration) ease-out, background-color 180ms, color 180ms;
+  }
+  .scope[data-creative-mode="on"][data-creative-motion="expressive"] :where(a, button):not([role="switch"]):not([aria-haspopup]):not([aria-controls]):not([class~="rounded-full"]):hover {
+    translate: 0 calc(var(--creative-motion-distance) * -0.5);
+    scale: var(--creative-motion-scale);
+  }
+}
+@keyframes creativeReveal {
+  from { translate: 0 var(--creative-motion-distance); }
+  to { translate: 0 0; }
+}
+
+@media (max-width: 639px) {
+  .host { --creative-launcher-right: 116px; bottom: 74px; }
+  .panel { padding: 14px; margin-right: calc(14px - var(--creative-launcher-right)); }
+  .segments span { min-height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .switchTrack, .switchKnob, .toggleLabel { transition: none; }
+  .confetti { display: none; }
+  .scope[data-creative-mode="on"] :where(:global(.animate-status-breathe), :global(.animate-status-ring)) { animation: none; }
+  .scope[data-creative-mode="on"] :where(:global(.cad-project-card)) { translate: none; transition: none; }
+  .scope[data-creative-mode="on"] :where(section, a, button) { animation: none !important; translate: none !important; scale: none !important; }
+}

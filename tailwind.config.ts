@@ -10,6 +10,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // Inherited only inside the Creative Default content scope; 1 is unchanged.
+      fontSize: {
+        sm: ["calc(0.875rem * var(--creative-type-scale, 1))", "calc(1.25rem * var(--creative-type-scale, 1))"],
+        base: ["calc(1rem * var(--creative-type-scale, 1))", "calc(1.5rem * var(--creative-type-scale, 1))"],
+        lg: ["calc(1.125rem * var(--creative-type-scale, 1))", "calc(1.75rem * var(--creative-type-scale, 1))"],
+        xl: ["calc(1.25rem * var(--creative-type-scale, 1))", "calc(1.75rem * var(--creative-type-scale, 1))"],
+        "2xl": ["calc(1.5rem * var(--creative-type-scale, 1))", "calc(2rem * var(--creative-type-scale, 1))"],
+        "3xl": ["calc(1.875rem * var(--creative-type-scale, 1))", "calc(2.25rem * var(--creative-type-scale, 1))"],
+        "4xl": ["calc(2.25rem * var(--creative-type-scale, 1))", "calc(2.5rem * var(--creative-type-scale, 1))"],
+      },
       colors: {
         page: "var(--bg-page)",
         surface: {

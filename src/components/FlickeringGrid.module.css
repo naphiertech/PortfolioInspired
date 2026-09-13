@@ -24,6 +24,16 @@
 
 .surface[data-enabled="false"] { opacity: 0; }
 
+/* Temporary presentation only; the saved grid toggle remains authoritative. */
+.surface[data-creative-grid="hidden"] { visibility: hidden; }
+.surface[data-creative-grid="fine"] { --minor: 0.02; --major: 0.035; }
+.surface[data-creative-grid="fine"] :is(.guides, .drafting, .note, .atmosphere) { visibility: hidden; }
+.surface[data-creative-grid="hidden"] :is(.signal, .trace),
+.surface[data-creative-motion="off"] :is(.signal, .trace) { animation: none; }
+.surface[data-creative-motion="off"] .trace { display: none; }
+.surface[data-creative-motion="expressive"] .signal { animation-duration: 14s; }
+.surface[data-creative-motion="expressive"] .trace { animation-duration: 21s; }
+
 .atmosphere,
 .lattice,
 .guides,

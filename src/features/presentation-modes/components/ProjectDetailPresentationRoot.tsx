@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { FullProjectItem } from "@/lib/data";
 import { ProjectDetailClient } from "@/app/projects/[slug]/ProjectDetailClient";
@@ -23,14 +24,15 @@ export function ProjectDetailPresentationRoot({
   prevProject,
   nextProject,
 }: ProjectDetailPresentationRootProps) {
+  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
 
   React.useEffect(() => {
     if (mode === "minimal" && typeof window !== "undefined") {
-      window.location.href = "/";
+      router.replace("/");
     }
-  }, [mode]);
+  }, [mode, router]);
 
   return (
     <div

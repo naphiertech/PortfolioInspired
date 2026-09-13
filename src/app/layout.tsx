@@ -15,6 +15,7 @@ import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
 import { Analytics } from "@vercel/analytics/next";
 import { PortfolioShell } from "@/components/PortfolioShell";
+import { CreativeModeProvider } from "@/features/creative-mode";
 import {
   SITE_URL,
   SITE_DEFAULT_TITLE,
@@ -159,6 +160,8 @@ export default async function RootLayout({
               >
                 <PWARegister />
 
+                <CreativeModeProvider>
+
                 {/* 1. Global Flickering Blueprint Grid Layer (Behind stars and content) */}
                 <FlickeringGrid />
 
@@ -167,6 +170,9 @@ export default async function RootLayout({
 
                 {/* 3. Mode-Aware Centered Page Shell Container */}
                 <PortfolioShell>{children}</PortfolioShell>
+                {/* Chat shares Creative visibility in Minimal; its state stays persistent. */}
+                <ChatWidget />
+                </CreativeModeProvider>
 
                 {/* High-Performance Canvas for Snap Dust Disintegration */}
                 <DustCanvas />
@@ -177,8 +183,6 @@ export default async function RootLayout({
                 {/* Persistent Floating Navigation Dock */}
                 <NavigationDock />
 
-                {/* Global AI Chat Assistant */}
-                <ChatWidget />
 
                 {/* Vercel Web Analytics */}
                 <Analytics />

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { PresentationModeSwitcher } from "../../../components/PresentationModeSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CreativeModeToggle } from "@/features/creative-mode";
 import { useUISound } from "@/context/SoundContext";
 
 interface FocusNavItem {
@@ -69,6 +70,7 @@ export function FocusNavigation() {
 
   return (
     <nav
+      data-creative-font-exempt
       aria-label="Focus mode navigation"
       className="w-full relative pb-3.5 mb-5 sm:mb-8 border-b border-border-divider select-none z-[70]"
     >
@@ -116,6 +118,7 @@ export function FocusNavigation() {
         {/* --- UTILITIES: Mode Switcher, Theme Toggle, and Mobile Menu --- */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
           <PresentationModeSwitcher variant="focus-nav" />
+          <CreativeModeToggle />
           <ThemeToggle />
 
           {/* Mobile Menu Trigger Button (< sm) */}

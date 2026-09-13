@@ -3,6 +3,7 @@
 import React from "react";
 import { PresentationModeSwitcher } from "../../../components/PresentationModeSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CreativeModeToggle } from "@/features/creative-mode";
 
 /**
  * MinimalHeader
@@ -12,7 +13,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
  */
 export function MinimalHeader() {
   return (
-    <header className="w-full relative flex items-center justify-between pt-2 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08] select-none z-[70]">
+    <header data-creative-font-exempt className="w-full relative flex items-center justify-between pt-2 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08] select-none z-[70]">
       {/* Quiet Identity Label */}
       <span className="font-mono text-xs text-zinc-500 dark:text-[#827d73] tracking-wide">
         naphiernode
@@ -21,6 +22,7 @@ export function MinimalHeader() {
       {/* Global Utilities */}
       <div className="flex items-center gap-2.5">
         <PresentationModeSwitcher variant="minimal" />
+        <CreativeModeToggle />
         <ThemeToggle />
       </div>
     </header>

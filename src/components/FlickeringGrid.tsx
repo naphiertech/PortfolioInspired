@@ -4,11 +4,13 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { useTheme } from "@/components/ThemeProvider";
 import styles from "./FlickeringGrid.module.css";
+import { useCreativeMode } from "@/features/creative-mode";
 
 /** One document-anchored drafting surface; independent of stars and content layout. */
 export function FlickeringGrid() {
   const { gridEnabled } = usePresentationMode();
   const { resolvedTheme } = useTheme();
+  const { active: creativeActive, state: creative, effectiveMotion } = useCreativeMode();
   const patternId = useId();
   const surfaceRef = useRef<HTMLDivElement>(null);
   const [isPresent, setIsPresent] = useState(gridEnabled);
@@ -56,6 +58,8 @@ export function FlickeringGrid() {
       className={styles.surface}
       data-theme={resolvedTheme}
       data-enabled={gridEnabled}
+      data-creative-grid={creativeActive ? creative.gridStyle : undefined}
+      data-creative-motion={creativeActive ? effectiveMotion : undefined}
       aria-hidden="true"
     >
       <div className={styles.atmosphere} />

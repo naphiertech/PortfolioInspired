@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { TechStackClient } from "@/app/tech-stack/TechStackClient";
 import { FocusTechStackPage } from "../modes/focus/pages/FocusTechStackPage";
@@ -12,14 +13,15 @@ import { FocusTechStackPage } from "../modes/focus/pages/FocusTechStackPage";
  * Dispatches between Default categorized matrix and Focus tooling catalog.
  */
 export function TechStackPresentationRoot() {
+  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
 
   React.useEffect(() => {
     if (mode === "minimal" && typeof window !== "undefined") {
-      window.location.href = "/";
+      router.replace("/");
     }
-  }, [mode]);
+  }, [mode, router]);
 
   return (
     <div

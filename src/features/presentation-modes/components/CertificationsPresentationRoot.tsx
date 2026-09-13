@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { CertificationsClient } from "@/app/certifications/CertificationsClient";
 import { FocusCertificationsPage } from "../modes/focus/pages/FocusCertificationsPage";
@@ -12,14 +13,15 @@ import { FocusCertificationsPage } from "../modes/focus/pages/FocusCertification
  * Dispatches between Default verified certifications and Focus credential dossier.
  */
 export function CertificationsPresentationRoot() {
+  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
 
   React.useEffect(() => {
     if (mode === "minimal" && typeof window !== "undefined") {
-      window.location.href = "/";
+      router.replace("/");
     }
-  }, [mode]);
+  }, [mode, router]);
 
   return (
     <div

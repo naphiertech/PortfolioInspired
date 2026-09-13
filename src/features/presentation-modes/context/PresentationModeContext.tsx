@@ -10,7 +10,7 @@ import React, {
   useRef,
   ReactNode,
 } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSnap } from "@/context/SnapContext";
 import { PresentationMode } from "../types/presentation";
 import {
@@ -67,6 +67,7 @@ export function PresentationModeProvider({
   const { isSnapped, isSnapping, isRestoring, resetSnapState } = useSnap();
 
   const pathname = usePathname();
+  const router = useRouter();
   const prevPathnameRef = useRef(pathname);
 
   // When navigating between different routes, clear previousMode so deep pages don't re-trigger mode switch animations
@@ -108,7 +109,7 @@ export function PresentationModeProvider({
         // 2. Clean URL Synchronization & One-Page Minimal Redirect
         if (typeof window !== "undefined") {
           if (newMode === "minimal" && window.location.pathname !== "/") {
-            window.location.href = "/";
+            router.replace("/");
             return;
           }
 
@@ -126,7 +127,7 @@ export function PresentationModeProvider({
         // Ignore storage errors in restricted contexts
       }
     },
-    [mode, resetSnapState]
+    [mode, resetSnapState, router]
   );
 
   // Client-side localStorage synchronization for animation settings

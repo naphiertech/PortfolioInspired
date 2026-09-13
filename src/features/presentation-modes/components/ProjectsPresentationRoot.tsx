@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { ProjectsPageClient } from "@/app/projects/ProjectsPageClient";
 import { FocusProjectsPage } from "../modes/focus/pages/FocusProjectsPage";
@@ -12,14 +13,15 @@ import { FocusProjectsPage } from "../modes/focus/pages/FocusProjectsPage";
  * Dispatches between Default CAD project gallery and Focus engineering index.
  */
 export function ProjectsPresentationRoot() {
+  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
 
   React.useEffect(() => {
     if (mode === "minimal" && typeof window !== "undefined") {
-      window.location.href = "/";
+      router.replace("/");
     }
-  }, [mode]);
+  }, [mode, router]);
 
   return (
     <div

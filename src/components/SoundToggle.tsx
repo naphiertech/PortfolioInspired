@@ -14,7 +14,7 @@ export function SoundToggle() {
 
   if (!mounted) {
     return (
-      <div className="h-6 w-14 rounded-[5px] bg-surface/60 border border-border-hairline animate-pulse" />
+      <div className="h-6 w-7 rounded-[5px] bg-surface/60 border border-border-hairline animate-pulse" />
     );
   }
 
@@ -27,7 +27,7 @@ export function SoundToggle() {
     <button
       type="button"
       onClick={handleClick}
-      className={`h-6 px-2 rounded-[6px] bg-surface border border-border-hairline shadow-xs font-mono text-[10px] inline-flex items-center gap-1.5 transition-colors cursor-pointer select-none ${
+      className={`h-6 w-7 justify-center rounded-[6px] bg-surface border border-border-hairline shadow-xs inline-flex items-center transition-colors cursor-pointer select-none ${
         isSoundEnabled
           ? "text-muted-foreground hover:text-ink hover:border-muted-foreground/40"
           : "text-muted-foreground/50 hover:text-muted-foreground bg-surface/50"
@@ -36,15 +36,9 @@ export function SoundToggle() {
       title={isSoundEnabled ? "UI sounds enabled (click to mute)" : "UI sounds muted (click to enable)"}
     >
       {isSoundEnabled ? (
-        <>
-          <Volume2 className="w-3 h-3 text-brand opacity-80" />
-          <span className="hidden sm:inline">Sound</span>
-        </>
+        <Volume2 className="w-3 h-3 text-brand opacity-80" />
       ) : (
-        <>
-          <VolumeX className="w-3 h-3 opacity-60" />
-          <span className="hidden sm:inline">Muted</span>
-        </>
+        <VolumeX className="w-3 h-3 opacity-60" />
       )}
     </button>
   );

@@ -10,6 +10,10 @@ import { SITE_NAME } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
 import { MusicEdgeDrawer } from "@/features/music-drawer";
 import styles from "./ContentSurfaces.module.css";
+import { CreativeModeHost, useCreativeMode } from "@/features/creative-mode";
+import { CREATIVE_MAPPINGS, supportsCreativeMode } from "@/features/creative-mode/lib/creativeModeConfig";
+import creativeStyles from "@/features/creative-mode/creativeMode.module.css";
+import { creativeFontVariables, CREATIVE_FONT_PAIRINGS } from "@/features/creative-mode/lib/creativeFonts";
 
 interface PortfolioShellProps {
   children: ReactNode;
@@ -32,9 +36,15 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const isMinimal = mode === "minimal";
   const isAgent = mode === "agent";
   const isAgentHome = isAgent && pathname === "/";
+  const { state: creative, active: creativeActive, effectiveMotion } = useCreativeMode();
+  const mapping = supportsCreativeMode(mode) ? CREATIVE_MAPPINGS[mode] : null;
+  const radii = mapping?.radii[creative.corners];
+  const motion = mapping?.motion[effectiveMotion];
+  const fontPairing = creativeActive && creative.fontPairing !== "original" ? CREATIVE_FONT_PAIRINGS[creative.fontPairing] : null;
 
   return (
     <div
+      style={creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : undefined}
       className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 transition-[max-width,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
         isAgentHome
           ? "max-w-3xl px-3 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 min-h-[100dvh] flex flex-col"
@@ -47,6 +57,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
     >
       {/* Keep one player across Default routes; leaving Default unmounts and stops it. */}
       {mode === "default" && <MusicEdgeDrawer />}
+      <CreativeModeHost />
 
       {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal & Agent Home) */}
       <div
@@ -58,7 +69,31 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         <TechnicalGrid />
       </div>
 
-      <main className={`w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}>
+      <main
+        className={`${creativeFontVariables} ${creativeStyles.scope} w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}
+        data-creative-mode={creativeActive ? "on" : undefined}
+        data-creative-presentation={creativeActive ? mode : undefined}
+        data-creative-font={fontPairing ? creative.fontPairing : undefined}
+        data-creative-corners={creativeActive ? creative.corners : undefined}
+        data-creative-spacing={creativeActive ? creative.spacing : undefined}
+        data-creative-motion={creativeActive ? effectiveMotion : undefined}
+        style={creativeActive && mapping && radii && motion ? {
+          "--creative-type-scale": mapping.type[creative.typeScale],
+          "--creative-spacing": mapping.spacing[creative.spacing],
+          "--creative-radius-card": `${radii.card}px`,
+          "--creative-radius-control": `${radii.control}px`,
+          "--creative-radius-panel": `${radii.panel}px`,
+          "--creative-motion-duration": `${motion.duration}s`,
+          "--creative-motion-distance": `${motion.distance}px`,
+          "--creative-motion-scale": motion.scale,
+          ...(fontPairing ? {
+            "--creative-font-heading": fontPairing.heading,
+            "--creative-font-body": fontPairing.body,
+            "--creative-font-mono": fontPairing.mono,
+            "--creative-font-heading-weight": fontPairing.weight,
+          } : {}),
+        } as React.CSSProperties : undefined}
+      >
         <SnapRouteGuard>{children}</SnapRouteGuard>
       </main>
 

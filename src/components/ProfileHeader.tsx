@@ -5,6 +5,7 @@ import NextImage from "next/image";
 import { useTheme } from "./ThemeProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
+import { CreativeModeToggle } from "@/features/creative-mode";
 import { GithubContributions } from "./GithubContributions";
 import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
@@ -110,8 +111,9 @@ export function ProfileHeader() {
         <div className="absolute inset-0 bg-gradient-to-t from-page/80 via-transparent to-transparent z-10 pointer-events-none" />
 
         {/* Mobile-Only Floating Theme & Sound Controls (Top Right of Cover) */}
-        <div className="absolute top-2.5 right-2.5 z-20 flex sm:hidden items-center gap-1.5 p-1 rounded-xl bg-page/70 backdrop-blur-md border border-border-hairline shadow-xs">
+        <div data-creative-font-exempt className="absolute top-2.5 right-2.5 z-20 flex sm:hidden items-center gap-1.5 p-1 rounded-xl bg-page/70 backdrop-blur-md border border-border-hairline shadow-xs">
           <SoundToggle />
+          <CreativeModeToggle />
           <ThemeToggle />
         </div>
       </div>
@@ -149,7 +151,7 @@ export function ProfileHeader() {
           </div>
 
           {/* Desktop-Only Upper-Right Utility & Status Area */}
-          <div className="hidden sm:flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end pb-0.5">
+          <div data-creative-font-exempt className="hidden sm:flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end pb-0.5">
             {/* Live Availability Status Indicator */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
               <span className="relative flex h-1.5 w-1.5">
@@ -162,6 +164,7 @@ export function ProfileHeader() {
 
             {/* Sound Selector Toggle */}
             <SoundToggle />
+            <CreativeModeToggle />
 
             {/* Theme Selector Toggle */}
             <ThemeToggle />

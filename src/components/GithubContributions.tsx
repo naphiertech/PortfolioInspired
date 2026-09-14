@@ -133,8 +133,12 @@ export function GithubContributions() {
     target: HTMLElement;
   } | null>(null);
 
+  const tooltipTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     setMounted(true);
+    return () => {
+      if (tooltipTimerRef.current !== null) clearTimeout(tooltipTimerRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -256,12 +260,18 @@ export function GithubContributions() {
                     style={levelStyle}
                     title={day.tooltip}
                     onMouseEnter={(e) => {
-                      setHoveredCell({
-                        text: day.tooltip,
-                        target: e.currentTarget,
-                      });
+                      if (tooltipTimerRef.current !== null) clearTimeout(tooltipTimerRef.current);
+                      const target = e.currentTarget;
+                      tooltipTimerRef.current = setTimeout(() => {
+                        tooltipTimerRef.current = null;
+                        if (target.isConnected) setHoveredCell({ text: day.tooltip, target });
+                      }, 80);
                     }}
-                    onMouseLeave={() => setHoveredCell(null)}
+                    onMouseLeave={() => {
+                      if (tooltipTimerRef.current !== null) clearTimeout(tooltipTimerRef.current);
+                      tooltipTimerRef.current = null;
+                      setHoveredCell(null);
+                    }}
                   />
                 );
               }),

@@ -47,8 +47,8 @@ export function CreativeModePanel({ id, onClose }: { id: string; onClose: () => 
       inert={!isPresent}
       initial={{ opacity: 0, y: reducedMotion ? 0 : 14, scale: reducedMotion ? 1 : 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: reducedMotion ? 0 : 10, scale: reducedMotion ? 1 : 0.98 }}
-      transition={{ duration: reducedMotion ? 0.05 : 0.26, ease: "easeOut" }}
+      exit={{ opacity: 0, y: reducedMotion ? 0 : 5, scale: reducedMotion ? 1 : 0.99, transition: { duration: reducedMotion ? 0.05 : 0.15, ease: [0.22, 1, 0.36, 1] } }}
+      transition={{ duration: reducedMotion ? 0.05 : 0.25, ease: [0.22, 1, 0.36, 1] }}
       style={{ transformOrigin: "bottom right", pointerEvents: isPresent ? "auto" : "none" }}
       className={styles.panel}
     >

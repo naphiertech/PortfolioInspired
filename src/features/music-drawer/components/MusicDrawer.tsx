@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { X, Activity } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Track } from "../types/music";
 import { MusicDisc } from "./MusicDisc";
 import { MusicPlayerControls } from "./MusicPlayerControls";
@@ -58,6 +58,7 @@ export function MusicDrawer({
   onSelectTrack,
 }: MusicDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   // Close on Escape key press
   useEffect(() => {
@@ -123,10 +124,10 @@ export function MusicDrawer({
           id="music-drawer-panel"
           role="region"
           aria-label="Music Player Drawer"
-          initial={{ x: -28, opacity: 0, scale: 0.98 }}
+          initial={{ x: reducedMotion ? 0 : -28, opacity: 0, scale: reducedMotion ? 1 : 0.98 }}
           animate={{ x: 0, opacity: 1, scale: 1 }}
-          exit={{ x: -24, opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          exit={{ x: reducedMotion ? 0 : -24, opacity: 0, scale: reducedMotion ? 1 : 0.98 }}
+          transition={{ duration: reducedMotion ? 0.05 : 0.25, ease: [0.16, 1, 0.3, 1] }}
           className="fixed top-4 bottom-20 sm:top-6 sm:bottom-6 left-2 sm:left-[64px] w-[310px] max-w-[calc(100vw-16px)] z-50 bg-[#fafaf8] dark:bg-[#141619] border border-zinc-200/90 dark:border-[#262930] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.02)] dark:shadow-[0_24px_50px_-10px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.04)] rounded-2xl sm:rounded-[22px] flex flex-col p-4 sm:p-5 overflow-hidden backdrop-blur-md select-none text-zinc-900 dark:text-[#eceeed]"
         >
           {/* Header Row: <MUSIC/> + favorites & Close Button */}

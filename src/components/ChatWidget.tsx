@@ -275,12 +275,12 @@ function ChatWidgetContent() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: shouldReduceMotion ? 0 : 8 }}
+            initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.96, y: shouldReduceMotion ? 0 : 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: shouldReduceMotion ? 0 : 6 }}
+            exit={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.96, y: shouldReduceMotion ? 0 : 6, transition: { duration: shouldReduceMotion ? 0.08 : 0.15, ease: [0.22, 1, 0.36, 1] } }}
             transition={{
-              duration: shouldReduceMotion ? 0.08 : 0.22,
-              ease: [0.23, 1, 0.32, 1] as const,
+              duration: shouldReduceMotion ? 0.08 : 0.25,
+              ease: [0.22, 1, 0.36, 1] as const,
             }}
             style={{ transformOrigin: "bottom right" }}
             className={`fixed right-3 left-3 sm:left-auto sm:right-8 sm:w-[390px] h-[calc(100dvh-130px)] max-h-[520px] rounded-xl bg-page border border-border-hairline shadow-2xl z-50 flex flex-col overflow-hidden will-change-[transform,opacity] ${

@@ -432,22 +432,19 @@ export function PresentationModeSwitcher({
                   aria-label="Available Presentation Modes"
                   initial={{
                     opacity: 0,
-                    scale: shouldReduceMotion ? 1 : 0.98,
+                    scale: shouldReduceMotion ? 1 : 0.97,
                     y: shouldReduceMotion ? 0 : -4,
                   }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{
                     opacity: 0,
-                    scale: shouldReduceMotion ? 1 : 0.98,
+                    scale: shouldReduceMotion ? 1 : 0.99,
                     y: shouldReduceMotion ? 0 : -4,
+                    transition: { duration: shouldReduceMotion ? 0.05 : 0.15, ease: [0.22, 1, 0.36, 1] },
                   }}
                   transition={{
-                    duration: shouldReduceMotion
-                      ? 0.05
-                      : resolvedVariant === "agent"
-                      ? 0.26
-                      : 0.18,
-                    ease: [0.16, 1, 0.3, 1] as const,
+                    duration: shouldReduceMotion ? 0.05 : 0.25,
+                    ease: [0.22, 1, 0.36, 1] as const,
                   }}
                   style={{
                     position: "fixed",

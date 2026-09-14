@@ -61,13 +61,16 @@
   opacity: 0;
   transform: translateY(-3px);
   pointer-events: none;
-  transition: max-width 220ms ease-out, opacity 220ms ease-out, transform 220ms ease-out;
+  transition: max-width 150ms ease-out, opacity 150ms ease-out, transform 150ms ease-out;
+  transition-delay: 0ms;
 }
 .topToggle:focus .toggleLabel,
 .topToggle:active .toggleLabel { max-width: 144px; opacity: 1; transform: translateY(0); }
 @media (hover: hover) {
-  .topToggle:hover .toggleLabel { max-width: 144px; opacity: 1; transform: translateY(0); }
+  .topToggle:hover .toggleLabel { max-width: 144px; opacity: 1; transform: translateY(0); transition-delay: 80ms; }
 }
+.topToggle:focus .toggleLabel,
+.topToggle:active .toggleLabel { transition-delay: 0ms; }
 .host button { cursor: pointer; }
 .host button:hover { background: var(--bg-surface-hover); color: var(--text-ink); }
 .host button:focus-visible { outline: 2px solid var(--text-ink); outline-offset: -3px; }
@@ -233,11 +236,15 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .scope[data-creative-mode="on"][data-creative-motion="expressive"] :where(a, button):not([role="switch"]):not([aria-haspopup]):not([aria-controls]):not([class~="rounded-full"]) {
-    transition: translate var(--creative-motion-duration) ease-out, scale var(--creative-motion-duration) ease-out, background-color 180ms, color 180ms;
+    transition: translate min(var(--creative-motion-duration), 250ms) cubic-bezier(0.22, 1, 0.36, 1), scale min(var(--creative-motion-duration), 250ms) cubic-bezier(0.22, 1, 0.36, 1), transform 120ms cubic-bezier(0.22, 1, 0.36, 1), background-color 180ms, color 180ms;
   }
-  .scope[data-creative-mode="on"][data-creative-motion="expressive"] :where(a, button):not([role="switch"]):not([aria-haspopup]):not([aria-controls]):not([class~="rounded-full"]):hover {
+  .scope[data-creative-mode="on"][data-creative-motion="expressive"] :where(a, button):not([role="switch"]):not([aria-haspopup]):not([aria-controls]):not([class~="rounded-full"]):hover:not(:active) {
     translate: 0 calc(var(--creative-motion-distance) * -0.5);
     scale: var(--creative-motion-scale);
+  }
+  /* Creative owns the hover lift; the existing tactile transform still owns press. */
+  .scope[data-creative-mode="on"][data-creative-motion="expressive"] :global(.tactile-btn):not([role="switch"]):not([aria-haspopup]):not([aria-controls]):not([class~="rounded-full"]):hover:not(:active) {
+    transform: none;
   }
 }
 @keyframes creativeReveal {

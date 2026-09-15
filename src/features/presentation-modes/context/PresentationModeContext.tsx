@@ -15,6 +15,7 @@ import { useSnap } from "@/context/SnapContext";
 import { PresentationMode } from "../types/presentation";
 import {
   DEFAULT_PRESENTATION_MODE,
+  normalizePresentationMode,
   PRESENTATION_COOKIE_NAME,
   PRESENTATION_COOKIE_MAX_AGE,
   PRESENTATION_QUERY_PARAM,
@@ -60,7 +61,8 @@ export function PresentationModeProvider({
   initialStarsEnabled = false,
   initialGridEnabled = false,
 }: PresentationModeProviderProps) {
-  const [mode, setModeState] = useState<PresentationMode>(initialMode);
+  const [storedMode, setModeState] = useState<PresentationMode>(initialMode);
+  const mode = normalizePresentationMode(storedMode);
   const [starsEnabled, setStarsEnabledState] = useState<boolean>(initialStarsEnabled);
   const [gridEnabled, setGridEnabledState] = useState<boolean>(initialGridEnabled);
   const [previousMode, setPreviousMode] = useState<PresentationMode | null>(null);
@@ -69,6 +71,14 @@ export function PresentationModeProvider({
   const pathname = usePathname();
   const router = useRouter();
   const prevPathnameRef = useRef(pathname);
+
+  // Normalize stale client state before consumers render; then repair its cookie.
+  useEffect(() => {
+    if (storedMode === mode) return;
+    setModeState(mode);
+    document.cookie = `${PRESENTATION_COOKIE_NAME}=${mode}; path=/; max-age=${PRESENTATION_COOKIE_MAX_AGE}; SameSite=Lax`;
+    router.replace("/");
+  }, [storedMode, mode, router]);
 
   // When navigating between different routes, clear previousMode so deep pages don't re-trigger mode switch animations
   useEffect(() => {
@@ -93,9 +103,11 @@ export function PresentationModeProvider({
   }, []);
 
   const setMode = useCallback(
-    (newMode: PresentationMode) => {
+    (requestedMode: PresentationMode) => {
+      const newMode = normalizePresentationMode(requestedMode);
       setPreviousMode(mode);
       setModeState(newMode);
+      if (requestedMode !== newMode) router.replace("/");
 
       // If entering Focus or Minimal mode, immediately clear and reset any active Default snap state
       if (newMode === "focus" || newMode === "minimal") {

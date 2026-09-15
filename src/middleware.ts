@@ -5,6 +5,7 @@ import {
   PRESENTATION_COOKIE_MAX_AGE,
   PRESENTATION_QUERY_PARAM,
   isValidPresentationMode,
+  AGENT_FOLIO_ENABLED,
 } from "@/features/presentation-modes/types/config";
 import { getRandomPresentationMode } from "@/features/presentation-modes/lib/resolveMode";
 import type { PresentationMode } from "@/features/presentation-modes/types/presentation";
@@ -24,6 +25,21 @@ export function middleware(request: NextRequest) {
   const cookieMode = request.cookies.get(PRESENTATION_COOKIE_NAME)?.value;
 
   const isRoot = request.nextUrl.pathname === "/";
+
+  // Reject locked Agent entry points before a page or layout can render.
+  // Honor an explicit supported query over a stale Agent cookie.
+  const agentPath = /^\/(?:agent|agent-folio)(?:\/|$)/.test(request.nextUrl.pathname);
+  const agentRequested = queryMode === "agent" ||
+    (!(queryMode && isValidPresentationMode(queryMode)) && cookieMode === "agent");
+  if (!AGENT_FOLIO_ENABLED && (agentPath || agentRequested)) {
+    const response = NextResponse.redirect(new URL("/", request.url));
+    response.cookies.set(PRESENTATION_COOKIE_NAME, "default", {
+      path: "/",
+      maxAge: PRESENTATION_COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+    return response;
+  }
 
   // Priority 1: Explicit valid URL query parameter
   const hasValidQueryMode = Boolean(queryMode && isValidPresentationMode(queryMode));

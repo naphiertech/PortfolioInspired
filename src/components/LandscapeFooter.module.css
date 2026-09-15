@@ -13,6 +13,7 @@
   line-height: 1.6;
 }
 .build { display: flex; flex-wrap: wrap; gap: 5px; }
+.modeLabel { flex-basis: 100%; }
 .build time { color: var(--text-body); }
 .scene {
   position: relative;
@@ -31,9 +32,14 @@
   height: auto;
 }
 @media (min-width: 640px) and (max-width: 1023px) {
-  .scene { height: clamp(180px, 24vw, 240px); }
+  .scene { height: clamp(200px, 26vw, 260px); }
 }
 @media (max-width: 639px) {
   .metadata { flex-direction: column; gap: 6px; padding-bottom: 6px; }
-  .scene { height: clamp(150px, 36vw, 210px); }
+  .scene { height: clamp(220px, 60vw, 280px); }
+}
+@media (max-width: 1023px) {
+  .landscape { height: 100%; object-fit: cover; object-position: 20% bottom; }
+  .footer[data-footer-mode="focus"] .landscape { object-position: right bottom; }
+  .footer[data-footer-mode="minimal"] .landscape { object-position: 80% bottom; }
 }

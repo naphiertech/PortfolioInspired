@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
+import { SOCIAL_PROFILES } from "@/lib/siteConfig";
 
 /**
  * MinimalConnect
@@ -83,11 +83,6 @@ export function MinimalConnect() {
         </a>
       </div>
 
-      {/* Quiet Minimal Ending */}
-      <footer className="pt-8 border-t border-zinc-200/80 dark:border-white/[0.08] flex items-center justify-between font-mono text-[11px] text-zinc-500 dark:text-[#827d73] select-none">
-        <span>&copy; {new Date().getFullYear()} {AUTHOR_INFO.name}</span>
-        <span>Minimal presentation</span>
-      </footer>
     </section>
   );
 }

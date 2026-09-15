@@ -1,6 +1,11 @@
 import { PresentationMode, PresentationModeConfig } from "./presentation";
 
 export const DEFAULT_PRESENTATION_MODE: PresentationMode = "default";
+export const AGENT_FOLIO_ENABLED = false;
+
+export function normalizePresentationMode(mode: PresentationMode): PresentationMode {
+  return mode === "agent" && !AGENT_FOLIO_ENABLED ? DEFAULT_PRESENTATION_MODE : mode;
+}
 
 export const PRESENTATION_COOKIE_NAME = "naphier_presentation_mode";
 export const PRESENTATION_QUERY_PARAM = "mode";
@@ -43,7 +48,7 @@ export const PRESENTATION_MODES: Record<PresentationMode, PresentationModeConfig
     shortLabel: "Agent",
     tagline: "Conversational portfolio workspace",
     description: "Interactive AI agent to explore projects, tech stack, and background",
-    isAvailable: true,
+    isAvailable: AGENT_FOLIO_ENABLED,
   },
 };
 

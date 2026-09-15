@@ -66,6 +66,7 @@
 .modeRow:hover,
 .modeRow[data-focused="true"] { background: var(--row-hover); border-color: var(--strong-line); }
 .modeRow[aria-selected="true"] { background: var(--selected-bg); border-color: var(--foreground); }
+.modeRow.unavailable { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
 .modeRow[aria-selected="true"]::after {
   content: "";
   position: absolute;

@@ -72,10 +72,8 @@ export function PresentationModeSwitcher({
     setMounted(true);
   }, []);
 
-  // Only render active, implemented modes (Default, Focus, Minimal)
-  const availableModes = Object.values(PRESENTATION_MODES).filter(
-    (m) => m.isAvailable
-  );
+  // Keep unavailable modes discoverable, but exclude them from activation/navigation.
+  const availableModes = Object.values(PRESENTATION_MODES);
 
   const currentConfig = PRESENTATION_MODES[mode] || PRESENTATION_MODES.default;
 
@@ -158,6 +156,7 @@ export function PresentationModeSwitcher({
   // Handle mode selection with universal in-place switching
   const handleSelectMode = useCallback(
     (newMode: PresentationMode) => {
+      if (!PRESENTATION_MODES[newMode].isAvailable) return;
       playClick();
       dismissHint();
 
@@ -179,6 +178,9 @@ export function PresentationModeSwitcher({
   );
 
   const totalNavItems = availableModes.length + 2;
+  const navigableIndices = availableModes
+    .flatMap((item, index) => item.isAvailable ? [index] : [])
+    .concat(availableModes.length, availableModes.length + 1);
 
   // Keyboard navigation within the popover
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -197,13 +199,11 @@ export function PresentationModeSwitcher({
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setFocusedIndex((prev) => (prev + 1) % totalNavItems);
+        setFocusedIndex((prev) => navigableIndices[(navigableIndices.indexOf(prev) + 1) % navigableIndices.length]);
         break;
       case "ArrowUp":
         e.preventDefault();
-        setFocusedIndex((prev) =>
-          prev <= 0 ? totalNavItems - 1 : prev - 1
-        );
+        setFocusedIndex((prev) => navigableIndices[(navigableIndices.indexOf(prev) - 1 + navigableIndices.length) % navigableIndices.length]);
         break;
       case "Home":
         e.preventDefault();
@@ -525,6 +525,28 @@ export function PresentationModeSwitcher({
                     {availableModes.map((item, index) => {
                       const isSelected = item.id === mode;
                       const isFocused = index === focusedIndex;
+
+                      if (!item.isAvailable) {
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            role="option"
+                            disabled
+                            aria-disabled="true"
+                            aria-selected={false}
+                            tabIndex={-1}
+                            className={resolvedVariant === "dock" ? `${styles.modeRow} ${styles.unavailable}` : "w-full p-2.5 text-left rounded-md border border-border-hairline opacity-45 cursor-not-allowed"}
+                          >
+                            {resolvedVariant === "dock" && <span className={styles.modeMarker} aria-hidden="true"><Bot size={20} strokeWidth={1.2} /></span>}
+                            <span className="flex flex-col gap-1">
+                              <span className="font-mono text-xs uppercase">{item.label}</span>
+                              <span className="text-[11px] text-muted-foreground">Temporarily unavailable</span>
+                              <span className="font-mono text-[9px] uppercase tracking-wider">Coming soon</span>
+                            </span>
+                          </button>
+                        );
+                      }
 
                       // 1. AGENT WORKSPACE CONTROL ITEM
                       if (resolvedVariant === "agent") {

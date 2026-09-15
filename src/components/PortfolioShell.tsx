@@ -14,6 +14,7 @@ import { CreativeModeHost, useCreativeMode } from "@/features/creative-mode";
 import { CREATIVE_MAPPINGS, supportsCreativeMode } from "@/features/creative-mode/lib/creativeModeConfig";
 import creativeStyles from "@/features/creative-mode/creativeMode.module.css";
 import { creativeFontVariables, CREATIVE_FONT_PAIRINGS } from "@/features/creative-mode/lib/creativeFonts";
+import { DefaultLandscapeFooter } from "@/features/presentation-modes/modes/default/DefaultLandscapeFooter";
 
 interface PortfolioShellProps {
   children: ReactNode;
@@ -44,7 +45,10 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
 
   return (
     <div
-      style={creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : undefined}
+      style={{
+        ...(creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : {}),
+        ...(mode === "default" ? { paddingBottom: 0 } : {}),
+      }}
       className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 transition-[max-width,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
         isAgentHome
           ? "max-w-3xl px-3 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 min-h-[100dvh] flex flex-col"
@@ -104,6 +108,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         }`}
         aria-hidden={isMinimal || isAgentHome}
       >
+        {mode === "default" ? <DefaultLandscapeFooter /> : <>
         <EditorialDivider className="mt-16 mb-6" />
         <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
           <p>
@@ -116,6 +121,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
             </time>
           </p>
         </footer>
+        </>}
       </div>
     </div>
   );

@@ -1,0 +1,39 @@
+.footer { position: relative; }
+.content { position: relative; z-index: 1; width: 100%; }
+.metadata {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-bottom: 8px;
+  color: var(--text-muted);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.build { display: flex; flex-wrap: wrap; gap: 5px; }
+.build time { color: var(--text-body); }
+.scene {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  height: clamp(220px, 20vw, 300px);
+  overflow: visible;
+  pointer-events: none;
+}
+.landscape {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .scene { height: clamp(180px, 24vw, 240px); }
+}
+@media (max-width: 639px) {
+  .metadata { flex-direction: column; gap: 6px; padding-bottom: 6px; }
+  .scene { height: clamp(150px, 36vw, 210px); }
+}

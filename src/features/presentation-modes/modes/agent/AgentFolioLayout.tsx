@@ -20,6 +20,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PresentationModeSwitcher } from "@/features/presentation-modes/components/PresentationModeSwitcher";
 import { AgentPreviewNotice } from "./components/AgentPreviewNotice";
+import { scheduleIdleProfilePreload } from "@/lib/profileAnimation";
 import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import {
   extractAndValidateLinks,
@@ -154,14 +155,9 @@ export function AgentFolioLayout() {
     }
   }, [resolvedTheme]);
 
-  // Preload animation frames for smooth 60fps caching
+  // Schedule background frame caching when page is idle, without blocking initial render/LCP
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    for (let i = 1; i <= 240; i++) {
-      const img = document.createElement("img");
-      img.src = `/profile/ezgif-frame-${String(i).padStart(3, "0")}.png`;
-    }
+    return scheduleIdleProfilePreload(3500);
   }, []);
 
   // Frame animation driven by dark/light theme switching (Butter-smooth 60fps)

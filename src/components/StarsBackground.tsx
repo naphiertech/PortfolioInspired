@@ -209,8 +209,22 @@ export function StarsBackground() {
 
     window.addEventListener("resize", handleResize);
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (animationFrameIdRef.current) {
+          cancelAnimationFrame(animationFrameIdRef.current);
+          animationFrameIdRef.current = null;
+        }
+      } else if (!prefersReducedMotion && !animationFrameIdRef.current) {
+        animationFrameIdRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearTimeout(resizeTimer);
       if (animationFrameIdRef.current) {
         cancelAnimationFrame(animationFrameIdRef.current);

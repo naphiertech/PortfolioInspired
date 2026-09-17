@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTheme, Theme } from "./ThemeProvider";
 import { useUISound } from "@/context/SoundContext";
+import { preloadProfileFrames } from "@/lib/profileAnimation";
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -53,6 +54,8 @@ export function ThemeToggle() {
 
   return (
     <div
+      onMouseEnter={preloadProfileFrames}
+      onFocus={preloadProfileFrames}
       className="inline-flex items-center rounded-[6px] bg-surface p-0.5 border border-border-hairline shadow-sm relative"
       role="group"
       aria-label="Theme selector"

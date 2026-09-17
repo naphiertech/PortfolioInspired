@@ -4,6 +4,7 @@ const nextConfig = {
     NEXT_PUBLIC_BUILD_TIME: new Date().toISOString(),
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',

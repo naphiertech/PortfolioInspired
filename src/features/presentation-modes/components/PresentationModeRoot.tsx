@@ -1,11 +1,20 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { DefaultModeLayout } from "../modes/default/DefaultModeLayout";
-import { FocusModeLayout } from "../modes/focus/FocusModeLayout";
-import { MinimalModeLayout } from "../modes/minimal/MinimalModeLayout";
-import { AgentFolioLayout } from "../modes/agent/AgentFolioLayout";
+
+// Inactive presentation modes are code-split to keep the initial landing bundle lean
+const FocusModeLayout = dynamic(
+  () => import("../modes/focus/FocusModeLayout").then((m) => m.FocusModeLayout)
+);
+const MinimalModeLayout = dynamic(
+  () => import("../modes/minimal/MinimalModeLayout").then((m) => m.MinimalModeLayout)
+);
+const AgentFolioLayout = dynamic(
+  () => import("../modes/agent/AgentFolioLayout").then((m) => m.AgentFolioLayout)
+);
 
 /**
  * PresentationModeRoot

@@ -34,6 +34,7 @@ export function ProjectMedia({
 }: ProjectMediaProps) {
   const [isFinePointer, setIsFinePointer] = useState(false);
   const [previewActive, setPreviewActive] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const [previewError, setPreviewError] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -57,6 +58,7 @@ export function ProjectMedia({
 
   const handleMouseEnter = () => {
     if (!isFinePointer || !previewSrc || previewError) return;
+    setHasInteracted(true);
     // 140ms hover-intent delay prevents visual flicker when sweeping mouse across cards
     hoverTimeoutRef.current = setTimeout(() => {
       setPreviewActive(true);
@@ -130,7 +132,7 @@ export function ProjectMedia({
         />
 
         {/* Intent-Based Preview Image (Crossfades in on intentional hover) */}
-        {validPreviewSrc && (
+        {validPreviewSrc && hasInteracted && (
           <Image
             src={validPreviewSrc}
             alt={`${alt} alternate view`}

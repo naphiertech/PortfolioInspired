@@ -130,6 +130,14 @@ export function PresentationModeSwitcher({
     };
   }, [isOpen]);
 
+  // Prefetch inactive mode chunks as soon as switcher opens for instant transitions
+  useEffect(() => {
+    if (isOpen) {
+      import("../modes/focus/FocusModeLayout");
+      import("../modes/minimal/MinimalModeLayout");
+    }
+  }, [isOpen]);
+
   // Close when clicking outside container or popover
   useEffect(() => {
     if (!isOpen) return;

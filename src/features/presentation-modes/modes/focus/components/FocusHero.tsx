@@ -7,6 +7,7 @@ import { FaGithub as Github, FaLinkedin as Linkedin, FaInstagram as Instagram } 
 import { LocalTime } from "@/components/LocalTime";
 import { useTheme } from "@/components/ThemeProvider";
 import { useReducedMotion } from "framer-motion";
+import { scheduleIdleProfilePreload } from "@/lib/profileAnimation";
 import styles from "./FocusHero.module.css";
 import {
   AUTHOR_INFO,
@@ -39,14 +40,9 @@ export function FocusHero() {
     }
   }, [resolvedTheme]);
 
-  // Preload animation frames for smooth 60fps caching
+  // Schedule background frame caching when page is idle, without blocking initial render/LCP
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    for (let i = 1; i <= 240; i++) {
-      const img = document.createElement("img");
-      img.src = `/profile/ezgif-frame-${String(i).padStart(3, "0")}.png`;
-    }
+    return scheduleIdleProfilePreload(3500);
   }, []);
 
   // Frame animation driven by dark/light theme switching (Butter-smooth 60fps)

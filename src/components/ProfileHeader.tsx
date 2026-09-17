@@ -11,6 +11,8 @@ import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { SnapTrigger } from "./SnapTrigger";
 import { EditorialDivider } from "./EditorialDivider";
+import { useReducedMotion } from "framer-motion";
+import { scheduleIdleProfilePreload } from "@/lib/profileAnimation";
 import {
   AUTHOR_INFO,
   AVAILABILITY,
@@ -22,6 +24,7 @@ import {
 export function ProfileHeader() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const reducedMotion = useReducedMotion();
   const [animationFrame, setAnimationFrame] = useState(0);
   const currentFrameRef = useRef(0);
   const isInitialMount = useRef(true);
@@ -41,19 +44,20 @@ export function ProfileHeader() {
     }
   }, [resolvedTheme]);
 
-  // Preload animation frames for smooth 60fps caching
+  // Schedule background frame caching when page is idle, without blocking initial render/LCP
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    for (let i = 1; i <= 240; i++) {
-      const img = document.createElement("img");
-      img.src = `/profile/ezgif-frame-${String(i).padStart(3, "0")}.png`;
-    }
+    return scheduleIdleProfilePreload(3500);
   }, []);
 
   // Frame animation driven by dark/light theme switching (Butter-smooth 60fps)
   useEffect(() => {
     if (isInitialMount.current) return;
+    if (reducedMotion) {
+      const frame = isDark ? 240 : 0;
+      currentFrameRef.current = frame;
+      setAnimationFrame(frame);
+      return;
+    }
 
     let animationFrameId: number;
     let lastTime = performance.now();
@@ -91,7 +95,7 @@ export function ProfileHeader() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isDark]);
+  }, [isDark, reducedMotion]);
 
   return (
     <section className="relative w-full select-none mb-16">

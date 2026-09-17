@@ -6,9 +6,14 @@ import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "framer-
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { useCreativeMode } from "../context/CreativeModeContext";
 import { SlidersHorizontal } from "lucide-react";
-import { CreativeModePanel } from "./CreativeModePanel";
+import dynamic from "next/dynamic";
 import styles from "../creativeMode.module.css";
 import { supportsCreativeMode } from "../lib/creativeModeConfig";
+
+const CreativeModePanel = dynamic(
+  () => import("./CreativeModePanel").then((m) => m.CreativeModePanel),
+  { ssr: false }
+);
 
 function StyleLauncher({ triggerRef, panelId, panelOpen, onClick }: {
   triggerRef: RefObject<HTMLButtonElement | null>;

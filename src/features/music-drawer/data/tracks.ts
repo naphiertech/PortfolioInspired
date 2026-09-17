@@ -3,7 +3,6 @@ import { Track } from "../types/music";
 /**
  * Curated playlist for the Music Drawer.
  * Durations measured locally from MPEG audio metadata; display uses whole seconds.
- * New files without title/artist tags retain filename titles and Unknown Artist.
  * Synchronized with the real local files in `public/audio/favorites/`.
  */
 export const FAVORITE_TRACKS: Track[] = [
@@ -73,7 +72,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "about-you",
     title: "About You",
-    artist: "Unknown Artist",
+    artist: "The 1975",
     src: "/audio/favorites/About You.mp3",
     duration: 326.557,
     formattedDuration: "5:26",
@@ -82,7 +81,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "collide",
     title: "Collide",
-    artist: "Unknown Artist",
+    artist: "Howie Day",
     src: "/audio/favorites/Collide.mp3",
     duration: 249.182,
     formattedDuration: "4:09",
@@ -91,7 +90,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "daylight",
     title: "Daylight",
-    artist: "Unknown Artist",
+    artist: "Maroon 5",
     src: "/audio/favorites/Daylight.mp3",
     duration: 225.463,
     formattedDuration: "3:45",
@@ -100,7 +99,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "fix-you",
     title: "Fix You",
-    artist: "Unknown Artist",
+    artist: "Coldplay",
     src: "/audio/favorites/Fix You.mp3",
     duration: 293.851,
     formattedDuration: "4:53",
@@ -108,8 +107,8 @@ export const FAVORITE_TRACKS: Track[] = [
   },
   {
     id: "guilty-as-sin",
-    title: "Guilty as Sin_",
-    artist: "Unknown Artist",
+    title: "Guilty as Sin?",
+    artist: "Taylor Swift",
     src: "/audio/favorites/Guilty as Sin_.mp3",
     duration: 254.433,
     formattedDuration: "4:14",
@@ -118,7 +117,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "heaven",
     title: "Heaven",
-    artist: "Unknown Artist",
+    artist: "Bryan Adams",
     src: "/audio/favorites/Heaven.mp3",
     duration: 271.047,
     formattedDuration: "4:31",
@@ -127,7 +126,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "i-live-my-life-for-you",
     title: "I Live My Life For You",
-    artist: "Unknown Artist",
+    artist: "FireHouse",
     src: "/audio/favorites/I Live My Life For You.mp3",
     duration: 264.725,
     formattedDuration: "4:24",
@@ -136,7 +135,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "lips-of-an-angel",
     title: "Lips Of An Angel",
-    artist: "Unknown Artist",
+    artist: "Hinder",
     src: "/audio/favorites/Lips Of An Angel.mp3",
     duration: 261.904,
     formattedDuration: "4:21",
@@ -144,8 +143,8 @@ export const FAVORITE_TRACKS: Track[] = [
   },
   {
     id: "merry-christmas-i-miss-you",
-    title: "Merry Christmas, i miss you",
-    artist: "Unknown Artist",
+    title: "Merry Christmas, I Miss You",
+    artist: "Alex Crichton",
     src: "/audio/favorites/Merry Christmas, i miss you.mp3",
     duration: 246.909,
     formattedDuration: "4:06",
@@ -154,7 +153,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "nothings-gonna-stop-us-now",
     title: "Nothing's Gonna Stop Us Now",
-    artist: "Unknown Artist",
+    artist: "Starship",
     src: "/audio/favorites/Nothing's Gonna Stop Us Now.mp3",
     duration: 270.393,
     formattedDuration: "4:30",
@@ -163,7 +162,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "robbers",
     title: "Robbers",
-    artist: "Unknown Artist",
+    artist: "The 1975",
     src: "/audio/favorites/Robbers.mp3",
     duration: 254.544,
     formattedDuration: "4:14",
@@ -172,7 +171,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "she-will-be-loved",
     title: "She Will Be Loved",
-    artist: "Unknown Artist",
+    artist: "Maroon 5",
     src: "/audio/favorites/She Will Be Loved.mp3",
     duration: 257.202,
     formattedDuration: "4:17",
@@ -181,7 +180,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "supermarket-flowers",
     title: "Supermarket Flowers",
-    artist: "Unknown Artist",
+    artist: "Ed Sheeran",
     src: "/audio/favorites/Supermarket Flowers.mp3",
     duration: 216.085,
     formattedDuration: "3:36",
@@ -190,7 +189,7 @@ export const FAVORITE_TRACKS: Track[] = [
   {
     id: "til-death-do-us-part",
     title: "Til Death Do Us Part",
-    artist: "Unknown Artist",
+    artist: "White Lion",
     src: "/audio/favorites/Til Death Do Us Part.mp3",
     duration: 326.87,
     formattedDuration: "5:26",
@@ -198,8 +197,8 @@ export const FAVORITE_TRACKS: Track[] = [
   },
   {
     id: "wake-me-up-when-september-ends",
-    title: "Wake Me up When September Ends",
-    artist: "Unknown Artist",
+    title: "Wake Me Up When September Ends",
+    artist: "Green Day",
     src: "/audio/favorites/Wake Me up When September Ends.mp3",
     duration: 285.696,
     formattedDuration: "4:45",

@@ -49,7 +49,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         ...(creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : {}),
         ...(mode !== "agent" ? { paddingBottom: 0 } : {}),
       }}
-      className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 transition-[max-width,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+      className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 ${
         isAgentHome
           ? "max-w-3xl px-3 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 min-h-[100dvh] flex flex-col"
           : isMinimal

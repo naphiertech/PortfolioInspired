@@ -3,58 +3,34 @@
 import React, { useEffect, useRef } from "react";
 import { X, Activity } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Track } from "../types/music";
-import { MusicDisc } from "./MusicDisc";
-import { MusicPlayerControls } from "./MusicPlayerControls";
+import { MusicTrack } from "../types/music";
+import { MusicFeaturedSong } from "./MusicFeaturedSong";
 import { MusicPlaylist } from "./MusicPlaylist";
 
 interface MusicDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  tracks: Track[];
-  currentTrack: Track;
-  isPlaying: boolean;
-  currentTime: number;
-  duration: number;
-  progress: number;
-  formattedCurrentTime: string;
-  formattedTotalDuration: string;
-  onTogglePlay: () => void;
-  onNext: () => void;
-  onPrevious: () => void;
-  onSeek: (seconds: number) => void;
-  onSelectTrack: (track: Track) => void;
+  tracks: MusicTrack[];
+  currentTrack: MusicTrack;
+  onSelectTrack: (track: MusicTrack) => void;
   className?: string;
 }
 
 /**
  * MusicDrawer
  *
- * Polished, theme-integrated drawer overlay matching the portfolio design system:
- * - In Dark mode: dark charcoal surface (#141619) with muted borders (#262930) and soft off-white text.
- * - In Light mode: soft off-white paper surface (#fafaf8) with subtle borders and dark gray text.
- * - Header: <MUSIC/> favorites & Close button ✕
- * - Main media area: Aesthetic silver CD with monochrome architecture artwork (no decorative star)
- * - Song info & controls: Perfectly centered playback controls with symmetrical spacing
- * - Playlist: Clean, tabular durations without three-dot menus
- * - Footer note: Soundwave icon + "Music makes a softer workspace."
- * - Overlays without pushing page content or modifying layout.
+ * "What I'm Listening To" Music Showcase Drawer:
+ * - Fixed header: <MUSIC/> and lowercase "what i'm listening to" subtitle + close button
+ * - Fixed featured song showcase: decorative rotating CD, title, artist, tagline, and external action buttons
+ * - Constrained scrollable playlist: // MY ROTATION with direct Spotify & YouTube Music service buttons
+ * - Fixed footer: Activity pulse icon + "Music makes a softer workspace."
+ * - Purely client-side static metadata and external service links; zero embedded audio streaming.
  */
 export function MusicDrawer({
   isOpen,
   onClose,
   tracks,
   currentTrack,
-  isPlaying,
-  currentTime,
-  duration,
-  progress,
-  formattedCurrentTime,
-  formattedTotalDuration,
-  onTogglePlay,
-  onNext,
-  onPrevious,
-  onSeek,
   onSelectTrack,
 }: MusicDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -74,7 +50,7 @@ export function MusicDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Sensible outside-click detection with composedPath for detached elements
+  // Outside click detection
   useEffect(() => {
     if (!isOpen) return;
 
@@ -95,6 +71,7 @@ export function MusicDrawer({
       // Ignore clicks on the toggle tab itself so toggle doesn't double-trigger
       if (
         target.closest('[aria-label*="Music folder"]') ||
+        target.closest('[aria-label*="What I\'m Listening To"]') ||
         target.closest('[aria-controls="music-drawer-panel"]') ||
         path.some(
           (el) =>
@@ -123,21 +100,21 @@ export function MusicDrawer({
           ref={drawerRef}
           id="music-drawer-panel"
           role="region"
-          aria-label="Music Player Drawer"
+          aria-label="What I'm Listening To Drawer"
           initial={{ x: reducedMotion ? 0 : -28, opacity: 0, scale: reducedMotion ? 1 : 0.98 }}
           animate={{ x: 0, opacity: 1, scale: 1 }}
           exit={{ x: reducedMotion ? 0 : -24, opacity: 0, scale: reducedMotion ? 1 : 0.98 }}
           transition={{ duration: reducedMotion ? 0.05 : 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed top-4 bottom-20 sm:top-6 sm:bottom-6 left-2 sm:left-[64px] w-[310px] max-w-[calc(100vw-16px)] z-50 bg-[#fafaf8] dark:bg-[#141619] border border-zinc-200/90 dark:border-[#262930] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.02)] dark:shadow-[0_24px_50px_-10px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.04)] rounded-2xl sm:rounded-[22px] flex flex-col p-4 sm:p-5 overflow-hidden backdrop-blur-md select-none text-zinc-900 dark:text-[#eceeed]"
+          className="fixed top-4 bottom-20 sm:top-6 sm:bottom-6 left-2 sm:left-[64px] w-[336px] sm:w-[356px] max-w-[calc(100vw-16px)] z-50 bg-[#fafaf8] dark:bg-[#141619] border border-zinc-200 dark:border-[#262930] shadow-xl dark:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.55)] rounded-2xl sm:rounded-[22px] flex flex-col p-3.5 sm:p-4 backdrop-blur-md select-none text-zinc-900 dark:text-[#eceeed]"
         >
-          {/* Header Row: <MUSIC/> + favorites & Close Button */}
+          {/* Header Row: <MUSIC/> + what i'm listening to & Close Button */}
           <div className="flex items-start justify-between pb-2.5 border-b border-zinc-200/70 dark:border-[#22252a] flex-shrink-0">
             <div>
               <h2 className="font-mono text-xs font-semibold tracking-wider text-zinc-900 dark:text-[#eceeed] uppercase leading-tight">
                 &lt;MUSIC/&gt;
               </h2>
-              <p className="font-mono text-[11px] text-zinc-400 dark:text-[#8d929a] leading-tight mt-0.5 lowercase">
-                favorites
+              <p className="font-mono text-xs text-zinc-600 dark:text-[#a0a5b2] leading-tight mt-0.5 lowercase">
+                what i&apos;m listening to
               </p>
             </div>
 
@@ -145,47 +122,31 @@ export function MusicDrawer({
               type="button"
               onClick={onClose}
               aria-label="Close music drawer"
-              className="p-1 rounded-md text-zinc-400 dark:text-[#8d929a] hover:text-zinc-700 dark:hover:text-[#eceeed] hover:bg-zinc-100 dark:hover:bg-[#1f2228] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-700 dark:focus-visible:ring-zinc-200"
+              className="p-1.5 rounded-lg text-zinc-500 dark:text-[#a0a5b2] hover:text-zinc-900 dark:hover:text-[#eceeed] hover:bg-zinc-200/60 dark:hover:bg-[#1f2228] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-700 dark:focus-visible:ring-zinc-200"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Keep the player fixed; only the playlist scrolls. */}
-          <div className="flex-1 min-h-0 flex flex-col overflow-hidden my-1">
+          {/* Body: Fixed featured showcase + scrollable rotation (no ancestor overflow-hidden clipping) */}
+          <div className="flex-1 min-h-0 flex flex-col my-1">
             <div className="flex-shrink-0">
-            {/* 1. Rotating Compact Disc with Artwork & Silver Sheen */}
-            <MusicDisc track={currentTrack} isPlaying={isPlaying} />
-
-            {/* 2. Track Info, Scrubber & Centered Controls */}
-            <MusicPlayerControls
-              track={currentTrack}
-              isPlaying={isPlaying}
-              currentTime={currentTime}
-              duration={duration}
-              progress={progress}
-              formattedCurrentTime={formattedCurrentTime}
-              formattedTotalDuration={formattedTotalDuration}
-              onTogglePlay={onTogglePlay}
-              onNext={onNext}
-              onPrevious={onPrevious}
-              onSeek={onSeek}
-            />
-
+              {/* 1. Featured Song Showcase with CD & Streaming Buttons */}
+              <MusicFeaturedSong track={currentTrack} />
             </div>
-            {/* 3. Playlist Tracks with Responsive Dark/Light Active Row */}
+
+            {/* 2. My Rotation Playlist Rows with Service Links */}
             <MusicPlaylist
               tracks={tracks}
               currentTrack={currentTrack}
-              isPlaying={isPlaying}
               onSelectTrack={onSelectTrack}
             />
           </div>
 
           {/* Footer Note Row with Soundwave Icon & Decorative Corner Line */}
-          <div className="pt-2.5 mt-auto border-t border-zinc-200/70 dark:border-[#22252a] flex items-center justify-between text-zinc-400 dark:text-[#71767f] flex-shrink-0">
-            <div className="flex items-center gap-2 text-[10.5px] font-mono tracking-tight text-zinc-400 dark:text-[#71767f]">
-              <Activity className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+          <div className="pt-2.5 mt-auto border-t border-zinc-200/70 dark:border-[#22252a] flex items-center justify-between text-zinc-600 dark:text-[#a0a5b2] flex-shrink-0">
+            <div className="flex items-center gap-2 text-[12.5px] font-mono tracking-tight text-zinc-600 dark:text-[#a0a5b2]">
+              <Activity className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 flex-shrink-0" />
               <span>Music makes a softer workspace.</span>
             </div>
 

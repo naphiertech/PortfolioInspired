@@ -1,30 +1,29 @@
 "use client";
 
 import React from "react";
-import { Track } from "../types/music";
+import { useReducedMotion } from "framer-motion";
+import { MusicTrack } from "../types/music";
 
 interface MusicDiscProps {
-  track: Track;
-  isPlaying: boolean;
+  track: MusicTrack;
   className?: string;
 }
 
 /**
  * MusicDisc
  *
- * Aesthetic Compact Disc (CD) matching the approved concept:
+ * Aesthetic Compact Disc (CD) matching the portfolio design system:
  * - Left half: Crisp monochrome photography/artwork printed on the disc surface.
  * - Right half: Brushed silver metallic CD finish with concentric sheen and vintage "Good Music Better Days" typography.
  * - Center: Clear transparent spindle hole with silver polycarbonate inner ring.
- * - Lightweight pure CSS rotation only while playing, pauses when stopped.
- * - Theme-adaptive surrounding and hub presentation for both dark and light modes.
- * - Respects prefers-reduced-motion.
+ * - Slow, continuous decorative rotation respecting prefers-reduced-motion.
+ * - Decoupled from audio playback state.
  */
 export function MusicDisc({
   track,
-  isPlaying,
   className = "",
 }: MusicDiscProps) {
+  const reducedMotion = useReducedMotion();
   const artworkSrc = track.artwork || "/audio/favorites/cd-artwork.jpg";
 
   return (
@@ -34,13 +33,12 @@ export function MusicDisc({
       {/* Outer Rotating CD Disc */}
       <div
         role="img"
-        aria-label={`Compact disc record ${isPlaying ? "(spinning)" : "(paused)"}`}
-        className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center border border-zinc-300/80 dark:border-zinc-700/80 transition-transform duration-300 shadow-lg"
+        aria-label={`Compact disc record for ${track.title}`}
+        className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center border border-zinc-300/80 dark:border-zinc-700/80"
         style={{
-          boxShadow:
-            "0 12px 28px -6px rgba(0, 0, 0, 0.18), 0 2px 6px -1px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.6)",
-          animation: "spin 14s linear infinite",
-          animationPlayState: isPlaying ? "running" : "paused",
+          boxShadow: "0 8px 20px -4px rgba(0, 0, 0, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.4)",
+          animation: reducedMotion ? "none" : "spin 22s linear infinite",
+          willChange: "transform",
           background:
             "linear-gradient(135deg, #f5f5f7 0%, #e6e8ec 40%, #d4d7dd 70%, #e5e7eb 100%)",
         }}
@@ -55,15 +53,17 @@ export function MusicDisc({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={artworkSrc}
-            alt={track.title}
+            alt=""
+            aria-hidden="true"
             className="w-full h-full object-cover grayscale contrast-110 brightness-95"
           />
           {/* Subtle blend gradient on seam */}
           <div className="absolute inset-y-0 right-0 w-3 bg-gradient-to-r from-transparent to-zinc-300/60" />
         </div>
 
-        {/* Right Half: Brushed Silver Surface with Printed Typography */}
+        {/* Right Half: Brushed Silver Surface with Printed Decorative Typography */}
         <div
+          aria-hidden="true"
           className="absolute right-0 top-0 bottom-0 w-[49%] h-full flex flex-col items-center justify-center pr-3 pointer-events-none z-10"
           style={{
             background:

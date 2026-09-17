@@ -5,7 +5,7 @@ import { Music2 } from "lucide-react";
 
 interface MusicEdgeTabProps {
   isOpen: boolean;
-  isPlaying: boolean;
+  isPlaying?: boolean;
   onToggle: () => void;
   className?: string;
 }
@@ -17,7 +17,6 @@ const folderContour =
 /** Viewport-attached folder tab with the same silhouette at every screen size. */
 export function MusicEdgeTab({
   isOpen,
-  isPlaying,
   onToggle,
   className = "",
 }: MusicEdgeTabProps) {
@@ -25,7 +24,7 @@ export function MusicEdgeTab({
 
   return (
     <aside
-      aria-label="Music folder drawer toggle"
+      aria-label="What I'm Listening To drawer toggle"
       className={`fixed left-0 top-[24%] sm:top-[26%] z-40 select-none ${className}`}
     >
       <button
@@ -36,10 +35,9 @@ export function MusicEdgeTab({
         aria-label={
           isOpen
             ? "Close music drawer"
-            : isPlaying
-            ? "Open music drawer (music playing)"
-            : "Open music drawer"
+            : "What I'm Listening To"
         }
+        title="What I'm Listening To"
         className="group relative block aspect-[52/163] w-[48.5px] sm:w-[52px] border-0 bg-transparent p-0 focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[var(--text-body)] [filter:drop-shadow(3px_2px_5px_rgba(0,0,0,0.16))] hover:[filter:drop-shadow(4px_2px_7px_rgba(0,0,0,0.22))] transition-[filter] duration-200 motion-reduce:transition-none"
       >
         <svg

@@ -30,16 +30,16 @@ export function MusicPlaylist({
 }: MusicPlaylistProps) {
   return (
     <div
-      className={`flex flex-col gap-1 w-full mt-2 pt-2 border-t border-zinc-200/70 dark:border-[#22252a] ${className}`}
+      className={`flex-1 min-h-0 flex flex-col gap-1 w-full mt-2 pt-2 border-t border-zinc-200/70 dark:border-[#22252a] ${className}`}
     >
       {/* Playlist Header Row */}
-      <div className="flex items-center justify-between text-[10.5px] font-mono tracking-wider text-zinc-400 dark:text-[#71767f] uppercase select-none pb-0.5 px-0.5">
+      <div className="flex-shrink-0 flex items-center justify-between text-[10.5px] font-mono tracking-wider text-zinc-400 dark:text-[#71767f] uppercase select-none pb-0.5 px-0.5">
         <span>{"// PLAYLIST"}</span>
         <span>{tracks.length} TRACKS</span>
       </div>
 
       {/* Playlist Items */}
-      <div className="flex flex-col gap-0.5">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain custom-scrollbar space-y-0.5">
         {tracks.map((track) => {
           const isActive = track.id === currentTrack.id;
 

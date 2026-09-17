@@ -151,8 +151,9 @@ export function MusicDrawer({
             </button>
           </div>
 
-          {/* Scrollable Center Body: CD Disc + Controls + Playlist */}
-          <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar my-1">
+          {/* Keep the player fixed; only the playlist scrolls. */}
+          <div className="flex-1 min-h-0 flex flex-col overflow-hidden my-1">
+            <div className="flex-shrink-0">
             {/* 1. Rotating Compact Disc with Artwork & Silver Sheen */}
             <MusicDisc track={currentTrack} isPlaying={isPlaying} />
 
@@ -171,6 +172,7 @@ export function MusicDrawer({
               onSeek={onSeek}
             />
 
+            </div>
             {/* 3. Playlist Tracks with Responsive Dark/Light Active Row */}
             <MusicPlaylist
               tracks={tracks}

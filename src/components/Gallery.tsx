@@ -116,7 +116,7 @@ export function Gallery() {
               alt={`Event photo ${idx + 1}`}
               fill
               sizes="(max-width: 640px) 150px, 200px"
-              className="object-cover opacity-85 grayscale transition-all duration-200 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105"
+              className="object-cover opacity-90 grayscale contrast-[1.03] transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0 group-hover:contrast-100 group-hover:scale-[1.025]"
             />
           </div>
         ))}

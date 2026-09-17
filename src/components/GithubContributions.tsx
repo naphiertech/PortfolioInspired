@@ -205,7 +205,7 @@ export function GithubContributions() {
       <div className="overflow-x-auto scrollbar-hide [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden pb-1 -mx-2 px-2">
         <div className="inline-block min-w-max">
           {/* Month Labels Header */}
-          <div className="relative h-4 mb-1.5 font-mono text-[10px] text-muted-foreground/80">
+          <div className="relative h-4 mb-1.5 font-mono text-[11px] text-muted-foreground/90">
             {data.months.map((m, idx) => {
               // Calculate horizontal offset based on week index (each column is 10px + 3px gap = 13px)
               const leftPos = m.weekIndex * 13;
@@ -281,9 +281,9 @@ export function GithubContributions() {
       </div>
 
       {/* Total Contributions Subtitle */}
-      <div className="mt-2 flex items-center justify-between font-mono text-[11px] sm:text-xs text-muted-foreground">
+      <div className="mt-2 flex items-center justify-between font-mono text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <span className="text-[#38bdf8] dark:text-[#38bdf8] font-medium">Total</span>
+          <span className="text-emerald-500/90 dark:text-emerald-400/90 font-medium">Total</span>
           <span className="text-ink font-semibold">{data.total.toLocaleString()}</span>
           <span>contributions in {data.year || new Date().getFullYear()}</span>
         </div>
@@ -292,7 +292,7 @@ export function GithubContributions() {
           href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted-foreground/70 hover:text-ink transition-colors duration-150 text-[10px] sm:text-[11px]"
+          className="text-muted-foreground/70 hover:text-ink transition-colors duration-150 text-[11px]"
         >
           {AUTHOR_INFO.handle} ↗
         </a>

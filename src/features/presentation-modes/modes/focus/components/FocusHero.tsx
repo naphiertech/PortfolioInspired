@@ -3,8 +3,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import NextImage from "next/image";
 import { Mail, FileText, ArrowUpRight, MapPin, GraduationCap } from "lucide-react";
+import { FaGithub as Github, FaLinkedin as Linkedin, FaInstagram as Instagram } from "react-icons/fa";
 import { LocalTime } from "@/components/LocalTime";
 import { useTheme } from "@/components/ThemeProvider";
+import { useReducedMotion } from "framer-motion";
+import styles from "./FocusHero.module.css";
 import {
   AUTHOR_INFO,
   AVAILABILITY,
@@ -16,6 +19,7 @@ import {
 export function FocusHero() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const reducedMotion = useReducedMotion();
   const [animationFrame, setAnimationFrame] = useState(0);
   const currentFrameRef = useRef(0);
   const isInitialMount = useRef(true);
@@ -48,6 +52,12 @@ export function FocusHero() {
   // Frame animation driven by dark/light theme switching (Butter-smooth 60fps)
   useEffect(() => {
     if (isInitialMount.current) return;
+    if (reducedMotion) {
+      const frame = isDark ? 240 : 0;
+      currentFrameRef.current = frame;
+      setAnimationFrame(frame);
+      return;
+    }
 
     let animationFrameId: number;
     let lastTime = performance.now();
@@ -85,190 +95,74 @@ export function FocusHero() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isDark]);
+  }, [isDark, reducedMotion]);
 
+  const surname = AUTHOR_INFO.name.slice(AUTHOR_INFO.shortName.length).trim();
   return (
-    <section aria-label="Identity and candidate overview" className="w-full">
-      {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3 sm:mb-3.5">
-        <span className="tracking-wider font-medium">
-          [ 00 // PROFILE ]
-        </span>
-        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
-          FOCUS VIEW
-        </span>
-      </div>
-
-      {/* Main Identity Composition */}
-      <div className="pt-1">
-        {/* Top Header Row: Name & Title on Left, Avatar on Right */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink font-sans leading-tight">
-              {AUTHOR_INFO.name}
-            </h1>
-            <p className="font-sans text-sm sm:text-base text-brand font-semibold tracking-normal mt-0.5 sm:mt-1">
-              {AUTHOR_INFO.jobTitle}
-            </p>
+    <section aria-label="Identity and candidate overview" className={styles.hero}>
+      <div className={styles.marker}>[ 00 // PROFILE ]</div>
+      <div className={styles.split}>
+        <div className={styles.identity}>
+          <p className={styles.availability}><span aria-hidden="true" />{AVAILABILITY.status} for opportunities</p>
+          <h1 className={styles.name}>
+            <span className={styles.firstName}>{AUTHOR_INFO.shortName}</span>
+            <span className={styles.surname}>{surname}</span>
+          </h1>
+          <p className={styles.role}>{AUTHOR_INFO.jobTitle}</p>
+          <p className={styles.bio}>{SITE_DEFAULT_DESCRIPTION}</p>
+          <div className={styles.opportunities}><span aria-hidden="true" />{AVAILABILITY.openTo}</div>
+          <div className={styles.metadata}>
+            <span><MapPin size={13} aria-hidden="true" />{AUTHOR_INFO.city}, PH</span>
+            <LocalTime />
+            <span><GraduationCap size={14} aria-hidden="true" />{EDUCATION.shortDegree} @ {EDUCATION.abbreviation}</span>
           </div>
-
-          {/* Profile Avatar */}
-          <div className="relative flex-shrink-0 w-13 h-13 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-border-hairline bg-surface/50 shadow-xs">
-            <NextImage
-              src="/profile/ezgif-frame-001.png"
-              alt={AUTHOR_INFO.name}
-              fill
-              sizes="(max-width: 640px) 56px, 64px"
-              priority
-              className="object-cover"
-              style={{ objectPosition: "center 25%" }}
-            />
-
-            {/* Glasses Animation Overlay */}
+          <div className={styles.actions}>
+            <a href={"mailto:" + SOCIAL_PROFILES.email} className={styles.primary}>
+              <Mail size={15} aria-hidden="true" />Send Email<ArrowUpRight size={13} aria-hidden="true" />
+            </a>
+            <a href="/resume/naphier_awalie_resume.pdf" target="_blank" rel="noopener noreferrer" className={styles.secondary}>
+              <FileText size={15} aria-hidden="true" />Resume PDF<ArrowUpRight size={13} aria-hidden="true" />
+            </a>
+          </div>
+          <div className={styles.lowerIdentity}>
+            <div>
+              <div className={styles.connectLabel}>CONNECT<span aria-hidden="true" /></div>
+              <div className={styles.socials}>
+                <a href={SOCIAL_PROFILES.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub"><Github size={17} /></a>
+                <a href={SOCIAL_PROFILES.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={17} /></a>
+                <a href={SOCIAL_PROFILES.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={17} /></a>
+              </div>
+            </div>
+            <p className={styles.note}>“Better tools. Brighter ideas.”</p>
+          </div>
+        </div>
+        <div className={styles.portraitGroup}>
+        <div className={styles.portraitComposition}>
+          <div className={styles.orbit} aria-hidden="true" />
+          <span className={styles.crosshair} aria-hidden="true">+</span>
+          <div className={styles.portrait}>
+            <NextImage src="/profile/ezgif-frame-001.png" alt={AUTHOR_INFO.name} fill sizes="(max-width: 767px) 280px, (max-width: 1023px) 36vw, 380px" priority className={styles.portraitImage} />
             {animationFrame > 0 && (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={`/profile/ezgif-frame-${String(animationFrame).padStart(3, "0")}.png`}
-                alt="Profile Animation"
-                className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
-                style={{ objectPosition: "center 25%" }}
-              />
+              <img src={"/profile/ezgif-frame-" + String(animationFrame).padStart(3, "0") + ".png"} alt="" className={styles.portraitOverlay} />
             )}
           </div>
+          <div className={styles.codeNote} aria-hidden="true">
+            <span>{"// Developer"}</span>
+            <pre>{"const " + AUTHOR_INFO.shortName.toLowerCase() + " = {\n  learn: true,\n  build: true,\n  improve: true\n}"}</pre>
+          </div>
+          <div className={styles.projectNote} aria-hidden="true">
+            <span>Turning ideas into</span><strong>real projects.</strong>
+          </div>
+          <p className={styles.portraitCaption}>{AUTHOR_INFO.city}, PH<span aria-hidden="true">↗</span></p>
         </div>
-
-        {/* Positioning Statement */}
-        <p className="mt-3 text-[14.5px] sm:text-[15.5px] text-zinc-700 dark:text-zinc-300 leading-[1.6] font-sans max-w-3xl">
-          {SITE_DEFAULT_DESCRIPTION}
-        </p>
-
-        {/* Availability Badge (Compact and self-sizing) */}
-        <div className="mt-3 sm:mt-4 flex">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] sm:text-xs font-medium">
-            <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
-              <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+        <div className={styles.processNote} aria-hidden="true">
+          {["IDEAS", "DESIGN", "DEVELOP", "DEPLOY", "IMPROVE"].map((step, index) => (
+            <span key={step} className={styles.processStep} data-current={index === 0}>
+              {step}
             </span>
-            <span>{AVAILABILITY.openTo}</span>
-          </div>
+          ))}
         </div>
-
-        {/* Metadata: Clean vertical stack on mobile (< sm), single wrapped row on desktop (≥ sm) */}
-        <div className="mt-3 sm:mt-3.5 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-x-4 sm:gap-y-2 font-mono text-xs text-zinc-500 dark:text-zinc-400">
-          {/* Location */}
-          <span className="inline-flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
-            <MapPin className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500 flex-shrink-0" aria-hidden="true" />
-            <span>{AUTHOR_INFO.city}, PH</span>
-          </span>
-
-          {/* Local Time */}
-          <div className="flex items-center">
-            <LocalTime />
-          </div>
-
-          {/* Degree */}
-          <span className="inline-flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
-            <GraduationCap className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500 flex-shrink-0" aria-hidden="true" />
-            <span>
-              {EDUCATION.shortDegree} @ {EDUCATION.abbreviation}
-            </span>
-          </span>
-        </div>
-      </div>
-
-      {/* Action Strip */}
-      <div className="mt-4 sm:mt-5 pt-3.5 sm:pt-4 border-t border-border-divider">
-        {/* --- MOBILE ACTION COMPOSITION (< sm) --- */}
-        <div className="sm:hidden space-y-2.5">
-          {/* 2-Column Primary Action Row */}
-          <div className="grid grid-cols-2 gap-2">
-            <a
-              href={`mailto:${SOCIAL_PROFILES.email}`}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-ink text-page font-medium font-sans text-xs hover:opacity-90 active:scale-[0.98] transition-all shadow-xs"
-            >
-              <Mail className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>Send Email</span>
-            </a>
-
-            <a
-              href="/resume/naphier_awalie_resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-surface/50 border border-border-hairline text-ink font-medium font-sans text-xs hover:bg-surface-hover hover:border-border active:scale-[0.98] transition-all shadow-xs"
-            >
-              <FileText className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
-              <span>Resume PDF</span>
-              <ArrowUpRight className="w-3 h-3 text-muted-foreground/60" aria-hidden="true" />
-            </a>
-          </div>
-
-          {/* Quiet Secondary Socials Directly Underneath */}
-          <div className="flex items-center justify-center gap-4 font-mono text-xs text-muted-foreground pt-0.5">
-            <a
-              href={SOCIAL_PROFILES.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors inline-flex items-center gap-1"
-            >
-              <span>GitHub</span>
-              <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
-            </a>
-            <span className="text-border-divider">·</span>
-            <a
-              href={SOCIAL_PROFILES.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors inline-flex items-center gap-1"
-            >
-              <span>LinkedIn</span>
-              <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
-            </a>
-          </div>
-        </div>
-
-        {/* --- DESKTOP ACTION COMPOSITION (≥ sm) --- */}
-        <div className="hidden sm:flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <a
-              href={`mailto:${SOCIAL_PROFILES.email}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-ink text-page font-medium font-sans text-xs hover:opacity-90 active:scale-[0.98] transition-all shadow-xs"
-            >
-              <Mail className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>Send Email</span>
-            </a>
-
-            <a
-              href="/resume/naphier_awalie_resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-surface/50 border border-border-hairline text-ink font-medium font-sans text-xs hover:bg-surface-hover hover:border-border transition-colors"
-            >
-              <FileText className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
-              <span>Resume PDF</span>
-              <ArrowUpRight className="w-3 h-3 text-muted-foreground/60" aria-hidden="true" />
-            </a>
-          </div>
-
-          <div className="flex items-center gap-3.5 font-mono text-xs text-muted-foreground">
-            <a
-              href={SOCIAL_PROFILES.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors inline-flex items-center gap-1"
-            >
-              <span>GitHub</span>
-              <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
-            </a>
-            <span className="text-border">/</span>
-            <a
-              href={SOCIAL_PROFILES.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink transition-colors inline-flex items-center gap-1"
-            >
-              <span>LinkedIn</span>
-              <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
-            </a>
-          </div>
         </div>
       </div>
     </section>

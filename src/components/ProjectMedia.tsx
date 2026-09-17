@@ -126,7 +126,7 @@ export function ProjectMedia({
           sizes={sizes}
           className={`object-cover transition-all duration-300 ease-out ${
             validPreviewSrc && previewActive ? "opacity-0" : "opacity-100"
-          } grayscale group-hover:grayscale-0`}
+          } grayscale contrast-[1.04] brightness-[0.96] dark:brightness-[0.92] group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100`}
         />
 
         {/* Intent-Based Preview Image (Crossfades in on intentional hover) */}
@@ -140,7 +140,7 @@ export function ProjectMedia({
             onError={() => setPreviewError(true)}
             className={`object-cover transition-all duration-300 ease-out ${
               previewActive
-                ? "opacity-100 grayscale-0"
+                ? "opacity-100 grayscale-0 contrast-100 brightness-100"
                 : "opacity-0 grayscale pointer-events-none"
             }`}
           />
@@ -158,7 +158,7 @@ export function ProjectMedia({
 
       {/* Optional Top-Right Category Pill */}
       {category && (
-        <div className="absolute top-2.5 right-2.5 bg-page/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground border border-border-hairline z-10 shadow-sm pointer-events-none">
+        <div className="absolute top-2.5 right-2.5 bg-page/90 backdrop-blur-sm px-2 py-0.5 rounded text-xs font-mono text-muted-foreground border border-border-hairline z-10 shadow-sm pointer-events-none">
           {category}
         </div>
       )}

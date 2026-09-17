@@ -7,7 +7,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'bryllim.com',
+        hostname: 'naphiernode.vercel.app',
       },
     ],
   },

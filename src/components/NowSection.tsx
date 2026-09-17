@@ -92,12 +92,12 @@ export function NowSection() {
         {/* Card 1: Currently Building */}
         <motion.div
           variants={shouldReduceMotion ? undefined : gridItemVariants}
-          className="p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/50 transition-all flex flex-col justify-between space-y-3 group shadow-2xs"
+          className="p-4 sm:p-4.5 rounded-lg bg-surface/20 border border-border-hairline hover:bg-surface/40 hover:border-border-muted transition-colors flex flex-col justify-between space-y-3 group"
         >
           <div className="space-y-2">
             {/* Header: Status Tag */}
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-semibold tracking-wider">
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-medium tracking-wider">
                 <span className="relative flex h-1.5 w-1.5 flex-shrink-0 items-center justify-center">
                   <span className="animate-status-ring absolute inset-0 rounded-full bg-emerald-400/50" />
                   <span className="animate-status-breathe relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
@@ -106,7 +106,7 @@ export function NowSection() {
               </div>
 
               {currentBuild.updatedAt && (
-                <span className="font-mono text-[10px] text-muted-foreground/60">
+                <span className="font-mono text-xs text-muted-foreground/80">
                   {currentBuild.updatedAt}
                 </span>
               )}
@@ -117,7 +117,7 @@ export function NowSection() {
               <h3 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors line-clamp-1">
                 {currentBuild.title}
               </h3>
-              <p className="font-sans text-xs text-muted-foreground leading-relaxed line-clamp-2">
+              <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed line-clamp-2">
                 {currentBuild.description}
               </p>
             </div>
@@ -125,13 +125,10 @@ export function NowSection() {
 
           {/* Technologies & Link */}
           <div className="pt-2 border-t border-border-hairline/30 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap text-xs font-mono text-muted-foreground/85">
               {currentBuild.technologies?.slice(0, 3).map((tech) => (
-                <span
-                  key={tech}
-                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted-subtle text-muted-foreground text-[10px] font-sans font-medium"
-                >
-                  <TechIcon name={tech} className="w-2.5 h-2.5 flex-shrink-0" />
+                <span key={tech} className="inline-flex items-center gap-1.5">
+                  <TechIcon name={tech} className="w-3 h-3 text-muted-foreground/70" />
                   <span>{tech}</span>
                 </span>
               ))}
@@ -142,7 +139,7 @@ export function NowSection() {
                 href={`/projects/${referencedProject.slug}`}
                 onMouseEnter={playHover}
                 onClick={playClick}
-                className="inline-flex items-center gap-1 font-mono text-[11px] text-brand hover:underline flex-shrink-0"
+                className="inline-flex items-center gap-1 font-mono text-xs text-brand hover:underline flex-shrink-0"
               >
                 <span>View project</span>
                 <ArrowRight className="w-3 h-3" />
@@ -155,17 +152,17 @@ export function NowSection() {
         {activity ? (
           <motion.div
             variants={shouldReduceMotion ? undefined : gridItemVariants}
-            className="p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/50 transition-all flex flex-col justify-between space-y-3 group shadow-2xs"
+            className="p-4 sm:p-4.5 rounded-lg bg-surface/20 border border-border-hairline hover:bg-surface/40 hover:border-border-muted transition-colors flex flex-col justify-between space-y-3 group"
           >
             <div className="space-y-2">
               {/* Header: Git Activity Tag & Relative Time */}
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-mono text-[10px] font-semibold tracking-wider">
+                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-mono text-xs font-medium tracking-wider">
                   <GitCommit className="w-3 h-3" />
                   <span>LATEST ACTIVITY</span>
                 </div>
 
-                <span className="font-mono text-[10px] text-muted-foreground/60">
+                <span className="font-mono text-xs text-muted-foreground/80">
                   <time dateTime={activity.pushedAt}>{displayTime}</time>
                 </span>
               </div>
@@ -175,7 +172,7 @@ export function NowSection() {
                 <h3 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors line-clamp-1">
                   {activity.repoTitle}
                 </h3>
-                <p className="font-sans text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed line-clamp-2">
                   {activity.description || "Active repository development"}
                 </p>
               </div>
@@ -183,7 +180,7 @@ export function NowSection() {
 
             {/* Bottom Meta & Repo Link */}
             <div className="pt-2 border-t border-border-hairline/30 flex items-center justify-between gap-2">
-              <span className="font-mono text-[10px] text-muted-foreground/70 truncate max-w-[160px]">
+              <span className="font-mono text-xs text-muted-foreground/80 truncate max-w-[160px]">
                 {activity.rawRepoName}
               </span>
 
@@ -193,7 +190,7 @@ export function NowSection() {
                 rel={activity.isProject ? undefined : "noopener noreferrer"}
                 onMouseEnter={playHover}
                 onClick={playClick}
-                className="inline-flex items-center gap-1 font-mono text-[11px] text-brand hover:underline flex-shrink-0"
+                className="inline-flex items-center gap-1 font-mono text-xs text-brand hover:underline flex-shrink-0"
               >
                 <span>{activity.isProject ? "View project" : "View repository"}</span>
                 <ArrowUpRight className="w-3 h-3" />

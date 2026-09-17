@@ -48,12 +48,13 @@ export function RecentProjects() {
           <motion.div
             key={project.slug}
             variants={shouldReduceMotion ? undefined : gridItemVariants}
+            className="h-full"
           >
             <Link
               href={`/projects/${project.slug}`}
               onMouseEnter={playHover}
               onClick={playClick}
-              className="cad-project-card group block cursor-pointer"
+              className="cad-project-card group flex flex-col justify-between h-full cursor-pointer"
             >
               {/* CAD Drafting Reticles (Four corner L-brackets revealing on hover) */}
               <div className="cad-reticle cad-reticle--tl" />
@@ -62,55 +63,54 @@ export function RecentProjects() {
               <div className="cad-reticle cad-reticle--br" />
 
               {/* Inner Project Container */}
-              <div className="p-3 sm:p-3.5 space-y-3">
-                {/* Cover Image Container (16:9 ratio with drafting reveal, hover preview, & pointer depth) */}
-                <ProjectMedia
-                  src={project.image}
-                  alt={project.title}
-                  previewSrc={
-                    project.designScreens && project.designScreens.length > 1
-                      ? project.designScreens[1]
-                      : project.gallery?.[0]
-                  }
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  badge={
-                    project.status && (
-                      <ProjectStatusBadge
-                        status={project.status}
-                        size="sm"
-                        className="bg-page/90 backdrop-blur-sm shadow-sm"
-                      />
-                    )
-                  }
-                />
+              <div className="p-3 sm:p-3.5 flex flex-col justify-between flex-1 space-y-3">
+                <div className="space-y-3">
+                  {/* Cover Image Container (16:9 ratio with drafting reveal, hover preview, & pointer depth) */}
+                  <ProjectMedia
+                    src={project.image}
+                    alt={project.title}
+                    previewSrc={
+                      project.designScreens && project.designScreens.length > 1
+                        ? project.designScreens[1]
+                        : project.gallery?.[0]
+                    }
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    badge={
+                      project.status && (
+                        <ProjectStatusBadge
+                          status={project.status}
+                          size="sm"
+                          className="bg-page/90 backdrop-blur-sm shadow-sm"
+                        />
+                      )
+                    }
+                  />
 
-                {/* Title, Category & Action Link */}
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors line-clamp-1">
-                      {project.title}
-                    </h3>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-ink transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 flex-shrink-0" />
+                  {/* Title, Category & Action Link */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-sans text-sm sm:text-[15px] font-semibold text-ink group-hover:text-brand transition-colors line-clamp-1">
+                        {project.title}
+                      </h3>
+                      <ArrowUpRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-ink transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 flex-shrink-0" />
+                    </div>
+                    <p className="font-sans text-xs sm:text-[13px] text-muted-foreground line-clamp-1">
+                      {project.category}
+                    </p>
                   </div>
-                  <p className="font-sans text-xs text-muted-foreground line-clamp-1">
-                    {project.category}
-                  </p>
                 </div>
 
-                {/* Vector Icon Tech Stack Pills */}
-                <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                  {project.tags.slice(0, 4).map((tech) => (
-                    <span
-                      key={tech}
-                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] bg-muted-subtle border border-border-hairline text-muted-foreground text-[11px] font-sans font-medium"
-                    >
-                      <TechIcon name={tech} className="w-3 h-3 flex-shrink-0" />
+                {/* Primary Technologies (Clean Inline Technical Signature) */}
+                <div className="flex items-center gap-x-3 gap-y-1 flex-wrap pt-0.5 text-xs font-mono text-muted-foreground/85 mt-auto">
+                  {project.tags.slice(0, 3).map((tech) => (
+                    <span key={tech} className="inline-flex items-center gap-1.5">
+                      <TechIcon name={tech} className="w-3 h-3 text-muted-foreground/70 flex-shrink-0" />
                       <span>{tech}</span>
                     </span>
                   ))}
-                  {project.tags.length > 4 && (
-                    <span className="text-[10px] font-mono text-muted-foreground px-1">
-                      +{project.tags.length - 4}
+                  {project.tags.length > 3 && (
+                    <span className="text-[11px] font-mono text-muted-foreground/50">
+                      +{project.tags.length - 3}
                     </span>
                   )}
                 </div>

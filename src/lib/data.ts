@@ -37,6 +37,9 @@ export interface ExperienceItem {
   isCurrent?: boolean;
   description?: string;
   yearNode?: string;
+  details?: string[];
+  technologies?: string[];
+  projects?: { title: string; href: string }[];
 }
 
 export interface RecommendationItem {
@@ -280,7 +283,7 @@ export const fullProjects: FullProjectItem[] = [
     ],
     live: "https://assetlink-supabase-landing.vercel.app/",
     github: `${SOCIAL_PROFILES.github}/ASSETLINK-supabase`,
-    status: "school-project",
+    status: "live",
     featured: true,
   },
   {
@@ -660,43 +663,86 @@ export const certifications: CertificationItem[] = [
 export const experiences: ExperienceItem[] = [
   {
     role: "Full-Stack Developer",
-    company: "Freelance & Student",
+    company: "Student Developer · Personal & Academic Projects",
     year: "2025 - Present",
     yearNode: "PRESENT",
     isCurrent: true,
     description:
       "Building web & mobile applications, solving real problems, and learning every day.",
+    details: [
+      "Engineering full-stack architectures combining Next.js, React, and TypeScript with Supabase backends.",
+      "Developing MKBRiderTrack (workforce attendance & logistics platform with biometric verification).",
+      "Building Naphix Resume (split-screen resume workspace with real-time ISO A4 preview & dual export).",
+      "Implementing responsive UI systems, role-based access control, and scalable REST/Edge API pipelines.",
+    ],
+    technologies: ["Next.js", "React 18", "TypeScript", "Supabase", "PostgreSQL", "Tailwind CSS"],
+    projects: [
+      { title: "MKBRiderTrack", href: "/projects/mkbridertrack" },
+      { title: "Naphix Resume", href: "/projects/naphix-resume" },
+    ],
   },
   {
     role: "Backend Developer",
-    company: "Freelance & Student",
+    company: "Technical Practice & System Projects",
     year: "2024 - 2025",
     yearNode: "2025",
     description:
       "Focused on building scalable APIs, databases, and server-side logic.",
+    details: [
+      "Designed relational schemas and database migrations with PostgreSQL, Supabase, and Prisma ORM.",
+      "Architected backend and data flows for AssetLink, a QR-based school asset tracking and maintenance platform.",
+      "Implemented Row-Level Security (RLS) policies, token-based authentication, and transaction safety.",
+      "Practiced building modular RESTful endpoints with Node.js, Express, and Python FastAPI.",
+    ],
+    technologies: ["Node.js", "Express.js", "PostgreSQL", "Supabase", "Prisma", "REST APIs"],
+    projects: [
+      { title: "AssetLink", href: "/projects/assetlink" },
+    ],
   },
   {
     role: "Front-End Developer",
-    company: "Freelance & Student",
+    company: "UI Engineering & Web Practice",
     year: "2023 - 2024",
     yearNode: "2024",
     description:
       "Turned ideas into interactive and accessible web experiences.",
+    details: [
+      "Engineered responsive, accessible single-page applications using modern React, JavaScript (ES6+), and Tailwind CSS.",
+      "Created MovieStream, an editorial movie discovery application with fluid animations and live TMDB integration.",
+      "Focused on mobile-first layouts, semantic HTML, WCAG accessibility guidelines, and component reusability.",
+      "Implemented client-side caching, debounced search filters, and smooth micro-interactions.",
+    ],
+    technologies: ["React", "JavaScript (ES6+)", "Tailwind CSS", "HTML5 / CSS3", "Framer Motion"],
+    projects: [
+      { title: "MovieStream", href: "/projects/moviestream" },
+    ],
   },
   {
     role: EDUCATION.degree,
-    company: EDUCATION.institution,
+    company: `Academic Experience · ${EDUCATION.institution}`,
     year: EDUCATION.period,
     yearNode: "2023",
     description:
       "Formal education that strengthened my technical and problem-solving foundation.",
+    details: [
+      "Rigorous coursework in Data Structures, Database Management Systems, Computer Networks, and System Analysis.",
+      "Collaborated on student team capstones, software requirement specifications, and technical presentations.",
+      "Participated in campus tech workshops and developer community events with Google Developer Groups (GDG) Zamboanga.",
+    ],
+    technologies: ["Networking", "Databases", "System Analysis", "Cybersecurity", "OOP"],
   },
   {
     role: "Hello World! 👋🏻",
-    company: "Wrote my first line of code",
+    company: "Learning Milestone",
     year: "2022",
     yearNode: "2022",
     description: "The beginning of a journey I'm still excited about.",
+    details: [
+      "Wrote my first lines of code, exploring HTML structure, CSS layouts, and basic JavaScript programming logic.",
+      "Discovered developer tooling, Git version control, GitHub workflows, and local terminal environments.",
+      "Built initial static web pages and algorithmic exercises that sparked a deep interest in software engineering.",
+    ],
+    technologies: ["HTML5", "CSS3", "JavaScript", "Git", "VS Code"],
   },
 ];
 

@@ -157,7 +157,7 @@ export function ProfileHeader() {
               <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
               </span>
-              <span className="text-[11px] font-mono font-medium leading-none whitespace-nowrap">
+              <span className="text-xs font-mono font-medium leading-none whitespace-nowrap">
                 {AVAILABILITY.label}
               </span>
             </div>
@@ -198,7 +198,7 @@ export function ProfileHeader() {
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
                 </span>
-                <span className="text-[11px] font-mono font-medium leading-none whitespace-nowrap">
+                <span className="text-xs font-mono font-medium leading-none whitespace-nowrap">
                   {AVAILABILITY.label}
                 </span>
               </div>
@@ -211,11 +211,11 @@ export function ProfileHeader() {
           </p>
 
           {/* Profile Details (Location, Live Time, Education) */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center sm:justify-start gap-2.5 sm:gap-x-4 sm:gap-y-2 text-xs text-muted-foreground pt-1 sm:pt-0.5 max-w-xs sm:max-w-none mx-auto sm:mx-0 sm:flex-wrap">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center sm:justify-start gap-2.5 sm:gap-x-5 sm:gap-y-2 text-xs sm:text-[13px] text-muted-foreground/90 pt-1.5 sm:pt-1 max-w-xs sm:max-w-none mx-auto sm:mx-0 sm:flex-wrap">
             {/* Location */}
             <div className="flex items-center gap-2">
               <svg
-                className="w-3.5 h-3.5 text-muted-foreground/70 flex-shrink-0"
+                className="w-4 h-4 text-muted-foreground/80 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -240,7 +240,7 @@ export function ProfileHeader() {
             {/* Local Time */}
             <div className="flex items-center gap-2">
               <svg
-                className="w-3.5 h-3.5 text-muted-foreground/70 flex-shrink-0"
+                className="w-4 h-4 text-muted-foreground/80 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -255,7 +255,7 @@ export function ProfileHeader() {
             {/* Education */}
             <div className="flex items-center gap-2">
               <svg
-                className="w-3.5 h-3.5 text-muted-foreground/70 flex-shrink-0"
+                className="w-4 h-4 text-muted-foreground/80 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

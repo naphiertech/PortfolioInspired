@@ -170,6 +170,15 @@
   }
 }
 
+@keyframes theme-conceal {
+  from {
+    clip-path: circle(var(--theme-clip-radius, 150vmax) at var(--theme-clip-x, 50%) var(--theme-clip-y, 50%));
+  }
+  to {
+    clip-path: circle(0px at var(--theme-clip-x, 50%) var(--theme-clip-y, 50%));
+  }
+}
+
 ::view-transition-group(root) {
   z-index: auto !important;
 }
@@ -196,10 +205,41 @@
   will-change: clip-path;
 }
 
-/* 480ms circular reveal matching govindnagar.me curve and deliberate pacing */
-html.theme-transitioning::view-transition-new(root) {
+/* Dark expands over light; on return, the old dark snapshot contracts above light. */
+html.theme-transitioning[data-theme-transition="expand-dark"]::view-transition-new(root) {
   clip-path: circle(0px at var(--theme-clip-x, 50%) var(--theme-clip-y, 50%));
-  animation: theme-reveal 480ms cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+  animation: theme-reveal 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation-play-state: paused !important;
+  opacity: 1;
+}
+
+html.theme-transitioning[data-theme-transition="expand-dark"]::view-transition-group(root) {
+  animation: none !important;
+}
+
+html.theme-transitioning[data-theme-transition="expand-dark"]::view-transition-old(root) {
+  animation: none !important;
+  opacity: 1 !important;
+  clip-path: none !important;
+}
+
+html.theme-transitioning[data-theme-transition="expand-dark"][data-theme-reveal-driver="waapi"]::view-transition-new(root) {
+  animation: none !important;
+}
+
+html.theme-transitioning[data-theme-transition="expand-dark"][data-theme-reveal-driver="css"]::view-transition-new(root) {
+  animation-play-state: running !important;
+}
+
+html.theme-transitioning[data-theme-transition="collapse-dark"]::view-transition-old(root) {
+  z-index: 99999 !important;
+  will-change: clip-path;
+  clip-path: circle(var(--theme-clip-radius, 150vmax) at var(--theme-clip-x, 50%) var(--theme-clip-y, 50%));
+  animation: theme-conceal 850ms cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+html.theme-transitioning[data-theme-transition="collapse-dark"]::view-transition-new(root) {
+  z-index: 1 !important;
 }
 
 /* Suppress DOM transitions during View Transition so the GPU compositor animates the visual snapshot exclusively */
@@ -215,8 +255,10 @@ html.theme-transitioning *::after {
   ::view-transition-group(root),
   ::view-transition-old(root),
   ::view-transition-new(root),
-  html.theme-transitioning::view-transition-new(root) {
+  html.theme-transitioning[data-theme-transition]::view-transition-new(root),
+  html.theme-transitioning[data-theme-transition]::view-transition-old(root) {
     animation: none !important;
+    clip-path: none !important;
   }
 }
 
@@ -657,8 +699,6 @@ html.theme-transitioning *::after {
   animation: presentationFadeInMobile 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: opacity;
 }
-
-
 
 
 

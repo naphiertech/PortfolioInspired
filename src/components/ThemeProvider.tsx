@@ -149,16 +149,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     ) + 32;
 
     const transitionId = ++activeTransitionRef.current;
+    const expandingDark = targetResolved === "dark";
 
     // Suppress all DOM CSS transitions so the GPU compositor exclusively animates the snapshot
     document.documentElement.style.setProperty("--theme-clip-x", `${x}px`);
     document.documentElement.style.setProperty("--theme-clip-y", `${y}px`);
     document.documentElement.style.setProperty("--theme-clip-radius", `${endRadius}px`);
     document.documentElement.classList.add("theme-transitioning");
+    document.documentElement.dataset.themeTransition = expandingDark ? "expand-dark" : "collapse-dark";
+    delete document.documentElement.dataset.themeRevealDriver;
 
     const cleanup = () => {
       if (activeTransitionRef.current === transitionId) {
         document.documentElement.classList.remove("theme-transitioning");
+        delete document.documentElement.dataset.themeTransition;
+        delete document.documentElement.dataset.themeRevealDriver;
         document.documentElement.style.removeProperty("--theme-clip-x");
         document.documentElement.style.removeProperty("--theme-clip-y");
         document.documentElement.style.removeProperty("--theme-clip-radius");
@@ -185,23 +190,35 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
       transition.ready
         .then(async () => {
+          if (activeTransitionRef.current !== transitionId) return;
           try {
             const anim = document.documentElement.animate(
               {
-                clipPath: [
+                clipPath: expandingDark ? [
                   `circle(0px at ${x}px ${y}px)`,
                   `circle(${endRadius}px at ${x}px ${y}px)`,
+                ] : [
+                  `circle(${endRadius}px at ${x}px ${y}px)`,
+                  `circle(0px at ${x}px ${y}px)`,
                 ],
               },
               {
-                duration: 480,
-                easing: "cubic-bezier(0.32, 0.72, 0, 1)",
-                pseudoElement: "::view-transition-new(root)",
-                fill: "forwards",
+                duration: expandingDark ? 800 : 850,
+                easing: expandingDark ? "cubic-bezier(0.22, 1, 0.36, 1)" : "cubic-bezier(0.4, 0, 0.2, 1)",
+                pseudoElement: expandingDark ? "::view-transition-new(root)" : "::view-transition-old(root)",
+                fill: expandingDark ? "both" : "forwards",
               }
             );
+            if (expandingDark) {
+              // WAAPI is now installed, including its zero-radius first frame.
+              // Release the paused CSS fallback without running a second reveal.
+              document.documentElement.dataset.themeRevealDriver = "waapi";
+            }
             await anim.finished;
           } catch {
+            if (expandingDark && activeTransitionRef.current === transitionId) {
+              document.documentElement.dataset.themeRevealDriver = "css";
+            }
             // In browsers where WAAPI on pseudoElement is unsupported (e.g. Safari 18),
             // the CSS animation @keyframes theme-reveal in globals.css takes over seamlessly.
           }

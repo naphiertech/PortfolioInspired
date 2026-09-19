@@ -59,6 +59,7 @@ export type ProjectStatus =
   | "live"
   | "active"
   | "wip"
+  | "beta"
   | "school-project"
   | "archived";
 
@@ -107,6 +108,8 @@ export interface FullProjectItem {
   live?: string;
   github?: string;
   featured?: boolean;
+  focusHighlight?: string;
+  focusDescription?: string;
 }
 
 export const projectStatusConfig: Record<
@@ -125,6 +128,11 @@ export const projectStatusConfig: Record<
   },
   wip: {
     label: "WIP",
+    dotClass: "bg-amber-500",
+    badgeClass: "text-amber-500 dark:text-amber-400 bg-amber-500/10 border-amber-500/20",
+  },
+  beta: {
+    label: "BETA",
     dotClass: "bg-amber-500",
     badgeClass: "text-amber-500 dark:text-amber-400 bg-amber-500/10 border-amber-500/20",
   },
@@ -221,6 +229,9 @@ export const fullProjects: FullProjectItem[] = [
     github: `${SOCIAL_PROFILES.github}/resumebuilder`,
     status: "live",
     featured: true,
+    focusHighlight: "Your data stays in your browser.",
+    focusDescription:
+      "Privacy-first resume builder with real-time preview, drag-and-drop customization, and PDF export.",
   },
   {
     slug: "assetlink",
@@ -285,6 +296,9 @@ export const fullProjects: FullProjectItem[] = [
     github: `${SOCIAL_PROFILES.github}/ASSETLINK-supabase`,
     status: "live",
     featured: true,
+    focusHighlight: "Less manual work, more time for students.",
+    focusDescription:
+      "QR code-powered asset and repair tracking for schools, with real-time updates and simple scanning.",
   },
   {
     slug: "moviestream",
@@ -352,6 +366,9 @@ export const fullProjects: FullProjectItem[] = [
     live: "https://phierplay.vercel.app/",
     status: "live",
     featured: true,
+    focusHighlight: "Fast, beautiful, and built for movie lovers.",
+    focusDescription:
+      "A modern movie discovery platform with TMDB data, beautiful visuals, and a distraction-free viewing experience.",
   },
   {
     slug: "mkb-ridertrack",
@@ -436,8 +453,11 @@ export const fullProjects: FullProjectItem[] = [
     ],
     live: "https://mkbridertrack.vercel.app/",
     github: `${SOCIAL_PROFILES.github}/MKB-supabase`,
-    status: "wip",
+    status: "beta",
     featured: true,
+    focusHighlight: "Streamlines field operations into one system.",
+    focusDescription:
+      "All-in-one operations platform for rider logistics, verification, GPS tracking, and automated payroll.",
   },
 ];
 

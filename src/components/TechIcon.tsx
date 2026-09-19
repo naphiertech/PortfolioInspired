@@ -94,9 +94,18 @@ import {
   SiHuggingface,
   SiMistralai,
   SiLangchain,
+  SiLeaflet,
+  SiThemoviedatabase,
 } from "react-icons/si";
 import { RiOpenaiFill } from "react-icons/ri";
 import { VscVscode } from "react-icons/vsc";
+import { LuQrCode } from "react-icons/lu";
+
+const ZustandIcon: IconType = (props) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M4.5 9.5a2.5 2.5 0 014.24-1.77A8.04 8.04 0 0112 7c1.15 0 2.24.26 3.26.73A2.5 2.5 0 1119.5 9.5c0 1.05-.64 1.95-1.56 2.32C18.27 12.82 18.5 13.88 18.5 15c0 3.59-2.91 6.5-6.5 6.5s-6.5-2.91-6.5-6.5c0-1.12.23-2.18.56-3.18A2.5 2.5 0 014.5 9.5zm4.5 3.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-3 2.5c-.83 0-1.5.45-1.5 1s.67 1 1.5 1 1.5-.45 1.5-1-.67-1-1.5-1z" />
+  </svg>
+);
 
 interface TechIconProps {
   name: string;
@@ -197,6 +206,13 @@ const ICON_REGISTRY: Record<string, IconConfig> = {
   lucide: { component: SiLucide, color: "#F56565" },
   lucidereact: { component: SiLucide, color: "#F56565" },
   jquery: { component: SiJquery, color: "#0769AD" },
+  zustand: { component: ZustandIcon, color: "#443E38" },
+  leaflet: { component: SiLeaflet, color: "#199900" },
+  tmdb: { component: SiThemoviedatabase, color: "#01B4E4" },
+  tmdbapi: { component: SiThemoviedatabase, color: "#01B4E4" },
+  themoviedatabase: { component: SiThemoviedatabase, color: "#01B4E4" },
+  qrlogic: { component: LuQrCode, color: "#3B82F6" },
+  qrcode: { component: LuQrCode, color: "#3B82F6" },
 
   // Backend & APIs
   node: { component: SiNodedotjs, color: "#5FA04E" },

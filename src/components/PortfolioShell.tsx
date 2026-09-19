@@ -6,6 +6,7 @@ import { usePresentationMode } from "@/features/presentation-modes/context/Prese
 import { SnapRouteGuard } from "@/components/SnapRouteGuard";
 import { EditorialDivider } from "@/components/EditorialDivider";
 import { TechnicalGrid } from "@/components/TechnicalGrid";
+import { VisitorPresence } from "@/components/VisitorPresence";
 import { SITE_NAME } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
 import { MusicEdgeDrawer } from "@/features/music-drawer";
@@ -72,6 +73,13 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       >
         <TechnicalGrid />
       </div>
+
+      {/* Top Center Visitor Presence Indicator */}
+      {!isAgentHome && !isMinimal && (
+        <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-center z-30 pointer-events-auto">
+          <VisitorPresence />
+        </div>
+      )}
 
       <main
         className={`${creativeFontVariables} ${creativeStyles.scope} w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}

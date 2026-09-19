@@ -22,10 +22,34 @@ const config: Config = {
       },
       colors: {
         page: "var(--bg-page)",
+        background: "var(--bg-page)",
+        foreground: "var(--text-ink)",
         surface: {
           DEFAULT: "var(--bg-surface)",
           hover: "var(--bg-surface-hover)",
         },
+        popover: {
+          DEFAULT: "var(--bg-surface)",
+          foreground: "var(--text-ink)",
+        },
+        primary: {
+          DEFAULT: "var(--text-brand)",
+          foreground: "var(--bg-page)",
+        },
+        secondary: {
+          DEFAULT: "var(--bg-muted)",
+          foreground: "var(--text-body)",
+        },
+        accent: {
+          DEFAULT: "var(--bg-surface-hover)",
+          foreground: "var(--text-ink)",
+        },
+        destructive: {
+          DEFAULT: "#ef4444",
+          foreground: "#ffffff",
+        },
+        input: "var(--border-hairline)",
+        ring: "var(--border-hairline)",
         dock: "var(--bg-dock)",
         muted: {
           DEFAULT: "var(--bg-muted)",

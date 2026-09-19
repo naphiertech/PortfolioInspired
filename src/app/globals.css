@@ -26,11 +26,11 @@
   --border-divider: rgba(255, 255, 255, 0.06);
 
   /* Technical Editorial Grid System Tokens */
-  --grid-guide: rgba(255, 255, 255, 0.22);
-  --grid-guide-subtle: rgba(255, 255, 255, 0.10);
-  --grid-crosshair: rgba(255, 255, 255, 0.85);
-  --grid-dot: rgba(255, 255, 255, 0.08);
-  --grid-hatch: rgba(255, 255, 255, 0.03);
+  --grid-guide: rgba(255, 255, 255, 0.085);
+  --grid-guide-subtle: rgba(255, 255, 255, 0.045);
+  --grid-crosshair: rgba(255, 255, 255, 0.12);
+  --grid-dot: transparent;
+  --grid-hatch: rgba(255, 255, 255, 0.035);
   
   /* Shared Structural Layout Dimensions */
   --grid-width-default: 760px;
@@ -90,10 +90,10 @@
   --border-divider: rgba(0, 0, 0, 0.06);
 
   /* Technical Editorial Grid (Light extension) */
-  --grid-guide: rgba(0, 0, 0, 0.20);
-  --grid-guide-subtle: rgba(0, 0, 0, 0.08);
-  --grid-crosshair: rgba(0, 0, 0, 0.85);
-  --grid-dot: rgba(0, 0, 0, 0.08);
+  --grid-guide: rgba(0, 0, 0, 0.075);
+  --grid-guide-subtle: rgba(0, 0, 0, 0.038);
+  --grid-crosshair: rgba(0, 0, 0, 0.12);
+  --grid-dot: transparent;
   --grid-hatch: rgba(0, 0, 0, 0.03);
 
   --status-active: #09090b;
@@ -556,10 +556,9 @@ html.theme-transitioning *::after {
   }
 }
 
-/* Technical CAD Dot Grid Texture */
+/* Technical Editorial Grid Utilities */
 .bg-technical-dots {
-  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
-  background-size: 20px 20px;
+  display: none;
 }
 
 /* Subtle Architectural Diagonal Hatch for outer margin gutters */
@@ -573,14 +572,12 @@ html.theme-transitioning *::after {
   );
 }
 
-/* CAD Drafting Blueprint Grid Line Utilities */
+/* Architectural Layout Grid Line Utilities (Crisp 1px solid lines) */
 .grid-line-v {
   pointer-events: none;
   user-select: none;
   width: 0px;
   border-right: 1px solid var(--grid-guide);
-  mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
-  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
 }
 
 .grid-line-v-subtle {
@@ -588,8 +585,6 @@ html.theme-transitioning *::after {
   user-select: none;
   width: 0px;
   border-right: 1px solid var(--grid-guide-subtle);
-  mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
-  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
 }
 
 .grid-line-h {
@@ -597,8 +592,6 @@ html.theme-transitioning *::after {
   user-select: none;
   height: 0px;
   border-bottom: 1px solid var(--grid-guide);
-  mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
-  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
 }
 
 .grid-line-h-subtle {
@@ -606,25 +599,6 @@ html.theme-transitioning *::after {
   user-select: none;
   height: 0px;
   border-bottom: 1px solid var(--grid-guide-subtle);
-  mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
-  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0px, #000 4px, transparent 4px, transparent 8px);
-}
-
-.grid-intersection {
-  pointer-events: none;
-  user-select: none;
-  width: 3px;
-  height: 3px;
-  border-radius: 9999px;
-  background-color: var(--grid-crosshair);
-  position: absolute;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  box-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
-}
-
-.light .grid-intersection {
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
 }
 
 /* ========================================================================= */

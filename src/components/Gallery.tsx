@@ -109,14 +109,14 @@ export function Gallery() {
               playOpen();
               setActiveIdx(idx);
             }}
-            className="relative flex-shrink-0 w-36 h-28 sm:w-48 sm:h-36 rounded-lg overflow-hidden bg-surface border border-border-hairline cursor-pointer group shadow-2xs"
+            className="relative flex-shrink-0 w-36 h-28 sm:w-48 sm:h-36 rounded-lg overflow-hidden bg-surface border border-border-hairline group-hover:border-border cursor-pointer group shadow-2xs transition-colors duration-200"
           >
             <Image
               src={src}
               alt={`Event photo ${idx + 1}`}
               fill
               sizes="(max-width: 640px) 150px, 200px"
-              className="object-cover opacity-90 grayscale contrast-[1.03] transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0 group-hover:contrast-100 group-hover:scale-[1.025]"
+              className="object-cover opacity-90 grayscale contrast-[1.03] transition-[filter,opacity] duration-300 group-hover:opacity-100 group-hover:grayscale-0 group-hover:contrast-100"
             />
           </div>
         ))}

@@ -31,11 +31,11 @@ export function FocusTechStack() {
   return (
     <section aria-label="Technologies used" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
-        <span className="tracking-wider font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-3.5">
+        <h2 className="tracking-wider font-medium font-mono text-xs">
           [ 03 // TECH STACK ]
-        </span>
-        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
+        </h2>
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           CORE TECHNOLOGIES
         </span>
       </div>
@@ -49,9 +49,9 @@ export function FocusTechStack() {
           >
             {/* Left Category Label */}
             <div className="min-w-0 pt-0.5">
-              <span className="font-mono text-xs sm:text-[13px] font-semibold text-ink">
+              <h3 className="font-mono text-xs sm:text-[13px] font-semibold text-ink">
                 {group.domain}
-              </span>
+              </h3>
             </div>
 
             {/* Right Technologies: Left-aligned and wrapped naturally */}

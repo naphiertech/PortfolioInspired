@@ -152,7 +152,7 @@ export function ProfileHeader() {
               fill
               sizes="120px"
               priority
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-opacity duration-300"
               style={{ objectPosition: "center 25%" }}
             />
 
@@ -224,7 +224,7 @@ export function ProfileHeader() {
           </div>
 
           {/* Introduction condensed from the former standalone About section */}
-          <p className="font-sans text-sm sm:text-[15px] text-body max-w-2xl mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
+          <p className="font-sans text-sm sm:text-[15px] text-body max-w-[65ch] mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
             I&apos;m an IT student who enjoys turning ideas into practical web applications—from school systems and productivity tools to personal projects. I care about clean interfaces, thoughtful user experiences, and reliable functionality, with a growing interest in UI/UX, web animation, and AI-assisted development.
           </p>
 
@@ -298,7 +298,7 @@ export function ProfileHeader() {
               {/* Primary Action: Schedule a Call (Full-width on mobile) */}
               <a
                 href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-ink text-page font-sans text-xs font-semibold hover:opacity-90 transition-all shadow-xs active:scale-[0.98] cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-ink text-page font-sans text-xs sm:text-[12.5px] font-semibold hover:opacity-90 transition-[opacity,transform] shadow-xs active:scale-[0.98] cursor-pointer"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -311,7 +311,7 @@ export function ProfileHeader() {
                 {/* Secondary Action: Send Email */}
                 <a
                   href={`mailto:${SOCIAL_PROFILES.email}`}
-                  className="tactile-btn gap-1.5 text-xs px-3.5 py-2.5 sm:py-2 h-auto sm:h-7 w-full sm:w-auto justify-center"
+                  className="tactile-btn gap-1.5 text-xs sm:text-[12.5px] px-3.5 py-2.5 sm:py-1.5 w-full sm:w-auto justify-center"
                 >
                   <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -324,7 +324,7 @@ export function ProfileHeader() {
                   href="/resume/naphier_awalie_resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="tactile-btn gap-1.5 text-xs px-3 py-2.5 sm:py-2 h-auto sm:h-7 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"
+                  className="tactile-btn gap-1.5 text-xs sm:text-[12.5px] px-3 py-2.5 sm:py-1.5 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"
                 >
                   <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -338,7 +338,7 @@ export function ProfileHeader() {
                 href={SOCIAL_PROFILES.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="tactile-btn gap-1.5 text-xs px-3 py-2.5 sm:py-2 h-auto sm:h-7 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"
+                className="tactile-btn gap-1.5 text-xs sm:text-[12.5px] px-3 py-2.5 sm:py-1.5 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"
               >
                 <svg className="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24">
                   <path

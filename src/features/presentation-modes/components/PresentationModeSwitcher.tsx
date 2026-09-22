@@ -324,7 +324,7 @@ export function PresentationModeSwitcher({
               <span className="text-emerald-500 text-[9px] flex-shrink-0" aria-hidden="true">
                 ●
               </span>
-              <span className="font-semibold uppercase text-[11px] whitespace-nowrap">
+              <span className="font-semibold uppercase text-xs whitespace-nowrap">
                 {currentConfig.shortLabel || currentConfig.label}
               </span>
               <ChevronDown
@@ -341,7 +341,7 @@ export function PresentationModeSwitcher({
                 <span className="text-muted-foreground/70 text-[11px] leading-none mb-0.5" aria-hidden="true">
                   ↑
                 </span>
-                <span className="font-mono text-[10px] sm:text-[11px] text-muted-foreground/85 tracking-wide">
+                <span className="font-mono text-xs text-muted-foreground/85 tracking-wide">
                   Try another view
                 </span>
               </div>
@@ -396,7 +396,7 @@ export function PresentationModeSwitcher({
             <span className="text-brand text-xs font-mono select-none flex-shrink-0" aria-hidden="true">
               ◈
             </span>
-            <span className="font-semibold uppercase text-[11px] tracking-wider text-ink whitespace-nowrap">
+            <span className="font-semibold uppercase text-xs tracking-wider text-ink whitespace-nowrap">
               {currentConfig.shortLabel || currentConfig.label}
             </span>
             <ChevronDown

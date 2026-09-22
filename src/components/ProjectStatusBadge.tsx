@@ -26,7 +26,7 @@ export function ProjectStatusBadge({
       className={`inline-flex items-center gap-1.5 rounded-full border font-mono font-medium leading-none select-none tracking-wide ${
         config.badgeClass
       } ${
-        isSm ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-1 text-[11px]"
+        isSm ? "px-2.5 py-0.5 text-[11px]" : "px-2.5 py-1 text-xs"
       } ${className}`}
     >
       <span className="relative flex h-1.5 w-1.5 flex-shrink-0">

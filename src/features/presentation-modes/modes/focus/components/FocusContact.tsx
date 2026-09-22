@@ -20,11 +20,11 @@ export function FocusContact() {
   return (
     <section aria-label="Contact and availability" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
-        <span className="tracking-wider font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-3.5">
+        <h2 className="tracking-wider font-medium font-mono text-xs">
           [ 05 // CONTACT ]
-        </span>
-        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
+        </h2>
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           CONTACT & AVAILABILITY
         </span>
       </div>
@@ -36,7 +36,7 @@ export function FocusContact() {
           <h3 className="font-sans font-semibold text-base sm:text-lg text-ink tracking-tight">
             Available for work and collaboration.
           </h3>
-          <p className="mt-1.5 text-sm sm:text-[14.5px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-xl">
+          <p className="mt-1.5 text-sm sm:text-[14.5px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-[60ch]">
             Open to {AVAILABILITY.openTo} ({AVAILABILITY.workSetup}). Based in {AUTHOR_INFO.location}.
           </p>
         </div>
@@ -46,7 +46,7 @@ export function FocusContact() {
           {/* Primary Mail Button */}
           <a
             href={`mailto:${SOCIAL_PROFILES.email}`}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-ink text-page font-medium font-sans text-xs hover:opacity-90 active:scale-[0.98] transition-all"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-ink text-page font-medium font-sans text-xs sm:text-[12.5px] hover:opacity-90 active:scale-[0.98] transition-[opacity,transform]"
           >
             <Mail className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Send Email</span>
@@ -88,7 +88,7 @@ export function FocusContact() {
       </div>
 
       {/* Secondary Social Channels Row */}
-      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400">
+      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-zinc-600 dark:text-zinc-400">
         <div className="flex items-center gap-3.5">
           <a
             href={SOCIAL_PROFILES.github}
@@ -111,7 +111,7 @@ export function FocusContact() {
           </a>
         </div>
 
-        <span className="text-zinc-500 dark:text-zinc-400 text-[11px]">
+        <span className="text-zinc-600 dark:text-zinc-400 text-xs">
           {AUTHOR_INFO.location}
         </span>
       </div>

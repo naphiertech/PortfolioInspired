@@ -195,8 +195,8 @@ export function ExperienceTimeline() {
                               {exp.role}
                             </h3>
                             {isCurrent && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-medium leading-none flex-shrink-0">
-                                <span className="w-1 h-1 rounded-full bg-emerald-500 animate-status-breathe" />
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium leading-none flex-shrink-0">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-breathe" />
                                 Current
                               </span>
                             )}
@@ -247,7 +247,7 @@ export function ExperienceTimeline() {
                               {exp.role}
                             </h3>
                             {isCurrent && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-medium leading-none">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium leading-none">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-breathe" />
                                 Current
                               </span>
@@ -262,7 +262,7 @@ export function ExperienceTimeline() {
                       {/* Middle: Real Description (Desktop) */}
                       {exp.description && (
                         <div className="hidden md:block flex-1 max-w-xs xl:max-w-sm pl-2">
-                          <p className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 leading-relaxed line-clamp-2">
+                          <p className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 leading-relaxed line-clamp-2 max-w-[60ch]">
                             {exp.description}
                           </p>
                         </div>

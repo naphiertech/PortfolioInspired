@@ -16,11 +16,11 @@ export function FocusSelectedWork() {
   return (
     <section aria-label="Selected projects" className="w-full">
       {/* Section Index Header */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-4">
-        <span className="tracking-wider font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-4">
+        <h2 className="tracking-wider font-medium font-mono text-xs">
           [ 02 // PROJECTS ]
-        </span>
-        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
+        </h2>
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           SELECTED PROJECTS ({projects.length})
         </span>
       </div>
@@ -46,7 +46,7 @@ export function FocusSelectedWork() {
               >
                 <Link
                   href={`/projects/${project.slug}`}
-                  className="block relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-border-hairline bg-surface/50 dark:bg-surface/30 shadow-xs group/img"
+                  className="block relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-border-hairline group-hover/img:border-border bg-surface/50 dark:bg-surface/30 shadow-xs transition-colors duration-200 group/img"
                   tabIndex={-1}
                   aria-hidden="true"
                 >
@@ -57,7 +57,7 @@ export function FocusSelectedWork() {
                     sizes="(max-width: 1024px) 100vw, 520px"
                     priority={index === 0}
                     loading={index === 0 ? "eager" : "lazy"}
-                    className="object-cover object-top transition-transform duration-300 ease-out group-hover/img:scale-[1.02]"
+                    className="object-cover object-top transition-[filter,opacity] duration-300 ease-out group-hover/img:brightness-[1.02] dark:group-hover/img:brightness-105"
                   />
                 </Link>
               </div>
@@ -68,18 +68,13 @@ export function FocusSelectedWork() {
                   isEven ? "lg:order-2" : "lg:order-1"
                 }`}
               >
-                {/* Title, Status & Year */}
-                <div className="flex items-center gap-2.5 flex-wrap">
+                {/* Title + Meta Row */}
+                <div className="flex items-baseline gap-2.5 flex-wrap">
                   <h3 className="font-sans font-semibold text-lg sm:text-xl text-ink tracking-tight">
-                    <Link
-                      href={`/projects/${project.slug}`}
-                      className="hover:text-brand transition-colors inline-flex items-center gap-1.5 group/title"
-                    >
-                      <span>{project.title}</span>
-                    </Link>
+                    {project.title}
                   </h3>
 
-                  <span className="text-muted-foreground/40 font-sans text-sm select-none" aria-hidden="true">
+                  <span className="text-muted-foreground/50 font-sans text-sm select-none" aria-hidden="true">
                     ·
                   </span>
 
@@ -87,18 +82,18 @@ export function FocusSelectedWork() {
                     <ProjectStatusBadge status={project.status} size="sm" />
                   )}
 
-                  <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 ml-auto">
+                  <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400 ml-auto">
                     {project.year}
                   </span>
                 </div>
 
                 {/* Category */}
-                <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mt-1 mb-2.5">
+                <p className="font-mono text-xs text-zinc-600 dark:text-zinc-400 mt-1 mb-2.5">
                   {project.category}
                 </p>
 
                 {/* Concise 1-2 sentence description */}
-                <p className="text-sm sm:text-[14.5px] text-zinc-700 dark:text-zinc-300 font-sans leading-relaxed mb-3.5">
+                <p className="text-sm sm:text-[14.5px] text-zinc-700 dark:text-zinc-300 font-sans leading-relaxed mb-3.5 max-w-[62ch]">
                   {description}
                 </p>
 

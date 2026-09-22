@@ -50,8 +50,9 @@
   top: calc(100% + 6px);
   right: 0;
   z-index: 1;
-  max-width: 0;
-  overflow: hidden;
+  width: max-content;
+  max-width: 144px;
+  white-space: nowrap;
   padding: 7px 10px;
   border: 1px solid var(--border-dashed);
   border-radius: 999px;
@@ -59,15 +60,15 @@
   color: var(--text-body);
   box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
   opacity: 0;
-  transform: translateY(-3px);
+  transform: translateY(-3px) scale(0.96);
   pointer-events: none;
-  transition: max-width 150ms ease-out, opacity 150ms ease-out, transform 150ms ease-out;
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
   transition-delay: 0ms;
 }
 .topToggle:focus .toggleLabel,
-.topToggle:active .toggleLabel { max-width: 144px; opacity: 1; transform: translateY(0); }
+.topToggle:active .toggleLabel { opacity: 1; transform: translateY(0) scale(1); }
 @media (hover: hover) {
-  .topToggle:hover .toggleLabel { max-width: 144px; opacity: 1; transform: translateY(0); transition-delay: 80ms; }
+  .topToggle:hover .toggleLabel { opacity: 1; transform: translateY(0) scale(1); transition-delay: 80ms; }
 }
 .topToggle:focus .toggleLabel,
 .topToggle:active .toggleLabel { transition-delay: 0ms; }

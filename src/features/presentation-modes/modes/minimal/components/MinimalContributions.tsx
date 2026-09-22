@@ -122,7 +122,7 @@ export function MinimalContributions() {
         <h2 className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
           GitHub Contributions
         </h2>
-        <span className="font-mono text-[10px] sm:text-[11px] text-zinc-500 dark:text-[#827d73]">
+        <span className="font-mono text-xs sm:text-[13px] text-zinc-600 dark:text-[#a09a8e]">
           {data.total.toLocaleString()} contributions{data.year ? ` in ${data.year}` : ""}
         </span>
       </div>
@@ -131,7 +131,7 @@ export function MinimalContributions() {
       <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain scrollbar-hide [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden select-none pb-1" tabIndex={0} role="region" aria-label="GitHub contribution calendar, scroll horizontally to see all months">
         <div className="inline-block min-w-max">
           {/* Month Header */}
-          <div className="relative h-4 mb-1.5 font-mono text-[9px] text-zinc-500 dark:text-[#827d73]">
+          <div className="relative h-4 mb-2 font-mono text-[11px] text-zinc-600 dark:text-[#a09a8e]">
             {data.months.map((m, idx) => {
               const leftPos = m.weekIndex * (CELL_SIZE + CELL_GAP);
               return (
@@ -196,7 +196,7 @@ export function MinimalContributions() {
       </div>
 
       {/* GitHub Profile Link */}
-      <div className="flex items-center justify-between text-xs font-mono text-zinc-600 dark:text-[#9e998e] pt-1">
+      <div className="flex items-center justify-between text-xs sm:text-[13px] font-mono text-zinc-600 dark:text-[#a09a8e] pt-1">
         <a
           href={SOCIAL_PROFILES.github}
           target="_blank"

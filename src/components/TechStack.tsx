@@ -68,9 +68,9 @@ export function TechStack() {
             >
               {/* Category Code Header with Drawing Rule */}
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-muted-foreground/80 lowercase">
+                <h3 className="font-mono text-xs text-muted-foreground lowercase">
                   {syntaxTag}
-                </span>
+                </h3>
                 <motion.div
                   variants={shouldReduceMotion ? undefined : sectionLineVariants}
                   className="h-[1px] flex-1 bg-border-hairline/30 origin-left"

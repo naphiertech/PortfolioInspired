@@ -45,11 +45,11 @@ export function FocusCapabilities() {
   return (
     <section aria-label="Core skills overview" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3 sm:mb-3.5">
-        <span className="tracking-wider font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-3 sm:mb-3.5">
+        <h2 className="tracking-wider font-medium font-mono text-xs">
           [ 01 // SKILLS ]
-        </span>
-        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
+        </h2>
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           CORE AREAS
         </span>
       </div>
@@ -66,13 +66,13 @@ export function FocusCapabilities() {
               <div>
                 {/* Domain Header */}
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs text-muted-foreground/60">
+                  <span className="font-mono text-xs text-muted-foreground/80">
                     {pillar.id}.
                   </span>
-                  <div className="flex items-center gap-2 font-sans font-semibold text-sm sm:text-base text-ink">
+                  <h3 className="flex items-center gap-2 font-sans font-semibold text-sm sm:text-base text-ink">
                     <Icon className="w-4 h-4 text-brand flex-shrink-0" aria-hidden="true" />
                     <span>{pillar.domain}</span>
-                  </div>
+                  </h3>
                 </div>
 
                 {/* Readable Bullet Items */}

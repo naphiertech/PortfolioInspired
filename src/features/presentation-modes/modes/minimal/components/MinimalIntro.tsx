@@ -38,7 +38,7 @@ export function MinimalIntro() {
       </div>
 
       {/* Narrative Paragraphs */}
-      <div className="font-serif text-[15px] sm:text-[16px] text-zinc-600 dark:text-[#9e998e] leading-[28px] space-y-4 [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
+      <div className="font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#b4afa4] leading-[28px] space-y-4 max-w-[65ch] [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
         <p>
           I&apos;m an <strong>IT student and full-stack developer</strong> who enjoys turning ideas
           into <strong>practical web applications</strong> with clean interfaces, <strong>thoughtful user
@@ -55,7 +55,7 @@ export function MinimalIntro() {
       </div>
 
       {/* Availability Status */}
-      <div className="flex items-center gap-2 font-mono text-xs text-zinc-600 dark:text-[#9e998e] pt-1">
+      <div className="flex items-center gap-2 font-mono text-xs sm:text-[13px] text-zinc-700 dark:text-[#a8a397] pt-1">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/90 dark:bg-emerald-400/80" />
         <a
           href={`mailto:${SOCIAL_PROFILES.email}?subject=Collaboration%20Inquiry`}
@@ -66,7 +66,7 @@ export function MinimalIntro() {
       </div>
 
       {/* Understated Action Links */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 text-xs font-mono text-zinc-600 dark:text-[#9e998e]">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 text-xs sm:text-[13px] font-mono text-zinc-700 dark:text-[#a8a397]">
         <a
           href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
           className="text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4"

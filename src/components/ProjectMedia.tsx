@@ -95,7 +95,7 @@ export function ProjectMedia({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
-      className={`relative w-full ${aspectRatio} rounded-[4px] overflow-hidden bg-surface border border-border-hairline select-none ${className}`}
+      className={`relative w-full ${aspectRatio} rounded-[4px] overflow-hidden bg-surface border border-border-hairline group-hover:border-border transition-colors duration-200 select-none ${className}`}
     >
       {/* Technical Drafting Wipe Curtain Overlay (Slides away smoothly on viewport entry) */}
       {!shouldReduceMotion && enableDraftingReveal && (
@@ -117,7 +117,7 @@ export function ProjectMedia({
             ? { x: imageX, y: imageY }
             : undefined
         }
-        className="relative w-full h-full transform-gpu transition-transform duration-300 ease-out group-hover:scale-[1.015]"
+        className="relative w-full h-full transform-gpu"
       >
         {/* Canonical Primary Image */}
         <Image
@@ -126,7 +126,7 @@ export function ProjectMedia({
           fill
           priority={priority}
           sizes={sizes}
-          className={`object-cover transition-all duration-300 ease-out ${
+          className={`object-cover transition-[filter,opacity] duration-300 ease-out ${
             validPreviewSrc && previewActive ? "opacity-0" : "opacity-100"
           } grayscale contrast-[1.04] brightness-[0.96] dark:brightness-[0.92] group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100`}
         />
@@ -140,7 +140,7 @@ export function ProjectMedia({
             loading="lazy"
             sizes={sizes}
             onError={() => setPreviewError(true)}
-            className={`object-cover transition-all duration-300 ease-out ${
+            className={`object-cover transition-[filter,opacity] duration-300 ease-out ${
               previewActive
                 ? "opacity-100 grayscale-0 contrast-100 brightness-100"
                 : "opacity-0 grayscale pointer-events-none"

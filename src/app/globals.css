@@ -16,8 +16,8 @@
 
   --text-ink: #fafafa;
   --text-body: #d4d4d8;
-  --text-muted: #8c8c8c;
-  --text-faint: #71717a;
+  --text-muted: #9ca3af;
+  --text-faint: #80808a;
   --text-brand: #ffffff;
 
   --border-hairline: rgba(255, 255, 255, 0.08);
@@ -80,8 +80,8 @@
 
   --text-ink: #09090b;
   --text-body: #27272a;
-  --text-muted: #71717a;
-  --text-faint: #a1a1aa;
+  --text-muted: #52525b;
+  --text-faint: #71717a;
   --text-brand: #000000;
 
   --border-hairline: rgba(0, 0, 0, 0.08);
@@ -285,13 +285,13 @@ html.theme-transitioning *::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 28px;
+  height: 30px;
   border-radius: 6px;
-  padding: 4px 11px;
+  padding: 4px 12px;
   background-color: var(--bg-surface);
   color: var(--text-ink);
   font-family: 'Figtree', sans-serif;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 500;
   box-shadow: var(--shadow-tactile);
   border: 1px solid var(--border-hairline);
@@ -561,14 +561,12 @@ html.theme-transitioning *::after {
   display: none;
 }
 
-/* Subtle Architectural Diagonal Hatch for outer margin gutters */
+/* Subtle Architectural Gutter Accent for outer margin gutters */
 .bg-architectural-hatch {
-  background-image: repeating-linear-gradient(
-    -45deg,
+  background-image: linear-gradient(
+    to bottom,
     transparent,
-    transparent 6px,
-    var(--grid-hatch) 6px,
-    var(--grid-hatch) 7px
+    var(--grid-hatch)
   );
 }
 

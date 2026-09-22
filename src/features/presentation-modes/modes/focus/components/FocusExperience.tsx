@@ -7,11 +7,11 @@ export function FocusExperience() {
   return (
     <section aria-label="Work experience" className="w-full">
       {/* Section Index */}
-      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
-        <span className="tracking-wider font-medium">
+      <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-3.5">
+        <h2 className="tracking-wider font-medium font-mono text-xs">
           [ 04 // EXPERIENCE ]
-        </span>
-        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
+        </h2>
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           EXPERIENCE & EDUCATION
         </span>
       </div>
@@ -29,7 +29,7 @@ export function FocusExperience() {
                 {exp.year}
               </span>
               {exp.isCurrent && (
-                <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium leading-none">
+                <span className="font-mono text-[11px] uppercase px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium leading-none">
                   ACTIVE
                 </span>
               )}
@@ -42,13 +42,13 @@ export function FocusExperience() {
                   {exp.role}
                 </h3>
                 <span className="text-zinc-400 dark:text-zinc-500 font-mono text-xs select-none">·</span>
-                <span className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400">
+                <span className="font-mono text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400">
                   {exp.company}
                 </span>
               </div>
 
               {exp.description && (
-                <p className="mt-1.5 text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-2xl">
+                <p className="mt-1.5 text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-[62ch]">
                   {exp.description}
                 </p>
               )}

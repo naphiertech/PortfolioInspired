@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { FullProjectItem } from "@/lib/data";
 import { ProjectDetailClient } from "@/app/projects/[slug]/ProjectDetailClient";
-import { FocusProjectDetailPage } from "../modes/focus/pages/FocusProjectDetailPage";
+import dynamic from "next/dynamic";
+import { RouteLoading } from "@/components/RouteLoading";
+
+const FocusProjectDetailPage = dynamic(
+  () => import("../modes/focus/pages/FocusProjectDetailPage").then(module => module.FocusProjectDetailPage),
+  { loading: () => <RouteLoading view="project" /> },
+);
 
 interface ProjectDetailPresentationRootProps {
   project: FullProjectItem;

@@ -4,7 +4,13 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { WorkClient } from "@/app/work/WorkClient";
-import { FocusWorkPage } from "../modes/focus/pages/FocusWorkPage";
+import dynamic from "next/dynamic";
+import { RouteLoading } from "@/components/RouteLoading";
+
+const FocusWorkPage = dynamic(
+  () => import("../modes/focus/pages/FocusWorkPage").then(module => module.FocusWorkPage),
+  { loading: () => <RouteLoading view="work" /> },
+);
 
 /**
  * WorkPresentationRoot

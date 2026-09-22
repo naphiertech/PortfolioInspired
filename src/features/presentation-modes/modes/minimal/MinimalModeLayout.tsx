@@ -29,6 +29,9 @@ export function MinimalModeLayout() {
         {/* 2. Introduction & Identity */}
         <MinimalIntro />
 
+        {/* Contribution activity follows the introduction and contact links. */}
+        <MinimalContributions />
+
         {/* 3. Selected Work */}
         <MinimalProjects />
 
@@ -37,9 +40,6 @@ export function MinimalModeLayout() {
 
         {/* 5. Currently */}
         <MinimalCurrent />
-
-        {/* 6. GitHub Contributions */}
-        <MinimalContributions />
 
         {/* 7. Connect & Minimal Footer */}
         <MinimalConnect />

@@ -4,7 +4,13 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { TechStackClient } from "@/app/tech-stack/TechStackClient";
-import { FocusTechStackPage } from "../modes/focus/pages/FocusTechStackPage";
+import dynamic from "next/dynamic";
+import { RouteLoading } from "@/components/RouteLoading";
+
+const FocusTechStackPage = dynamic(
+  () => import("../modes/focus/pages/FocusTechStackPage").then(module => module.FocusTechStackPage),
+  { loading: () => <RouteLoading view="tech" /> },
+);
 
 /**
  * TechStackPresentationRoot

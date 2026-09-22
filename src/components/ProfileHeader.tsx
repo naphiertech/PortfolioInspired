@@ -6,7 +6,7 @@ import { useTheme } from "./ThemeProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
 import { CreativeModeToggle } from "@/features/creative-mode";
-import { GithubContributions } from "./GithubContributions";
+import dynamic from "next/dynamic";
 import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { SnapTrigger } from "./SnapTrigger";
@@ -20,6 +20,20 @@ import {
   SITE_NAME,
   SOCIAL_PROFILES,
 } from "@/lib/siteConfig";
+
+const GithubContributions = dynamic(
+  () => import("./GithubContributions").then(module => module.GithubContributions),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-[132px] space-y-3" role="status" aria-label="Loading GitHub contributions">
+        <div className="h-3 w-48 bg-muted-subtle rounded" />
+        <div className="h-20 w-full max-w-[690px] rounded border border-border-hairline" />
+        <div className="h-3 w-64 bg-muted-subtle rounded" />
+      </div>
+    ),
+  },
+);
 
 export function ProfileHeader() {
   const { resolvedTheme } = useTheme();

@@ -1,0 +1,62 @@
+.intro {
+  font-family: var(--creative-font-body, var(--font-eb-garamond), Georgia, serif);
+  font-size: calc(16px * var(--creative-type-scale, 1));
+  line-height: 2;
+  color: var(--text-muted);
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 3px 7px;
+  border: 1px solid var(--border-dashed);
+  border-radius: var(--creative-radius-control, 5px);
+  background: var(--bg-surface);
+  color: var(--text-body);
+  font-family: var(--creative-font-body, "Figtree", sans-serif);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  vertical-align: middle;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.pill:hover { background: var(--bg-surface-hover); border-color: var(--text-faint); }
+.pill > span { overflow-wrap: anywhere; }
+.reveal { overflow: hidden; }
+.details { display: grid; gap: calc(22px * var(--creative-spacing, 1)); padding: 8px 0 4px; }
+.helper { color: var(--text-muted); font-family: inherit; font-size: 15px; }
+.category h3 {
+  margin-bottom: 9px;
+  font-family: var(--creative-font-mono, "JetBrains Mono", monospace);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-body);
+  font-family: var(--creative-font-body, "Figtree", sans-serif);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  text-underline-offset: 4px;
+  transition: color 150ms ease;
+}
+.toggle:hover { color: var(--text-ink); text-decoration: underline; }
+.toggle:focus-visible { outline: 2px solid var(--text-ink); outline-offset: 3px; }
+@media (max-width: 639px) {
+  .toggle { min-height: 44px; }
+  .intro { font-size: calc(15px * var(--creative-type-scale, 1)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill, .toggle { transition: none; }
+}

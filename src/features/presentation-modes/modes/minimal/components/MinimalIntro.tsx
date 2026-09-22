@@ -38,17 +38,17 @@ export function MinimalIntro() {
       </div>
 
       {/* Narrative Paragraphs */}
-      <div className="font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#beb9ad] leading-[28px] space-y-4">
+      <div className="font-serif text-[15px] sm:text-[16px] text-zinc-600 dark:text-[#9e998e] leading-[28px] space-y-4 [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
         <p>
-          I&apos;m an IT student and full-stack developer who enjoys turning ideas
-          into practical web applications with clean interfaces, thoughtful user
-          experiences, and reliable functionality.
+          I&apos;m an <strong>IT student and full-stack developer</strong> who enjoys turning ideas
+          into <strong>practical web applications</strong> with clean interfaces, <strong>thoughtful user
+          experiences</strong>, and reliable functionality.
         </p>
 
         <p>
-          Most of my work comes from turning ideas into working products, from
+          Most of my work comes from turning ideas into <strong>working products</strong>, from
           school systems and productivity tools to personal side projects. I&apos;m
-          especially interested in UI/UX, web animation, AI-assisted development,
+          especially interested in <strong>UI/UX, web animation</strong>, <strong>AI-assisted development</strong>,
           and learning how real software systems are designed, connected, and
           improved over time.
         </p>

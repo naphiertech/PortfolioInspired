@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import { GITHUB_USERNAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import { useTheme } from "@/components/ThemeProvider";
 
+const CELL_SIZE = 9;
+const CELL_GAP = 2;
+
 interface ContributionDay {
   date: string;
   level: number;
@@ -36,7 +39,7 @@ interface ContributionData {
  *
  * Quiet, restrained GitHub contribution calendar for Minimal Mode:
  * - Roman serif heading
- * - Understated total contribution counter in serif copy
+ * - Understated total contribution counter in mono metadata
  * - Clean, non-distracting monochrome heatmap cells
  * - Direct external profile link
  */
@@ -101,7 +104,7 @@ export function MinimalContributions() {
 
   if (loading || !data) {
     return (
-      <section className="space-y-4 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08] animate-pulse">
+      <section className="space-y-4 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08] animate-pulse motion-reduce:animate-none">
         <h2 className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
           GitHub Contributions
         </h2>
@@ -115,22 +118,22 @@ export function MinimalContributions() {
 
   return (
     <section className="space-y-4 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
-      <div className="flex items-baseline justify-between gap-2 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1.5 sm:gap-3">
         <h2 className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
           GitHub Contributions
         </h2>
-        <span className="font-mono text-xs text-zinc-500 dark:text-[#827d73]">
-          {data.total} contributions in {data.year || 2026}
+        <span className="font-mono text-[10px] sm:text-[11px] text-zinc-500 dark:text-[#827d73]">
+          {data.total.toLocaleString()} contributions{data.year ? ` in ${data.year}` : ""}
         </span>
       </div>
 
       {/* Contribution Calendar Grid without scrollbar */}
-      <div className="w-full overflow-x-auto scrollbar-hide [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden select-none pb-1">
+      <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain scrollbar-hide [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden select-none pb-1" tabIndex={0} role="region" aria-label="GitHub contribution calendar, scroll horizontally to see all months">
         <div className="inline-block min-w-max">
           {/* Month Header */}
           <div className="relative h-4 mb-1.5 font-mono text-[9px] text-zinc-500 dark:text-[#827d73]">
             {data.months.map((m, idx) => {
-              const leftPos = m.weekIndex * 10.5;
+              const leftPos = m.weekIndex * (CELL_SIZE + CELL_GAP);
               return (
                 <span
                   key={`${m.name}-${idx}`}
@@ -145,9 +148,11 @@ export function MinimalContributions() {
 
           {/* 7-Row Minimalist Grid */}
           <div
-            className="grid grid-flow-col grid-rows-7 gap-[2px]"
+            className="grid grid-flow-col"
             style={{
-              gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
+              gridTemplateColumns: `repeat(${columnCount}, ${CELL_SIZE}px)`,
+              gridTemplateRows: `repeat(7, ${CELL_SIZE}px)`,
+              gap: CELL_GAP,
             }}
           >
             {data.weeks.map((week, weekIdx) =>
@@ -156,7 +161,7 @@ export function MinimalContributions() {
                   return (
                     <div
                       key={`empty-${weekIdx}-${dayIdx}`}
-                      className="w-[8.5px] h-[8.5px] rounded-[1.5px] opacity-0"
+                      className="w-full h-full rounded-[1.5px] opacity-0"
                     />
                   );
                 }
@@ -164,22 +169,22 @@ export function MinimalContributions() {
                 let levelStyle: React.CSSProperties = {};
                 if (day.level === 0) {
                   levelStyle = {
-                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#ebedf0",
+                    backgroundColor: isDark ? "#222222" : "#eeeeee",
                   };
                 } else if (day.level === 1) {
-                  levelStyle = { backgroundColor: isDark ? "#3d3e3a" : "#c4c8d0" };
+                  levelStyle = { backgroundColor: isDark ? "#404040" : "#cccccc" };
                 } else if (day.level === 2) {
-                  levelStyle = { backgroundColor: isDark ? "#63645e" : "#8f94a3" };
+                  levelStyle = { backgroundColor: isDark ? "#696969" : "#999999" };
                 } else if (day.level === 3) {
-                  levelStyle = { backgroundColor: isDark ? "#94958d" : "#585c69" };
+                  levelStyle = { backgroundColor: isDark ? "#a0a0a0" : "#666666" };
                 } else if (day.level === 4) {
-                  levelStyle = { backgroundColor: isDark ? "#dedad0" : "#18191c" };
+                  levelStyle = { backgroundColor: isDark ? "#eeeeee" : "#242424" };
                 }
 
                 return (
                   <div
                     key={day.date}
-                    className="w-[8.5px] h-[8.5px] rounded-[2px] transition-colors"
+                    className="w-full h-full rounded-[1.5px]"
                     style={levelStyle}
                     title={day.tooltip}
                   />
@@ -196,9 +201,9 @@ export function MinimalContributions() {
           href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
+          className="group inline-flex items-center gap-1 hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4"
         >
-          github.com/{GITHUB_USERNAME} ↗
+          github.com/{GITHUB_USERNAME}<span aria-hidden="true" className="transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">↗</span>
         </a>
       </div>
     </section>

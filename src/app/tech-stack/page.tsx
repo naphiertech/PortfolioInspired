@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { TechStackPresentationRoot } from "@/features/presentation-modes/components/TechStackPresentationRoot";
+import { RouteLoading } from "@/components/RouteLoading";
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -29,9 +30,7 @@ export default function TechStackPage() {
   return (
     <Suspense
       fallback={
-        <div className="w-full py-12 flex justify-center items-center text-muted-foreground font-mono text-xs">
-          Loading tech stack...
-        </div>
+        <RouteLoading view="tech" />
       }
     >
       <TechStackPresentationRoot />

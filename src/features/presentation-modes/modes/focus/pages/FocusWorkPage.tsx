@@ -6,6 +6,7 @@ import { ArrowLeft, Mail, FileText, ArrowUpRight, GraduationCap } from "lucide-r
 import { experiences } from "@/lib/data";
 import { AUTHOR_INFO, AVAILABILITY, EDUCATION, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import { EditorialDivider } from "@/components/EditorialDivider";
+import { StatusBadge } from "@/components/ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 import { FocusNavigation } from "../components/FocusNavigation";
 
@@ -55,14 +56,7 @@ export function FocusWorkPage() {
           </div>
 
           {/* Availability Status Badge */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium">
-            <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
-              <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-            </span>
-            <span className="text-[11px] font-mono leading-none">
-              {AVAILABILITY.openTo}
-            </span>
-          </div>
+          <StatusBadge status="available" label={AVAILABILITY.openTo} size="sm" />
         </div>
       </div>
 
@@ -86,9 +80,7 @@ export function FocusWorkPage() {
                   {exp.year}
                 </span>
                 {exp.isCurrent && (
-                  <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium leading-none">
-                    ACTIVE
-                  </span>
+                  <StatusBadge status="active" size="sm" />
                 )}
               </div>
 

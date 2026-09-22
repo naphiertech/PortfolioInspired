@@ -12,9 +12,9 @@ import { AUTHOR_INFO, AVAILABILITY, SOCIAL_PROFILES } from "@/lib/siteConfig";
  */
 export function MinimalIntro() {
   return (
-    <section className="space-y-6 pt-4 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
+    <section className="w-full space-y-6 pt-4 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
       {/* Avatar & Identity Row */}
-      <div className="flex items-center gap-4">
+      <div className="w-full flex items-center gap-4">
         <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-white/[0.08] bg-zinc-100 dark:bg-[#141514] flex-shrink-0">
           <Image
             src="/profile/ezgif-frame-001.png"
@@ -37,15 +37,15 @@ export function MinimalIntro() {
         </div>
       </div>
 
-      {/* Narrative Paragraphs */}
-      <div className="font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#b4afa4] leading-[28px] space-y-4 max-w-[65ch] [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
-        <p>
+      {/* Narrative Paragraphs - spans available section width with 72-74ch comfortable measure */}
+      <div className="w-full font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#b4afa4] leading-[28px] space-y-4 [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
+        <p className="w-full max-w-[72ch] sm:max-w-[74ch]">
           I&apos;m an <strong>IT student and full-stack developer</strong> who enjoys turning ideas
           into <strong>practical web applications</strong> with clean interfaces, <strong>thoughtful user
           experiences</strong>, and reliable functionality.
         </p>
 
-        <p>
+        <p className="w-full max-w-[72ch] sm:max-w-[74ch]">
           Most of my work comes from turning ideas into <strong>working products</strong>, from
           school systems and productivity tools to personal side projects. I&apos;m
           especially interested in <strong>UI/UX, web animation</strong>, <strong>AI-assisted development</strong>,
@@ -55,7 +55,7 @@ export function MinimalIntro() {
       </div>
 
       {/* Availability Status */}
-      <div className="flex items-center gap-2 font-mono text-xs sm:text-[13px] text-zinc-700 dark:text-[#a8a397] pt-1">
+      <div className="w-full flex items-center gap-2 font-mono text-xs sm:text-[13px] text-zinc-700 dark:text-[#a8a397] pt-1">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/90 dark:bg-emerald-400/80" />
         <a
           href={`mailto:${SOCIAL_PROFILES.email}?subject=Collaboration%20Inquiry`}
@@ -65,45 +65,53 @@ export function MinimalIntro() {
         </a>
       </div>
 
-      {/* Understated Action Links */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 text-xs sm:text-[13px] font-mono text-zinc-700 dark:text-[#a8a397]">
+      {/* Understated Action Links - Single row on desktop/tablet, clean wrapping without stranded separators on mobile */}
+      <div className="w-full flex flex-wrap sm:flex-nowrap items-center gap-x-2 sm:gap-x-2.5 md:gap-x-3 gap-y-2 pt-2 text-xs sm:text-[13px] font-mono text-zinc-700 dark:text-[#a8a397]">
         <a
           href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
-          className="text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
+          className="whitespace-nowrap text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           Schedule a Call ↗
         </a>
-        <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
+        <span className="text-zinc-300 dark:text-white/[0.12] select-none hidden sm:inline flex-shrink-0" aria-hidden="true">
+          /
+        </span>
         <a
           href="/resume/naphier_awalie_resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
+          className="whitespace-nowrap text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           Resume PDF ↗
         </a>
-        <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
+        <span className="text-zinc-300 dark:text-white/[0.12] select-none hidden sm:inline flex-shrink-0" aria-hidden="true">
+          /
+        </span>
         <a
           href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
+          className="whitespace-nowrap hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           GitHub ↗
         </a>
-        <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
+        <span className="text-zinc-300 dark:text-white/[0.12] select-none hidden sm:inline flex-shrink-0" aria-hidden="true">
+          /
+        </span>
         <a
           href={SOCIAL_PROFILES.linkedin}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
+          className="whitespace-nowrap hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           LinkedIn ↗
         </a>
-        <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
+        <span className="text-zinc-300 dark:text-white/[0.12] select-none hidden sm:inline flex-shrink-0" aria-hidden="true">
+          /
+        </span>
         <a
           href={`mailto:${SOCIAL_PROFILES.email}`}
-          className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
+          className="whitespace-nowrap hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           Email ↗
         </a>

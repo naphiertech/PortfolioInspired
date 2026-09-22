@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { TechIcon } from "@/components/TechIcon";
 import { EditorialDivider } from "@/components/EditorialDivider";
+import { StatusBadge } from "@/components/ProjectStatusBadge";
 import { coreTechStack, workCapabilities } from "@/lib/data";
 import { AUTHOR_INFO, AVAILABILITY, SOCIAL_PROFILES } from "@/lib/siteConfig";
 
@@ -38,14 +39,12 @@ export function WorkClient() {
           </div>
 
           {/* Availability Status Badge */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 self-start sm:self-auto">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
-            </span>
-            <span className="text-[11px] font-mono font-medium leading-none">
-              {AVAILABILITY.label}
-            </span>
-          </div>
+          <StatusBadge
+            status="available"
+            label={AVAILABILITY.label}
+            size="sm"
+            className="self-start sm:self-auto"
+          />
         </div>
       </div>
 

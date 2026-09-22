@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { experiences } from "@/lib/data";
+import { StatusBadge } from "@/components/ProjectStatusBadge";
 
 export function FocusExperience() {
   return (
@@ -29,9 +30,7 @@ export function FocusExperience() {
                 {exp.year}
               </span>
               {exp.isCurrent && (
-                <span className="font-mono text-[11px] uppercase px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium leading-none">
-                  ACTIVE
-                </span>
+                <StatusBadge status="active" size="sm" />
               )}
             </div>
 

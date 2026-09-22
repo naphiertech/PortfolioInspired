@@ -118,33 +118,33 @@ export const projectStatusConfig: Record<
 > = {
   live: {
     label: "LIVE",
-    dotClass: "bg-emerald-500",
-    badgeClass: "text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    dotClass: "bg-emerald-500 dark:bg-emerald-400",
+    badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
   active: {
     label: "ACTIVE",
-    dotClass: "bg-cyan-500",
-    badgeClass: "text-cyan-500 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+    dotClass: "bg-emerald-500 dark:bg-emerald-400",
+    badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
   wip: {
     label: "WIP",
-    dotClass: "bg-amber-500",
-    badgeClass: "text-amber-500 dark:text-amber-400 bg-amber-500/10 border-amber-500/20",
+    dotClass: "text-amber-500 dark:text-amber-400",
+    badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
   beta: {
     label: "BETA",
-    dotClass: "bg-amber-500",
-    badgeClass: "text-amber-500 dark:text-amber-400 bg-amber-500/10 border-amber-500/20",
+    dotClass: "text-amber-500 dark:text-amber-400",
+    badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
   "school-project": {
     label: "SCHOOL PROJECT",
-    dotClass: "bg-indigo-500 dark:bg-indigo-400",
-    badgeClass: "text-indigo-500 dark:text-indigo-300 bg-indigo-500/10 border-indigo-500/20",
+    dotClass: "text-indigo-500 dark:text-indigo-400",
+    badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
   archived: {
     label: "ARCHIVED",
-    dotClass: "bg-zinc-500",
-    badgeClass: "text-zinc-500 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20",
+    dotClass: "text-zinc-400 dark:text-zinc-500",
+    badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
 };
 

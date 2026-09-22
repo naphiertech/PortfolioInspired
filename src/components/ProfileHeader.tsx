@@ -11,6 +11,7 @@ import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { SnapTrigger } from "./SnapTrigger";
 import { EditorialDivider } from "./EditorialDivider";
+import { StatusBadge } from "./ProjectStatusBadge";
 import { useReducedMotion } from "framer-motion";
 import { scheduleIdleProfilePreload } from "@/lib/profileAnimation";
 import {
@@ -171,14 +172,7 @@ export function ProfileHeader() {
           {/* Desktop-Only Upper-Right Utility & Status Area */}
           <div data-creative-font-exempt className="hidden sm:flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end pb-0.5">
             {/* Live Availability Status Indicator */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
-              </span>
-              <span className="text-xs font-mono font-medium leading-none whitespace-nowrap">
-                {AVAILABILITY.label}
-              </span>
-            </div>
+            <StatusBadge status="available" label={AVAILABILITY.label} size="sm" />
 
             {/* Sound Selector Toggle */}
             <SoundToggle />
@@ -212,14 +206,7 @@ export function ProfileHeader() {
 
             {/* Mobile-Only Availability Status (Positioned directly under identity) */}
             <div className="flex sm:hidden items-center justify-center mt-2.5">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-2xs">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
-                </span>
-                <span className="text-xs font-mono font-medium leading-none whitespace-nowrap">
-                  {AVAILABILITY.label}
-                </span>
-              </div>
+              <StatusBadge status="available" label={AVAILABILITY.label} size="sm" />
             </div>
           </div>
 

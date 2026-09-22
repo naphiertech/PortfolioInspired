@@ -8,6 +8,7 @@ import { LocalTime } from "@/components/LocalTime";
 import { useTheme } from "@/components/ThemeProvider";
 import { useReducedMotion } from "framer-motion";
 import { scheduleIdleProfilePreload } from "@/lib/profileAnimation";
+import { StatusBadge } from "@/components/ProjectStatusBadge";
 import styles from "./FocusHero.module.css";
 import {
   AUTHOR_INFO,
@@ -106,7 +107,9 @@ export function FocusHero() {
           </h1>
           <p className={styles.role}>{AUTHOR_INFO.jobTitle}</p>
           <p className={styles.bio}>{SITE_DEFAULT_DESCRIPTION}</p>
-          <div className={styles.opportunities}><span aria-hidden="true" />{AVAILABILITY.openTo}</div>
+          <div className="mt-4">
+            <StatusBadge status="available" label={AVAILABILITY.openTo} size="sm" />
+          </div>
           <div className={styles.metadata}>
             <span><MapPin size={13} aria-hidden="true" />{AUTHOR_INFO.city}, PH</span>
             <LocalTime />

@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, GitCommit, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { currentBuild, getProjectBySlug } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
+import { StatusBadge } from "./ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 import { formatRelativeTime } from "@/lib/dateUtils";
 import {
@@ -97,13 +98,11 @@ export function NowSection() {
           <div className="space-y-2">
             {/* Header: Status Tag */}
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-medium tracking-wider">
-                <span className="relative flex h-1.5 w-1.5 flex-shrink-0 items-center justify-center">
-                  <span className="animate-status-ring absolute inset-0 rounded-full bg-emerald-400/50" />
-                  <span className="animate-status-breathe relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-                </span>
-                <span>{statusLabel}</span>
-              </div>
+              <StatusBadge
+                status={currentBuild.status || "building"}
+                label={statusLabel}
+                size="sm"
+              />
 
               {currentBuild.updatedAt && (
                 <span className="font-mono text-xs text-muted-foreground/80">
@@ -157,10 +156,7 @@ export function NowSection() {
             <div className="space-y-2">
               {/* Header: Git Activity Tag & Relative Time */}
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-mono text-xs font-medium tracking-wider">
-                  <GitCommit className="w-3 h-3" />
-                  <span>LATEST ACTIVITY</span>
-                </div>
+                <StatusBadge status="latest-activity" size="sm" />
 
                 <span className="font-mono text-xs text-muted-foreground/80">
                   <time dateTime={activity.pushedAt}>{displayTime}</time>
@@ -203,10 +199,7 @@ export function NowSection() {
             variants={shouldReduceMotion ? undefined : gridItemVariants}
             className="p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline flex flex-col justify-between space-y-3"
           >
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface border border-border-hairline text-muted-foreground font-mono text-[10px] w-fit">
-              <Sparkles className="w-3 h-3" />
-              <span>ACTIVE DEV</span>
-            </div>
+            <StatusBadge status="building" label="ACTIVE DEV" size="sm" />
             <p className="font-sans text-xs text-muted-foreground leading-relaxed">
               Actively developing full-stack applications and open-source tooling.
             </p>

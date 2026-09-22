@@ -15,6 +15,7 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { experiences } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
+import { StatusBadge } from "./ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 import {
   sectionContainerVariants,
@@ -195,10 +196,7 @@ export function ExperienceTimeline() {
                               {exp.role}
                             </h3>
                             {isCurrent && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium leading-none flex-shrink-0">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-breathe" />
-                                Current
-                              </span>
+                              <StatusBadge status="current" size="sm" className="flex-shrink-0" />
                             )}
                           </div>
                           <p className="font-sans text-xs text-muted-foreground leading-tight mt-0.5 break-words">
@@ -247,10 +245,7 @@ export function ExperienceTimeline() {
                               {exp.role}
                             </h3>
                             {isCurrent && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium leading-none">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-status-breathe" />
-                                Current
-                              </span>
+                              <StatusBadge status="current" size="sm" />
                             )}
                           </div>
                           <p className="font-sans text-xs text-muted-foreground truncate mt-0.5">

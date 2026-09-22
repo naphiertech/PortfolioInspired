@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { currentBuild, getProjectBySlug } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
+import { StatusBadge } from "./ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 import {
   sectionContainerVariants,
@@ -69,16 +70,11 @@ export function CurrentlyBuilding() {
         variants={shouldReduceMotion ? undefined : contentBlockVariants}
         className="p-4 sm:p-5 rounded-lg bg-surface/30 border border-border-hairline space-y-3.5 transition-colors"
       >
-        <div className="flex items-center gap-2">
-          {/* Living status breathing dot with subtle ring */}
-          <span className="relative flex h-2 w-2 flex-shrink-0 items-center justify-center">
-            <span className="animate-status-ring absolute inset-0 rounded-full bg-emerald-400/50" />
-            <span className="animate-status-breathe relative inline-flex rounded-full h-2 w-2 bg-emerald-500 dark:bg-emerald-400" />
-          </span>
-          <span className="font-mono text-[11px] font-semibold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider leading-none">
-            {statusLabel}
-          </span>
-        </div>
+        <StatusBadge
+          status={currentBuild.status || "building"}
+          label={statusLabel}
+          size="sm"
+        />
 
         <div className="space-y-1.5">
           <h3 className="font-sans text-sm sm:text-base font-semibold text-ink tracking-tight">

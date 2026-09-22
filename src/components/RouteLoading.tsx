@@ -17,7 +17,7 @@ export function RouteLoading({ view = "profile" }: { view?: LoadingView }) {
       <span role="status" className="sr-only">Loading {titles[view]}…</span>
       <div aria-hidden="true">
         <div className="mb-10 space-y-3">
-          <div className="font-mono text-[10px] tracking-wider text-muted-foreground">// LOADING</div>
+          <div className="font-mono text-[10px] tracking-wider text-muted-foreground">{"// LOADING"}</div>
           <h1 className="font-display text-2xl sm:text-3xl text-ink font-bold">{titles[view]}</h1>
           <div className="h-px w-2/3 max-w-sm bg-border-hairline" />
         </div>

@@ -54,8 +54,8 @@ export function ThemeToggle() {
 
   return (
     <div
-      onMouseEnter={preloadProfileFrames}
-      onFocus={preloadProfileFrames}
+      onMouseEnter={() => preloadProfileFrames(resolvedTheme === "dark")}
+      onFocus={() => preloadProfileFrames(resolvedTheme === "dark")}
       className="inline-flex items-center rounded-[6px] bg-surface p-0.5 border border-border-hairline shadow-sm relative"
       role="group"
       aria-label="Theme selector"

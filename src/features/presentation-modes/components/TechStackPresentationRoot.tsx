@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { TechStackClient } from "@/app/tech-stack/TechStackClient";
 import dynamic from "next/dynamic";
-import { RouteLoading } from "@/components/RouteLoading";
 
 const FocusTechStackPage = dynamic(
   () => import("../modes/focus/pages/FocusTechStackPage").then(module => module.FocusTechStackPage),
-  { loading: () => <RouteLoading view="tech" /> },
 );
 
 /**

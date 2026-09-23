@@ -67,7 +67,7 @@ export async function GET(req: Request) {
         { success: true, data: cachedData },
         {
           headers: {
-            "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+            "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
           },
         },
       );
@@ -254,7 +254,7 @@ export async function GET(req: Request) {
       { success: true, data: parsedData },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+          "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
         },
       },
     );

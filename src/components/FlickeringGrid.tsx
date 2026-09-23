@@ -57,8 +57,8 @@ export function FlickeringGrid() {
       ref={surfaceRef}
       className={styles.surface}
       data-theme={resolvedTheme}
-      data-enabled={gridEnabled}
-      data-creative-grid={creativeActive ? creative.gridStyle : undefined}
+      data-enabled={creativeActive && gridEnabled}
+      data-creative-grid={creative.gridStyle}
       data-creative-motion={creativeActive ? effectiveMotion : undefined}
       aria-hidden="true"
     >

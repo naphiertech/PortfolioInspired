@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import NextImage from "next/image";
 import { Mail, FileText, ArrowUpRight, MapPin, GraduationCap } from "lucide-react";
 import { FaGithub as Github, FaLinkedin as Linkedin, FaInstagram as Instagram } from "react-icons/fa";
 import { LocalTime } from "@/components/LocalTime";
-import { useTheme } from "@/components/ThemeProvider";
-import { useReducedMotion } from "framer-motion";
-import { scheduleIdleProfilePreload } from "@/lib/profileAnimation";
+import { ProfileFrameOverlay } from "@/components/ProfileFrameOverlay";
 import { StatusBadge } from "@/components/ProjectStatusBadge";
 import styles from "./FocusHero.module.css";
 import {
@@ -19,81 +17,6 @@ import {
 } from "@/lib/siteConfig";
 
 export function FocusHero() {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const reducedMotion = useReducedMotion();
-  const [animationFrame, setAnimationFrame] = useState(0);
-  const currentFrameRef = useRef(0);
-  const isInitialMount = useRef(true);
-
-  // Sync ref with state
-  useEffect(() => {
-    currentFrameRef.current = animationFrame;
-  }, [animationFrame]);
-
-  // Set initial frame on mount based on active theme
-  useEffect(() => {
-    if (isInitialMount.current && resolvedTheme) {
-      const initial = resolvedTheme === "dark" ? 240 : 0;
-      setAnimationFrame(initial);
-      currentFrameRef.current = initial;
-      isInitialMount.current = false;
-    }
-  }, [resolvedTheme]);
-
-  // Schedule background frame caching when page is idle, without blocking initial render/LCP
-  useEffect(() => {
-    return scheduleIdleProfilePreload(3500);
-  }, []);
-
-  // Frame animation driven by dark/light theme switching (Butter-smooth 60fps)
-  useEffect(() => {
-    if (isInitialMount.current) return;
-    if (reducedMotion) {
-      const frame = isDark ? 240 : 0;
-      currentFrameRef.current = frame;
-      setAnimationFrame(frame);
-      return;
-    }
-
-    let animationFrameId: number;
-    let lastTime = performance.now();
-    const fps = 60;
-    const interval = 1000 / fps; // ~16.67ms per frame tick
-
-    const animate = (time: number) => {
-      const current = currentFrameRef.current;
-
-      if (isDark && current >= 240) return;
-      if (!isDark && current <= 0) return;
-
-      const delta = time - lastTime;
-
-      if (delta >= interval) {
-        lastTime = time - (delta % interval);
-
-        setAnimationFrame((prev) => {
-          // Smooth 2-frame advancement per tick for continuous 60fps motion (~2 seconds)
-          if (isDark) {
-            const next = prev + 2;
-            return next > 240 ? 240 : next;
-          } else {
-            const next = prev - 2;
-            return next < 0 ? 0 : next;
-          }
-        });
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isDark, reducedMotion]);
-
   const surname = AUTHOR_INFO.name.slice(AUTHOR_INFO.shortName.length).trim();
   return (
     <section aria-label="Identity and candidate overview" className={styles.hero}>
@@ -141,10 +64,7 @@ export function FocusHero() {
           <span className={styles.crosshair} aria-hidden="true">+</span>
           <div className={styles.portrait}>
             <NextImage src="/profile/ezgif-frame-001.png" alt={AUTHOR_INFO.name} fill sizes="(max-width: 767px) 280px, (max-width: 1023px) 36vw, 380px" priority className={styles.portraitImage} />
-            {animationFrame > 0 && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={"/profile/ezgif-frame-" + String(animationFrame).padStart(3, "0") + ".png"} alt="" className={styles.portraitOverlay} />
-            )}
+            <ProfileFrameOverlay className={styles.portraitOverlay} />
           </div>
           <div className={styles.codeNote} aria-hidden="true">
             <span>{"// Developer"}</span>

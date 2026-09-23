@@ -25,7 +25,8 @@ import React from "react";
 export function TechnicalGrid() {
   return (
     <div
-      className="absolute inset-0 pointer-events-none -z-10 select-none overflow-visible"
+      className="absolute inset-0 pointer-events-none -z-10 select-none overflow-visible transition-opacity duration-[250ms] ease-out motion-reduce:transition-none"
+      style={{ opacity: "var(--creative-grid-opacity, 0)" }}
       aria-hidden="true"
     >
       {/* 1. Outer Viewport Margin Guides (Desktops ≥1024px and ≥1280px) */}

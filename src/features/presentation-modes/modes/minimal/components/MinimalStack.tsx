@@ -36,7 +36,7 @@ export function MinimalStack() {
   const sectionId = useId();
 
   return (
-    <section className="space-y-4 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
+    <section data-creative-note="tools" className="space-y-4 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
       <h2 id={sectionId + "-heading"} className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
         Tools I use? See below
       </h2>

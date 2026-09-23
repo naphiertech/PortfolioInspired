@@ -1,0 +1,37 @@
+.layer {
+  --creative-note-ink: #405fc0;
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  pointer-events: none;
+  user-select: none;
+  color: var(--creative-note-ink);
+  font: italic 16px/1.55 "Segoe Print", "Bradley Hand", "Chalkboard SE", cursive;
+}
+
+:global(.dark) .layer { --creative-note-ink: #89a8ff; }
+
+.note {
+  position: absolute;
+  width: 168px;
+  pointer-events: none;
+}
+
+.note[data-side="left"] { right: calc(100% + 52px); }
+.note[data-side="right"] { left: calc(100% + 52px); }
+.note p { margin: 0; }
+.note .heading { margin-bottom: 9px; }
+.arrow {
+  position: absolute;
+  top: 12px;
+  width: 44px;
+  height: 40px;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.note[data-side="left"] .arrow { left: calc(100% + 5px); }
+.note[data-side="right"] .arrow { right: calc(100% + 5px); transform: scaleX(-1); }
+
+@media (max-width: 1023px) { .layer { display: none; } }

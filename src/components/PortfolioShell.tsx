@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { SnapRouteGuard } from "@/components/SnapRouteGuard";
@@ -16,6 +16,7 @@ import { CREATIVE_MAPPINGS, supportsCreativeMode } from "@/features/creative-mod
 import creativeStyles from "@/features/creative-mode/creativeMode.module.css";
 import { creativeFontVariables, CREATIVE_FONT_PAIRINGS } from "@/features/creative-mode/lib/creativeFonts";
 import { LandscapeFooter } from "./LandscapeFooter";
+import { CreativeNotes } from "@/features/creative-mode/components/CreativeNotes";
 
 interface PortfolioShellProps {
   children: ReactNode;
@@ -32,6 +33,7 @@ interface PortfolioShellProps {
  * - Agent Folio Mode: Focused 768px minimal AI workspace on home, standard reading container on subpages
  */
 export function PortfolioShell({ children }: PortfolioShellProps) {
+  const contentRef = useRef<HTMLElement>(null);
   const { mode } = usePresentationMode();
   const pathname = usePathname();
   const isFocus = mode === "focus";
@@ -47,9 +49,10 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   return (
     <div
       style={{
+        "--creative-grid-opacity": creativeActive ? 1 : 0,
         ...(creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : {}),
         ...(mode !== "agent" ? { paddingBottom: 0 } : {}),
-      }}
+      } as React.CSSProperties}
       className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 ${
         isAgentHome
           ? "max-w-3xl px-3 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 min-h-[100dvh] flex flex-col"
@@ -82,6 +85,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       )}
 
       <main
+        ref={contentRef}
         className={`${creativeFontVariables} ${creativeStyles.scope} w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}
         data-creative-mode={creativeActive ? "on" : undefined}
         data-creative-presentation={creativeActive ? mode : undefined}
@@ -108,6 +112,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       >
         <SnapRouteGuard>{children}</SnapRouteGuard>
       </main>
+      <CreativeNotes key={`${mode}:${pathname}`} contentRef={contentRef} />
 
       {/* Scenic ending for supported modes; Agent keeps its existing footer path. */}
       <div

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { ProfileFrameOverlay } from "./ProfileFrameOverlay";
 import NextImage from "next/image";
 import { useTheme } from "./ThemeProvider";
 import { ThemeToggle } from "./ThemeToggle";
@@ -12,8 +12,6 @@ import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { SnapTrigger } from "./SnapTrigger";
 import { EditorialDivider } from "./EditorialDivider";
 import { StatusBadge } from "./ProjectStatusBadge";
-import { useReducedMotion } from "framer-motion";
-import { scheduleIdleProfilePreload } from "@/lib/profileAnimation";
 import {
   AUTHOR_INFO,
   AVAILABILITY,
@@ -39,81 +37,8 @@ const GithubContributions = dynamic(
 export function ProfileHeader() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const reducedMotion = useReducedMotion();
-  const [animationFrame, setAnimationFrame] = useState(0);
-  const currentFrameRef = useRef(0);
-  const isInitialMount = useRef(true);
-
-  // Sync ref with state
-  useEffect(() => {
-    currentFrameRef.current = animationFrame;
-  }, [animationFrame]);
-
-  // Set initial frame on mount based on active theme
-  useEffect(() => {
-    if (isInitialMount.current && resolvedTheme) {
-      const initial = resolvedTheme === "dark" ? 240 : 0;
-      setAnimationFrame(initial);
-      currentFrameRef.current = initial;
-      isInitialMount.current = false;
-    }
-  }, [resolvedTheme]);
-
-  // Schedule background frame caching when page is idle, without blocking initial render/LCP
-  useEffect(() => {
-    return scheduleIdleProfilePreload(3500);
-  }, []);
-
-  // Frame animation driven by dark/light theme switching (Butter-smooth 60fps)
-  useEffect(() => {
-    if (isInitialMount.current) return;
-    if (reducedMotion) {
-      const frame = isDark ? 240 : 0;
-      currentFrameRef.current = frame;
-      setAnimationFrame(frame);
-      return;
-    }
-
-    let animationFrameId: number;
-    let lastTime = performance.now();
-    const fps = 60;
-    const interval = 1000 / fps; // ~16.67ms per frame tick
-
-    const animate = (time: number) => {
-      const current = currentFrameRef.current;
-
-      if (isDark && current >= 240) return;
-      if (!isDark && current <= 0) return;
-
-      const delta = time - lastTime;
-
-      if (delta >= interval) {
-        lastTime = time - (delta % interval);
-
-        setAnimationFrame((prev) => {
-          // Smooth 2-frame advancement per tick for continuous 60fps motion (~2 seconds)
-          if (isDark) {
-            const next = prev + 2;
-            return next > 240 ? 240 : next;
-          } else {
-            const next = prev - 2;
-            return next < 0 ? 0 : next;
-          }
-        });
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isDark, reducedMotion]);
-
   return (
-    <section className="relative w-full select-none mb-16">
+    <section data-creative-note="hero" className="relative w-full select-none mb-16">
       {/* Top Portfolio Visual Banner */}
       <div className="group relative w-full h-44 sm:h-44 md:h-48 rounded-2xl overflow-hidden border border-border-hairline bg-surface/40 shadow-xs">
         {/* Custom Header Background Image */}
@@ -158,15 +83,10 @@ export function ProfileHeader() {
             />
 
             {/* Glasses Animation Overlay */}
-            {animationFrame > 0 && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={`/profile/ezgif-frame-${String(animationFrame).padStart(3, "0")}.png`}
-                alt="Profile Animation"
-                className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
-                style={{ objectPosition: "center 25%" }}
-              />
-            )}
+            <ProfileFrameOverlay
+              className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
+              style={{ objectPosition: "center 25%" }}
+            />
           </div>
 
           {/* Desktop-Only Upper-Right Utility & Status Area */}

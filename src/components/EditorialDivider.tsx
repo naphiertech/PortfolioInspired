@@ -24,8 +24,9 @@ export function EditorialDivider({
     >
       {/* Full-viewport continuous 1px solid horizontal structural line */}
       <div
-        className="grid-line-h absolute top-1/2"
+        className="grid-line-h absolute top-1/2 transition-opacity duration-[250ms] ease-out motion-reduce:transition-none"
         style={{
+          opacity: "var(--creative-grid-opacity, 0)",
           width: "100vw",
           left: "50%",
           transform: "translate(-50%, -50%)",

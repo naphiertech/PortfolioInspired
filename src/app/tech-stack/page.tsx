@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { TechStackPresentationRoot } from "@/features/presentation-modes/components/TechStackPresentationRoot";
-import { RouteLoading } from "@/components/RouteLoading";
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -29,9 +28,7 @@ export const metadata: Metadata = {
 export default function TechStackPage() {
   return (
     <Suspense
-      fallback={
-        <RouteLoading view="tech" />
-      }
+      fallback={null}
     >
       <TechStackPresentationRoot />
     </Suspense>

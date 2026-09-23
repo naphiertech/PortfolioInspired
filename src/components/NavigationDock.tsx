@@ -50,6 +50,7 @@ function NavItemLink({
 }: NavItemLinkProps) {
   const [offset, setOffset] = useState({ x: 0, y: 0, scale: 1 });
   const itemRef = useRef<HTMLAnchorElement>(null);
+  const [prefetchIntent, setPrefetchIntent] = useState(false);
 
   useEffect(() => {
     if (onRegisterRef) {
@@ -126,7 +127,12 @@ function NavItemLink({
       <Link
         ref={itemRef}
         href={item.href}
-        onMouseEnter={onHover}
+        prefetch={prefetchIntent ? true : null}
+        onMouseEnter={() => {
+          onHover();
+          setPrefetchIntent(true);
+        }}
+        onFocus={() => setPrefetchIntent(true)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={onClick}

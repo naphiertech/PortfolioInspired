@@ -12,7 +12,7 @@ import { AUTHOR_INFO, AVAILABILITY, SOCIAL_PROFILES } from "@/lib/siteConfig";
  */
 export function MinimalIntro() {
   return (
-    <section className="w-full space-y-6 pt-4 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
+    <section data-creative-note="hero" className="w-full space-y-6 pt-4 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
       {/* Avatar & Identity Row */}
       <div className="w-full flex items-center gap-4">
         <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-white/[0.08] bg-zinc-100 dark:bg-[#141514] flex-shrink-0">

@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { ProjectsPageClient } from "@/app/projects/ProjectsPageClient";
 import dynamic from "next/dynamic";
-import { RouteLoading } from "@/components/RouteLoading";
 
 const FocusProjectsPage = dynamic(
   () => import("../modes/focus/pages/FocusProjectsPage").then(module => module.FocusProjectsPage),
-  { loading: () => <RouteLoading view="projects" /> },
 );
 
 /**

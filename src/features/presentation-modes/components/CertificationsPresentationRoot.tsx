@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { CertificationsClient } from "@/app/certifications/CertificationsClient";
 import dynamic from "next/dynamic";
-import { RouteLoading } from "@/components/RouteLoading";
 
 const FocusCertificationsPage = dynamic(
   () => import("../modes/focus/pages/FocusCertificationsPage").then(module => module.FocusCertificationsPage),
-  { loading: () => <RouteLoading view="certifications" /> },
 );
 
 /**

@@ -34,7 +34,7 @@ export interface GitHubContributionsResponse {
   error?: string;
 }
 
-// In-memory cache keyed by username and year for 1 hour
+// In-memory cache keyed by username:year for 1 hour
 interface CachedPayload {
   username: string;
   year: number;
@@ -45,26 +45,23 @@ interface CachedPayload {
   updatedAt: string;
 }
 
-let cachedData: CachedPayload | null = null;
-let lastFetchTime = 0;
+const memoryCache = new Map<string, { data: CachedPayload; timestamp: number }>();
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 export async function GET(req: Request) {
+  let cacheKey = "";
   try {
     const { searchParams } = new URL(req.url);
     const username = searchParams.get("username") || GITHUB_USERNAME;
     const currentYear = new Date().getFullYear();
+    cacheKey = `${username.toLowerCase()}:${currentYear}`;
 
     // Return cached data if fresh and matches current year
     const now = Date.now();
-    if (
-      cachedData &&
-      cachedData.username === username &&
-      cachedData.year === currentYear &&
-      now - lastFetchTime < CACHE_TTL
-    ) {
+    const cached = memoryCache.get(cacheKey);
+    if (cached && now - cached.timestamp < CACHE_TTL) {
       return NextResponse.json(
-        { success: true, data: cachedData },
+        { success: true, data: cached.data },
         {
           headers: {
             "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
@@ -247,8 +244,7 @@ export async function GET(req: Request) {
       updatedAt: new Date().toISOString(),
     };
 
-    cachedData = parsedData;
-    lastFetchTime = now;
+    memoryCache.set(cacheKey, { data: parsedData, timestamp: now });
 
     return NextResponse.json(
       { success: true, data: parsedData },
@@ -262,8 +258,9 @@ export async function GET(req: Request) {
     console.error("Error fetching GitHub contributions:", error);
 
     // Fallback: If cache exists even if expired, return it
-    if (cachedData) {
-      return NextResponse.json({ success: true, data: cachedData });
+    const fallbackCached = memoryCache.get(cacheKey);
+    if (fallbackCached) {
+      return NextResponse.json({ success: true, data: fallbackCached.data });
     }
 
     return NextResponse.json(

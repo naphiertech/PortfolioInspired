@@ -7,6 +7,7 @@ export const SITE_URL = "https://naphiernode.vercel.app";
 
 export const SITE_NAME = "Naphier Awalie";
 export const GITHUB_USERNAME = "naphiertech";
+export const GITHUB_ACCOUNTS = ["naphiertech", "bagatata05"] as const;
 
 export const RESUME_PATH = "/resume/naphier_awalie_resume.pdf";
 

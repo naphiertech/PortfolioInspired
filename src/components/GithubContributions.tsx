@@ -2,7 +2,11 @@
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AUTHOR_INFO, GITHUB_USERNAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
+import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
+import {
+  type ContributionData,
+  fetchCombinedContributions,
+} from "@/lib/githubContributions";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -96,33 +100,6 @@ function ContributionTooltipPortal({ text, target }: ContributionTooltipPortalPr
   );
 }
 
-interface ContributionDay {
-  date: string;
-  level: number;
-  count: number;
-  tooltip: string;
-  dayOfWeek: number;
-}
-
-interface ContributionWeek {
-  days: (ContributionDay | null)[];
-}
-
-interface MonthLabel {
-  name: string;
-  weekIndex: number;
-}
-
-interface ContributionData {
-  username: string;
-  year?: number;
-  total: number;
-  totalText: string;
-  weeks: ContributionWeek[];
-  months: MonthLabel[];
-  updatedAt: string;
-}
-
 export function GithubContributions() {
   const [data, setData] = useState<ContributionData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -146,12 +123,10 @@ export function GithubContributions() {
 
     async function fetchContributions() {
       try {
-        const res = await fetch(`/api/github-contributions?username=${GITHUB_USERNAME}`);
-        if (!res.ok) throw new Error("Failed to fetch contributions");
-        const json = await res.json();
+        const combined = await fetchCombinedContributions();
         if (isMounted) {
-          if (json.success && json.data) {
-            setData(json.data);
+          if (combined) {
+            setData(combined);
           } else {
             setError(true);
           }
@@ -281,18 +256,23 @@ export function GithubContributions() {
       </div>
 
       {/* Total Contributions Subtitle */}
-      <div className="mt-2 flex items-center justify-between font-mono text-xs text-muted-foreground">
-        <div className="flex items-center gap-1.5">
+      <div className="mt-2 flex items-center justify-between flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-emerald-500/90 dark:text-emerald-400/90 font-medium">Total</span>
           <span className="text-ink font-semibold">{data.total.toLocaleString()}</span>
           <span>contributions in {data.year || new Date().getFullYear()}</span>
+          <span className="text-muted-foreground/60 text-[11px] font-normal">
+            {data.username.includes("+")
+              ? "(@naphiertech + @bagatata05)"
+              : `(@${data.username})`}
+          </span>
         </div>
 
         <a
           href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted-foreground/70 hover:text-ink transition-colors duration-150 text-[11px]"
+          className="text-muted-foreground/70 hover:text-ink transition-colors duration-150 text-[11px] whitespace-nowrap"
         >
           {AUTHOR_INFO.handle} ↗
         </a>

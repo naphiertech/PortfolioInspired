@@ -3,36 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { GITHUB_USERNAME, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import { useTheme } from "@/components/ThemeProvider";
+import {
+  type ContributionData,
+  fetchCombinedContributions,
+} from "@/lib/githubContributions";
 
 const CELL_SIZE = 9;
 const CELL_GAP = 2;
-
-interface ContributionDay {
-  date: string;
-  level: number;
-  count: number;
-  tooltip: string;
-  dayOfWeek: number;
-}
-
-interface ContributionWeek {
-  days: (ContributionDay | null)[];
-}
-
-interface MonthLabel {
-  name: string;
-  weekIndex: number;
-}
-
-interface ContributionData {
-  username: string;
-  year?: number;
-  total: number;
-  totalText: string;
-  weeks: ContributionWeek[];
-  months: MonthLabel[];
-  updatedAt: string;
-}
 
 /**
  * MinimalContributions
@@ -56,12 +33,10 @@ export function MinimalContributions() {
 
     async function fetchContributions() {
       try {
-        const res = await fetch(`/api/github-contributions?username=${GITHUB_USERNAME}`);
-        if (!res.ok) throw new Error("Failed to fetch contributions");
-        const json = await res.json();
+        const combined = await fetchCombinedContributions();
         if (isMounted) {
-          if (json.success && json.data) {
-            setData(json.data);
+          if (combined) {
+            setData(combined);
           } else {
             setError(true);
           }
@@ -122,9 +97,14 @@ export function MinimalContributions() {
         <h2 className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
           GitHub Contributions
         </h2>
-        <span className="font-mono text-xs sm:text-[13px] text-zinc-600 dark:text-[#a09a8e]">
-          {data.total.toLocaleString()} contributions{data.year ? ` in ${data.year}` : ""}
-        </span>
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <span className="font-mono text-xs sm:text-[13px] text-zinc-600 dark:text-[#a09a8e]">
+            {data.total.toLocaleString()} contributions{data.year ? ` in ${data.year}` : ""}
+          </span>
+          <span className="font-mono text-[11px] text-zinc-500 dark:text-[#7f7a70]">
+            {data.username.includes("+") ? "(@naphiertech + @bagatata05)" : `(@${data.username})`}
+          </span>
+        </div>
       </div>
 
       {/* Contribution Calendar Grid without scrollbar */}

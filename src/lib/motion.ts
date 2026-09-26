@@ -104,13 +104,113 @@ export const staggeredGridVariants: Variants = {
  * Individual grid item / card reveal inside staggered container
  */
 export const gridItemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.28,
       ease: easeOutCubic,
+    },
+  },
+};
+
+/**
+ * Synchronized Floating Mountain Terrain Reveal Variants
+ *
+ * Coordinated 1:1 with section card scroll reveal:
+ * - Root container: translateY 12px -> 0, matching card launch point to guarantee 0px gap at bedrock cap.
+ * - Shelf layer: Fades in simultaneously with card contact line.
+ * - Fore / Mid geological strata: Emerges from 18–22px total depth.
+ * - Deep mountain keel: Rises from 26px total depth with slightly heavier weight and slower settle.
+ * - Debris & mist: Delayed particles (+120–140ms) revealing last.
+ */
+export const terrainContainerVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.34,
+      ease: easeOutCubic,
+      delay: 0.05,
+    },
+  },
+};
+
+export const terrainShelfVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.28,
+      ease: easeOutCubic,
+      delay: 0.05,
+    },
+  },
+};
+
+export const terrainForeVariants: Variants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.32,
+      ease: easeOutCubic,
+      delay: 0.065,
+    },
+  },
+};
+
+export const terrainMidVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.35,
+      ease: easeOutCubic,
+      delay: 0.075,
+    },
+  },
+};
+
+export const terrainDeepVariants: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.38,
+      ease: easeOutCubic,
+      delay: 0.085,
+    },
+  },
+};
+
+export const terrainDebrisVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.40,
+      ease: easeOutCubic,
+      delay: 0.12,
+    },
+  },
+};
+
+export const terrainMistVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.44,
+      ease: easeOutCubic,
+      delay: 0.14,
     },
   },
 };

@@ -1,0 +1,39 @@
+.popoverContent {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 160ms cubic-bezier(0.16, 1, 0.3, 1), transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  pointer-events: auto;
+  user-select: none;
+  z-index: 60;
+}
+
+.popoverContent[data-side="top"][data-state="closed"] {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.popoverContent[data-side="bottom"][data-state="closed"] {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.popoverContent[data-state="open"],
+.popoverContent[data-state="delayed-open"],
+.popoverContent[data-state="instant-open"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popoverContent {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+@media (hover: none) {
+  .popoverContent {
+    display: none !important;
+  }
+}

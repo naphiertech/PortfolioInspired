@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { fullProjects } from "@/lib/data";
+import { MinimalProjectActions } from "./MinimalActionPreview";
 
 /**
  * MinimalProjects
@@ -20,50 +22,30 @@ export function MinimalProjects() {
     .filter(Boolean);
 
   return (
-    <section data-creative-note="projects" className="space-y-6 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
-      <h2 className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
-        Selected Work
-      </h2>
+    <TooltipPrimitive.Provider delayDuration={100} skipDelayDuration={150}>
+      <section data-creative-note="projects" className="space-y-6 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
+        <h2 className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
+          Selected Work
+        </h2>
 
-      <div className="space-y-8">
-        {projects.map((project) => {
-          if (!project) return null;
+        <div className="space-y-8">
+          {projects.map((project) => {
+            if (!project) return null;
 
-          // Select top 3 core features
-          const highlights = project.features?.slice(0, 3) || [];
-          const techList = project.tags.slice(0, 5).join(" · ");
+            // Select top 3 core features
+            const highlights = project.features?.slice(0, 3) || [];
+            const techList = project.tags.slice(0, 5).join(" · ");
 
-          return (
-            <article key={project.slug} className="space-y-2.5">
-              {/* Project Title & Direct Links */}
-              <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                <h3 className="font-serif text-[17px] sm:text-[18px] text-zinc-900 dark:text-[#eae6df] font-medium tracking-tight">
-                  {project.title}
-                </h3>
+            return (
+              <article key={project.slug} className="space-y-2.5">
+                {/* Project Title & Direct Links */}
+                <div className="flex items-baseline justify-between gap-3 flex-wrap">
+                  <h3 className="font-serif text-[17px] sm:text-[18px] text-zinc-900 dark:text-[#eae6df] font-medium tracking-tight">
+                    {project.title}
+                  </h3>
 
-                <div className="flex items-center gap-3 font-mono text-xs text-zinc-600 dark:text-[#9e998e]">
-                  {project.live && (
-                    <a
-                      href={project.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
-                    >
-                      Live ↗
-                    </a>
-                  )}
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
-                    >
-                      GitHub ↗
-                    </a>
-                  )}
+                  <MinimalProjectActions project={project} />
                 </div>
-              </div>
 
               {/* Short Description */}
               <p className="font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#beb9ad] leading-[26px]">
@@ -88,6 +70,7 @@ export function MinimalProjects() {
         })}
       </div>
     </section>
+  </TooltipPrimitive.Provider>
   );
 }
 

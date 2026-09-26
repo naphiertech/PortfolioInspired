@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'naphiernode.vercel.app',
       },
+      {
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
+      },
     ],
   },
 };

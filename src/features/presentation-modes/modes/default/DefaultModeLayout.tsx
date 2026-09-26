@@ -36,13 +36,13 @@ export function DefaultModeLayout() {
 
       {/* 4. Selected Projects (Top 3 Strongest) */}
       <SnapSectionWrapper id="recent-projects">
-        <EditorialDivider className="mb-10 sm:mb-12" />
+        <EditorialDivider className="mb-5 sm:mb-6" />
         <RecentProjects />
       </SnapSectionWrapper>
 
       {/* 5. Tech Stack (Curated High-Signal Preview) */}
       <SnapSectionWrapper id="tech-stack">
-        <EditorialDivider className="mb-10 sm:mb-12" />
+        <EditorialDivider className="mb-5 sm:mb-6" />
         <TechStack />
       </SnapSectionWrapper>
 

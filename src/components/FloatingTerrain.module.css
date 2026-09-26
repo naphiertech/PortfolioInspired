@@ -1,0 +1,115 @@
+.terrainRoot {
+  position: relative;
+  margin-top: -2px;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  width: 100%;
+}
+
+.terrainSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+
+/* Layer Parallax */
+.layerShelf {
+  transform: translate3d(0, 0, 0);
+}
+
+.layerFore {
+  transform: translate3d(calc(var(--terrain-x, 0) * 4px), calc(var(--terrain-y, 0) * 2px), 0);
+  transition: transform 0.16s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: transform;
+}
+
+.layerMid {
+  transform: translate3d(calc(var(--terrain-x, 0) * 2.5px), calc(var(--terrain-y, 0) * 1.5px), 0);
+  transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: transform;
+}
+
+.layerDeep {
+  transform: translate3d(calc(var(--terrain-x, 0) * 1.2px), calc(var(--terrain-y, 0) * 0.8px), 0);
+  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: transform;
+}
+
+.layerDebris {
+  transform: translate3d(calc(var(--terrain-x, 0) * 6px), calc(var(--terrain-y, 0) * 3.5px), 0);
+  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: transform;
+}
+
+.layerMist {
+  transform: translate3d(calc(var(--terrain-x, 0) * -3.5px), calc(var(--terrain-y, 0) * -1px), 0);
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1);
+  animation: mistDrift 7s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes mistDrift {
+  0% { transform: translate3d(calc(var(--terrain-x, 0) * -3.5px - 6px), calc(var(--terrain-y, 0) * -1px), 0); }
+  100% { transform: translate3d(calc(var(--terrain-x, 0) * -3.5px + 6px), calc(var(--terrain-y, 0) * -1px), 0); }
+}
+
+@keyframes beaconPulse {
+  0%, 100% { opacity: 0.35; filter: drop-shadow(0 0 1px #10b981); }
+  50% { opacity: 1; filter: drop-shadow(0 0 3px #10b981); }
+}
+
+.beaconLight {
+  animation: beaconPulse 1.8s infinite ease-in-out;
+}
+
+/* Reduced motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  .layerFore,
+  .layerMid,
+  .layerDeep,
+  .layerDebris,
+  .layerMist {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .beaconLight {
+    animation: none !important;
+    opacity: 0.85 !important;
+  }
+}
+
+/* Dark Theme Monochrome Colors (Default) */
+.rockCap { fill: #383c48; }
+.rockPlate { fill: #2c303a; }
+.rockBracket { fill: #444a59; }
+.rockFore { fill: #2b2f3a; }
+.rockMid { fill: #1f222b; }
+.rockDeep { fill: #16181f; }
+.rockHi { fill: #6f788e; }
+.rockSh { fill: #0f1015; }
+.treeLeaf { fill: #2a3a30; }
+.treeHi { fill: #485f50; }
+.antennaMetal { fill: #828a9e; }
+.mistA { fill: rgba(255, 255, 255, 0.05); }
+.mistB { fill: rgba(255, 255, 255, 0.09); }
+.cadTick { fill: rgba(255, 255, 255, 0.35); font-family: monospace; font-size: 7.5px; }
+
+/* Light Theme Monochrome Overrides */
+:global(.light) .rockCap { fill: #c8cbd4; }
+:global(.light) .rockPlate { fill: #d8dbe2; }
+:global(.light) .rockBracket { fill: #aab0bf; }
+:global(.light) .rockFore { fill: #b9becb; }
+:global(.light) .rockMid { fill: #9da3b2; }
+:global(.light) .rockDeep { fill: #7e8494; }
+:global(.light) .rockHi { fill: #ffffff; }
+:global(.light) .rockSh { fill: #5c6270; }
+:global(.light) .treeLeaf { fill: #425748; }
+:global(.light) .treeHi { fill: #64826d; }
+:global(.light) .antennaMetal { fill: #4a5060; }
+:global(.light) .mistA { fill: rgba(0, 0, 0, 0.04); }
+:global(.light) .mistB { fill: rgba(0, 0, 0, 0.07); }
+:global(.light) .cadTick { fill: rgba(0, 0, 0, 0.4); }

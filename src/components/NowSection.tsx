@@ -8,6 +8,7 @@ import { currentBuild, getProjectBySlug } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
 import { StatusBadge } from "./ProjectStatusBadge";
+import { FloatingTerrain } from "./FloatingTerrain";
 import { useUISound } from "@/context/SoundContext";
 import { formatRelativeTime } from "@/lib/dateUtils";
 import {
@@ -75,7 +76,7 @@ export function NowSection() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-4 select-none mb-16"
+      className="w-full space-y-4 select-none mb-4 sm:mb-5"
       aria-label="Now and Activity"
     >
       {/* Section Header */}
@@ -85,11 +86,12 @@ export function NowSection() {
         className="mb-4 pb-2 border-b border-border-hairline/40"
       />
 
-      {/* 2-Column Compact Grid */}
-      <motion.div
-        variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-      >
+      {/* Cards Foundation Complex: Cards rest atop floating mountain terrain */}
+      <div className="relative">
+        <motion.div
+          variants={shouldReduceMotion ? undefined : staggeredGridVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10"
+        >
         {/* Card 1: Currently Building */}
         <motion.div
           variants={shouldReduceMotion ? undefined : gridItemVariants}
@@ -214,7 +216,11 @@ export function NowSection() {
             </div>
           </motion.div>
         )}
-      </motion.div>
+        </motion.div>
+
+        {/* Floating Pixel Terrain Foundation directly attached to card bottoms */}
+        <FloatingTerrain variant="now" />
+      </div>
     </motion.section>
   );
 }

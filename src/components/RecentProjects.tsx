@@ -9,6 +9,7 @@ import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
 import { ProjectStatusBadge } from "./ProjectStatusBadge";
 import { ProjectMedia } from "./ProjectMedia";
+import { FloatingTerrain } from "./FloatingTerrain";
 import { useUISound } from "@/context/SoundContext";
 import {
   sectionContainerVariants,
@@ -27,7 +28,7 @@ export function RecentProjects() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-5 select-none mb-16"
+      className="w-full space-y-5 select-none mb-4 sm:mb-5"
       aria-label="Selected Projects"
     >
       {/* Section Header */}
@@ -39,11 +40,12 @@ export function RecentProjects() {
         className="mb-5 pb-2 border-b border-border-hairline/40"
       />
 
-      {/* 2-Column Responsive CAD Project Grid */}
-      <motion.div
-        variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-      >
+      {/* Projects Foundation Complex: Project grid rests atop floating mountain terrain */}
+      <div className="relative">
+        <motion.div
+          variants={shouldReduceMotion ? undefined : staggeredGridVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-5 relative z-10"
+        >
         {featuredProjects.map((project) => (
           <motion.div
             key={project.slug}
@@ -118,7 +120,11 @@ export function RecentProjects() {
             </Link>
           </motion.div>
         ))}
-      </motion.div>
+        </motion.div>
+
+        {/* Floating Pixel Terrain Foundation directly attached to project grid bottom */}
+        <FloatingTerrain variant="projects" />
+      </div>
     </motion.section>
   );
 }

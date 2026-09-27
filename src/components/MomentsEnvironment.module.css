@@ -1,0 +1,91 @@
+/* Moments & Events Decorative Pixel Environment */
+.environmentWrapper {
+  position: relative;
+  width: 100%;
+  pointer-events: none;
+  isolation: isolate;
+  z-index: 10;
+  display: block;
+  user-select: none;
+}
+
+.environmentSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Theme Switching */
+.lightGroup {
+  display: inline;
+}
+
+:global(.dark) .lightGroup,
+:global(html:not(.light)) .lightGroup {
+  display: none !important;
+}
+
+.darkGroup {
+  display: none !important;
+}
+
+:global(.dark) .darkGroup,
+:global(html:not(.light)) .darkGroup {
+  display: inline !important;
+}
+
+/* Dark mode Subtle Lantern Flicker & Warm Ambient Glow */
+.darkLanternGlow {
+  transform-origin: 565px 35px;
+  animation: lanternBreathe 7s ease-in-out infinite;
+}
+
+@keyframes lanternBreathe {
+  0%, 100% {
+    opacity: 0.94;
+    filter: drop-shadow(0 0 1px rgba(251, 191, 36, 0.4));
+  }
+  28% {
+    opacity: 1;
+    filter: drop-shadow(0 0 2.5px rgba(251, 191, 36, 0.7));
+  }
+  55% {
+    opacity: 0.91;
+    filter: drop-shadow(0 0 1px rgba(251, 191, 36, 0.35));
+  }
+  82% {
+    opacity: 0.98;
+    filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.6));
+  }
+}
+
+/* Night Ember Floating Particles */
+.darkEmbers {
+  animation: emberDrift 9s ease-in-out infinite;
+}
+
+@keyframes emberDrift {
+  0%, 100% {
+    transform: translateY(0px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-1.5px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .darkLanternGlow,
+  .darkEmbers {
+    animation: none !important;
+  }
+}
+
+/* Responsive Foliage Fine-Tuning */
+@media (max-width: 640px) {
+  .minorFoliage {
+    opacity: 0.85;
+  }
+}

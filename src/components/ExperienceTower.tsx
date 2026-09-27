@@ -1,11 +1,39 @@
 import styles from "./ExperienceTower.module.css";
 
+/** Only the wire paths fill the disclosure height; couplers and plugs stay rigid. */
+function ExposedWiring() {
+  return (
+    <div className={styles.wiring}>
+      <svg className={styles.wirePaths} viewBox="0 0 64 100" preserveAspectRatio="none" fill="none" focusable="false">
+        <path className={styles.powerWire} d="M24 0V10C24 25 42 31 38 47S20 72 25 89V100" />
+        <path className={styles.powerWire} d="M33 0V8C33 24 19 35 25 51S44 78 37 93V100" />
+        <path className={styles.powerWire} d="M43 0V12C43 29 49 34 41 53S31 78 44 92V100" />
+        <path className={styles.wireGlint} d="M24 0V10C24 25 42 31 38 47S20 72 25 89V100" />
+        <path className={styles.signalWire} d="M29 0V13C29 30 38 36 33 53S26 81 31 92V100" />
+      </svg>
+      {["upper", "lower"].map((end) => (
+        <svg key={end} className={styles.coupler} data-end={end} viewBox="0 0 64 18" fill="none" focusable="false">
+          <path className={styles.shadow} d="M18 2H47V10H18Z" />
+          <path className={styles.face} d="M16 0H44V7H16Z" />
+          <path className={styles.highlight} d="M17 1H43M18 6H29" />
+          <path className={styles.recess} d="M21 7H27V14H21ZM30 7H36V12H30ZM40 7H46V14H40Z" />
+          <path className={styles.pins} d="M24 13V18M33 11V18M43 13V18" />
+        </svg>
+      ))}
+      <span className={styles.inlinePlug} />
+      <span className={styles.hangingPlug} />
+      <span className={styles.fragments} />
+    </div>
+  );
+}
+
 /** Fixed-size machinery sits on extensible rails, so expanded rows never stretch it. */
 export function ExperienceTowerNode({ index, current, year }: { index: number; current: boolean; year: string }) {
   const offset = index % 2 ? 8 : 0;
   return (
     <div className={styles.rail} data-current={current} aria-hidden="true">
       <div className={styles.column} />
+      <ExposedWiring />
       <div className={styles.spine} />
       <span className={styles.year}>{year}</span>
       <span className={styles.connector} />

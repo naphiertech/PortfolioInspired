@@ -5,6 +5,8 @@
   --tower-highlight: #e3e9eb;
   --tower-well: #465661;
   --tower-screen: #a4b8bb;
+  --tower-wire: #394a55;
+  --tower-signal: #62a995;
   position: relative;
 }
 :global(.dark) .environment {
@@ -14,6 +16,8 @@
   --tower-highlight: #97a9b1;
   --tower-well: #1b272f;
   --tower-screen: #7e9c9f;
+  --tower-wire: #82949e;
+  --tower-signal: #77c8b4;
 }
 .row { min-height: 104px; }
 .disclosure {
@@ -28,9 +32,42 @@
   font: 600 10px/1.4 var(--creative-font-mono, "JetBrains Mono", monospace);
   letter-spacing: 0.06em;
 }
-/* Expansion is an inline reading area, not an extension of the decorative spine. */
-.row[data-open="true"] .spine { bottom: auto; height: 54px; mask-image: linear-gradient(#000, transparent); }
-.row[data-open="true"] .column { mask-image: linear-gradient(to bottom, #000 78px, transparent 124px); }
+/* Keep the split through AnimatePresence's exit, then reconnect at collapsed height. */
+.row:has(.disclosure) .spine { bottom: auto; height: 54px; mask-image: linear-gradient(#000, transparent); }
+.row:has(.disclosure) .column { bottom: auto; height: 101px; }
+.wiring {
+  position: absolute;
+  left: 5px;
+  top: 101px;
+  bottom: -20px;
+  width: 64px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 150ms ease-out, visibility 0s 250ms;
+}
+.row[data-open="true"] .wiring {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 180ms 40ms ease-out, visibility 0s;
+}
+.wirePaths { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.wirePaths path { vector-effect: non-scaling-stroke; }
+.powerWire { stroke: var(--tower-wire); stroke-width: 2.6; }
+.wireGlint { stroke: var(--tower-highlight); stroke-width: 0.65; opacity: 0.55; }
+.signalWire { stroke: var(--tower-signal); stroke-width: 1.2; filter: drop-shadow(0 0 1px var(--tower-signal)); }
+.coupler { position: absolute; left: 0; width: 64px; height: 18px; }
+.coupler[data-end="upper"] { top: -9px; }
+.coupler[data-end="lower"] { bottom: -9px; transform: rotate(180deg); }
+.inlinePlug {
+  position: absolute; left: 34px; top: 42%; width: 7px; height: 15px;
+  border: 1px solid var(--tower-edge); background: var(--tower-well);
+  box-shadow: 1px 1px 0 var(--tower-shadow);
+}
+.inlinePlug::after { content: ""; position: absolute; left: 2px; top: 3px; width: 2px; height: 6px; background: var(--tower-signal); }
+.hangingPlug { position: absolute; left: 16px; top: 59%; width: 6px; height: 26px; border-left: 1px solid var(--tower-wire); }
+.hangingPlug::after { content: ""; position: absolute; left: -3px; bottom: 0; width: 5px; height: 8px; background: var(--tower-well); border: 1px solid var(--tower-edge); }
+.fragments { position: absolute; left: 8px; top: 24%; width: 3px; height: 3px; background: var(--tower-edge); opacity: 0.5; box-shadow: 46px 18px 0 var(--tower-shadow); }
+.fragments::after { content: ""; position: absolute; left: 44px; top: 0; width: 2px; height: 4px; transform: translateY(75px); background: var(--tower-edge); }
 .rail {
   position: relative;
   flex: 0 0 18%;
@@ -82,6 +119,16 @@
   .rail { flex-basis: 28px; }
   .column { left: 3px; width: 7px; }
   .machine { left: -2px; top: 18px; width: 20px; height: 35px; }
+  .row:has(.disclosure) .column { height: 53px; }
+  .wiring { left: -2px; top: 53px; width: 20px; }
+  .powerWire { stroke-width: 1.1; }
+  .signalWire { stroke-width: 0.7; filter: none; }
+  .coupler { width: 20px; height: 7px; }
+  .coupler[data-end="upper"] { top: -3px; }
+  .coupler[data-end="lower"] { bottom: -3px; }
+  .inlinePlug { left: 10px; width: 4px; height: 9px; }
+  .inlinePlug::after { left: 1px; top: 2px; width: 1px; height: 3px; }
+  .hangingPlug, .fragments { display: none; }
   .detail, .crest, .year { display: none; }
   .spine { right: 5px; }
   .node { right: 0; width: 11px; height: 11px; top: 30px; }
@@ -93,5 +140,5 @@
   .ending { height: 85px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .connector, .node, .screen { transition: none; }
+  .connector, .node, .screen, .wiring, .row[data-open="true"] .wiring { transition: none; }
 }

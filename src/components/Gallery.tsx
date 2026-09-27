@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { galleryImages } from "@/lib/data";
-import { SectionHeader } from "./SectionHeader";
+import { MomentsEnvironment } from "./MomentsEnvironment";
 import { useScrollLock } from "@/lib/scrollLock";
 import { useUISound } from "@/context/SoundContext";
 import { sectionContainerVariants, contentBlockVariants } from "@/lib/motion";
@@ -69,38 +69,45 @@ export function Gallery() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.2 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-4 select-none mb-16"
+      className="w-full select-none mb-16"
       aria-label="Moments and Events"
     >
-      {/* Consistent Section Header */}
-      <SectionHeader
-        label="MOMENTS-AND-EVENTS"
-        actionComponent={
-          <div className="flex items-center gap-1">
+      {/* Integrated Moments Decorative Pixel Environment Header */}
+      <div className="relative w-full">
+        {/* Section Heading & Carousel Controls: above on mobile, inside open sky on desktop/tablet */}
+        <div className="flex items-center justify-between px-1 mb-1.5 sm:mb-0 sm:absolute sm:top-[62px] sm:left-0 sm:right-0 sm:pointer-events-none z-20">
+          <div className="sm:pointer-events-auto">
+            <span className="font-mono text-xs tracking-wider text-muted-foreground uppercase select-none">
+              &lt;MOMENTS-AND-EVENTS/&gt;
+            </span>
+          </div>
+          <div className="flex items-center gap-1 sm:pointer-events-auto">
             <button
               onClick={() => scroll("left")}
-              className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer"
+              className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer shadow-xs"
               aria-label="Scroll left"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer"
+              className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer shadow-xs"
               aria-label="Scroll right"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
-        }
-        className="mb-4 pb-2 border-b border-border-hairline/40"
-      />
+        </div>
 
-      {/* Horizontal Strip (Compact 4-image preview) */}
+        {/* Environment Artwork sitting directly above the cards */}
+        <MomentsEnvironment />
+      </div>
+
+      {/* Horizontal Strip (Compact 4-image preview) attached directly beneath concrete platform */}
       <motion.div
         variants={shouldReduceMotion ? undefined : contentBlockVariants}
         ref={scrollContainerRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide py-1"
+        className="-mt-2 sm:-mt-[22px] relative z-10 flex gap-3 overflow-x-auto scrollbar-hide py-1"
       >
         {galleryImages.slice(0, 4).map((src, idx) => (
           <div

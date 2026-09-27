@@ -178,11 +178,12 @@ export function GithubContributions() {
   const columnCount = data.weeks.length;
 
   return (
-    <ContributionTruck>
+    <div className="w-full">
+      <ContributionTruck>
       <div className="relative min-w-0">
         <div className="w-full">
           {/* Month Labels Header */}
-          <div className={`${styles.months} font-mono text-muted-foreground/90`}>
+          <div className={`${styles.months} hidden sm:block font-mono text-muted-foreground/90`}>
             {data.months.map((m, idx) => {
               // Keep month labels aligned with the fluid week columns.
               const leftPos = (m.weekIndex / columnCount) * 100;
@@ -236,6 +237,11 @@ export function GithubContributions() {
                     className={`${styles.cell} transition-transform duration-100 hover:scale-125 cursor-pointer relative group`}
                     style={levelStyle}
                     title={day.tooltip}
+                    onClick={(e) => {
+                      if (tooltipTimerRef.current !== null) clearTimeout(tooltipTimerRef.current);
+                      const target = e.currentTarget;
+                      setHoveredCell({ text: day.tooltip, target });
+                    }}
                     onMouseEnter={(e) => {
                       if (tooltipTimerRef.current !== null) clearTimeout(tooltipTimerRef.current);
                       const target = e.currentTarget;
@@ -258,12 +264,14 @@ export function GithubContributions() {
       </div>
 
       {/* Total Contributions Subtitle */}
-      <div className={`${styles.summary} font-mono text-muted-foreground`}>
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-ink font-medium">Total</span>
-          <span className="text-ink font-semibold">{data.total.toLocaleString()}</span>
-          <span>contributions in {data.year || new Date().getFullYear()}</span>
-          <span className="text-muted-foreground/60 text-[11px] font-normal">
+      <div className={`${styles.summary} hidden sm:flex font-mono text-muted-foreground`}>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-1.5 flex-wrap">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-ink font-medium">Total</span>
+            <span className="text-ink font-semibold">{data.total.toLocaleString()}</span>
+            <span>contributions in {data.year || new Date().getFullYear()}</span>
+          </div>
+          <span className="text-muted-foreground/60 text-[10px] sm:text-[11px] font-normal">
             {data.username.includes("+")
               ? "(@naphiertech + @bagatata05)"
               : `(@${data.username})`}
@@ -274,7 +282,7 @@ export function GithubContributions() {
           href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted-foreground/70 hover:text-ink transition-colors duration-150 text-[11px] whitespace-nowrap"
+          className="text-muted-foreground/70 hover:text-ink transition-colors duration-150 text-[10px] sm:text-[11px] whitespace-nowrap"
         >
           {AUTHOR_INFO.handle} ↗
         </a>
@@ -288,7 +296,16 @@ export function GithubContributions() {
         />
       )}
     </ContributionTruck>
-  );
+
+    {/* Mobile-only subtle swipe hint */}
+    <div
+      className="flex sm:hidden items-center justify-end gap-1 mt-1.5 px-0.5 font-mono text-[9px] text-muted-foreground/40 select-none tracking-wider"
+      aria-hidden="true"
+    >
+      <span>← swipe to explore →</span>
+    </div>
+  </div>
+);
 }
 
 export default GithubContributions;

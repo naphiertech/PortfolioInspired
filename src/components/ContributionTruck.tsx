@@ -152,20 +152,24 @@ export function ContributionTruck({ children }: { children: ReactNode }) {
 
   return (
     <div ref={truckRef} className={styles.truck} data-revealed={revealed}>
-      <div className={styles.cab} aria-hidden="true">
+      <div className={`${styles.cab} hidden sm:block`} aria-hidden="true">
         <CabSVG />
       </div>
       <div className={styles.trailer}>
-        <div className={styles.container}>
-          <div className={styles.cornerTL} aria-hidden="true" />
-          <div className={styles.cornerTR} aria-hidden="true" />
-          <div className={styles.cornerBL} aria-hidden="true" />
-          <div className={styles.cornerBR} aria-hidden="true" />
-          <div className={styles.railTop} aria-hidden="true" />
-          <div className={styles.railBottom} aria-hidden="true" />
-          {children}
+        <div className={styles.mobileTruckViewport}>
+          <div className={styles.mobileTruckCanvas}>
+            <div className={`${styles.container} ${styles.mobileTruckContainer}`}>
+              <div className={styles.cornerTL} aria-hidden="true" />
+              <div className={styles.cornerTR} aria-hidden="true" />
+              <div className={styles.cornerBL} aria-hidden="true" />
+              <div className={styles.cornerBR} aria-hidden="true" />
+              <div className={styles.railTop} aria-hidden="true" />
+              <div className={styles.railBottom} aria-hidden="true" />
+              {children}
+            </div>
+          </div>
         </div>
-        <div className={styles.undercarriage} aria-hidden="true">
+        <div className={`${styles.undercarriage} hidden sm:block`} aria-hidden="true">
           <UndercarriageSVG />
         </div>
       </div>

@@ -32,13 +32,15 @@ export function ExperienceTowerNode({ index, current, year }: { index: number; c
   const offset = index % 2 ? 8 : 0;
   return (
     <div className={styles.rail} data-current={current} aria-hidden="true">
-      <div className={styles.column} />
-      <ExposedWiring />
+      <div className={`${styles.column} hidden sm:block`} />
+      <div className="hidden sm:block">
+        <ExposedWiring />
+      </div>
       <div className={styles.spine} />
-      <span className={styles.year}>{year}</span>
+      <span className={`${styles.year} hidden sm:block`}>{year}</span>
       <span className={styles.connector} />
       <span className={styles.node}><i /></span>
-      <svg className={styles.machine} viewBox="0 0 70 110" fill="none" focusable="false">
+      <svg className={`${styles.machine} hidden sm:block`} viewBox="0 0 70 110" fill="none" focusable="false">
         <path className={styles.cable} d="M22 1 V16 H13 V69 H24 V107 M53 0 V27 H59 V84 H49 V110" />
         <path className={styles.shadow} d="M28 0 H43 V109 H28 Z M43 8 H49 V88 H43 Z" />
         <path className={styles.face} d="M25 0 H37 V110 H25 Z M20 15 H29 V79 H20 Z" />
@@ -71,7 +73,7 @@ export function ExperienceTowerNode({ index, current, year }: { index: number; c
 export function ExperienceTowerBase() {
   return (
     <div className={styles.ending}>
-      <svg className={styles.base} viewBox="0 0 680 88" fill="none" focusable="false" aria-hidden="true">
+      <svg className={`${styles.base} hidden sm:block`} viewBox="0 0 680 88" fill="none" focusable="false" aria-hidden="true">
         <path className={styles.shadow} d="M27 0 H49 V31 H62 V51 H83 V66 H143 V73 H236 V78 H17 V66 H29 V46 H27 Z" />
         <path className={styles.face} d="M24 0 H38 V28 H54 V49 H68 V64 H126 V70 H202 V76 H10 V69 H21 V57 H31 V31 H24 Z" />
         <path className={styles.highlight} d="M25 0 V27 H53 M22 58 H66 M11 70 H123 M38 31 V48" />

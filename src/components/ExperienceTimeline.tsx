@@ -16,12 +16,46 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { experiences } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
 import { StatusBadge } from "./ProjectStatusBadge";
+import { ExperienceTowerNode, ExperienceTowerBase } from "./ExperienceTower";
+import towerStyles from "./ExperienceTower.module.css";
 import { useUISound } from "@/context/SoundContext";
 import {
   sectionContainerVariants,
   timelineContainerVariants,
   milestoneVariants,
 } from "@/lib/motion";
+
+// Compact disclosure copy; full experience descriptions remain in the shared data.
+const disclosureHighlights: Record<string, string[]> = {
+  PRESENT: [
+    "Full-stack apps with Next.js, React, TypeScript, and Supabase.",
+    "MKBRiderTrack: attendance, logistics, and biometric verification.",
+    "Naphix Resume: live A4 previews and dual export.",
+    "Responsive interfaces, role-based access, and REST/Edge APIs.",
+  ],
+  "2025": [
+    "Relational schemas and migrations with PostgreSQL and Prisma.",
+    "AssetLink: QR-based asset tracking and maintenance.",
+    "RLS, token authentication, and transaction safety.",
+    "Modular REST APIs with Node.js, Express, and FastAPI.",
+  ],
+  "2024": [
+    "Responsive, accessible React interfaces and reusable components.",
+    "MovieStream: movie discovery with live TMDB data.",
+    "Mobile-first layouts, semantic HTML, and WCAG accessibility.",
+    "Client caching, debounced search, and micro-interactions.",
+  ],
+  "2023": [
+    "Data structures, databases, networking, and systems analysis.",
+    "Team capstones, requirements, and technical presentations.",
+    "Campus workshops and GDG Zamboanga community events.",
+  ],
+  "2022": [
+    "First projects with HTML, CSS, and JavaScript.",
+    "Learning Git, GitHub workflows, and the terminal.",
+    "Static web pages and early algorithm exercises.",
+  ],
+};
 
 export function ExperienceTimeline() {
   const shouldReduceMotion = useReducedMotion();
@@ -71,99 +105,25 @@ export function ExperienceTimeline() {
       />
 
       {/* Vertical Milestone Timeline Container */}
-      <div className="relative pl-0 sm:pl-2 pb-4 sm:pb-8">
+      <div className={towerStyles.environment}>
         <motion.div
           variants={shouldReduceMotion ? undefined : timelineContainerVariants}
           className="flex flex-col relative"
         >
           {experiences.map((exp, index) => {
             const isCurrent = exp.isCurrent;
-            const isLast = index === experiences.length - 1;
             const yearLabel = exp.yearNode || (isCurrent ? "PRESENT" : exp.year.split(" ")[0]);
             const isOpen = openIndex === index;
+            const highlights = (disclosureHighlights[exp.yearNode ?? ""] ?? exp.details ?? []).slice(0, 4);
 
             return (
               <motion.div
                 key={`${exp.role}-${exp.year}`}
                 variants={shouldReduceMotion ? undefined : milestoneVariants}
-                className="relative flex items-stretch gap-2.5 sm:gap-5 group pb-4 sm:pb-4.5 last:pb-0"
+                className={`relative flex items-stretch gap-2.5 sm:gap-5 group pb-4 sm:pb-4.5 last:pb-0 ${towerStyles.row}`}
+                data-open={isOpen}
               >
-                {/* Left Rail & Timeline Node (Compact 48px on mobile, 80px on desktop) */}
-                <div className="flex flex-col items-center flex-shrink-0 w-12 sm:w-20 pt-2 sm:pt-2.5 relative select-none">
-                  {/* Year Label */}
-                  <span
-                    className={`font-mono text-[9px] sm:text-[11px] mb-1 sm:mb-1.5 tracking-wider uppercase text-center relative z-10 transition-colors ${
-                      isCurrent
-                        ? "text-brand font-bold"
-                        : "text-muted-foreground/80 group-hover:text-ink font-medium"
-                    }`}
-                  >
-                    {yearLabel}
-                  </span>
-
-                  {/* Node Marker */}
-                  <div className="relative flex items-center justify-center z-10">
-                    {isCurrent ? (
-                      <div className="relative flex items-center justify-center">
-                        {/* Expanding breathing halo ring */}
-                        <span className="animate-status-ring absolute inline-flex h-5 w-5 rounded-full bg-brand/35 pointer-events-none" />
-                        <div className="w-3.5 h-3.5 rounded-full ring-4 ring-page bg-surface border border-border-hairline flex items-center justify-center shadow-xs relative z-10">
-                          <div className="w-1.5 h-1.5 rounded-full bg-brand" />
-                        </div>
-                      </div>
-                    ) : (
-                      /* Past nodes: clean milestone rivet with ring-4 mask */
-                      <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ring-4 ring-page bg-surface border-2 border-border-hairline shadow-2xs group-hover:border-brand group-hover:bg-brand/30 transition-all duration-200" />
-                    )}
-                  </div>
-
-                  {/* Dynamic Vertical Spine connecting to the next milestone */}
-                  {!isLast && (
-                    <div
-                      className={`absolute top-[32px] sm:top-[38px] -bottom-4 sm:-bottom-4.5 left-1/2 -translate-x-1/2 w-px pointer-events-none z-0 ${
-                        index === 0
-                          ? "bg-gradient-to-b from-brand/80 via-border-hairline to-border-hairline/50"
-                          : "bg-border-hairline/50"
-                      }`}
-                      aria-hidden="true"
-                    />
-                  )}
-
-                  {/* Desktop/Tablet: 2022 Curved Connector Arc & Inspiring Quote */}
-                  {isLast && (
-                    <div className="hidden sm:block absolute top-[46px] right-1/2 w-44 pointer-events-none z-20">
-                      {/* Smooth curved connector path */}
-                      <svg
-                        className="w-28 h-16 overflow-visible absolute top-0 right-0"
-                        viewBox="0 0 90 48"
-                        fill="none"
-                      >
-                        <path
-                          d="M 90 0 C 90 20, 60 34, 20 38"
-                          stroke="currentColor"
-                          className="text-muted-foreground/60 dark:text-muted-foreground/60"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <circle
-                          cx="20"
-                          cy="38"
-                          r="2.5"
-                          fill="currentColor"
-                          className="text-brand/80"
-                        />
-                      </svg>
-
-                      {/* Hand-annotated reflection text */}
-                      <div className="absolute top-3 right-16 sm:right-20 w-28 transform -rotate-6 text-right select-none">
-                        <span className="font-sans italic font-normal text-[11px] sm:text-xs text-muted-foreground/90 leading-[14px] block tracking-tight">
-                          same curiosity,<br />
-                          <strong className="text-ink font-semibold not-italic">bigger impact</strong>
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <ExperienceTowerNode index={index} current={!!isCurrent} year={yearLabel} />
 
                 {/* Milestone Row Editorial Container */}
                 <div className="flex-1 min-w-0 pb-3 pt-1 border-b border-border-hairline/30 last:border-b-0 flex flex-col justify-start">
@@ -291,26 +251,26 @@ export function ExperienceTimeline() {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={shouldReduceMotion ? { opacity: 0, height: 0 } : { opacity: 0, height: 0 }}
                         transition={{
-                          height: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
-                          opacity: { duration: 0.2, ease: "easeOut" },
+                          height: { duration: shouldReduceMotion ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] },
+                          opacity: { duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" },
                         }}
                         className="overflow-hidden"
                       >
-                        <div className="pt-3 pb-1 pl-3 sm:pl-4 mt-2 border-l border-border-hairline/60 space-y-3">
+                        <div className={towerStyles.disclosure}>
                           {/* Details / Highlights */}
-                          {exp.details && exp.details.length > 0 && (
-                            <div className="space-y-1.5">
-                              <span className="font-mono text-[10px] sm:text-[11px] tracking-wider text-muted-foreground/70 uppercase font-semibold block">
+                          {highlights.length > 0 && (
+                            <div className="space-y-1">
+                              <span className={towerStyles.disclosureLabel}>
                                 DETAILS / HIGHLIGHTS
                               </span>
-                              <ul className="space-y-1 text-xs text-muted-foreground leading-relaxed">
-                                {exp.details.map((detail, dIdx) => (
-                                  <li key={dIdx} className="flex items-start gap-2">
+                              <ul className="space-y-0.5 text-xs text-muted-foreground leading-[1.45]">
+                                {highlights.map((detail, dIdx) => (
+                                  <li key={dIdx} className="flex items-start gap-1.5">
                                     <span
-                                      className="text-brand font-mono text-[11px] select-none mt-0.5 leading-none"
+                                      className="text-muted-foreground select-none"
                                       aria-hidden="true"
                                     >
-                                      ›
+                                      •
                                     </span>
                                     <span>{detail}</span>
                                   </li>
@@ -321,15 +281,15 @@ export function ExperienceTimeline() {
 
                           {/* Focus / Stack */}
                           {exp.technologies && exp.technologies.length > 0 && (
-                            <div className="space-y-1.5 pt-0.5">
-                              <span className="font-mono text-[10px] sm:text-[11px] tracking-wider text-muted-foreground/70 uppercase font-semibold block">
-                                FOCUS / STACK
+                            <div className="space-y-1">
+                              <span className={towerStyles.disclosureLabel}>
+                                STACK
                               </span>
-                              <div className="flex flex-wrap gap-1.5">
+                              <div className="flex flex-wrap gap-1">
                                 {exp.technologies.map((tech) => (
                                   <span
                                     key={tech}
-                                    className="inline-flex items-center px-2 py-0.5 rounded-[3px] bg-surface/50 border border-border-hairline/60 text-ink/90 font-mono text-[11px]"
+                                    className="inline-flex items-center px-1.5 py-px rounded-[3px] bg-surface/50 border border-border-hairline/60 text-ink/90 font-mono text-[10px] leading-4"
                                   >
                                     {tech}
                                   </span>
@@ -340,19 +300,21 @@ export function ExperienceTimeline() {
 
                           {/* Related Projects */}
                           {exp.projects && exp.projects.length > 0 && (
-                            <div className="pt-1 flex items-center gap-2 flex-wrap text-xs font-mono">
-                              <span className="text-[10px] sm:text-[11px] tracking-wider text-muted-foreground/70 uppercase font-semibold">
-                                PROJECTS:
+                            <div className="flex items-baseline gap-x-2 gap-y-1 flex-wrap text-xs font-mono">
+                              <span className={towerStyles.disclosureLabel}>
+                                PROJECTS
                               </span>
-                              {exp.projects.map((proj) => (
+                              {exp.projects.map((proj, projectIndex) => (
+                                <React.Fragment key={proj.title}>
+                                {projectIndex > 0 && <span aria-hidden="true" className="text-muted-foreground/60">·</span>}
                                 <Link
-                                  key={proj.title}
                                   href={proj.href}
-                                  className="inline-flex items-center gap-1 text-brand hover:underline font-mono text-xs"
+                                  className="inline-flex items-center gap-0.5 whitespace-nowrap text-ink/90 hover:underline font-mono text-[11px] leading-4"
                                 >
                                   <span>{proj.title}</span>
                                   <ArrowUpRight className="w-3 h-3 flex-shrink-0" />
                                 </Link>
+                                </React.Fragment>
                               ))}
                             </div>
                           )}
@@ -361,20 +323,12 @@ export function ExperienceTimeline() {
                     )}
                   </AnimatePresence>
 
-                  {/* Mobile Only: 2022 Reflection Quote underneath the milestone */}
-                  {isLast && (
-                    <div className="sm:hidden pt-2 pl-1 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand/80" />
-                      <p className="font-sans italic text-xs text-muted-foreground/90 leading-tight">
-                        &ldquo;same curiosity, <strong className="text-ink not-italic font-semibold">bigger impact</strong>&rdquo;
-                      </p>
-                    </div>
-                  )}
                 </div>
               </motion.div>
             );
           })}
         </motion.div>
+        <ExperienceTowerBase />
       </div>
     </motion.section>
   );

@@ -1,0 +1,409 @@
+.truck {
+  position: relative;
+  display: grid;
+  grid-template-columns: 19.1% 80.9%;
+  align-items: end;
+  width: 100%;
+  margin-top: 24px;
+  isolation: isolate;
+}
+
+.cab {
+  position: relative;
+  width: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+.cab > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.trailer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  margin-left: -1px;
+}
+
+.container {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  padding: 14px 18px 10px 18px;
+  border: 2px solid #111111;
+  background: var(--bg-page, #ffffff);
+  box-shadow: inset 0 2px 0 #ffffff, inset 0 -2px 0 #e4e4e4;
+}
+
+:global(.dark) .container,
+:global(html:not(.light)) .container {
+  border-color: #3f4246;
+  background: var(--bg-page, #18191b);
+  box-shadow: inset 0 2px 0 #282a2d, inset 0 -2px 0 #121314;
+}
+
+/* ISO Corner castings */
+.cornerTL, .cornerTR, .cornerBL, .cornerBR {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #111111;
+  z-index: 5;
+  pointer-events: none;
+}
+.cornerTL { top: -2px; left: -2px; }
+.cornerTR { top: -2px; right: -2px; }
+.cornerBL { bottom: -2px; left: -2px; }
+.cornerBR { bottom: -2px; right: -2px; }
+
+.cornerTL::after, .cornerTR::after, .cornerBL::after, .cornerBR::after {
+  content: "";
+  position: absolute;
+  background: #e0e0e0;
+  border-radius: 1px;
+}
+.cornerTL::after { inset: 2px 1px 1px 2px; }
+.cornerTR::after { inset: 2px 2px 1px 1px; }
+.cornerBL::after { inset: 1px 1px 2px 2px; }
+.cornerBR::after { inset: 1px 2px 2px 1px; }
+
+:global(.dark) .cornerTL,
+:global(.dark) .cornerTR,
+:global(.dark) .cornerBL,
+:global(.dark) .cornerBR,
+:global(html:not(.light)) .cornerTL,
+:global(html:not(.light)) .cornerTR,
+:global(html:not(.light)) .cornerBL,
+:global(html:not(.light)) .cornerBR {
+  background: #0d0e0f;
+  border: 1px solid #52565a;
+}
+:global(.dark) .cornerTL::after,
+:global(.dark) .cornerTR::after,
+:global(.dark) .cornerBL::after,
+:global(.dark) .cornerBR::after,
+:global(html:not(.light)) .cornerTL::after,
+:global(html:not(.light)) .cornerTR::after,
+:global(html:not(.light)) .cornerBL::after,
+:global(html:not(.light)) .cornerBR::after {
+  background: #27292c;
+}
+
+/* Top & bottom rails with rivets */
+.railTop {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, #666666 0 2px, transparent 2px 12px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.railBottom {
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, #666666 0 2px, transparent 2px 16px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+:global(.dark) .railTop,
+:global(.dark) .railBottom,
+:global(html:not(.light)) .railTop,
+:global(html:not(.light)) .railBottom {
+  background: repeating-linear-gradient(90deg, #666a70 0 2px, transparent 2px 12px);
+  opacity: 0.6;
+}
+
+/* Subtle container panel ribs */
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background: repeating-linear-gradient(90deg, transparent 0 24px, rgba(0, 0, 0, 0.035) 24px 26px);
+  pointer-events: none;
+}
+:global(.dark) .container::before,
+:global(html:not(.light)) .container::before {
+  background: repeating-linear-gradient(90deg, transparent 0 24px, rgba(255, 255, 255, 0.025) 24px 26px);
+}
+
+.undercarriage {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.undercarriage > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Preserved classes for GithubContributions */
+.months { position: relative; height: 16px; margin-bottom: 6px; font-size: 10px; }
+.month { position: absolute; }
+.month:last-child { transform: translateX(-25%); }
+.grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.cell { width: 100%; min-width: 0; aspect-ratio: 1; border-radius: 1px; }
+.summary { position: relative; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; font-size: 10px; }
+
+/* Responsive adjustments */
+@media (max-width: 639px) {
+  .truck {
+    grid-template-columns: 19.1% 80.9%;
+  }
+  .container {
+    padding: 10px 8px 8px 8px;
+  }
+  .months { font-size: 8px; }
+  .grid { gap: 1px; }
+  .summary { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .truck[data-revealed="false"] .container { opacity: 0; }
+  .truck[data-revealed="false"] .cab { opacity: 0; transform: translateX(-5px); }
+  .truck[data-revealed="false"] .undercarriage { opacity: 0; transform: translateY(-3px); }
+  .container { transition: opacity 400ms ease-out; }
+  .cab { transition: opacity 350ms 100ms ease-out, transform 350ms 100ms ease-out; }
+  .undercarriage { transition: opacity 300ms 200ms ease-out, transform 300ms 200ms ease-out; }
+}
+
+/* ========================================================================= */
+/* GITHUB CONTRIBUTION TRUCK - DARK MODE THEME PALETTE */
+/* ========================================================================= */
+
+:global(.dark) .truck,
+:global(html:not(.light)) .truck {
+  /* Cab Body (near-black / charcoal with subtle readable panel highlights) */
+  --truck-cab-030303: #070809;
+  --truck-cab-121211: #0c0d10;
+  --truck-cab-252525: #121316;
+  --truck-cab-3b3b3b: #17181c;
+  --truck-cab-868686: #1c1e23;
+  --truck-cab-aeadad: #212328;
+  --truck-cab-c0c0c0: #272a31;
+  --truck-cab-cccbcb: #2f323a;
+  --truck-cab-dedede: #3c414b;
+  --truck-cab-fdfffc: #4f5564;
+  --truck-cab-fffffe: #6b7385;
+  --truck-cab-ffffff: #8c94a6;
+
+  /* Windows (very dark gray tinted glass with subtle sheen) */
+  --truck-win-030303: #070809;
+  --truck-win-121211: #0b0c0e;
+  --truck-win-252525: #101114;
+  --truck-win-3b3b3b: #141518;
+  --truck-win-868686: #191b20;
+  --truck-win-aeadad: #1f2127;
+  --truck-win-c0c0c0: #262830;
+  --truck-win-cccbcb: #2e313b;
+  --truck-win-dedede: #3a3e4a;
+  --truck-win-fdfffc: #4c5160;
+
+  /* Headlights (muted light gray) */
+  --truck-light-fdfffc: #8b92a1;
+  --truck-light-fffffe: #cbd0d8;
+  --truck-light-ffffff: #e2e6ec;
+
+  /* Wheel Rims / Hubs (medium-light gray with crisp metallic separation) */
+  --truck-rim-030303: #181a1f;
+  --truck-rim-121211: #24272e;
+  --truck-rim-252525: #323640;
+  --truck-rim-3b3b3b: #454b56;
+  --truck-rim-868686: #606675;
+  --truck-rim-aeadad: #7c8392;
+  --truck-rim-c0c0c0: #969dae;
+  --truck-rim-cccbcb: #b0b7c6;
+  --truck-rim-dedede: #c8cedc;
+  --truck-rim-fdfffc: #dde2ed;
+  --truck-rim-fffffe: #edf0f6;
+  --truck-rim-ffffff: #f6f8fb;
+
+  /* Trailer Rims (matches cab front wheel rim) */
+  --truck-tr-rim-050505: #181a1f;
+  --truck-tr-rim-1e1e1d: #24272e;
+  --truck-tr-rim-3e3e3e: #323640;
+  --truck-tr-rim-747474: #454b56;
+  --truck-tr-rim-7e7d7d: #5e6473;
+  --truck-tr-rim-9e9e9e: #7e8594;
+  --truck-tr-rim-bbbaba: #9aa1b2;
+  --truck-tr-rim-dbdbdb: #b4bac8;
+  --truck-tr-rim-fdfdfd: #c9cfdc;
+  --truck-tr-rim-fefffe: #dde2ed;
+  --truck-tr-rim-fffffe: #edf0f6;
+  --truck-tr-rim-ffffff: #f6f8fb;
+
+  /* Wheel Tires (darkest black rubber) */
+  --truck-tire-030303: #050607;
+  --truck-tire-121211: #090a0c;
+  --truck-tire-252525: #0e1012;
+  --truck-tire-3b3b3b: #131518;
+  --truck-tire-868686: #181a1e;
+  --truck-tire-aeadad: #1e2025;
+  --truck-tire-c0c0c0: #25272e;
+  --truck-tire-cccbcb: #2c2f36;
+  --truck-tire-dedede: #363943;
+  --truck-tire-fdfffc: #434752;
+
+  --truck-tr-tire-050505: #050607;
+  --truck-tr-tire-1e1e1d: #090a0c;
+  --truck-tr-tire-3e3e3e: #0e1012;
+  --truck-tr-tire-747474: #131518;
+  --truck-tr-tire-7e7d7d: #181a1e;
+  --truck-tr-tire-9e9e9e: #1e2025;
+  --truck-tr-tire-bbbaba: #25272e;
+  --truck-tr-tire-dbdbdb: #2c2f36;
+  --truck-tr-tire-fdfdfd: #363943;
+  --truck-tr-tire-fefffe: #434752;
+  --truck-tr-tire-ffffff: #535865;
+
+  /* Side Storage Parts (dark charcoal) */
+  --truck-store-050505: #08090a;
+  --truck-store-1e1e1d: #0d0e11;
+  --truck-store-3e3e3e: #121316;
+  --truck-store-747474: #17181c;
+  --truck-store-7e7d7d: #1c1e23;
+  --truck-store-9e9e9e: #22242a;
+  --truck-store-bbbaba: #292c34;
+  --truck-store-dbdbdb: #323540;
+  --truck-store-fdfdfd: #3d424e;
+  --truck-store-fefffe: #4b5160;
+  --truck-store-fffffe: #646c7f;
+  --truck-store-ffffff: #8891a4;
+
+  /* Trailer Frame & Mechanical parts beside/around tires (near-black / dark charcoal) */
+  --truck-frame-050505: #070809;
+  --truck-frame-1e1e1d: #0b0c0e;
+  --truck-frame-3e3e3e: #101114;
+  --truck-frame-747474: #15171a;
+  --truck-frame-7e7d7d: #1a1c21;
+  --truck-frame-9e9e9e: #202228;
+  --truck-frame-bbbaba: #262930;
+  --truck-frame-dbdbdb: #31353e;
+  --truck-frame-fdfdfd: #3e434f;
+  --truck-frame-fefffe: #4c5261;
+  --truck-frame-fffffe: #656d7e;
+  --truck-frame-ffffff: #858e9f;
+}
+
+/* Cab Body */
+:global(.dark) .cabBody_030303, :global(html:not(.light)) .cabBody_030303 { fill: var(--truck-cab-030303); }
+:global(.dark) .cabBody_121211, :global(html:not(.light)) .cabBody_121211 { fill: var(--truck-cab-121211); }
+:global(.dark) .cabBody_252525, :global(html:not(.light)) .cabBody_252525 { fill: var(--truck-cab-252525); }
+:global(.dark) .cabBody_3b3b3b, :global(html:not(.light)) .cabBody_3b3b3b { fill: var(--truck-cab-3b3b3b); }
+:global(.dark) .cabBody_868686, :global(html:not(.light)) .cabBody_868686 { fill: var(--truck-cab-868686); }
+:global(.dark) .cabBody_aeadad, :global(html:not(.light)) .cabBody_aeadad { fill: var(--truck-cab-aeadad); }
+:global(.dark) .cabBody_c0c0c0, :global(html:not(.light)) .cabBody_c0c0c0 { fill: var(--truck-cab-c0c0c0); }
+:global(.dark) .cabBody_cccbcb, :global(html:not(.light)) .cabBody_cccbcb { fill: var(--truck-cab-cccbcb); }
+:global(.dark) .cabBody_dedede, :global(html:not(.light)) .cabBody_dedede { fill: var(--truck-cab-dedede); }
+:global(.dark) .cabBody_fdfffc, :global(html:not(.light)) .cabBody_fdfffc { fill: var(--truck-cab-fdfffc); }
+:global(.dark) .cabBody_fffffe, :global(html:not(.light)) .cabBody_fffffe { fill: var(--truck-cab-fffffe); }
+:global(.dark) .cabBody_ffffff, :global(html:not(.light)) .cabBody_ffffff { fill: var(--truck-cab-ffffff); }
+
+/* Cab Windows */
+:global(.dark) .cabWin_030303, :global(html:not(.light)) .cabWin_030303 { fill: var(--truck-win-030303); }
+:global(.dark) .cabWin_121211, :global(html:not(.light)) .cabWin_121211 { fill: var(--truck-win-121211); }
+:global(.dark) .cabWin_252525, :global(html:not(.light)) .cabWin_252525 { fill: var(--truck-win-252525); }
+:global(.dark) .cabWin_3b3b3b, :global(html:not(.light)) .cabWin_3b3b3b { fill: var(--truck-win-3b3b3b); }
+:global(.dark) .cabWin_868686, :global(html:not(.light)) .cabWin_868686 { fill: var(--truck-win-868686); }
+:global(.dark) .cabWin_aeadad, :global(html:not(.light)) .cabWin_aeadad { fill: var(--truck-win-aeadad); }
+:global(.dark) .cabWin_c0c0c0, :global(html:not(.light)) .cabWin_c0c0c0 { fill: var(--truck-win-c0c0c0); }
+:global(.dark) .cabWin_cccbcb, :global(html:not(.light)) .cabWin_cccbcb { fill: var(--truck-win-cccbcb); }
+:global(.dark) .cabWin_dedede, :global(html:not(.light)) .cabWin_dedede { fill: var(--truck-win-dedede); }
+:global(.dark) .cabWin_fdfffc, :global(html:not(.light)) .cabWin_fdfffc { fill: var(--truck-win-fdfffc); }
+
+/* Cab Lights */
+:global(.dark) .cabLight_fdfffc, :global(html:not(.light)) .cabLight_fdfffc { fill: var(--truck-light-fdfffc); }
+:global(.dark) .cabLight_fffffe, :global(html:not(.light)) .cabLight_fffffe { fill: var(--truck-light-fffffe); }
+:global(.dark) .cabLight_ffffff, :global(html:not(.light)) .cabLight_ffffff { fill: var(--truck-light-ffffff); }
+
+/* Cab Front Wheel Rims */
+:global(.dark) .cabRim_030303, :global(html:not(.light)) .cabRim_030303 { fill: var(--truck-rim-030303); }
+:global(.dark) .cabRim_121211, :global(html:not(.light)) .cabRim_121211 { fill: var(--truck-rim-121211); }
+:global(.dark) .cabRim_252525, :global(html:not(.light)) .cabRim_252525 { fill: var(--truck-rim-252525); }
+:global(.dark) .cabRim_3b3b3b, :global(html:not(.light)) .cabRim_3b3b3b { fill: var(--truck-rim-3b3b3b); }
+:global(.dark) .cabRim_868686, :global(html:not(.light)) .cabRim_868686 { fill: var(--truck-rim-868686); }
+:global(.dark) .cabRim_aeadad, :global(html:not(.light)) .cabRim_aeadad { fill: var(--truck-rim-aeadad); }
+:global(.dark) .cabRim_c0c0c0, :global(html:not(.light)) .cabRim_c0c0c0 { fill: var(--truck-rim-c0c0c0); }
+:global(.dark) .cabRim_cccbcb, :global(html:not(.light)) .cabRim_cccbcb { fill: var(--truck-rim-cccbcb); }
+:global(.dark) .cabRim_dedede, :global(html:not(.light)) .cabRim_dedede { fill: var(--truck-rim-dedede); }
+:global(.dark) .cabRim_fdfffc, :global(html:not(.light)) .cabRim_fdfffc { fill: var(--truck-rim-fdfffc); }
+:global(.dark) .cabRim_fffffe, :global(html:not(.light)) .cabRim_fffffe { fill: var(--truck-rim-fffffe); }
+:global(.dark) .cabRim_ffffff, :global(html:not(.light)) .cabRim_ffffff { fill: var(--truck-rim-ffffff); }
+
+/* Cab Front Wheel Tires */
+:global(.dark) .cabTire_030303, :global(html:not(.light)) .cabTire_030303 { fill: var(--truck-tire-030303); }
+:global(.dark) .cabTire_121211, :global(html:not(.light)) .cabTire_121211 { fill: var(--truck-tire-121211); }
+:global(.dark) .cabTire_252525, :global(html:not(.light)) .cabTire_252525 { fill: var(--truck-tire-252525); }
+:global(.dark) .cabTire_3b3b3b, :global(html:not(.light)) .cabTire_3b3b3b { fill: var(--truck-tire-3b3b3b); }
+:global(.dark) .cabTire_868686, :global(html:not(.light)) .cabTire_868686 { fill: var(--truck-tire-868686); }
+:global(.dark) .cabTire_aeadad, :global(html:not(.light)) .cabTire_aeadad { fill: var(--truck-tire-aeadad); }
+:global(.dark) .cabTire_c0c0c0, :global(html:not(.light)) .cabTire_c0c0c0 { fill: var(--truck-tire-c0c0c0); }
+:global(.dark) .cabTire_cccbcb, :global(html:not(.light)) .cabTire_cccbcb { fill: var(--truck-tire-cccbcb); }
+:global(.dark) .cabTire_dedede, :global(html:not(.light)) .cabTire_dedede { fill: var(--truck-tire-dedede); }
+:global(.dark) .cabTire_fdfffc, :global(html:not(.light)) .cabTire_fdfffc { fill: var(--truck-tire-fdfffc); }
+
+/* Trailer Frame, Chassis & Mechanical around tires */
+:global(.dark) .trFrame_050505, :global(html:not(.light)) .trFrame_050505 { fill: var(--truck-frame-050505); }
+:global(.dark) .trFrame_1e1e1d, :global(html:not(.light)) .trFrame_1e1e1d { fill: var(--truck-frame-1e1e1d); }
+:global(.dark) .trFrame_3e3e3e, :global(html:not(.light)) .trFrame_3e3e3e { fill: var(--truck-frame-3e3e3e); }
+:global(.dark) .trFrame_747474, :global(html:not(.light)) .trFrame_747474 { fill: var(--truck-frame-747474); }
+:global(.dark) .trFrame_7e7d7d, :global(html:not(.light)) .trFrame_7e7d7d { fill: var(--truck-frame-7e7d7d); }
+:global(.dark) .trFrame_9e9e9e, :global(html:not(.light)) .trFrame_9e9e9e { fill: var(--truck-frame-9e9e9e); }
+:global(.dark) .trFrame_bbbaba, :global(html:not(.light)) .trFrame_bbbaba { fill: var(--truck-frame-bbbaba); }
+:global(.dark) .trFrame_dbdbdb, :global(html:not(.light)) .trFrame_dbdbdb { fill: var(--truck-frame-dbdbdb); }
+:global(.dark) .trFrame_fdfdfd, :global(html:not(.light)) .trFrame_fdfdfd { fill: var(--truck-frame-fdfdfd); }
+:global(.dark) .trFrame_fefffe, :global(html:not(.light)) .trFrame_fefffe { fill: var(--truck-frame-fefffe); }
+:global(.dark) .trFrame_fffffe, :global(html:not(.light)) .trFrame_fffffe { fill: var(--truck-frame-fffffe); }
+:global(.dark) .trFrame_ffffff, :global(html:not(.light)) .trFrame_ffffff { fill: var(--truck-frame-ffffff); }
+
+/* Side Storage & Equipment */
+:global(.dark) .sideStore_050505, :global(html:not(.light)) .sideStore_050505 { fill: var(--truck-store-050505); }
+:global(.dark) .sideStore_1e1e1d, :global(html:not(.light)) .sideStore_1e1e1d { fill: var(--truck-store-1e1e1d); }
+:global(.dark) .sideStore_3e3e3e, :global(html:not(.light)) .sideStore_3e3e3e { fill: var(--truck-store-3e3e3e); }
+:global(.dark) .sideStore_747474, :global(html:not(.light)) .sideStore_747474 { fill: var(--truck-store-747474); }
+:global(.dark) .sideStore_7e7d7d, :global(html:not(.light)) .sideStore_7e7d7d { fill: var(--truck-store-7e7d7d); }
+:global(.dark) .sideStore_9e9e9e, :global(html:not(.light)) .sideStore_9e9e9e { fill: var(--truck-store-9e9e9e); }
+:global(.dark) .sideStore_bbbaba, :global(html:not(.light)) .sideStore_bbbaba { fill: var(--truck-store-bbbaba); }
+:global(.dark) .sideStore_dbdbdb, :global(html:not(.light)) .sideStore_dbdbdb { fill: var(--truck-store-dbdbdb); }
+:global(.dark) .sideStore_fdfdfd, :global(html:not(.light)) .sideStore_fdfdfd { fill: var(--truck-store-fdfdfd); }
+:global(.dark) .sideStore_fefffe, :global(html:not(.light)) .sideStore_fefffe { fill: var(--truck-store-fefffe); }
+:global(.dark) .sideStore_fffffe, :global(html:not(.light)) .sideStore_fffffe { fill: var(--truck-store-fffffe); }
+:global(.dark) .sideStore_ffffff, :global(html:not(.light)) .sideStore_ffffff { fill: var(--truck-store-ffffff); }
+
+/* Trailer Rims */
+:global(.dark) .trRim_050505, :global(html:not(.light)) .trRim_050505 { fill: var(--truck-tr-rim-050505); }
+:global(.dark) .trRim_1e1e1d, :global(html:not(.light)) .trRim_1e1e1d { fill: var(--truck-tr-rim-1e1e1d); }
+:global(.dark) .trRim_3e3e3e, :global(html:not(.light)) .trRim_3e3e3e { fill: var(--truck-tr-rim-3e3e3e); }
+:global(.dark) .trRim_747474, :global(html:not(.light)) .trRim_747474 { fill: var(--truck-tr-rim-747474); }
+:global(.dark) .trRim_7e7d7d, :global(html:not(.light)) .trRim_7e7d7d { fill: var(--truck-tr-rim-7e7d7d); }
+:global(.dark) .trRim_9e9e9e, :global(html:not(.light)) .trRim_9e9e9e { fill: var(--truck-tr-rim-9e9e9e); }
+:global(.dark) .trRim_bbbaba, :global(html:not(.light)) .trRim_bbbaba { fill: var(--truck-tr-rim-bbbaba); }
+:global(.dark) .trRim_dbdbdb, :global(html:not(.light)) .trRim_dbdbdb { fill: var(--truck-tr-rim-dbdbdb); }
+:global(.dark) .trRim_fdfdfd, :global(html:not(.light)) .trRim_fdfdfd { fill: var(--truck-tr-rim-fdfdfd); }
+:global(.dark) .trRim_fefffe, :global(html:not(.light)) .trRim_fefffe { fill: var(--truck-tr-rim-fefffe); }
+:global(.dark) .trRim_fffffe, :global(html:not(.light)) .trRim_fffffe { fill: var(--truck-tr-rim-fffffe); }
+:global(.dark) .trRim_ffffff, :global(html:not(.light)) .trRim_ffffff { fill: var(--truck-tr-rim-ffffff); }
+
+/* Trailer Tires */
+:global(.dark) .trTire_050505, :global(html:not(.light)) .trTire_050505 { fill: var(--truck-tr-tire-050505); }
+:global(.dark) .trTire_1e1e1d, :global(html:not(.light)) .trTire_1e1e1d { fill: var(--truck-tr-tire-1e1e1d); }
+:global(.dark) .trTire_3e3e3e, :global(html:not(.light)) .trTire_3e3e3e { fill: var(--truck-tr-tire-3e3e3e); }
+:global(.dark) .trTire_747474, :global(html:not(.light)) .trTire_747474 { fill: var(--truck-tr-tire-747474); }
+:global(.dark) .trTire_7e7d7d, :global(html:not(.light)) .trTire_7e7d7d { fill: var(--truck-tr-tire-7e7d7d); }
+:global(.dark) .trTire_9e9e9e, :global(html:not(.light)) .trTire_9e9e9e { fill: var(--truck-tr-tire-9e9e9e); }
+:global(.dark) .trTire_bbbaba, :global(html:not(.light)) .trTire_bbbaba { fill: var(--truck-tr-tire-bbbaba); }
+:global(.dark) .trTire_dbdbdb, :global(html:not(.light)) .trTire_dbdbdb { fill: var(--truck-tr-tire-dbdbdb); }
+:global(.dark) .trTire_fdfdfd, :global(html:not(.light)) .trTire_fdfdfd { fill: var(--truck-tr-tire-fdfdfd); }
+:global(.dark) .trTire_fefffe, :global(html:not(.light)) .trTire_fefffe { fill: var(--truck-tr-tire-fefffe); }
+:global(.dark) .trTire_ffffff, :global(html:not(.light)) .trTire_ffffff { fill: var(--truck-tr-tire-ffffff); }

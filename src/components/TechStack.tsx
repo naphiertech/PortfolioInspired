@@ -1,12 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { techSections } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
 import { useUISound } from "@/context/SoundContext";
+import { CircuitPlatform } from "./CircuitPlatform";
+import circuitStyles from "./CircuitPlatform.module.css";
 import {
   sectionContainerVariants,
   staggeredGridVariants,
@@ -24,9 +26,31 @@ const categorySyntaxMap: Record<string, string> = {
 // Home page shows the core primary stack (Frontend, Backend, Databases & Cloud)
 const featuredCategoryTitles = ["Frontend", "Backend", "Databases & Cloud"];
 
+// Visual pairings only; navigation and the technology catalog stay authoritative.
+const circuitPairings = [
+  ["React", "TypeScript", "Next.js", "Tailwind CSS"],
+  ["HTML5", "CSS3", "JavaScript"],
+  ["Vue.js", "TypeScript", "Tailwind CSS"],
+  ["Flutter", "Dart", "Firebase"],
+  ["Node.js", "Express.js", "TypeScript", "MongoDB"],
+  ["PHP", "Laravel", "MySQL"],
+  ["Python", "FastAPI", "PostgreSQL"],
+  ["Supabase", "PostgreSQL", "React"],
+  ["Prisma", "PostgreSQL", "TypeScript"],
+];
+type CircuitSelection = { category: string; tech?: string };
+
 export function TechStack() {
   const { playHover, playClick } = useUISound();
   const shouldReduceMotion = useReducedMotion();
+  const [hovered, setHovered] = useState<CircuitSelection | null>(null);
+  const [focused, setFocused] = useState<CircuitSelection | null>(null);
+  const selection = hovered ?? focused;
+  const related = new Set(selection?.tech
+    ? [selection.tech, ...circuitPairings.filter(pair => pair.includes(selection.tech!)).flat()]
+    : []);
+  const connected = (category: string, tech: string) => !!selection &&
+    (selection.tech ? related.has(tech) : selection.category === category);
 
   const displayedSections = techSections.filter((sec) =>
     featuredCategoryTitles.includes(sec.title),
@@ -53,7 +77,7 @@ export function TechStack() {
       {/* Core Categories with Code-Syntax Headings and Vector-Icon Pills */}
       <motion.div
         variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-        className="space-y-5"
+        className={`space-y-5 ${circuitStyles.environment}`}
       >
         {displayedSections.map((section) => {
           const syntaxTag =
@@ -64,7 +88,10 @@ export function TechStack() {
             <motion.div
               key={section.title}
               variants={shouldReduceMotion ? undefined : gridItemVariants}
-              className="space-y-2.5"
+              className={`space-y-2.5 ${circuitStyles.category}`}
+              data-connected={section.items.some(tech => connected(section.title, tech))}
+              onPointerEnter={() => setHovered({ category: section.title })}
+              onPointerLeave={() => setHovered(null)}
             >
               {/* Category Code Header with Drawing Rule */}
               <div className="flex items-center gap-2">
@@ -84,8 +111,14 @@ export function TechStack() {
                     key={tech}
                     href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
                     onMouseEnter={playHover}
+                    onPointerEnter={() => setHovered({ category: section.title, tech })}
+                    onPointerLeave={() => setHovered({ category: section.title })}
+                    onFocus={() => setFocused({ category: section.title, tech })}
+                    onBlur={() => setFocused(null)}
                     onClick={playClick}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-surface/50 border border-border-hairline hover:border-border-hairline hover:bg-surface text-ink text-xs font-sans transition-colors cursor-pointer shadow-2xs group"
+                    data-connected={connected(section.title, tech)}
+                    data-muted={!!selection && !connected(section.title, tech)}
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-surface/50 border border-border-hairline hover:border-border-hairline hover:bg-surface text-ink text-xs font-sans transition-colors cursor-pointer shadow-2xs group ${circuitStyles.chip}`}
                     title={`View projects built with ${tech}`}
                   >
                     <TechIcon
@@ -99,6 +132,7 @@ export function TechStack() {
             </motion.div>
           );
         })}
+        <CircuitPlatform activeBranches={displayedSections.map(section => section.items.some(tech => connected(section.title, tech)))} />
       </motion.div>
     </motion.section>
   );

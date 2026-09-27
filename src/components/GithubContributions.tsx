@@ -2,6 +2,8 @@
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { ContributionTruck } from "./ContributionTruck";
+import styles from "./ContributionTruck.module.css";
 import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import {
   type ContributionData,
@@ -176,19 +178,19 @@ export function GithubContributions() {
   const columnCount = data.weeks.length;
 
   return (
-    <div className="w-full mt-5 pt-1 select-none">
-      <div className="overflow-x-auto scrollbar-hide [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden pb-1 -mx-2 px-2">
-        <div className="inline-block min-w-max">
+    <ContributionTruck>
+      <div className="relative min-w-0">
+        <div className="w-full">
           {/* Month Labels Header */}
-          <div className="relative h-4 mb-1.5 font-mono text-[11px] text-muted-foreground/90">
+          <div className={`${styles.months} font-mono text-muted-foreground/90`}>
             {data.months.map((m, idx) => {
-              // Calculate horizontal offset based on week index (each column is 10px + 3px gap = 13px)
-              const leftPos = m.weekIndex * 13;
+              // Keep month labels aligned with the fluid week columns.
+              const leftPos = (m.weekIndex / columnCount) * 100;
               return (
                 <span
                   key={`${m.name}-${idx}`}
-                  className="absolute transform -translate-x-0"
-                  style={{ left: `${leftPos}px` }}
+                  className={styles.month}
+                  style={{ left: `${leftPos}%` }}
                 >
                   {m.name}
                 </span>
@@ -198,7 +200,7 @@ export function GithubContributions() {
 
           {/* 7-Row Contribution Grid */}
           <div
-            className="grid grid-flow-col grid-rows-7 gap-[3px]"
+            className={styles.grid}
             style={{
               gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
             }}
@@ -209,7 +211,7 @@ export function GithubContributions() {
                   return (
                     <div
                       key={`empty-${weekIdx}-${dayIdx}`}
-                      className="w-[10px] h-[10px] rounded-[2px] opacity-0"
+                      className={`${styles.cell} opacity-0`}
                     />
                   );
                 }
@@ -231,7 +233,7 @@ export function GithubContributions() {
                 return (
                   <div
                     key={day.date}
-                    className="w-[10px] h-[10px] rounded-[2px] transition-transform duration-100 hover:scale-125 cursor-pointer relative group"
+                    className={`${styles.cell} transition-transform duration-100 hover:scale-125 cursor-pointer relative group`}
                     style={levelStyle}
                     title={day.tooltip}
                     onMouseEnter={(e) => {
@@ -256,9 +258,9 @@ export function GithubContributions() {
       </div>
 
       {/* Total Contributions Subtitle */}
-      <div className="mt-2 flex items-center justify-between flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
+      <div className={`${styles.summary} font-mono text-muted-foreground`}>
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-emerald-500/90 dark:text-emerald-400/90 font-medium">Total</span>
+          <span className="text-ink font-medium">Total</span>
           <span className="text-ink font-semibold">{data.total.toLocaleString()}</span>
           <span>contributions in {data.year || new Date().getFullYear()}</span>
           <span className="text-muted-foreground/60 text-[11px] font-normal">
@@ -285,7 +287,7 @@ export function GithubContributions() {
           target={hoveredCell.target}
         />
       )}
-    </div>
+    </ContributionTruck>
   );
 }
 

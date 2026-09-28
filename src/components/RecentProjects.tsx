@@ -28,7 +28,7 @@ export function RecentProjects() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-5 select-none mb-4 sm:mb-5"
+      className="w-full space-y-5 select-none mb-0"
       aria-label="Selected Projects"
     >
       {/* Section Header */}

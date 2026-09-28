@@ -90,11 +90,11 @@
   --border-divider: rgba(0, 0, 0, 0.06);
 
   /* Technical Editorial Grid (Light extension) */
-  --grid-guide: rgba(0, 0, 0, 0.075);
-  --grid-guide-subtle: rgba(0, 0, 0, 0.038);
-  --grid-crosshair: rgba(0, 0, 0, 0.12);
+  --grid-guide: rgba(0, 0, 0, 0.11);
+  --grid-guide-subtle: rgba(0, 0, 0, 0.07);
+  --grid-crosshair: rgba(0, 0, 0, 0.16);
   --grid-dot: transparent;
-  --grid-hatch: rgba(0, 0, 0, 0.03);
+  --grid-hatch: rgba(0, 0, 0, 0.055);
 
   --status-active: #09090b;
   --status-ping: rgba(0, 0, 0, 0.4);

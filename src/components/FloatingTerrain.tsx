@@ -19,6 +19,52 @@ export interface FloatingTerrainProps {
   variants?: Variants;
 }
 
+/** Surface-only details stay inside the existing shelf and inherit its motion. */
+function ShelfHardware() {
+  return (
+    <g>
+      <path className={styles.contactShade} d="M10 11H366V14H10ZM394 11H750V14H394Z" />
+      <path className={styles.metalEtch} d="M46 6H152M216 6H310M438 6H538M606 6H704" />
+      {[28, 182, 342, 410, 572, 730].map((x) => (
+        <g key={x}>
+          <rect x={x} y="4" width="6" height="7" className={styles.rockSh} />
+          <rect x={x + 1} y="4" width="4" height="5" className={styles.rockBracket} />
+          <rect x={x + 2} y="5" width="2" height="2" className={styles.rockHi} />
+        </g>
+      ))}
+      <path className={styles.rockSh} d="M82 8h18v2H82ZM466 8h14v2h-14ZM666 8h22v2h-22Z" opacity="0.4" />
+    </g>
+  );
+}
+
+/** Recessed hardware and stone chips share the foreground's existing footprint. */
+function TerrainSurfaceDetails() {
+  return (
+    <g>
+      <path className={styles.contactShade} d="M22 24H142V26H22ZM176 26H336V28H176ZM370 28H450V30H370ZM486 26H634V28H486ZM668 24H740V26H668ZM52 36H128V38H52ZM198 40H318V42H198ZM508 40H618V42H508Z" />
+      <path className={styles.rockBracket} d="M86 18h25v3H97v2H86ZM284 17h34v4h-14v2h-20ZM434 18h15v7h-4v-3h-11ZM581 19h40v3h-16v2h-24ZM674 31h32v3h-17v3h-15Z" />
+      <path className={styles.stoneEtch} d="M117 18v5h6v8h-8v4M302 18v6h-7v6h-5v6M447 35h-12v5h-8v7M601 18v7h-8v8h6M86 29h13v4h8" />
+      <path className={styles.metalEtch} d="M64 20h16M251 18h19M373 35h18M562 32h18M685 20h12" />
+      {/* A pair of embedded service panels, with small fasteners and vent slots. */}
+      {[{ x: 202, y: 20 }, { x: 528, y: 22 }].map(({ x, y }) => (
+        <g key={x} transform={`translate(${x} ${y})`}>
+          <rect x="2" y="2" width="30" height="18" className={styles.rockSh} opacity="0.55" />
+          <rect width="30" height="18" className={styles.rockBracket} />
+          <path className={styles.metalEtch} d="M1 16V1H28" />
+          <rect x="4" y="4" width="21" height="10" className={styles.rockSh} />
+          <path className={styles.panelSlots} d="M7 6h10M7 9h10M7 12h7" />
+          <rect x="21" y="6" width="2" height="4" className={styles.signalPixel} />
+          <path className={styles.rockHi} d="M1 2h2v2H1ZM26 13h2v2h-2Z" opacity="0.65" />
+        </g>
+      ))}
+      <path className={styles.conduitShade} d="M234 29h26v7h17M528 32h-15v-9h-25M380 40h22v6h28" />
+      <path className={styles.conduit} d="M234 28h26v7h17M528 31h-15v-9h-25M380 39h22v6h28" />
+      <path className={styles.rockBracket} d="M246 26h3v5h-3ZM510 25h6v3h-6ZM411 42h3v6h-3Z" />
+      <path className={styles.rockHi} d="M52 31h5v2h-5ZM183 20h4v3h-4ZM323 19h3v2h-3ZM417 34h4v2h-4ZM610 34h5v2h-5ZM716 20h3v3h-3Z" opacity="0.45" />
+    </g>
+  );
+}
+
 export function FloatingTerrain({
   variant = "now",
   className = "",
@@ -149,6 +195,7 @@ export function FloatingTerrain({
               {/* CAD Technical Markings */}
               <text x="20" y="25" className={styles.cadTick}>[TERRAIN // SECTOR-NOW]</text>
               <text x="630" y="25" className={styles.cadTick}>ELEV: -185M // FOUNDATION</text>
+              <ShelfHardware />
             </g>
           </motion.g>
 
@@ -169,6 +216,9 @@ export function FloatingTerrain({
               <rect x="370" y="90" width="4" height="42" className={styles.rockSh} />
               <rect x="325" y="110" width="4" height="22" className={styles.rockSh} />
               <rect x="420" y="106" width="6" height="26" className={styles.rockSh} />
+              <path className={styles.facetShade} d="M398 85h25v31h-16v28h-12v16h-11v18h-4v-36h9v-26h9Z" />
+              <path className={styles.facetLight} d="M284 118H309V129H327V143H347V156H367V169H376V177H380V162H373V151H357V135H335V120H310V118Z" />
+              <path className={styles.stoneEtch} d="M351 139h14v9h8v12M401 138h-8v7M374 168h8v7" />
             </g>
           </motion.g>
 
@@ -192,6 +242,12 @@ export function FloatingTerrain({
               <rect x="270" y="45" width="6" height="32" className={styles.rockSh} />
               <rect x="490" y="42" width="8" height="30" className={styles.rockSh} />
               <rect x="630" y="30" width="6" height="28" className={styles.rockSh} />
+              <path className={styles.facetShade} d="M145 59h33v9h-33ZM191 76h48v11h-48ZM443 73h39v14h-39ZM294 92h34v11h-34ZM369 109h29v10h-29Z" />
+              <path className={styles.facetLight} d="M137 59h36v2h-36ZM182 73h43v3h-43ZM222 92h29v2h-29ZM414 73h23v3h-23ZM489 93h35v2h-35ZM351 123h19v3h-19Z" />
+              <path className={styles.stoneEtch} d="M165 48h20v7h-7v8M244 66h12v15h-8v8M458 59v9h9v13M514 77h19v7h-6v11M347 111h13v7" />
+              <path className={styles.conduitShade} d="M300 49v16h18v17h12M561 50v19h-18v14" />
+              <path className={styles.conduit} d="M298 49v16h18v17h14M559 50v17h-18v16" />
+              <path className={styles.rockBracket} d="M294 57h8v3h-8ZM312 72h8v3h-8ZM537 74h8v3h-8Z" />
             </g>
           </motion.g>
 
@@ -229,6 +285,7 @@ export function FloatingTerrain({
               <rect x="500" y="29" width="40" height="2" className={styles.rockHi} />
 
               {/* Second Pine Tree on eastern step */}
+              <TerrainSurfaceDetails />
               <g transform="translate(696, 6)">
                 <rect x="3" y="11" width="2" height="5" fill="#38281e" />
                 <rect x="1" y="7" width="6" height="4" className={styles.treeLeaf} />
@@ -345,6 +402,7 @@ export function FloatingTerrain({
 
               <text x="24" y="26" className={styles.cadTick}>[TERRAIN // SECTOR-PROJECTS]</text>
               <text x="618" y="26" className={styles.cadTick}>GEO-MASS // DUAL-KEEL ACTIVE</text>
+              <ShelfHardware />
             </g>
           </motion.g>
 
@@ -376,6 +434,9 @@ export function FloatingTerrain({
 
               {/* Central Canyon Cleft */}
               <rect x="380" y="100" width="30" height="24" className={styles.rockSh} />
+              <path className={styles.facetShade} d="M347 107h32v26h-15v29h-12v17h-9v13h-9v14h-4v-25h6v-30h11ZM536 107h31v26h-17v18h-14v19h-13v9h-5v-22h10v-27h8Z" />
+              <path className={styles.facetLight} d="M270 138H288V150H302V164H316V178H324V190H328V199H332V184H328V169H320V153H306V139H292V138ZM473 139h17v12h13v13h8v9h4v-14h-7v-13h-15v-7Z" />
+              <path className={styles.stoneEtch} d="M292 155h14v9h-6M330 178h7v8h-5v12M518 144h-9v10h-5M551 122h-12v8" />
             </g>
           </motion.g>
 
@@ -393,6 +454,12 @@ export function FloatingTerrain({
               <rect x="430" y="90" width="120" height="16" className={styles.rockMid} />
               <rect x="250" y="106" width="100" height="16" className={styles.rockMid} />
               <rect x="460" y="106" width="80" height="16" className={styles.rockMid} />
+              <path className={styles.facetShade} d="M132 61h39v9h-39ZM181 76h52v12h-52ZM293 92h39v12h-39ZM422 75h35v13h-35ZM499 94h43v10h-43ZM300 108h43v12h-43Z" />
+              <path className={styles.facetLight} d="M130 59h38v2h-38ZM173 74h44v3h-44ZM213 92h32v2h-32ZM404 74h24v3h-24ZM485 92h37v2h-37ZM253 108h29v3h-29Z" />
+              <path className={styles.stoneEtch} d="M103 47h19v6h-7v5M241 63h13v17h-9v8M454 52v10h13v16M579 47h-16v9h7M317 93h-10v11M474 108v8h9" />
+              <path className={styles.conduitShade} d="M285 48v16h20v19h13M553 48v22h-18v15" />
+              <path className={styles.conduit} d="M283 48v16h20v19h15M551 48v20h-18v17" />
+              <path className={styles.rockBracket} d="M279 56h8v3h-8ZM299 73h8v3h-8ZM529 77h8v3h-8Z" />
             </g>
           </motion.g>
 
@@ -417,6 +484,7 @@ export function FloatingTerrain({
               <rect x="360" y="16" width="44" height="2" className={styles.rockHi} />
               <rect x="478" y="16" width="60" height="2" className={styles.rockHi} />
               <rect x="664" y="16" width="40" height="2" className={styles.rockHi} />
+              <TerrainSurfaceDetails />
             </g>
           </motion.g>
 

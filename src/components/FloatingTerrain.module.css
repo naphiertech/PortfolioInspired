@@ -113,3 +113,23 @@
 :global(.light) .mistA { fill: rgba(0, 0, 0, 0.04); }
 :global(.light) .mistB { fill: rgba(0, 0, 0, 0.07); }
 :global(.light) .cadTick { fill: rgba(0, 0, 0, 0.4); }
+
+/* Inset detailing only: no changes to the terrain bounds, contact edge, or motion. */
+.contactShade { fill: #090b10; opacity: 0.32; }
+.facetShade { fill: #07090d; opacity: 0.3; }
+.facetLight { fill: #747d8a; opacity: 0.23; }
+.stoneEtch { fill: none; stroke: #0c0f16; stroke-width: 1.5; opacity: 0.65; }
+.metalEtch { fill: none; stroke: #929aa5; stroke-width: 1; opacity: 0.55; }
+.panelSlots { fill: none; stroke: #79838e; stroke-width: 1; opacity: 0.65; }
+.conduitShade { fill: none; stroke: #080a10; stroke-width: 3; opacity: 0.65; }
+.conduit { fill: none; stroke: #747d88; stroke-width: 1.5; opacity: 0.7; }
+.signalPixel { fill: #8daea5; opacity: 0.85; }
+:global(.light) .contactShade { fill: #3b414b; opacity: 0.25; }
+:global(.light) .facetShade { fill: #3e4551; opacity: 0.25; }
+:global(.light) .facetLight { fill: #e5e8ed; opacity: 0.38; }
+:global(.light) .stoneEtch { stroke: #515967; opacity: 0.55; }
+:global(.light) .metalEtch { stroke: #f3f5f7; opacity: 0.75; }
+:global(.light) .panelSlots { stroke: #aeb8bf; }
+:global(.light) .conduitShade { stroke: #424a56; opacity: 0.35; }
+:global(.light) .conduit { stroke: #d3d9df; opacity: 0.85; }
+:global(.light) .signalPixel { fill: #a2c1b5; }

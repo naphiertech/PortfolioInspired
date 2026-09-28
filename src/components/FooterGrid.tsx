@@ -21,7 +21,7 @@ export function FooterGrid() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-6 select-none mb-10"
+      className="w-full space-y-6 select-none mb-0"
       aria-label="Connect and Memberships"
     >
       {/* 2-Column Matrix for Lower Half Sections */}

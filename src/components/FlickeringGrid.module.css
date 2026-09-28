@@ -18,8 +18,8 @@
 
 .surface[data-theme="light"] {
   --ink: 35, 35, 35;
-  --minor: 0.04;
-  --major: 0.075;
+  --minor: 0.07;
+  --major: 0.11;
 }
 
 .surface[data-enabled="true"] { opacity: 1; }

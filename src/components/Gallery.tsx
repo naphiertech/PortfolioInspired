@@ -69,7 +69,7 @@ export function Gallery() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.2 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full select-none mb-16"
+      className="w-full select-none mb-0"
       aria-label="Moments and Events"
     >
       {/* Integrated Moments Decorative Pixel Environment Header */}

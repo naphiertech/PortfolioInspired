@@ -38,7 +38,7 @@ export function ProfileHeader() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   return (
-    <section data-creative-note="hero" className="relative w-full select-none mb-16">
+    <section data-creative-note="hero" className="relative w-full select-none mb-2 sm:mb-3">
       {/* Top Portfolio Visual Banner */}
       <div className="group relative w-full h-44 sm:h-44 md:h-48 rounded-2xl overflow-hidden border border-border-hairline bg-surface/40 shadow-xs">
         {/* Custom Header Background Image */}

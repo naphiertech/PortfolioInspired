@@ -92,7 +92,7 @@ export function ExperienceTimeline() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.12 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-6 select-none mb-16"
+      className="w-full space-y-6 select-none mb-0"
       aria-label="Experience Timeline"
     >
       {/* Consistent Section Header */}

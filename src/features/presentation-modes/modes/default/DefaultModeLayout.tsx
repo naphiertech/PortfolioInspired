@@ -30,44 +30,44 @@ export function DefaultModeLayout() {
 
       {/* 3. Live Focus & Development Activity (Merged Currently Building + Latest Activity) */}
       <SnapSectionWrapper id="now">
-        <EditorialDivider className="mb-10 sm:mb-12" />
+        <EditorialDivider className="mt-4 mb-6 sm:mt-6 sm:mb-8" />
         <NowSection />
       </SnapSectionWrapper>
 
       {/* 4. Selected Projects (Top 3 Strongest) */}
       <SnapSectionWrapper id="recent-projects">
-        <EditorialDivider className="mb-5 sm:mb-6" />
+        <EditorialDivider className="my-4 sm:my-6" />
         <RecentProjects />
       </SnapSectionWrapper>
 
       {/* 5. Tech Stack (Curated High-Signal Preview) */}
       <SnapSectionWrapper id="tech-stack">
-        <EditorialDivider className="mb-5 sm:mb-6" />
+        <EditorialDivider className="my-4 sm:my-6" />
         <TechStack />
       </SnapSectionWrapper>
 
       {/* 6. Work Experience Timeline (Top 3 Recent Milestones) */}
       <SnapSectionWrapper id="experience">
-        <EditorialDivider className="mb-10 sm:mb-12" />
+        <EditorialDivider className="my-4 sm:my-6" />
         <ExperienceTimeline />
       </SnapSectionWrapper>
 
       {/* 8. Recommendations (Rendered only when real approved recommendations exist) */}
       {hasApprovedRecommendations && (
         <SnapSectionWrapper id="recommendations">
-          <EditorialDivider className="mb-10 sm:mb-12" />
+          <EditorialDivider className="my-4 sm:my-6" />
           <Recommendations />
         </SnapSectionWrapper>
       )}
 
       {/* 9. Compact Moments Gallery (4-Moment Preview) */}
       <SnapSectionWrapper id="gallery">
-        <EditorialDivider className="mb-10 sm:mb-12" />
+        <EditorialDivider className="my-4 sm:my-6" />
         <Gallery />
       </SnapSectionWrapper>
 
       {/* 10. Contact, Social & Memberships Matrix (Permanent - Never snapped) */}
-      <EditorialDivider className="mb-10 sm:mb-12" />
+      <EditorialDivider className="my-4 sm:my-6" />
       <FooterGrid />
     </div>
   );

@@ -76,7 +76,7 @@ export function NowSection() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-4 select-none mb-4 sm:mb-5"
+      className="w-full space-y-4 select-none mb-0"
       aria-label="Now and Activity"
     >
       {/* Section Header */}

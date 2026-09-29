@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import {
   techSections,
+  techStackIntro,
   getProjectsUsingTech,
   getCanonicalTechName,
 } from "@/lib/data";
@@ -23,6 +24,40 @@ const categorySyntaxMap: Record<string, string> = {
   "Animation & Design": "<DESIGN-ANIMATION/>",
   "DevOps & Tools": "<DEVOPS-TOOLS/>",
 };
+
+function FocusTechChip({
+  tech,
+  isSelected,
+  onSelect,
+  onHover,
+}: {
+  tech: string;
+  isSelected: boolean;
+  onSelect: (tech: string) => void;
+  onHover: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(tech)}
+      onMouseEnter={onHover}
+      aria-pressed={isSelected}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors select-none ${
+        isSelected
+          ? "bg-ink text-page font-semibold border border-ink shadow-xs"
+          : "bg-surface/60 border border-border-hairline text-zinc-700 dark:text-zinc-300 hover:border-border hover:text-ink"
+      }`}
+    >
+      <TechIcon
+        name={tech}
+        className={`w-3.5 h-3.5 flex-shrink-0 ${
+          isSelected ? "text-page" : "text-zinc-500 dark:text-zinc-400"
+        }`}
+      />
+      <span>{tech}</span>
+    </button>
+  );
+}
 
 /**
  * FocusTechStackPage
@@ -100,6 +135,45 @@ export function FocusTechStackPage() {
 
       <EditorialDivider className="mb-6" />
 
+      <section aria-labelledby="stack-overview-heading" className="mb-6">
+        <h2 id="stack-overview-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
+          00 // STACK OVERVIEW
+        </h2>
+        <dl className="divide-y divide-border-divider border-b border-border-divider">
+          <div className="pt-1 pb-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-2 sm:gap-5 items-start">
+            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Generalist by project</dt>
+            <dd className="min-w-0 font-sans text-[14px] sm:text-[15px] text-ink font-medium leading-[1.6]">
+              {techStackIntro.headline}
+            </dd>
+          </div>
+          <div className="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-2 sm:gap-5 items-start">
+            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Core tools</dt>
+            <dd className="min-w-0 space-y-3">
+              <p className="font-sans text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 leading-[1.6]">
+                Depending on the project, I work with these and other tools shown below.
+              </p>
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                {techStackIntro.highlightedTools.map((tech) => (
+                  <FocusTechChip
+                    key={tech}
+                    tech={tech}
+                    isSelected={selectedTech === tech}
+                    onSelect={handleTechClick}
+                    onHover={playHover}
+                  />
+                ))}
+              </div>
+            </dd>
+          </div>
+          <div className="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-2 sm:gap-5 items-start">
+            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Note</dt>
+            <dd className="min-w-0 font-sans text-[14px] sm:text-[15px] text-zinc-500 dark:text-zinc-400 leading-[1.6]">
+              {techStackIntro.footer}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
       {/* Domain-Grouped Technology Ledger */}
       <div className="divide-y divide-border-divider">
         {techSections.map((section) => {
@@ -122,31 +196,15 @@ export function FocusTechStackPage() {
 
               {/* Technologies Badges */}
               <div className="min-w-0 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                {section.items.map((tech) => {
-                  const isSelected = selectedTech === tech;
-
-                  return (
-                    <button
-                      key={tech}
-                      type="button"
-                      onClick={() => handleTechClick(tech)}
-                      onMouseEnter={playHover}
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors select-none ${
-                        isSelected
-                          ? "bg-ink text-page font-semibold border border-ink shadow-xs"
-                          : "bg-surface/60 border border-border-hairline text-zinc-700 dark:text-zinc-300 hover:border-border hover:text-ink"
-                      }`}
-                    >
-                      <TechIcon
-                        name={tech}
-                        className={`w-3.5 h-3.5 flex-shrink-0 ${
-                          isSelected ? "text-page" : "text-zinc-500 dark:text-zinc-400"
-                        }`}
-                      />
-                      <span>{tech}</span>
-                    </button>
-                  );
-                })}
+                {section.items.map((tech) => (
+                  <FocusTechChip
+                    key={tech}
+                    tech={tech}
+                    isSelected={selectedTech === tech}
+                    onSelect={handleTechClick}
+                    onHover={playHover}
+                  />
+                ))}
               </div>
             </div>
           );

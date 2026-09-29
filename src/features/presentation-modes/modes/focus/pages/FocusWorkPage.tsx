@@ -54,13 +54,61 @@ export function FocusWorkPage() {
               Work history, development projects, and academic background.
             </p>
           </div>
-
-          {/* Availability Status Badge */}
-          <StatusBadge status="available" label={AVAILABILITY.openTo} size="sm" />
         </div>
       </div>
 
       <EditorialDivider className="mb-6" />
+
+      <section aria-labelledby="career-status-heading">
+        <h2 id="career-status-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
+          00 // CURRENT STATUS
+        </h2>
+        <div className="space-y-3 pb-5">
+          <p className="font-sans text-base sm:text-lg font-semibold text-ink leading-relaxed max-w-3xl">
+            I&apos;m currently looking for my first professional opportunity in tech.
+          </p>
+          <StatusBadge status="available" label={AVAILABILITY.openTo} size="sm" className="max-w-full" />
+        </div>
+
+        <dl className="border-t border-border-divider divide-y divide-border-divider">
+          <div className="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-2 sm:gap-6 items-start">
+            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Building</dt>
+            <dd className="min-w-0 space-y-2 font-sans text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 leading-[1.6]">
+              <p>
+                I&apos;m still early in my career, but I&apos;ve spent a lot of time{" "}
+                <span className="text-ink font-medium">building real projects</span>,
+                experimenting with different technologies, and learning how to turn ideas
+                into working applications.
+              </p>
+              <p>
+                I&apos;m especially interested in{" "}
+                <span className="text-ink font-medium">web development</span>,{" "}
+                <span className="text-ink font-medium">UI/UX</span>,{" "}
+                <span className="text-ink font-medium">frontend work</span>, and{" "}
+                <span className="text-ink font-medium">full-stack projects</span>.
+              </p>
+            </dd>
+          </div>
+          <div className="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-2 sm:gap-6 items-start">
+            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Open to</dt>
+            <dd className="min-w-0 font-sans text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 leading-[1.6]">
+              I&apos;m open to{" "}
+              <span className="text-ink font-medium">junior roles</span>,{" "}
+              <span className="text-ink font-medium">internships</span>,{" "}
+              <span className="text-ink font-medium">freelance work</span>, and{" "}
+              <span className="text-ink font-medium">project-based collaborations</span>.
+            </dd>
+          </div>
+          <div className="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-2 sm:gap-6 items-start">
+            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Learning</dt>
+            <dd className="min-w-0 font-sans text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 leading-[1.6]">
+              Opportunities where I can learn while contributing to something useful.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <EditorialDivider className="my-6" />
 
       {/* 01 // WORK HISTORY */}
       <section aria-label="Work history">

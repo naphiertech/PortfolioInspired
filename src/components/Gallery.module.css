@@ -1,0 +1,42 @@
+.section { container: moments / inline-size; }
+.scene { position: relative; width: 100%; }
+
+/* The open sky and platform share the artwork's intrinsic 720:160 proportions. */
+.header {
+  position: absolute;
+  top: 40%;
+  inset-inline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-inline: 4px;
+  z-index: 20;
+  pointer-events: none;
+}
+.header > * { pointer-events: auto; }
+
+/* Four photos fill the scene; compact containers retain the scrollable preview. */
+.strip {
+  --card-gap: calc(12 * 100cqw / 696);
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: var(--card-gap);
+  margin-top: calc(-22 * 100cqw / 696);
+  padding-block: 4px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+.card {
+  flex: 0 0 calc((100% - 3 * var(--card-gap)) / 4);
+  min-width: 0;
+  aspect-ratio: 4 / 3;
+  scroll-snap-align: start;
+}
+
+@container moments (max-width: 559px) {
+  .header { position: relative; top: auto; margin-bottom: 6px; }
+  .strip { gap: calc(12 * 100cqw / 358); margin-top: calc(-8 * 100cqw / 358); }
+  .card { flex-basis: calc(144 * 100cqw / 358); aspect-ratio: 9 / 7; }
+}

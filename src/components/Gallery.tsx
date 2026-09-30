@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { galleryImages } from "@/lib/data";
 import { MomentsEnvironment } from "./MomentsEnvironment";
+import styles from "./Gallery.module.css";
 import { useScrollLock } from "@/lib/scrollLock";
 import { useUISound } from "@/context/SoundContext";
 import { sectionContainerVariants, contentBlockVariants } from "@/lib/motion";
@@ -27,11 +28,13 @@ export function Gallery() {
 
   const scroll = (direction: "left" | "right") => {
     playClick();
-    if (scrollContainerRef.current) {
-      const scrollAmount = 260;
-      scrollContainerRef.current.scrollBy({
+    const container = scrollContainerRef.current;
+    const firstCard = container?.firstElementChild;
+    if (container && firstCard) {
+      const scrollAmount = firstCard.getBoundingClientRect().width + parseFloat(getComputedStyle(container).columnGap);
+      container.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
+        behavior: shouldReduceMotion ? "auto" : "smooth",
       });
     }
   };
@@ -69,19 +72,19 @@ export function Gallery() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.2 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full select-none mb-0"
+      className={`w-full select-none mb-0 ${styles.section}`}
       aria-label="Moments and Events"
     >
       {/* Integrated Moments Decorative Pixel Environment Header */}
-      <div className="relative w-full">
+      <div className={styles.scene}>
         {/* Section Heading & Carousel Controls: above on mobile, inside open sky on desktop/tablet */}
-        <div className="flex items-center justify-between px-1 mb-1.5 sm:mb-0 sm:absolute sm:top-[62px] sm:left-0 sm:right-0 sm:pointer-events-none z-20">
-          <div className="sm:pointer-events-auto">
+        <div className={styles.header}>
+          <div>
             <span className="font-mono text-xs tracking-wider text-muted-foreground uppercase select-none">
               &lt;MOMENTS-AND-EVENTS/&gt;
             </span>
           </div>
-          <div className="flex items-center gap-1 sm:pointer-events-auto">
+          <div className="flex items-center gap-1">
             <button
               onClick={() => scroll("left")}
               className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer shadow-xs"
@@ -107,7 +110,7 @@ export function Gallery() {
       <motion.div
         variants={shouldReduceMotion ? undefined : contentBlockVariants}
         ref={scrollContainerRef}
-        className="-mt-2 sm:-mt-[22px] relative z-10 flex gap-3 overflow-x-auto scrollbar-hide py-1"
+        className={`scrollbar-hide ${styles.strip}`}
       >
         {galleryImages.slice(0, 4).map((src, idx) => (
           <div
@@ -116,13 +119,13 @@ export function Gallery() {
               playOpen();
               setActiveIdx(idx);
             }}
-            className="relative flex-shrink-0 w-36 h-28 sm:w-48 sm:h-36 rounded-lg overflow-hidden bg-surface border border-border-hairline group-hover:border-border cursor-pointer group shadow-2xs transition-colors duration-200"
+            className={`relative rounded-lg overflow-hidden bg-surface border border-border-hairline group-hover:border-border cursor-pointer group shadow-2xs transition-colors duration-200 ${styles.card}`}
           >
             <Image
               src={src}
               alt={`Event photo ${idx + 1}`}
               fill
-              sizes="(max-width: 640px) 150px, 200px"
+              sizes="(max-width: 639px) 45vw, 240px"
               className="object-cover opacity-90 grayscale contrast-[1.03] transition-[filter,opacity] duration-300 group-hover:opacity-100 group-hover:grayscale-0 group-hover:contrast-100"
             />
           </div>

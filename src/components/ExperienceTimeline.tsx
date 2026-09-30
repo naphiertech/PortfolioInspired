@@ -92,7 +92,7 @@ export function ExperienceTimeline() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.12 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-6 select-none mb-0"
+      className={`w-full space-y-6 select-none mb-0 ${towerStyles.section}`}
       aria-label="Experience Timeline"
     >
       {/* Consistent Section Header */}
@@ -120,7 +120,7 @@ export function ExperienceTimeline() {
               <motion.div
                 key={`${exp.role}-${exp.year}`}
                 variants={shouldReduceMotion ? undefined : milestoneVariants}
-                className={`relative flex items-stretch gap-2.5 sm:gap-5 group pb-4 sm:pb-4.5 last:pb-0 ${towerStyles.row}`}
+                className={`relative flex items-stretch group ${towerStyles.row}`}
                 data-open={isOpen}
               >
                 <ExperienceTowerNode index={index} current={!!isCurrent} year={yearLabel} />
@@ -136,10 +136,10 @@ export function ExperienceTimeline() {
                     id={`timeline-trigger-${index}`}
                     className="w-full text-left cursor-pointer group/btn focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-md p-1 -m-1 transition-colors hover:bg-surface/30"
                   >
-                    {/* --- MOBILE VERTICAL COMPOSITION (< sm) --- */}
-                    <div className="sm:hidden space-y-2">
+                    {/* Compact composition follows the section's available width. */}
+                    <div className={`space-y-2 ${towerStyles.mobileComposition}`}>
                       {/* Top Row: Icon + Title + Current Badge + Date + Chevron */}
-                      <div className="flex items-start gap-2.5">
+                      <div className={`flex items-start gap-2.5 ${towerStyles.mobileHeading}`}>
                         <div
                           className={`w-7 h-7 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
                             isCurrent
@@ -164,7 +164,7 @@ export function ExperienceTimeline() {
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-1.5 flex-shrink-0 pt-0.5">
+                        <div className={`flex items-center gap-1.5 flex-shrink-0 pt-0.5 ${towerStyles.mobileDate}`}>
                           <span className="font-mono text-[11px] text-muted-foreground/80">
                             {exp.year}
                           </span>
@@ -185,10 +185,10 @@ export function ExperienceTimeline() {
                       )}
                     </div>
 
-                    {/* --- DESKTOP & TABLET HORIZONTAL COMPOSITION (>= sm) --- */}
-                    <div className="hidden sm:flex sm:items-center justify-between gap-4 py-1">
+                    {/* Wide composition reflows before the text columns become cramped. */}
+                    <div className={towerStyles.desktopComposition}>
                       {/* Left: Icon + Role & Context */}
-                      <div className="flex items-center gap-3 min-w-0 flex-1 max-w-xs">
+                      <div className="flex items-center gap-3 min-w-0">
                         <div
                           className={`w-8 h-8 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 transition-colors ${
                             isCurrent
@@ -201,7 +201,7 @@ export function ExperienceTimeline() {
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-sans text-sm font-semibold text-ink group-hover/btn:text-brand transition-colors truncate">
+                            <h3 className="font-sans text-sm font-semibold text-ink group-hover/btn:text-brand transition-colors break-words">
                               {exp.role}
                             </h3>
                             {isCurrent && (
@@ -216,15 +216,15 @@ export function ExperienceTimeline() {
 
                       {/* Middle: Real Description (Desktop) */}
                       {exp.description && (
-                        <div className="hidden md:block flex-1 max-w-xs xl:max-w-sm pl-2">
-                          <p className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 leading-relaxed line-clamp-2 max-w-[60ch]">
+                        <div className={towerStyles.desktopDescription}>
+                          <p className="font-sans text-[13px] text-muted-foreground/90 leading-relaxed line-clamp-2">
                             {exp.description}
                           </p>
                         </div>
                       )}
 
                       {/* Right: Date Range & Chevron */}
-                      <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
+                      <div className={`flex items-center gap-2 flex-shrink-0 ml-auto ${towerStyles.desktopDate}`}>
                         <span className="font-mono text-xs text-muted-foreground/80">
                           {exp.year}
                         </span>

@@ -84,7 +84,7 @@
 }
 
 /* Responsive Foliage Fine-Tuning */
-@media (max-width: 640px) {
+@container moments (max-width: 559px) {
   .minorFoliage {
     opacity: 0.85;
   }

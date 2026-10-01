@@ -1,0 +1,38 @@
+.position {
+  --edge-width: 48.5px;
+  --edge-height: calc(var(--edge-width) * 163 / 52);
+  --stack-top: clamp(12px, 24dvh, max(12px, calc(100dvh - 2 * var(--edge-height) - 100px)));
+  position: fixed;
+  left: 0;
+  top: var(--stack-top);
+  z-index: 40;
+  user-select: none;
+}
+.second { top: calc(var(--stack-top) + var(--edge-height) + 10px); }
+.button { width: var(--edge-width); height: var(--edge-height); }
+.tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 8px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 4px;
+  background: var(--bg-page);
+  color: var(--text-body);
+  font: 10px/1.4 "JetBrains Mono", ui-monospace, monospace;
+  white-space: nowrap;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 160ms ease-out, visibility 160ms ease-out;
+}
+.button:hover + .tooltip, .button:focus-visible + .tooltip { visibility: visible; opacity: 1; }
+/* Launchers can switch the desktop drawer; the mobile sheet stays above them. */
+:global(body[data-side-drawer-open]) .position { z-index: 110; }
+@media (min-width: 640px) {
+  .position { --edge-width: 52px; --stack-top: clamp(12px, 26dvh, max(12px, calc(100dvh - 2 * var(--edge-height) - 100px))); }
+  :global(body[data-side-drawer-open]) .position { z-index: 130; }
+}
+@media (prefers-reduced-motion: reduce) { .tooltip { transition: none; } }
+

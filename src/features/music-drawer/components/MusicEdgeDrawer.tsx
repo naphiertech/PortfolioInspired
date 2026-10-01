@@ -6,6 +6,7 @@ import { FAVORITE_TRACKS, DEFAULT_TRACK } from "../data/tracks";
 import { MusicTrack } from "../types/music";
 import { MusicEdgeTab } from "./MusicEdgeTab";
 import { MusicDrawer } from "./MusicDrawer";
+import { useSideDrawers } from "@/features/side-drawers/SideDrawerProvider";
 
 interface MusicEdgeDrawerProps {
   initialOpen?: boolean;
@@ -26,20 +27,14 @@ export function MusicEdgeDrawer({
   className = "",
 }: MusicEdgeDrawerProps) {
   const [mounted, setMounted] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(initialOpen);
+  const { activeDrawer, openDrawer, toggleDrawer, closeDrawer, finishClose } = useSideDrawers();
+  const isOpen = activeDrawer === "music";
   const [currentTrack, setCurrentTrack] = useState<MusicTrack>(DEFAULT_TRACK);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  const handleToggle = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+    if (initialOpen) openDrawer("music");
+  }, [initialOpen, openDrawer]);
 
   const handleSelectTrack = useCallback((track: MusicTrack) => {
     setCurrentTrack(track);
@@ -54,13 +49,14 @@ export function MusicEdgeDrawer({
       {/* 1. Closed State Protruding Folder Tab (Fixed to Left Viewport Edge) */}
       <MusicEdgeTab
         isOpen={isOpen}
-        onToggle={handleToggle}
+        onToggle={() => toggleDrawer("music")}
       />
 
       {/* 2. Open State Overlay Drawer Card */}
       <MusicDrawer
         isOpen={isOpen}
-        onClose={handleClose}
+        onClose={closeDrawer}
+        onExitComplete={() => finishClose("music")}
         tracks={FAVORITE_TRACKS}
         currentTrack={currentTrack}
         onSelectTrack={handleSelectTrack}

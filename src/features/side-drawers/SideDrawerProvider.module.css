@@ -1,0 +1,8 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgb(0 0 0 / 8%);
+  -webkit-backdrop-filter: blur(6px);
+}
+:global(.dark) .backdrop { background: rgb(0 0 0 / 18%); }

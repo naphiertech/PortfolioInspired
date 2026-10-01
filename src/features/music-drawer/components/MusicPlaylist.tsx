@@ -30,6 +30,7 @@ export function MusicPlaylist({
 }: MusicPlaylistProps) {
   return (
     <div
+      data-music-playlist
       className={`flex-1 min-h-0 flex flex-col gap-1 w-full mt-2 pt-2 border-t border-zinc-200/70 dark:border-[#22252a] ${className}`}
     >
       {/* Playlist Header Row: // MY ROTATION & Count */}

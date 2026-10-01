@@ -1,0 +1,6 @@
+.body { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-block: 4px; }
+/* Short screens scroll the middle area; the complete music UI remains reachable. */
+@media (max-height: 650px) {
+  .body { display: block; overflow-y: auto; overscroll-behavior: contain; }
+  .body [data-music-playlist] { display: block; }
+}

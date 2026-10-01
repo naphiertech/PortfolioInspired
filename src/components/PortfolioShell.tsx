@@ -10,6 +10,8 @@ import { VisitorPresence } from "@/components/VisitorPresence";
 import { SITE_NAME } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
 import { MusicEdgeDrawer } from "@/features/music-drawer";
+import { ResourcesEdgeDrawer } from "@/features/resources-drawer";
+import { SideDrawerProvider } from "@/features/side-drawers/SideDrawerProvider";
 import styles from "./ContentSurfaces.module.css";
 import { CreativeModeHost, useCreativeMode } from "@/features/creative-mode";
 import { CREATIVE_MAPPINGS, supportsCreativeMode } from "@/features/creative-mode/lib/creativeModeConfig";
@@ -63,8 +65,13 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
           : "max-w-reading px-4 sm:px-6 md:px-8 pt-12 pb-32"
       }`}
     >
-      {/* Keep one player across Default routes; leaving Default unmounts and stops it. */}
-      {mode === "default" && <MusicEdgeDrawer />}
+      {/* Keep one player and resources toolbox across Default routes; leaving Default unmounts them. */}
+      {mode === "default" && (
+        <SideDrawerProvider>
+          <MusicEdgeDrawer />
+          <ResourcesEdgeDrawer />
+        </SideDrawerProvider>
+      )}
       <CreativeModeHost />
 
       {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal & Agent Home) */}

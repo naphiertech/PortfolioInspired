@@ -84,7 +84,7 @@ interface SnapContextType {
   isSnappedText: (id: string) => boolean;
   isRouteSnapped: (pathname: string) => boolean;
   getRouteSnapStatus: (pathname: string) => RouteSnapStatus;
-  triggerSnap: () => void;
+  triggerSnap: (options?: { skipSound?: boolean; delayMs?: number }) => void;
   triggerRestore: () => void;
   resetSnapState: () => void;
   registerSection: (id: string, el: HTMLElement | null) => void;
@@ -344,18 +344,24 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const triggerSnap = useCallback(async () => {
-    if (isSnapping || isRestoring || isSnapped) return;
+  const triggerSnap = useCallback(
+    async (options?: { skipSound?: boolean; delayMs?: number }) => {
+      if (isSnapping || isRestoring || isSnapped) return;
 
-    // Reset abort flag for this run
-    isAbortedRef.current = false;
-    setIsSnapping(true);
-    setCurrentStep(0);
-    playSnap();
+      // Reset abort flag for this run
+      isAbortedRef.current = false;
+      setIsSnapping(true);
+      setCurrentStep(0);
+      if (!options?.skipSound) {
+        playSnap();
+      }
 
-    // 1. Initial dramatic pause (~650ms) after snap sound
-    await new Promise((resolve) => setTimeout(resolve, 650));
-    if (isAbortedRef.current) return;
+      // 1. Initial dramatic pause after snap sound
+      const pauseDuration = options?.delayMs !== undefined ? options.delayMs : 650;
+      if (pauseDuration > 0) {
+        await new Promise((resolve) => setTimeout(resolve, pauseDuration));
+      }
+      if (isAbortedRef.current) return;
 
     // 2. Select ONLY from currently mounted and available sections in the DOM
     const availableSections = getAvailableSnapSections();

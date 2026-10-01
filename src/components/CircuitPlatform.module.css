@@ -13,15 +13,16 @@
 }
 
 :global(.dark) .environment {
-  --pcb-face: #46515c;
-  --pcb-depth: #1c242c;
-  --pcb-middle: #313e48;
-  --pcb-front: #56636f;
-  --pcb-edge: #73818c;
-  --pcb-highlight: #aab8c2;
-  --pcb-trace: #b2c3cf;
-  --pcb-recess: #202d37;
-  --pcb-node: #a1b8c8;
+  --pcb-face: #182027;
+  --pcb-depth: #0b0e10;
+  --pcb-middle: #11161a;
+  --pcb-front: #202a31;
+  --pcb-edge: #35434b;
+  --pcb-highlight: #52616a;
+  --pcb-trace: #43535b;
+  --pcb-recess: #11161a;
+  --pcb-node: #71818a;
+  --pcb-cable: #263239;
 }
 
 .category {
@@ -286,6 +287,52 @@
   stroke-width: 3;
   opacity: 0.15;
 }
+
+/* Dark surfaces carry the silhouette; only exposed edges catch light. */
+:global(.dark) .bodyOutline { stroke-opacity: 0.35; }
+:global(.dark) .tileEdge { opacity: 0.26; }
+:global(.dark) .pixel { opacity: 0.35; }
+:global(.dark) .seams { opacity: 0.28; }
+:global(.dark) .pins { stroke: var(--pcb-edge); stroke-opacity: 0.45; }
+:global(.dark) .socket,
+:global(.dark) .moduleRim,
+:global(.dark) .towerSide,
+:global(.dark) .towerFace,
+:global(.dark) .terminal { stroke-opacity: 0.28; }
+:global(.dark) .deckSide { fill: var(--pcb-recess); stroke-opacity: 0.35; }
+:global(.dark) .deck { stroke-opacity: 0.6; }
+:global(.dark) .edge { opacity: 0.55; }
+:global(.dark) .deckTraces { stroke-opacity: 0.55; }
+:global(.dark) .towerHighlight { stroke-opacity: 0.65; }
+:global(.dark) .antenna { stroke-opacity: 0.65; }
+:global(.dark) .beacon { stroke-opacity: 0.35; }
+:global(.dark) .branch { --module: #477287; }
+:global(.dark) .branch[data-branch="1"] { --module: #487964; }
+:global(.dark) .branch[data-branch="2"] { --module: #8b774d; }
+:global(.dark) .bus { stroke-opacity: 0.4; }
+:global(.dark) .branch[data-active="true"] .bus { stroke-opacity: 0.7; }
+:global(.dark) .junctions { opacity: 0.5; }
+:global(.dark) .moduleHalo { opacity: 0.12; }
+:global(.dark) .branch[data-active="true"] .moduleHalo { opacity: 0.22; }
+:global(.dark) .moduleLight { opacity: 0.85; filter: none; }
+:global(.dark) .hangers .antenna { stroke: var(--pcb-cable); stroke-opacity: 0.75; }
+:global(.dark) .fragments { opacity: 0.15; }
+:global(.dark) .ghostLines { opacity: 0.06; }
+/* Keep the approved chip feedback while quieting the artwork beneath it. */
+:global(.dark) .chip[data-connected="true"] { border-color: #73818c; }
+:global(.dark) .platform [data-depth="middle"] {
+  --pcb-face: #141c21;
+  --pcb-edge: #2c3840;
+  --pcb-highlight: #43535b;
+}
+:global(.dark) .platform [data-depth="deep"] {
+  --pcb-face: #11161a;
+  --pcb-middle: #11161a;
+  --pcb-edge: #202a31;
+  --pcb-highlight: #35434b;
+}
+:global(.dark) .platform [data-depth="deep"] .tileEdge { opacity: 0.16; }
+:global(.dark) .platform [data-depth="deep"] .pixel { opacity: 0.18; }
 
 @media (max-width: 1023px) {
   .environment>.platform {

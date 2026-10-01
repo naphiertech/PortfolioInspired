@@ -72,7 +72,7 @@ export function CircuitPlatform({ activeBranches }: { activeBranches: boolean[] 
         <g clipPath={`url(#${id}-body)`}>
           <path className={styles.recess} d="M38 94 H145 V117 H241 V137 H322 V153 H392 V181 H454 V206 H493 V245 H513 V288 H544 V233 H568 V204 H599 V174 H663 V149 H738 V132 H847 V109 H976 V94 H837 V104 H727 V120 H650 V137 H581 V160 H548 V190 H517 V203 H489 V178 H427 V153 H355 V129 H272 V115 H176 V101 H38 Z" />
           {tiles.map(([x, y, w, h], index) => (
-            <g key={x}>
+            <g key={x} data-depth={y >= 190 ? "deep" : y >= 145 ? "middle" : "front"}>
               <rect className={index % 3 === 0 ? styles.tileDark : styles.tile} x={x} y={y} width={w} height={h} />
               <path className={styles.tileEdge} d={`M${x} ${y + h} V${y} H${x + w}`} />
               <rect className={styles.pixel} x={x + 4} y={y + 4} width="5" height="3" />
@@ -84,7 +84,7 @@ export function CircuitPlatform({ activeBranches }: { activeBranches: boolean[] 
 
         {/* Underslung processor housings and contact pins. */}
         {components.map(([x, y, w, h]) => (
-          <g key={x} className={styles.processor}>
+          <g key={x} className={styles.processor} data-depth={y >= 190 ? "deep" : y >= 145 ? "middle" : "front"}>
             <path className={styles.pins} d={`M${x + 7} ${y - 4} v${h + 8} M${x + 15} ${y - 4} v${h + 8} M${x + 23} ${y - 4} v${h + 8}`} />
             <rect x={x} y={y} width={w} height={h} className={styles.socket} />
             <rect x={x + 5} y={y + 5} width={w - 10} height={h - 10} className={styles.processorFace} />
@@ -142,7 +142,7 @@ export function CircuitPlatform({ activeBranches }: { activeBranches: boolean[] 
 
         <g className={styles.hangers}>
           {hangers.map(([x, y, end], index) => (
-            <g key={x}>
+            <g key={x} data-depth={y >= 190 ? "deep" : y >= 145 ? "middle" : "front"}>
               <path className={styles.antenna} d={`M${x} ${y} V${end - 12} H${x + (index % 2 ? 5 : -5)} V${end}`} />
               <rect className={styles.terminal} x={x + (index % 2 ? 2 : -8)} y={end} width="6" height="7" />
               <rect className={styles.pixel} x={x + (index % 2 ? 4 : -6)} y={end + 2} width="2" height="2" />

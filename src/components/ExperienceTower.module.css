@@ -18,14 +18,19 @@
   position: relative;
 }
 :global(.dark) .environment {
-  --tower-face: #465560;
-  --tower-shadow: #242f37;
-  --tower-edge: #657d8a;
-  --tower-highlight: #97a9b1;
-  --tower-well: #1b272f;
-  --tower-screen: #7e9c9f;
-  --tower-wire: #82949e;
-  --tower-signal: #77c8b4;
+  --tower-body: #11161a;
+  --tower-face: #202a31;
+  --tower-shadow: #0b0e10;
+  --tower-edge: #35434b;
+  --tower-highlight: #52616a;
+  --tower-well: #0b0e10;
+  --tower-screen: #506a73;
+  --tower-wire: #263239;
+  --tower-signal: #426e62;
+  --tower-connection: #43535b;
+  --tower-node: #52616a;
+  --tower-node-emphasis: #71818a;
+  --tower-current: #5c9a84;
 }
 .row { min-height: calc(104 * var(--tower-unit)); gap: var(--row-gap); padding-bottom: var(--row-spacing); }
 .row:last-child { padding-bottom: 0; }
@@ -128,6 +133,33 @@
 .annotation svg { width: calc(70 * var(--tower-unit)); height: auto; }
 .annotation p { margin: 0; transform: rotate(-5deg); font: italic 12px/1.5 "Segoe Print", "Bradley Hand", cursive; }
 .annotation strong { font-weight: 600; }
+/* Graphite machinery stays behind the timeline's text and status markers. */
+:global(.dark) .column {
+  background: linear-gradient(90deg, var(--tower-shadow) 0 22%, var(--tower-body) 22% 45%, var(--tower-edge) 45% 48%, var(--tower-shadow) 48% 61%, var(--tower-face) 61% 88%, var(--tower-edge) 88%);
+  border-inline-color: rgb(53 67 75 / 35%);
+}
+:global(.dark) .face { stroke-opacity: 0.28; }
+:global(.dark) .highlight { stroke-opacity: 0.48; }
+:global(.dark) .cable { stroke: var(--tower-wire); stroke-opacity: 0.85; }
+:global(.dark) .seam { stroke-opacity: 0.3; }
+:global(.dark) .screenDetail { stroke: var(--tower-node-emphasis); stroke-opacity: 0.5; }
+:global(.dark) .spine { opacity: 0.45; }
+:global(.dark) .connector { background: var(--tower-connection); opacity: 0.45; }
+:global(.dark) .connector::after { background: var(--tower-connection); }
+:global(.dark) .row:is(:hover, :focus-within, [data-open="true"]) .connector { opacity: 0.65; }
+:global(.dark) .node { border-color: var(--tower-node); }
+:global(.dark) .node i { background: var(--tower-node); }
+:global(.dark) .row:is(:hover, :focus-within, [data-open="true"]) .node { border-color: var(--tower-node-emphasis); }
+:global(.dark) .rail[data-current="true"] .node { border-color: var(--tower-current); }
+:global(.dark) .rail[data-current="true"] .node i { background: var(--tower-current); }
+:global(.dark) .rail[data-current="true"] .screen { fill: var(--tower-current); }
+:global(.dark) .wireGlint { opacity: 0.18; }
+:global(.dark) .signalWire { stroke: var(--tower-wire); opacity: 0.85; filter: none; }
+:global(.dark) .inlinePlug,
+:global(.dark) .hangingPlug::after { border-color: rgb(53 67 75 / 45%); }
+:global(.dark) .fragments { opacity: 0.16; }
+:global(.dark) .dust { opacity: 0.16; }
+:global(.dark) .ground { opacity: 0.25; }
 @container experience (max-width: 679px) {
   .desktopComposition { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
   .desktopDate { grid-column: 2; }

@@ -258,14 +258,14 @@ export function ProfileHeader() {
               </a>
             </div>
 
-            {/* Desktop Easter Egg Trigger */}
-            <div className="hidden sm:block absolute right-0 bottom-1 sm:bottom-2 pointer-events-auto rotate-45 origin-center opacity-65 hover:opacity-100 transition-all duration-200">
+            {/* Desktop Easter Egg Gauntlet Trigger */}
+            <div className="hidden sm:flex items-center absolute right-0 bottom-0 pointer-events-auto opacity-80 hover:opacity-100 transition-all duration-200">
               <SnapTrigger />
             </div>
           </div>
 
-          {/* Mobile-Only Easter Egg Trigger */}
-          <div className="flex sm:hidden justify-center pt-2 pb-1 pointer-events-auto opacity-65 hover:opacity-100 transition-all duration-200">
+          {/* Mobile-Only Easter Egg Gauntlet Trigger */}
+          <div className="flex sm:hidden justify-center pt-3 pb-1 pointer-events-auto opacity-80 hover:opacity-100 transition-all duration-200">
             <SnapTrigger />
           </div>
         </div>

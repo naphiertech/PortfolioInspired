@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
+import { focusNavItems } from "@/features/presentation-modes/modes/focus/components/FocusNavigation";
 import { useCreativeMode } from "../context/CreativeModeContext";
 import { CreativeAnnotation, type CreativeNote } from "./CreativeAnnotation";
 import styles from "../creativeNotes.module.css";
@@ -27,6 +28,11 @@ export function CreativeNotes({ contentRef }: { contentRef: RefObject<HTMLElemen
   const reducedMotion = useReducedMotion();
   const layerRef = useRef<HTMLDivElement>(null);
   const [placements, setPlacements] = useState<Placement[]>([]);
+
+  // Focus Home route resolution from existing navigation configuration
+  const focusHomeRoute = focusNavItems.find((item) => item.name === "Home")?.href ?? "/";
+  const cleanPathname = pathname ? pathname.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/" : "/";
+  const isFocusHome = mode === "focus" ? cleanPathname === focusHomeRoute : true;
 
   useEffect(() => {
     const content = contentRef.current;
@@ -55,6 +61,10 @@ export function CreativeNotes({ contentRef }: { contentRef: RefObject<HTMLElemen
       const next: Placement[] = [];
       if (viewport >= 1024) {
         for (const note of notes) {
+          // "02 // Make it your own" belongs ONLY to the Focus Home page
+          if (note.number === "02" && mode === "focus" && !isFocusHome) {
+            continue;
+          }
           if (!room[note.side]) continue;
           const anchor = Array.from(content.querySelectorAll<HTMLElement>(note.selector))
             .find(element => element.getClientRects().length && element.getBoundingClientRect().height > 0);
@@ -99,14 +109,25 @@ export function CreativeNotes({ contentRef }: { contentRef: RefObject<HTMLElemen
       content.removeEventListener("load", schedule, true);
       document.fonts.removeEventListener("loadingdone", schedule);
     };
-  }, [active, contentRef, mode, pathname, state]);
+  }, [active, contentRef, mode, pathname, state, isFocusHome]);
 
   return (
     <div ref={layerRef} className={styles.layer} aria-hidden="true">
       <AnimatePresence>
-        {active && placements.map(({ note, top }, index) => (
-          <CreativeAnnotation key={`${mode}:${pathname}:${note.number}`} note={note} top={top} index={index} quiet={!!reducedMotion || effectiveMotion === "off"} />
-        ))}
+        {active && placements.map(({ note, top }, index) => {
+          if (note.number === "02" && mode === "focus" && !isFocusHome) {
+            return null;
+          }
+          return (
+            <CreativeAnnotation
+              key={`${mode}:${pathname}:${note.number}`}
+              note={note}
+              top={top}
+              index={index}
+              quiet={!!reducedMotion || effectiveMotion === "off"}
+            />
+          );
+        })}
       </AnimatePresence>
     </div>
   );

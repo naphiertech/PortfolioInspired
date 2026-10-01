@@ -1,0 +1,97 @@
+.gauntletWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  user-select: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spriteFrame {
+  width: 80px;
+  height: 80px;
+  background-repeat: no-repeat;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), opacity 180ms ease;
+}
+
+.gauntletWrapper:hover .spriteFrame {
+  transform: scale(1.06) translateY(-1px);
+}
+
+.gauntletWrapper:active .spriteFrame {
+  transform: scale(0.96) translateY(1px);
+}
+
+/* IDLE & SETTLED: 80px x 80px single frame */
+.idleLight {
+  background-image: url('/easter-egg/thanos/idle-light.png');
+  background-position: 0 0;
+  background-size: 80px 80px;
+}
+
+.idleDark {
+  background-image: url('/easter-egg/thanos/idle-dark.png');
+  background-position: 0 0;
+  background-size: 80px 80px;
+}
+
+/* SNAP: 3840px x 80px (48 frames, 47 steps over 2.25s) */
+.snapLight {
+  background-image: url('/easter-egg/thanos/snap-light.png');
+  background-position: 0 0;
+  background-size: 3840px 80px;
+  animation: thanosSnapKeyframes 2.25s steps(47) forwards;
+}
+
+.snapDark {
+  background-image: url('/easter-egg/thanos/snap-dark.png');
+  background-position: 0 0;
+  background-size: 3840px 80px;
+  animation: thanosSnapKeyframes 2.25s steps(47) forwards;
+}
+
+@keyframes thanosSnapKeyframes {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -3760px 0;
+  }
+}
+
+/* TIME / RESTORE: 3840px x 80px (48 frames, 47 steps over 2.25s) */
+.timeLight {
+  background-image: url('/easter-egg/thanos/time-light.png');
+  background-position: 0 0;
+  background-size: 3840px 80px;
+  animation: thanosTimeKeyframes 2.25s steps(47) forwards;
+}
+
+.timeDark {
+  background-image: url('/easter-egg/thanos/time-dark.png');
+  background-position: 0 0;
+  background-size: 3840px 80px;
+  animation: thanosTimeKeyframes 2.25s steps(47) forwards;
+}
+
+@keyframes thanosTimeKeyframes {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -3760px 0;
+  }
+}
+

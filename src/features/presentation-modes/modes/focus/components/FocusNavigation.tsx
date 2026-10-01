@@ -9,13 +9,13 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CreativeModeToggle } from "@/features/creative-mode";
 import { useUISound } from "@/context/SoundContext";
 
-interface FocusNavItem {
+export interface FocusNavItem {
   name: string;
   href: string;
   code: string;
 }
 
-const focusNavItems: FocusNavItem[] = [
+export const focusNavItems: FocusNavItem[] = [
   { name: "Home", href: "/", code: "00" },
   { name: "Work", href: "/work", code: "01" },
   { name: "Projects", href: "/projects", code: "02" },

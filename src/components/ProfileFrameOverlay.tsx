@@ -23,6 +23,7 @@ export function ProfileFrameOverlay({ className, style }: { className: string; s
     previousTheme.current = resolvedTheme;
     let cancelled = false;
     let raf = 0;
+    let idleHandle: number | undefined;
     let revealObserver: MutationObserver | undefined;
     const display = (index: number) => {
       const image = imageRef.current;
@@ -37,7 +38,25 @@ export function ProfileFrameOverlay({ className, style }: { className: string; s
       position.current = index;
     };
     const play = async () => {
-      if (!changed || reduced) {
+      if (!changed) {
+        if (target >= 0) {
+          if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+            idleHandle = (window as unknown as { requestIdleCallback: (cb: () => void, opts: { timeout: number }) => number }).requestIdleCallback(async () => {
+              if (cancelled || previousTheme.current !== resolvedTheme) return;
+              await prepareProfileFrames([PROFILE_FRAMES[target]], true);
+              if (!cancelled && previousTheme.current === resolvedTheme) display(target);
+            }, { timeout: 3500 });
+          } else if (typeof setTimeout === "function") {
+            idleHandle = setTimeout(async () => {
+              if (cancelled || previousTheme.current !== resolvedTheme) return;
+              await prepareProfileFrames([PROFILE_FRAMES[target]], true);
+              if (!cancelled && previousTheme.current === resolvedTheme) display(target);
+            }, 3500) as unknown as number;
+          }
+        }
+        return;
+      }
+      if (reduced) {
         if (target >= 0) await prepareProfileFrames([PROFILE_FRAMES[target]], true);
         display(target);
         return;
@@ -83,7 +102,18 @@ export function ProfileFrameOverlay({ className, style }: { className: string; s
       } else begin();
     };
     void play();
-    return () => { cancelled = true; cancelAnimationFrame(raf); revealObserver?.disconnect(); };
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      revealObserver?.disconnect();
+      if (idleHandle !== undefined) {
+        if (typeof window !== "undefined" && "cancelIdleCallback" in window) {
+          (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleHandle);
+        } else {
+          clearTimeout(idleHandle);
+        }
+      }
+    };
   }, [resolvedTheme, reduced]);
 
   // No src until a decoded frame is ready; the existing NextImage stays underneath.

@@ -6,8 +6,8 @@ import {
   PRESENTATION_QUERY_PARAM,
   isValidPresentationMode,
   AGENT_FOLIO_ENABLED,
+  DEFAULT_PRESENTATION_MODE,
 } from "@/features/presentation-modes/types/config";
-import { getRandomPresentationMode } from "@/features/presentation-modes/lib/resolveMode";
 import type { PresentationMode } from "@/features/presentation-modes/types/presentation";
 
 /**
@@ -59,8 +59,8 @@ export function middleware(request: NextRequest) {
     effectiveMode = cookieMode;
     shouldSetCookie = false;
   } else {
-    // Priority 3: Randomized first entry for fresh visitors with no preference
-    effectiveMode = getRandomPresentationMode(isRoot);
+    // Canonical default entry for fresh visitors with no preference
+    effectiveMode = DEFAULT_PRESENTATION_MODE;
     shouldSetCookie = true;
   }
 

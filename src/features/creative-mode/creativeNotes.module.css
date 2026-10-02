@@ -1,5 +1,5 @@
 .layer {
-  --creative-note-ink: #405fc0;
+  --creative-note-ink: #3157c8;
   position: absolute;
   inset: 0;
   z-index: 11;
@@ -9,11 +9,11 @@
   font: italic 16px/1.55 "Segoe Print", "Bradley Hand", "Chalkboard SE", cursive;
 }
 
-:global(.dark) .layer { --creative-note-ink: #89a8ff; }
+:global(.dark) .layer { --creative-note-ink: #9aaff3; }
 
 .note {
   position: absolute;
-  width: 168px;
+  width: var(--creative-note-width, 168px);
   pointer-events: none;
 }
 
@@ -33,5 +33,6 @@
 }
 .note[data-side="left"] .arrow { left: calc(100% + 5px); }
 .note[data-side="right"] .arrow { right: calc(100% + 5px); transform: scaleX(-1); }
+.note[data-annotation-number="01"] .arrow { width: auto; height: auto; }
 
 @media (max-width: 1023px) { .layer { display: none; } }

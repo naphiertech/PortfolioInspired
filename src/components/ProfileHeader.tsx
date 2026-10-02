@@ -131,7 +131,7 @@ export function ProfileHeader() {
           </div>
 
           {/* Introduction condensed from the former standalone About section */}
-          <p className="font-sans text-sm sm:text-[15px] text-body max-w-[65ch] mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
+          <p data-creative-note="about" className="font-sans text-sm sm:text-[15px] text-body max-w-[65ch] mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
             I&apos;m an IT student who enjoys turning ideas into practical web applications—from school systems and productivity tools to personal projects. I care about clean interfaces, thoughtful user experiences, and reliable functionality, with a growing interest in UI/UX, web animation, and AI-assisted development.
           </p>
 

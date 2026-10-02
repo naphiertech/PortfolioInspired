@@ -39,7 +39,7 @@ export function MinimalIntro() {
 
       {/* Narrative Paragraphs - spans available section width with 72-74ch comfortable measure */}
       <div className="w-full font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#b4afa4] leading-[28px] space-y-4 [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
-        <p className="w-full max-w-[72ch] sm:max-w-[74ch]">
+        <p data-creative-note="about" className="w-full max-w-[72ch] sm:max-w-[74ch]">
           I&apos;m an <strong>IT student and full-stack developer</strong> who enjoys turning ideas
           into <strong>practical web applications</strong> with clean interfaces, <strong>thoughtful user
           experiences</strong>, and reliable functionality.

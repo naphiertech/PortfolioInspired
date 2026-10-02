@@ -6,17 +6,17 @@ import {
   PRESENTATION_QUERY_PARAM,
   isValidPresentationMode,
   AGENT_FOLIO_ENABLED,
+  DEFAULT_PRESENTATION_MODE,
 } from "@/features/presentation-modes/types/config";
-import { getRandomPresentationMode } from "@/features/presentation-modes/lib/resolveMode";
 import type { PresentationMode } from "@/features/presentation-modes/types/presentation";
 
 /**
  * Global Presentation Mode Middleware
  *
  * Implements authoritative 3-tier presentation mode resolution:
- * 1. Explicit valid `?mode=` query parameter (e.g. "?mode=focus") -> Always respected, never randomized
+ * 1. Explicit valid `?mode=` query parameter (e.g. "?mode=focus") -> Always respected
  * 2. Existing persisted cookie preference -> Preserved across refreshes and internal navigation
- * 3. Randomized first entry -> Uniform random selection among 4 modes for fresh visitors, persisted to cookie
+ * 3. Default presentation mode ("default") -> Default page layout for fresh visitors
  *
  * Ensures 100% server-client agreement with zero hydration mismatch and zero blank frames.
  */
@@ -59,9 +59,9 @@ export function middleware(request: NextRequest) {
     effectiveMode = cookieMode;
     shouldSetCookie = false;
   } else {
-    // Priority 3: Randomized first entry for fresh visitors with no preference
-    effectiveMode = getRandomPresentationMode(isRoot);
-    shouldSetCookie = true;
+    // Priority 3: Default mode for fresh visitors with no explicit preference
+    effectiveMode = DEFAULT_PRESENTATION_MODE;
+    shouldSetCookie = false;
   }
 
   // Minimal is strictly one page: redirect any deep route requests back to "/"

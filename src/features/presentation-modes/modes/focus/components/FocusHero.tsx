@@ -29,7 +29,7 @@ export function FocusHero() {
             <span className={styles.surname}>{surname}</span>
           </h1>
           <p className={styles.role}>{AUTHOR_INFO.jobTitle}</p>
-          <p className={styles.bio}>{SITE_DEFAULT_DESCRIPTION}</p>
+          <p data-creative-note="about" className={styles.bio}>{SITE_DEFAULT_DESCRIPTION}</p>
           <div className="mt-4">
             <StatusBadge status="available" label={AVAILABILITY.openTo} size="sm" />
           </div>

@@ -80,7 +80,7 @@ export function Gallery() {
         {/* Section Heading & Carousel Controls: above on mobile, inside open sky on desktop/tablet */}
         <div className={styles.header}>
           <div>
-            <span className="font-mono text-xs tracking-wider text-muted-foreground uppercase select-none">
+            <span data-creative-note="moments" className="font-mono text-xs tracking-wider text-muted-foreground uppercase select-none">
               &lt;MOMENTS-AND-EVENTS/&gt;
             </span>
           </div>

@@ -52,7 +52,7 @@ export function FocusCertifications() {
 
               {cert.code && (
                 <div className="mt-2 font-mono text-[11px] sm:text-[11.5px] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                  <span className="text-zinc-400 dark:text-zinc-500">ID:</span>
+                  <span className="text-zinc-500 dark:text-zinc-400">ID:</span>
                   <span className="text-ink/80 tracking-wide">{cert.code}</span>
                 </div>
               )}
@@ -90,7 +90,7 @@ export function FocusCertifications() {
 
               {cert.code && (
                 <div className="mt-2 font-mono text-[11px] sm:text-[11.5px] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                  <span className="text-zinc-400 dark:text-zinc-500">ID:</span>
+                  <span className="text-zinc-500 dark:text-zinc-400">ID:</span>
                   <span className="text-ink/80 tracking-wide">{cert.code}</span>
                 </div>
               )}

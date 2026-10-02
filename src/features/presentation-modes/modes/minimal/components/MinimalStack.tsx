@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { TechIcon } from "@/components/TechIcon";
 import { techSections } from "@/lib/data";
@@ -33,7 +33,7 @@ function TechPill({ name }: { name: string }) {
 export function MinimalStack() {
   const [expanded, setExpanded] = useState(false);
   const reducedMotion = useReducedMotion();
-  const sectionId = useId();
+  const sectionId = "minimal-stack";
 
   return (
     <section data-creative-note="tools" className="space-y-4 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">

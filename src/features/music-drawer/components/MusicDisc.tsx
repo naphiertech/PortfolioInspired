@@ -55,6 +55,8 @@ export function MusicDisc({
             src={artworkSrc}
             alt=""
             aria-hidden="true"
+            width={120}
+            height={120}
             className="w-full h-full object-cover grayscale contrast-110 brightness-95"
           />
           {/* Subtle blend gradient on seam */}

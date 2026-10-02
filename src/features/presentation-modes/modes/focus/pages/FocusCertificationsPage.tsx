@@ -147,7 +147,7 @@ export function FocusCertificationsPage() {
 
             {cert.code && (
               <div className="mt-3 pt-2.5 border-t border-border-divider/80 font-mono text-[11px] sm:text-[11.5px] text-zinc-500 dark:text-zinc-400 flex items-center justify-between">
-                <span className="text-zinc-400 dark:text-zinc-500">VERIFICATION ID:</span>
+                <span className="text-zinc-500 dark:text-zinc-400">VERIFICATION ID:</span>
                 <span className="text-ink/85 font-medium tracking-wide">{cert.code}</span>
               </div>
             )}

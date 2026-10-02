@@ -104,10 +104,11 @@ export function FocusSelectedWork() {
                 )}
 
                 {/* Technology Badges (Icons only) */}
-                <div className="flex flex-wrap items-center gap-1.5 mb-4" aria-label="Technologies used">
+                <div className="flex flex-wrap items-center gap-1.5 mb-4" role="group" aria-label="Technologies used">
                   {displayTech.map((tech) => (
                     <span
                       key={tech}
+                      role="img"
                       title={tech}
                       aria-label={tech}
                       className="p-1.5 rounded-md bg-surface/60 border border-border-hairline text-zinc-500 dark:text-zinc-400 hover:text-ink hover:border-border transition-colors flex items-center justify-center group/icon"

@@ -27,7 +27,7 @@ export function MinimalCurrent() {
               href="https://mkbridertrack.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
+              className="text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] underline underline-offset-4 decoration-zinc-400/60 dark:decoration-zinc-600/60 hover:decoration-current"
             >
               {currentBuild.title}
             </a>{" "}

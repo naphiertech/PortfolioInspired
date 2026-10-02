@@ -1,6 +1,5 @@
 "use client";
 
-import { useId } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import styles from "./CircuitPlatform.module.css";
 
@@ -41,7 +40,7 @@ const branches = [
 /** A layered, stepped circuit chassis supporting the complete technology column. */
 export function CircuitPlatform({ activeBranches }: { activeBranches: boolean[] }) {
   const reduced = useReducedMotion();
-  const id = useId();
+  const id = "circuit-chassis";
   const interacting = activeBranches.some(Boolean);
   return (
     <motion.div

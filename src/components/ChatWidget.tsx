@@ -149,7 +149,7 @@ function ChatWidgetContent() {
             import("@/lib/portfolioContext");
           }}
           className="tactile-btn gap-1.5 sm:gap-2 h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/95 backdrop-blur-md cursor-pointer"
-          aria-label={isOpen ? "Close AI Assistant" : "Open AI Assistant"}
+          aria-label={isOpen ? "Close AI Chat" : "Open AI Chat"}
           aria-expanded={isOpen}
         >
           {isOpen ? (

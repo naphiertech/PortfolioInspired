@@ -1,6 +1,5 @@
 "use client";
 
-import { useId } from "react";
 import type { LucideIcon } from "lucide-react";
 import styles from "./EdgeLauncher.module.css";
 
@@ -20,8 +19,8 @@ export function EdgeLauncher({ icon: Icon, label, controls, ariaLabel, title, is
   second?: boolean;
   className?: string;
 }) {
-  const surfaceId = useId();
-  const tooltipId = useId();
+  const surfaceId = `edge-surface-${controls}`;
+  const tooltipId = `edge-tooltip-${controls}`;
   return (
     <aside aria-label={`${title} drawer toggle`} className={`${styles.position} ${second ? styles.second : ""} ${className}`}>
       <button

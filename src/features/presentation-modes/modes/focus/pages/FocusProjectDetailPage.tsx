@@ -93,10 +93,10 @@ export function FocusProjectDetailPage({
       {/* Structured Technical Sections */}
       <div className="space-y-8">
         {/* 01 // OVERVIEW */}
-        <section aria-label="Project overview">
-          <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-2.5">
+        <section aria-labelledby="project-overview-heading">
+          <h2 id="project-overview-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-2.5">
             01 // OVERVIEW & PURPOSE
-          </div>
+          </h2>
           <p className="text-[15px] sm:text-base text-zinc-700 dark:text-zinc-300 font-sans leading-[1.65]">
             {project.fullDescription || project.overview}
           </p>
@@ -106,10 +106,10 @@ export function FocusProjectDetailPage({
 
         {/* 02 // WHY THESE CHOICES? */}
         {project.technicalDecisions && project.technicalDecisions.length > 0 && (
-          <section aria-label="Technical choices">
-            <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
+          <section aria-labelledby="project-decisions-heading">
+            <h2 id="project-decisions-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
               02 // WHY THESE CHOICES?
-            </div>
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {project.technicalDecisions.map((decision, idx) => (
                 <div
@@ -139,10 +139,10 @@ export function FocusProjectDetailPage({
         )}
 
         {/* 03 // TECH STACK */}
-        <section aria-label="Technology stack">
-          <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3">
+        <section aria-labelledby="project-stack-heading">
+          <h2 id="project-stack-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3">
             03 // TECH STACK
-          </div>
+          </h2>
           <div className="flex flex-wrap items-center gap-2">
             {project.techStack.map((tech) => (
               <span
@@ -160,10 +160,10 @@ export function FocusProjectDetailPage({
 
         {/* 04 // KEY FEATURES */}
         {project.features && project.features.length > 0 && (
-          <section aria-label="Key features">
-            <div className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3">
+          <section aria-labelledby="project-features-heading">
+            <h2 id="project-features-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3">
               04 // KEY FEATURES
-            </div>
+            </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {project.features.map((feature, idx) => (
                 <li
@@ -181,10 +181,10 @@ export function FocusProjectDetailPage({
         {project.features && project.features.length > 0 && <EditorialDivider />}
 
         {/* 05 // LINKS */}
-        <section aria-label="Links and source code">
-          <div className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3">
+        <section aria-labelledby="project-links-heading">
+          <h2 id="project-links-heading" className="font-mono text-xs text-muted-foreground/70 uppercase tracking-wider mb-3">
             05 // LINKS & REPOSITORY
-          </div>
+          </h2>
           <div className="flex flex-wrap items-center gap-3">
             {project.live && (
               <a

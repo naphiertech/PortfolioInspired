@@ -233,9 +233,9 @@ export function ProjectDetailClient({
         <>
           <EditorialDivider className="my-8 sm:my-10" />
           <section className="space-y-3.5" aria-label="Technical Decisions">
-            <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
+            <h2 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
               &lt;technical-decisions/&gt;
-            </span>
+            </h2>
             <div className="space-y-3">
               {project.technicalDecisions.map((decision, idx) => (
                 <div
@@ -260,9 +260,9 @@ export function ProjectDetailClient({
         <>
           <EditorialDivider className="my-8 sm:my-10" />
           <section className="space-y-3.5" aria-label="What I Learned">
-            <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
+            <h2 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
               &lt;what-i-learned/&gt;
-            </span>
+            </h2>
             <div className="space-y-3">
               {project.learnings.map((learning, idx) => (
                 <div

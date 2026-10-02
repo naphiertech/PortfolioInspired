@@ -77,6 +77,8 @@ export function ProfileHeader() {
               src="/profile/ezgif-frame-001.png"
               alt={SITE_NAME}
               fill
+              priority
+              fetchPriority="high"
               sizes="120px"
               className="object-cover transition-opacity duration-300"
               style={{ objectPosition: "center 25%" }}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { useTheme } from "@/components/ThemeProvider";
 import styles from "./FlickeringGrid.module.css";
@@ -11,7 +11,7 @@ export function FlickeringGrid() {
   const { gridEnabled } = usePresentationMode();
   const { resolvedTheme } = useTheme();
   const { active: creativeActive, state: creative, effectiveMotion } = useCreativeMode();
-  const patternId = useId();
+  const patternId = "flickering-grid-pattern";
   const surfaceRef = useRef<HTMLDivElement>(null);
   const [isPresent, setIsPresent] = useState(gridEnabled);
 

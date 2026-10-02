@@ -17,7 +17,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="h-6 w-16 rounded-[5px] bg-surface/60 border border-border-hairline animate-pulse" />
+      <div className="h-7 w-[82px] rounded-[6px] bg-surface/60 border border-border-hairline animate-pulse" />
     );
   }
 
@@ -53,7 +53,7 @@ export function ThemeToggle() {
 
   return (
     <div
-      className="inline-flex items-center rounded-[6px] bg-surface p-0.5 border border-border-hairline shadow-sm relative"
+      className="inline-flex items-center rounded-[6px] bg-surface p-0.5 border border-border-hairline shadow-sm relative gap-0.5"
       role="group"
       aria-label="Theme selector"
     >
@@ -66,7 +66,7 @@ export function ThemeToggle() {
               playTheme();
               setTheme(t.key, e);
             }}
-            className={`relative flex items-center justify-center h-5 w-5 rounded-[4px] cursor-pointer z-10 transition-colors duration-150 ${
+            className={`relative flex items-center justify-center h-6 w-6 rounded-[4px] cursor-pointer z-10 transition-colors duration-150 ${
               isActive
                 ? "text-ink"
                 : "text-muted-foreground/60 hover:text-ink hover:bg-surface-hover/40"

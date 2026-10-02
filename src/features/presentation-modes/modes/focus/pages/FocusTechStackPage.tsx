@@ -189,7 +189,7 @@ export function FocusTechStackPage() {
                 <span className="font-mono text-xs sm:text-[13px] font-semibold text-ink block">
                   {section.title}
                 </span>
-                <span className="font-caps text-[10px] text-zinc-400 dark:text-zinc-500 tracking-wider font-mono">
+                <span className="font-caps text-[10px] text-zinc-500 dark:text-zinc-400 tracking-wider font-mono">
                   {syntaxTag}
                 </span>
               </div>

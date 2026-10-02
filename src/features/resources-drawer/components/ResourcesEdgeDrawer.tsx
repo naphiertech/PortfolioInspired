@@ -2,14 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import dynamic from "next/dynamic";
 import { ResourcesEdgeTab } from "./ResourcesEdgeTab";
+import { ResourcesDrawer } from "./ResourcesDrawer";
 import { useSideDrawers } from "@/features/side-drawers/SideDrawerProvider";
-
-const ResourcesDrawer = dynamic(
-  () => import("./ResourcesDrawer").then((m) => m.ResourcesDrawer),
-  { ssr: false }
-);
 
 interface ResourcesEdgeDrawerProps {
   initialOpen?: boolean;
@@ -49,10 +44,8 @@ export function ResourcesEdgeDrawer({
       {/* 1. Left-edge launcher stacked below Music */}
       <ResourcesEdgeTab isOpen={isOpen} onToggle={() => toggleDrawer("resources")} />
 
-      {/* 2. Open State Overlay Drawer Card */}
-      {isOpen && (
-        <ResourcesDrawer isOpen={isOpen} onClose={closeDrawer} onExitComplete={() => finishClose("resources")} />
-      )}
+      {/* Keep the animation owner mounted so closing can finish and preserve the selected tab. */}
+      <ResourcesDrawer isOpen={isOpen} onClose={closeDrawer} onExitComplete={() => finishClose("resources")} />
     </div>,
     document.body
   );

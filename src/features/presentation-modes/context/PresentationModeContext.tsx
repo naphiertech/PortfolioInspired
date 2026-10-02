@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useMemo,
   useRef,
+  startTransition,
   ReactNode,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -105,8 +106,10 @@ export function PresentationModeProvider({
   const setMode = useCallback(
     (requestedMode: PresentationMode) => {
       const newMode = normalizePresentationMode(requestedMode);
-      setPreviousMode(mode);
-      setModeState(newMode);
+      startTransition(() => {
+        setPreviousMode(mode);
+        setModeState(newMode);
+      });
       if (requestedMode !== newMode) router.replace("/");
 
       // If entering Focus or Minimal mode, immediately clear and reset any active Default snap state

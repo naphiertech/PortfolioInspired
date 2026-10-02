@@ -3,9 +3,11 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { usePresentationMode } from "../context/PresentationModeContext";
-import { DefaultModeLayout } from "../modes/default/DefaultModeLayout";
 
 // Inactive presentation modes are code-split to keep the initial landing bundle lean
+const DefaultModeLayout = dynamic(
+  () => import("../modes/default/DefaultModeLayout").then((m) => m.DefaultModeLayout)
+);
 const FocusModeLayout = dynamic(
   () => import("../modes/focus/FocusModeLayout").then((m) => m.FocusModeLayout)
 );
@@ -20,8 +22,8 @@ const AgentFolioLayout = dynamic(
  * PresentationModeRoot
  *
  * Top-level presentation layout dispatcher.
- * Dispatches immediately between active modes (Default, Focus, Minimal, Agent Folio) as soon as
- * context state updates, ensuring a layout is always mounted with zero blank frames.
+ * Server-renders the selected layout and loads other layouts on demand.
+ * Mode updates use a transition to retain the current view while a layout loads.
  */
 export function PresentationModeRoot() {
   const { mode, previousMode } = usePresentationMode();

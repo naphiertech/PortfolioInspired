@@ -63,7 +63,7 @@ export function FocusHero() {
           <div className={styles.orbit} aria-hidden="true" />
           <span className={styles.crosshair} aria-hidden="true">+</span>
           <div className={styles.portrait}>
-            <NextImage src="/profile/ezgif-frame-001.png" alt={AUTHOR_INFO.name} fill sizes="(max-width: 767px) 280px, (max-width: 1023px) 36vw, 380px" priority className={styles.portraitImage} />
+            <NextImage src="/profile/ezgif-frame-001.png" alt={AUTHOR_INFO.name} fill sizes="(max-width: 767px) 280px, (max-width: 1023px) 36vw, 380px" priority fetchPriority="high" className={styles.portraitImage} />
             <ProfileFrameOverlay className={styles.portraitOverlay} />
           </div>
           <div className={styles.codeNote} aria-hidden="true">

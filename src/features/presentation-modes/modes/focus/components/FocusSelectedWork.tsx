@@ -55,8 +55,7 @@ export function FocusSelectedWork() {
                     alt={project.title}
                     fill
                     sizes="(max-width: 1024px) 100vw, 520px"
-                    priority={index === 0}
-                    loading={index === 0 ? "eager" : "lazy"}
+                    loading="lazy"
                     className="object-cover object-top transition-[filter,opacity] duration-300 ease-out group-hover/img:brightness-[1.02] dark:group-hover/img:brightness-105"
                   />
                 </Link>

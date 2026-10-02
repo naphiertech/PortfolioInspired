@@ -47,6 +47,7 @@ export function ProfileHeader() {
           alt="Header Background"
           fill
           priority
+          fetchPriority="high"
           sizes="(max-width: 768px) 100vw, 760px"
           className="object-cover object-center grayscale transition-all duration-500 ease-out group-hover:grayscale-0 hover:grayscale-0"
         />

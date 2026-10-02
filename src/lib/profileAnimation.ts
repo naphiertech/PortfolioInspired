@@ -46,7 +46,8 @@ function enqueue(frame: number, essential: boolean) {
       const image = new Image();
       image.decoding = "async";
       try {
-        const url = "/profile/ezgif-frame-" + String(frame).padStart(3, "0") + ".png";
+        const format = frame === PROFILE_FRAMES[PROFILE_FRAMES.length - 1] ? "webp" : "png";
+        const url = "/profile/ezgif-frame-" + String(frame).padStart(3, "0") + "." + format;
         if (typeof image.decode === "function") {
           image.src = url;
           await image.decode();

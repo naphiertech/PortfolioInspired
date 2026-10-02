@@ -18,6 +18,10 @@ export function ProfileFrameOverlay({ className, style }: { className: string; s
 
   useEffect(() => {
     if (!resolvedTheme) return;
+    // The anti-flash script applies the saved theme before context hydration.
+    // Wait for context to agree instead of loading and reversing Dark frames on Light entry.
+    const appliedTheme = document.documentElement.classList.contains("dark") ? "dark" : "light";
+    if (resolvedTheme !== appliedTheme) return;
     const target = resolvedTheme === "dark" ? PROFILE_FRAMES.length - 1 : -1;
     const changed = previousTheme.current !== null && previousTheme.current !== resolvedTheme;
     previousTheme.current = resolvedTheme;

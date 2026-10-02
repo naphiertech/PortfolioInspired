@@ -40,7 +40,7 @@ export function CreativeAnnotation({ note, top, targetTop, targetLeft, index, qu
         exit={{ opacity: 0, transition: { duration: quiet ? 0 : 0.12, delay: 0 } }}
         transition={{ duration: quiet ? 0 : 0.16, delay: quiet ? 0 : 0.1 + index * 0.06, ease: "easeOut" }}
       >
-        <p className={styles.heading}>{note.number} // {note.title}</p>
+        <p className={styles.heading}>{note.number}{" // "}{note.title}</p>
         <p>{note.description}</p>
         <svg
           className={styles.arrow}
@@ -74,7 +74,7 @@ export function CreativeAnnotation({ note, top, targetTop, targetLeft, index, qu
       exit={{ opacity: 0, transition: { duration: quiet ? 0 : 0.12, delay: 0 } }}
       transition={{ duration: quiet ? 0 : 0.16, delay: quiet ? 0 : 0.1 + index * 0.06, ease: "easeOut" }}
     >
-      <p className={styles.heading}>{note.number} // {note.title}</p>
+      <p className={styles.heading}>{note.number}{" // "}{note.title}</p>
       <p>{note.description}</p>
       <svg className={styles.arrow} style={{ top: arrowTop, height: arrowHeight }} viewBox={`0 0 44 ${arrowHeight}`} fill="none" focusable="false" aria-hidden="true">
         <path d={`M2 ${startY} C5 ${startY - 24} 22 ${endY - 8} 41 ${endY} M32 ${endY - 8} L41 ${endY} L30 ${endY + 5}`} />

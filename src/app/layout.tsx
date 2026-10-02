@@ -1,6 +1,32 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
+import { Doto, Figtree, JetBrains_Mono, Carrois_Gothic_SC } from "next/font/google";
 import "./globals.css";
+
+const fontDoto = Doto({
+  subsets: ["latin"],
+  variable: "--font-doto",
+  display: "swap",
+});
+
+const fontFigtree = Figtree({
+  subsets: ["latin"],
+  variable: "--font-figtree",
+  display: "swap",
+});
+
+const fontJetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
+
+const fontCarroisGothic = Carrois_Gothic_SC({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-carrois-gothic-sc",
+  display: "swap",
+});
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SoundProvider } from "@/context/SoundContext";
 import { SnapProvider } from "@/context/SnapContext";
@@ -126,7 +152,7 @@ export default async function RootLayout({
   const initialGridEnabled = cookieGrid === "true";
 
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning className={`dark ${fontDoto.variable} ${fontFigtree.variable} ${fontJetBrainsMono.variable} ${fontCarroisGothic.variable}`}>
       <head>
         {/* Anti-flash theme initialization script */}
         <script

@@ -77,10 +77,10 @@ const config: Config = {
         star: "var(--metric-star)",
       },
       fontFamily: {
-        display: ["Doto", "Geist Mono", "ui-monospace", "monospace"],
-        sans: ["Figtree", "Inter", "system-ui", "-apple-system", "sans-serif"],
-        mono: ["JetBrains Mono", "ui-monospace", "Menlo", "monospace"],
-        caps: ["Carrois Gothic SC", "JetBrains Mono", "monospace"],
+        display: ["var(--font-doto)", "Doto", "Geist Mono", "ui-monospace", "monospace"],
+        sans: ["var(--font-figtree)", "Figtree", "Inter", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["var(--font-jetbrains-mono)", "JetBrains Mono", "ui-monospace", "Menlo", "monospace"],
+        caps: ["var(--font-carrois-gothic-sc)", "Carrois Gothic SC", "JetBrains Mono", "monospace"],
         serif: [
           "var(--font-eb-garamond)",
           "EB Garamond",

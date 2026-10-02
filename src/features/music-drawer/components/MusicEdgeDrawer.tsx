@@ -2,11 +2,16 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
+import dynamic from "next/dynamic";
 import { FAVORITE_TRACKS, DEFAULT_TRACK } from "../data/tracks";
 import { MusicTrack } from "../types/music";
 import { MusicEdgeTab } from "./MusicEdgeTab";
-import { MusicDrawer } from "./MusicDrawer";
 import { useSideDrawers } from "@/features/side-drawers/SideDrawerProvider";
+
+const MusicDrawer = dynamic(
+  () => import("./MusicDrawer").then((m) => m.MusicDrawer),
+  { ssr: false }
+);
 
 interface MusicEdgeDrawerProps {
   initialOpen?: boolean;
@@ -53,14 +58,16 @@ export function MusicEdgeDrawer({
       />
 
       {/* 2. Open State Overlay Drawer Card */}
-      <MusicDrawer
-        isOpen={isOpen}
-        onClose={closeDrawer}
-        onExitComplete={() => finishClose("music")}
-        tracks={FAVORITE_TRACKS}
-        currentTrack={currentTrack}
-        onSelectTrack={handleSelectTrack}
-      />
+      {isOpen && (
+        <MusicDrawer
+          isOpen={isOpen}
+          onClose={closeDrawer}
+          onExitComplete={() => finishClose("music")}
+          tracks={FAVORITE_TRACKS}
+          currentTrack={currentTrack}
+          onSelectTrack={handleSelectTrack}
+        />
+      )}
     </div>,
     document.body
   );

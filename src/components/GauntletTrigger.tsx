@@ -33,21 +33,6 @@ export function GauntletTrigger() {
     return () => observer.disconnect();
   }, []);
 
-  // Preload authentic Thanos audio assets locally with error safety
-  useEffect(() => {
-    try {
-      const snapAudio = new Audio("/easter-egg/thanos/thanos_snap_sound.mp3");
-      snapAudio.preload = "auto";
-      snapAudioRef.current = snapAudio;
-
-      const timeAudio = new Audio("/easter-egg/thanos/thanos_reverse_sound.mp3");
-      timeAudio.preload = "auto";
-      timeAudioRef.current = timeAudio;
-    } catch {
-      // Audio preloading prevented or unsupported
-    }
-  }, []);
-
   // Keep internal glove state synchronized with global snap session
   useEffect(() => {
     if (isSnapped && mode !== "time" && mode !== "snap") {
@@ -59,23 +44,27 @@ export function GauntletTrigger() {
 
   const isBusy = mode === "snap" || mode === "time" || isSnapping || isRestoring;
 
-  // Play audio with fallback to SoundContext
+  // Play audio with fallback to SoundContext, lazily instantiating audio on demand
   const playThanosAudio = useCallback(
     (type: "snap" | "time") => {
       if (!isSoundEnabled) return;
       try {
-        const audio = type === "snap" ? snapAudioRef.current : timeAudioRef.current;
-        if (audio) {
-          audio.currentTime = 0;
-          audio.play().catch(() => {
-            // If HTMLAudioElement play fails, trigger synthetic fallback
-            if (type === "snap") playSnap();
-            else playRestore();
-          });
-        } else {
+        let audio = type === "snap" ? snapAudioRef.current : timeAudioRef.current;
+        if (!audio) {
+          audio = new Audio(
+            type === "snap"
+              ? "/easter-egg/thanos/thanos_snap_sound.mp3"
+              : "/easter-egg/thanos/thanos_reverse_sound.mp3"
+          );
+          if (type === "snap") snapAudioRef.current = audio;
+          else timeAudioRef.current = audio;
+        }
+        audio.currentTime = 0;
+        audio.play().catch(() => {
+          // If HTMLAudioElement play fails, trigger synthetic fallback
           if (type === "snap") playSnap();
           else playRestore();
-        }
+        });
       } catch {
         if (type === "snap") playSnap();
         else playRestore();

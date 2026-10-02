@@ -41,34 +41,36 @@ export function DefaultModeLayout() {
       </SnapSectionWrapper>
 
       {/* 5. Tech Stack (Curated High-Signal Preview) */}
-      <SnapSectionWrapper id="tech-stack">
+      <SnapSectionWrapper id="tech-stack" className="content-auto">
         <EditorialDivider className="my-4 sm:my-6" />
         <TechStack />
       </SnapSectionWrapper>
 
       {/* 6. Work Experience Timeline (Top 3 Recent Milestones) */}
-      <SnapSectionWrapper id="experience">
+      <SnapSectionWrapper id="experience" className="content-auto">
         <EditorialDivider className="my-4 sm:my-6" />
         <ExperienceTimeline />
       </SnapSectionWrapper>
 
       {/* 8. Recommendations (Rendered only when real approved recommendations exist) */}
       {hasApprovedRecommendations && (
-        <SnapSectionWrapper id="recommendations">
+        <SnapSectionWrapper id="recommendations" className="content-auto">
           <EditorialDivider className="my-4 sm:my-6" />
           <Recommendations />
         </SnapSectionWrapper>
       )}
 
       {/* 9. Compact Moments Gallery (4-Moment Preview) */}
-      <SnapSectionWrapper id="gallery">
+      <SnapSectionWrapper id="gallery" className="content-auto">
         <EditorialDivider className="my-4 sm:my-6" />
         <Gallery />
       </SnapSectionWrapper>
 
       {/* 10. Contact, Social & Memberships Matrix (Permanent - Never snapped) */}
-      <EditorialDivider className="my-4 sm:my-6" />
-      <FooterGrid />
+      <div className="content-auto">
+        <EditorialDivider className="my-4 sm:my-6" />
+        <FooterGrid />
+      </div>
     </div>
   );
 }

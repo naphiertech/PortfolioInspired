@@ -77,7 +77,6 @@ export function ProfileHeader() {
               alt={SITE_NAME}
               fill
               sizes="120px"
-              priority
               className="object-cover transition-opacity duration-300"
               style={{ objectPosition: "center 25%" }}
             />

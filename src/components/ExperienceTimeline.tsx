@@ -136,105 +136,71 @@ export function ExperienceTimeline() {
                     id={`timeline-trigger-${index}`}
                     className="w-full text-left cursor-pointer group/btn focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-md p-1 -m-1 transition-colors hover:bg-surface/30"
                   >
-                    {/* Compact composition follows the section's available width. */}
-                    <div className={`space-y-2 ${towerStyles.mobileComposition}`}>
-                      {/* Top Row: Icon + Title + Current Badge + Date + Chevron */}
-                      <div className={`flex items-start gap-2.5 ${towerStyles.mobileHeading}`}>
-                        <div
-                          className={`w-7 h-7 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
-                            isCurrent
-                              ? "bg-surface text-ink"
-                              : "bg-surface/50 text-muted-foreground group-hover/btn:text-ink"
-                          }`}
-                        >
-                          {getIcon(exp.role)}
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <h3 className="font-sans text-[13px] font-semibold text-ink leading-snug break-words group-hover/btn:text-brand transition-colors">
-                              {exp.role}
-                            </h3>
-                            {isCurrent && (
-                              <StatusBadge status="current" size="sm" className="flex-shrink-0" />
-                            )}
+                    {/* Unified responsive composition: zero DOM duplication */}
+                    <div className="w-full">
+                      <div className="flex flex-col sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_auto] sm:items-center gap-2 sm:gap-4 p-0.5">
+                        {/* Left: Icon + Role & Context */}
+                        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+                          <div
+                            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-0 transition-colors ${
+                              isCurrent
+                                ? "bg-surface text-ink"
+                                : "bg-surface/50 text-muted-foreground group-hover/btn:text-ink"
+                            }`}
+                          >
+                            {getIcon(exp.role)}
                           </div>
-                          <p className="font-sans text-xs text-muted-foreground leading-tight mt-0.5 break-words">
-                            {exp.company}
-                          </p>
+
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                              <h3 className="font-sans text-[13px] sm:text-sm font-semibold text-ink leading-snug group-hover/btn:text-brand transition-colors break-words">
+                                {exp.role}
+                              </h3>
+                              {isCurrent && (
+                                <StatusBadge status="current" size="sm" className="flex-shrink-0" />
+                              )}
+                            </div>
+                            <p className="font-sans text-xs text-muted-foreground leading-tight sm:leading-normal mt-0.5 truncate">
+                              {exp.company}
+                            </p>
+                          </div>
+
+                          {/* Mobile-Only Date & Chevron (Top Right) */}
+                          <div className="flex sm:hidden items-center gap-1.5 flex-shrink-0 pt-0.5 ml-auto">
+                            <span className="font-mono text-[11px] text-muted-foreground/80">
+                              {exp.year}
+                            </span>
+                            <ChevronDown
+                              className={`w-3.5 h-3.5 text-muted-foreground/50 transition-transform duration-200 ${
+                                isOpen ? "rotate-180 text-brand" : "group-hover/btn:text-ink"
+                              }`}
+                              aria-hidden="true"
+                            />
+                          </div>
                         </div>
 
-                        <div className={`flex items-center gap-1.5 flex-shrink-0 pt-0.5 ${towerStyles.mobileDate}`}>
-                          <span className="font-mono text-[11px] text-muted-foreground/80">
+                        {/* Middle: Description (indented on mobile, middle column on desktop) */}
+                        {exp.description && (
+                          <div className="pl-9 sm:pl-2 min-w-0">
+                            <p className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 leading-relaxed line-clamp-2">
+                              {exp.description}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Right: Date Range & Chevron (Desktop Only) */}
+                        <div className="hidden sm:flex items-center gap-2 flex-shrink-0 ml-auto">
+                          <span className="font-mono text-xs text-muted-foreground/80">
                             {exp.year}
                           </span>
-                          <ChevronDown
-                            className={`w-3.5 h-3.5 text-muted-foreground/50 transition-transform duration-200 ${
-                              isOpen ? "rotate-180 text-brand" : "group-hover/btn:text-ink"
-                            }`}
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Description: Full Width on Mobile */}
-                      {exp.description && (
-                        <p className="font-sans text-xs text-muted-foreground/90 leading-relaxed pl-9">
-                          {exp.description}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Wide composition reflows before the text columns become cramped. */}
-                    <div className={towerStyles.desktopComposition}>
-                      {/* Left: Icon + Role & Context */}
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div
-                          className={`w-8 h-8 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 transition-colors ${
-                            isCurrent
-                              ? "bg-surface text-ink"
-                              : "bg-surface/50 text-muted-foreground group-hover/btn:text-ink"
-                          }`}
-                        >
-                          {getIcon(exp.role)}
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-sans text-sm font-semibold text-ink group-hover/btn:text-brand transition-colors break-words">
-                              {exp.role}
-                            </h3>
-                            {isCurrent && (
-                              <StatusBadge status="current" size="sm" />
-                            )}
+                          <div className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground/50 transition-colors">
+                            <ChevronDown
+                              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                                isOpen ? "rotate-180 text-brand" : "group-hover/btn:text-ink"
+                              }`}
+                              aria-hidden="true"
+                            />
                           </div>
-                          <p className="font-sans text-xs text-muted-foreground truncate mt-0.5">
-                            {exp.company}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Middle: Real Description (Desktop) */}
-                      {exp.description && (
-                        <div className={towerStyles.desktopDescription}>
-                          <p className="font-sans text-[13px] text-muted-foreground/90 leading-relaxed line-clamp-2">
-                            {exp.description}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Right: Date Range & Chevron */}
-                      <div className={`flex items-center gap-2 flex-shrink-0 ml-auto ${towerStyles.desktopDate}`}>
-                        <span className="font-mono text-xs text-muted-foreground/80">
-                          {exp.year}
-                        </span>
-                        <div className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground/50 transition-colors">
-                          <ChevronDown
-                            className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                              isOpen ? "rotate-180 text-brand" : "group-hover/btn:text-ink"
-                            }`}
-                            aria-hidden="true"
-                          />
                         </div>
                       </div>
                     </div>

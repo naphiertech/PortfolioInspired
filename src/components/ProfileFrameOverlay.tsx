@@ -5,7 +5,7 @@ import { useReducedMotion } from "framer-motion";
 import { useTheme } from "./ThemeProvider";
 import {
   PROFILE_FRAMES, PROFILE_FRAME_MS, PROFILE_BUFFER_SIZE,
-  getProfileFrame, prepareProfileFrames, scheduleIdleProfilePreload,
+  getProfileFrame, prepareProfileFrames,
 } from "@/lib/profileAnimation";
 
 /** Only this image changes during playback; hero content never renders at frame rate. */
@@ -15,8 +15,6 @@ export function ProfileFrameOverlay({ className, style }: { className: string; s
   const imageRef = useRef<HTMLImageElement>(null);
   const position = useRef(-1); // -1 is the existing static, unsunglassed portrait.
   const previousTheme = useRef<string | null>(null);
-
-  useEffect(() => scheduleIdleProfilePreload(3500, resolvedTheme === "dark"), [resolvedTheme]);
 
   useEffect(() => {
     if (!resolvedTheme) return;

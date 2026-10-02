@@ -136,6 +136,15 @@ function UndercarriageSVG() {
 export function ContributionTruck({ children }: { children: ReactNode }) {
   const truckRef = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 640px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     const truck = truckRef.current;
@@ -152,9 +161,11 @@ export function ContributionTruck({ children }: { children: ReactNode }) {
 
   return (
     <div ref={truckRef} className={styles.truck} data-revealed={revealed}>
-      <div className={`${styles.cab} hidden sm:block`} aria-hidden="true">
-        <CabSVG />
-      </div>
+      {isDesktop && (
+        <div className={`${styles.cab} hidden sm:block`} aria-hidden="true">
+          <CabSVG />
+        </div>
+      )}
       <div className={styles.trailer}>
         <div className={styles.mobileTruckViewport}>
           <div className={styles.mobileTruckCanvas}>
@@ -169,9 +180,11 @@ export function ContributionTruck({ children }: { children: ReactNode }) {
             </div>
           </div>
         </div>
-        <div className={`${styles.undercarriage} hidden sm:block`} aria-hidden="true">
-          <UndercarriageSVG />
-        </div>
+        {isDesktop && (
+          <div className={`${styles.undercarriage} hidden sm:block`} aria-hidden="true">
+            <UndercarriageSVG />
+          </div>
+        )}
       </div>
     </div>
   );

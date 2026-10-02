@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { usePathname, useSearchParams } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
@@ -9,11 +9,8 @@ import { useUISound } from "@/context/SoundContext";
 import { useCreativeMode } from "@/features/creative-mode";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
-import {
-  getPortfolioPageContext,
-  getSuggestedQuestions,
-} from "@/lib/portfolioContext";
 import type { Message } from "./ChatModal";
+import type { PortfolioPageContext } from "@/lib/portfolioContext";
 
 // Code-split heavy modal UI (markdown parser, message streams, textareas) so it is only loaded on interaction
 const ChatModal = dynamic(() => import("./ChatModal").then((mod) => mod.ChatModal), {
@@ -29,9 +26,30 @@ function ChatWidgetContent() {
   const { mode } = usePresentationMode();
   const isFocus = mode === "focus";
 
-  // Compute active route context and suggestions
-  const pageContext = getPortfolioPageContext(pathname, searchParams);
-  const suggestedQuestions = getSuggestedQuestions(pageContext);
+  const [pageContext, setPageContext] = useState<PortfolioPageContext>({
+    pathname: "/",
+    pageType: "home",
+    title: "Naphier Awalie | Software Engineer & IT Student",
+  });
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
+    "What are your main technical strengths?",
+    "Tell me about MKBRiderTrack",
+    "What projects demonstrate your backend skills?",
+  ]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let isMounted = true;
+    import("@/lib/portfolioContext").then(({ getPortfolioPageContext, getSuggestedQuestions }) => {
+      if (!isMounted) return;
+      const ctx = getPortfolioPageContext(pathname, searchParams);
+      setPageContext(ctx);
+      setSuggestedQuestions(getSuggestedQuestions(ctx));
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, pathname, searchParams]);
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -126,8 +144,9 @@ function ChatWidgetContent() {
           data-ai-chat-launcher="true"
           onMouseEnter={() => {
             playHover();
-            // Prefetch modal on hover intent
+            // Prefetch modal and context on hover intent
             import("./ChatModal");
+            import("@/lib/portfolioContext");
           }}
           className="tactile-btn gap-1.5 sm:gap-2 h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/95 backdrop-blur-md cursor-pointer"
           aria-label={isOpen ? "Close AI Assistant" : "Open AI Assistant"}

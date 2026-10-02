@@ -72,7 +72,7 @@ export function NowSection() {
 
   return (
     <motion.section
-      initial={shouldReduceMotion ? false : "hidden"}
+      initial={false}
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}

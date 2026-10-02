@@ -93,7 +93,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
 
       <main
         ref={contentRef}
-        className={`${creativeFontVariables} ${creativeStyles.scope} w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}
+        className={`${creativeActive ? creativeFontVariables : ""} ${creativeStyles.scope} w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}
         data-creative-mode={creativeActive ? "on" : undefined}
         data-creative-presentation={creativeActive ? mode : undefined}
         data-creative-font={fontPairing ? creative.fontPairing : undefined}

@@ -8,6 +8,7 @@ import { PresentationModeSwitcher } from "../../../components/PresentationModeSw
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CreativeModeToggle } from "@/features/creative-mode";
 import { useUISound } from "@/context/SoundContext";
+import { NAV_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 export interface FocusNavItem {
   name: string;
@@ -76,7 +77,7 @@ export function FocusNavigation() {
     >
       <div className="w-full flex items-center justify-between gap-2">
         {/* --- DESKTOP ROUTE LINKS (≥ sm) --- */}
-        <div className="hidden sm:flex items-center gap-x-6 font-mono text-xs sm:text-[12.5px]">
+        <div data-guide="nav" className="hidden sm:flex items-center gap-x-6 font-mono text-xs sm:text-[12.5px]">
           {focusNavItems.map((item) => {
             const isActive =
               item.href === "/"
@@ -89,6 +90,7 @@ export function FocusNavigation() {
                 href={item.href}
                 onMouseEnter={playHover}
                 onClick={playClick}
+                data-cursor-label={NAV_CURSOR_LABELS[item.name]}
                 className={`relative py-1 uppercase tracking-wider transition-colors ${
                   isActive
                     ? "text-ink font-semibold"

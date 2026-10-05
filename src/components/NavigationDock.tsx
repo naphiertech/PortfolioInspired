@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Home,
   Briefcase,
@@ -10,12 +10,19 @@ import {
   Cpu,
   Award,
 } from "lucide-react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 import { useUISound } from "@/context/SoundContext";
 import { useSnap } from "@/context/SnapContext";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { PresentationModeSwitcher } from "@/features/presentation-modes/components/PresentationModeSwitcher";
 import { dockSpring, magneticSpring } from "@/lib/motion";
+import { NAV_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 interface NavItem {
   name: string;
@@ -48,9 +55,17 @@ function NavItemLink({
   isSnapActive = false,
   onRegisterRef,
 }: NavItemLinkProps) {
-  const [offset, setOffset] = useState({ x: 0, y: 0, scale: 1 });
   const itemRef = useRef<HTMLAnchorElement>(null);
-  const [prefetchIntent, setPrefetchIntent] = useState(false);
+  const rectRef = useRef<DOMRect | null>(null);
+
+  // Pure GPU / RAF-driven motion values — zero React component re-renders on mousemove
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const rawScale = useMotionValue(1);
+
+  const springX = useSpring(rawX, magneticSpring);
+  const springY = useSpring(rawY, magneticSpring);
+  const springScale = useSpring(rawScale, magneticSpring);
 
   useEffect(() => {
     if (onRegisterRef) {
@@ -61,21 +76,36 @@ function NavItemLink({
     }
   }, [onRegisterRef]);
 
+  const handleMouseEnter = () => {
+    onHover();
+    if (itemRef.current) {
+      // Cache bounding box once on entry to avoid layout thrashing during mouse movements
+      rectRef.current = itemRef.current.getBoundingClientRect();
+    }
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!isDesktopPointer || shouldReduceMotion || !itemRef.current) return;
-    const rect = itemRef.current.getBoundingClientRect();
+    if (!isDesktopPointer || shouldReduceMotion) return;
+    const rect =
+      rectRef.current ||
+      (itemRef.current ? (rectRef.current = itemRef.current.getBoundingClientRect()) : null);
+    if (!rect) return;
+
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     // Ultra-subtle 1-2.5px translation toward pointer
     const deltaX = (e.clientX - centerX) * 0.12;
     const deltaY = (e.clientY - centerY) * 0.12;
-    const clampedX = Math.max(-2.5, Math.min(2.5, deltaX));
-    const clampedY = Math.max(-2.5, Math.min(2.5, deltaY));
-    setOffset({ x: clampedX, y: clampedY, scale: 1.03 });
+    rawX.set(Math.max(-2.5, Math.min(2.5, deltaX)));
+    rawY.set(Math.max(-2.5, Math.min(2.5, deltaY)));
+    rawScale.set(1.035);
   };
 
   const handleMouseLeave = () => {
-    setOffset({ x: 0, y: 0, scale: 1 });
+    rawX.set(0);
+    rawY.set(0);
+    rawScale.set(1);
+    rectRef.current = null;
   };
 
   return (
@@ -127,31 +157,28 @@ function NavItemLink({
       <Link
         ref={itemRef}
         href={item.href}
-        prefetch={prefetchIntent ? true : null}
-        onMouseEnter={() => {
-          onHover();
-          setPrefetchIntent(true);
-        }}
-        onFocus={() => setPrefetchIntent(true)}
+        prefetch={true}
+        onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={onClick}
-        className={`flex flex-col items-center justify-center gap-1 px-3 py-1 cursor-pointer relative group select-none ${
+        data-cursor-label={NAV_CURSOR_LABELS[item.name]}
+        className={`flex flex-col items-center justify-center gap-1 px-3 py-1 cursor-pointer relative group select-none transition-colors duration-150 ease-out ${
           isActive
             ? "text-ink font-semibold"
-            : "text-muted-foreground hover:text-ink"
+            : "text-muted-foreground hover:text-ink font-medium"
         }`}
         aria-current={isActive ? "page" : undefined}
       >
-        {/* Micro-Magnetic Content Wrapper */}
+        {/* Micro-Magnetic Content Wrapper driven by hardware-accelerated motion values */}
         <motion.div
-          animate={
+          style={
             shouldReduceMotion
-              ? { x: 0, y: 0, scale: 1 }
-              : { x: offset.x, y: offset.y, scale: offset.scale }
+              ? undefined
+              : { x: springX, y: springY, scale: springScale }
           }
-          whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-          transition={magneticSpring}
+          whileTap={shouldReduceMotion ? undefined : { scale: 0.92 }}
+          transition={{ duration: 0.08 }}
           className="flex flex-col items-center justify-center gap-1 pointer-events-none"
         >
           {/* Icon with Active Dot Indicator */}
@@ -176,8 +203,37 @@ function NavItemLink({
   );
 }
 
+const NAV_ITEMS: NavItem[] = [
+  {
+    name: "Home",
+    href: "/",
+    icon: <Home className="w-[18px] h-[18px]" />,
+  },
+  {
+    name: "Work",
+    href: "/work",
+    icon: <Briefcase className="w-[18px] h-[18px]" />,
+  },
+  {
+    name: "Projects",
+    href: "/projects",
+    icon: <FolderGit2 className="w-[18px] h-[18px]" />,
+  },
+  {
+    name: "Tech",
+    href: "/tech-stack",
+    icon: <Cpu className="w-[18px] h-[18px]" />,
+  },
+  {
+    name: "Certs",
+    href: "/certifications",
+    icon: <Award className="w-[18px] h-[18px]" />,
+  },
+];
+
 export function NavigationDock() {
   const pathname = usePathname();
+  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const { playHover, playClick } = useUISound();
   const {
@@ -214,33 +270,12 @@ export function NavigationDock() {
 
   const isDefaultMode = mode === "default";
 
-  const navItems: NavItem[] = [
-    {
-      name: "Home",
-      href: "/",
-      icon: <Home className="w-[18px] h-[18px]" />,
-    },
-    {
-      name: "Work",
-      href: "/work",
-      icon: <Briefcase className="w-[18px] h-[18px]" />,
-    },
-    {
-      name: "Projects",
-      href: "/projects",
-      icon: <FolderGit2 className="w-[18px] h-[18px]" />,
-    },
-    {
-      name: "Tech",
-      href: "/tech-stack",
-      icon: <Cpu className="w-[18px] h-[18px]" />,
-    },
-    {
-      name: "Certs",
-      href: "/certifications",
-      icon: <Award className="w-[18px] h-[18px]" />,
-    },
-  ];
+  // Warmup the Next.js router cache eagerly so every route transition happens instantaneously
+  useEffect(() => {
+    NAV_ITEMS.forEach((item) => {
+      router.prefetch(item.href);
+    });
+  }, [router]);
 
   return (
     <AnimatePresence>
@@ -249,7 +284,7 @@ export function NavigationDock() {
           key="navigation-dock-root"
           initial={
             isEnteringDefault && !shouldReduceMotion
-              ? { opacity: 0, y: 16 }
+              ? { opacity: 0, y: 12 }
               : false
           }
           animate={{ opacity: 1, y: 0 }}
@@ -257,12 +292,12 @@ export function NavigationDock() {
             !shouldReduceMotion
               ? {
                   opacity: 0,
-                  y: 16,
-                  transition: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                  y: 12,
+                  transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] },
                 }
               : { opacity: 0, transition: { duration: 0.05 } }
           }
-          transition={{ duration: 0.44, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           className="fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-[70] pointer-events-none max-sm:bottom-4 px-3 will-change-[transform,opacity]"
         >
       {/* Separate Circular Presentation Mode Switcher */}
@@ -272,6 +307,7 @@ export function NavigationDock() {
 
       {/* Main Navigation Dock */}
       <motion.nav
+        data-guide="nav"
         layout={isSnapActive ? "size" : false}
         transition={{
           layout: shouldReduceMotion
@@ -282,7 +318,7 @@ export function NavigationDock() {
         aria-label="Bottom Quick Navigation"
       >
         <AnimatePresence initial={false}>
-          {navItems.map((item) => {
+          {NAV_ITEMS.map((item) => {
             const isActive =
               item.href === "/"
                 ? pathname === "/"

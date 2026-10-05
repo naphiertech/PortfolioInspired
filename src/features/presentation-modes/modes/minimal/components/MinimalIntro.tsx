@@ -15,7 +15,10 @@ export function MinimalIntro() {
     <section data-creative-note="hero" className="w-full space-y-6 pt-4 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
       {/* Avatar & Identity Row */}
       <div className="w-full flex items-center gap-4">
-        <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-white/[0.08] bg-zinc-100 dark:bg-[#141514] flex-shrink-0">
+        <div
+          data-guide="avatar"
+          className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-zinc-200 dark:border-white/[0.08] bg-zinc-100 dark:bg-[#141514] flex-shrink-0"
+        >
           <Image
             src="/profile/ezgif-frame-001.png"
             alt={AUTHOR_INFO.name}
@@ -28,7 +31,7 @@ export function MinimalIntro() {
         </div>
 
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-normal text-zinc-900 dark:text-[#eae6df] tracking-tight">
+          <h1 data-guide="name" className="font-serif text-2xl sm:text-3xl font-normal text-zinc-900 dark:text-[#eae6df] tracking-tight">
             {AUTHOR_INFO.name}
           </h1>
           <p className="font-serif text-sm sm:text-base text-zinc-600 dark:text-[#9e998e] mt-0.5">
@@ -39,7 +42,7 @@ export function MinimalIntro() {
 
       {/* Narrative Paragraphs - spans available section width with 72-74ch comfortable measure */}
       <div className="w-full font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#b4afa4] leading-[28px] space-y-4 [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
-        <p data-creative-note="about" className="w-full max-w-[72ch] sm:max-w-[74ch]">
+        <p data-creative-note="about" data-guide="about" className="w-full max-w-[72ch] sm:max-w-[74ch]">
           I&apos;m an <strong>IT student and full-stack developer</strong> who enjoys turning ideas
           into <strong>practical web applications</strong> with clean interfaces, <strong>thoughtful user
           experiences</strong>, and reliable functionality.
@@ -66,9 +69,10 @@ export function MinimalIntro() {
       </div>
 
       {/* Understated Action Links - Single row on desktop/tablet, clean wrapping without stranded separators on mobile */}
-      <div className="w-full flex flex-wrap sm:flex-nowrap items-center gap-x-2 sm:gap-x-2.5 md:gap-x-3 gap-y-2 pt-2 text-xs sm:text-[13px] font-mono text-zinc-700 dark:text-[#a8a397]">
+      <div data-guide="socials" className="w-full flex flex-wrap sm:flex-nowrap items-center gap-x-2 sm:gap-x-2.5 md:gap-x-3 gap-y-2 pt-2 text-xs sm:text-[13px] font-mono text-zinc-700 dark:text-[#a8a397]">
         <a
           href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
+          data-cursor-label="Let's talk."
           className="whitespace-nowrap text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           Schedule a Call ↗
@@ -91,6 +95,7 @@ export function MinimalIntro() {
           href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
+          data-cursor-label="My code and projects."
           className="whitespace-nowrap hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           GitHub ↗
@@ -102,6 +107,7 @@ export function MinimalIntro() {
           href={SOCIAL_PROFILES.linkedin}
           target="_blank"
           rel="noopener noreferrer"
+          data-cursor-label="My professional profile."
           className="whitespace-nowrap hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           LinkedIn ↗
@@ -111,6 +117,7 @@ export function MinimalIntro() {
         </span>
         <a
           href={`mailto:${SOCIAL_PROFILES.email}`}
+          data-cursor-label="Send me an email."
           className="whitespace-nowrap hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           Email ↗

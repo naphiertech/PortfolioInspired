@@ -24,12 +24,12 @@ export function FocusHero() {
       <div className={styles.split}>
         <div className={styles.identity}>
           <p className={styles.availability}><span aria-hidden="true" />{AVAILABILITY.status} for opportunities</p>
-          <h1 className={styles.name}>
+          <h1 data-guide="name" className={styles.name}>
             <span className={styles.firstName}>{AUTHOR_INFO.shortName}</span>
             <span className={styles.surname}>{surname}</span>
           </h1>
           <p className={styles.role}>{AUTHOR_INFO.jobTitle}</p>
-          <p data-creative-note="about" className={styles.bio}>{SITE_DEFAULT_DESCRIPTION}</p>
+          <p data-creative-note="about" data-guide="about" className={styles.bio}>{SITE_DEFAULT_DESCRIPTION}</p>
           <div className="mt-4">
             <StatusBadge status="available" label={AVAILABILITY.openTo} size="sm" />
           </div>
@@ -38,7 +38,7 @@ export function FocusHero() {
             <LocalTime />
             <span><GraduationCap size={14} aria-hidden="true" />{EDUCATION.shortDegree} @ {EDUCATION.abbreviation}</span>
           </div>
-          <div className={styles.actions}>
+          <div data-guide="socials" className={styles.actions}>
             <a href={"mailto:" + SOCIAL_PROFILES.email} className={styles.primary}>
               <Mail size={15} aria-hidden="true" />Send Email<ArrowUpRight size={13} aria-hidden="true" />
             </a>
@@ -62,7 +62,7 @@ export function FocusHero() {
         <div className={styles.portraitComposition}>
           <div className={styles.orbit} aria-hidden="true" />
           <span className={styles.crosshair} aria-hidden="true">+</span>
-          <div className={styles.portrait}>
+          <div className={styles.portrait} data-guide="avatar">
             <NextImage src="/profile/ezgif-frame-001.png" alt={AUTHOR_INFO.name} fill sizes="(max-width: 767px) 280px, (max-width: 1023px) 36vw, 380px" priority fetchPriority="high" className={styles.portraitImage} />
             <ProfileFrameOverlay className={styles.portraitOverlay} />
           </div>

@@ -16,6 +16,7 @@ import {
   staggeredGridVariants,
   gridItemVariants,
 } from "@/lib/motion";
+import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 export function RecentProjects() {
   const featuredProjects = fullProjects.slice(0, 4);
@@ -24,6 +25,7 @@ export function RecentProjects() {
 
   return (
     <motion.section
+      data-guide="projects"
       initial={shouldReduceMotion ? false : "hidden"}
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
@@ -56,6 +58,7 @@ export function RecentProjects() {
               href={`/projects/${project.slug}`}
               onMouseEnter={playHover}
               onClick={playClick}
+              data-cursor-label={PROJECT_CURSOR_LABELS[project.slug] || "One of my full-stack projects."}
               className="cad-project-card group flex flex-col justify-between h-full cursor-pointer"
             >
               {/* CAD Drafting Reticles (Four corner L-brackets revealing on hover) */}

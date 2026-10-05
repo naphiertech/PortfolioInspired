@@ -46,6 +46,7 @@ export function FocusContact() {
           {/* Primary Mail Button */}
           <a
             href={`mailto:${SOCIAL_PROFILES.email}`}
+            data-cursor-label="Send me an email."
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-ink text-page font-medium font-sans text-xs sm:text-[12.5px] hover:opacity-90 active:scale-[0.98] transition-[opacity,transform]"
           >
             <Mail className="w-3.5 h-3.5" aria-hidden="true" />
@@ -94,6 +95,7 @@ export function FocusContact() {
             href={SOCIAL_PROFILES.github}
             target="_blank"
             rel="noopener noreferrer"
+            data-cursor-label="My code and projects."
             className="hover:text-ink transition-colors inline-flex items-center gap-1"
           >
             <span>GitHub</span>
@@ -104,6 +106,7 @@ export function FocusContact() {
             href={SOCIAL_PROFILES.linkedin}
             target="_blank"
             rel="noopener noreferrer"
+            data-cursor-label="My professional profile."
             className="hover:text-ink transition-colors inline-flex items-center gap-1"
           >
             <span>LinkedIn</span>

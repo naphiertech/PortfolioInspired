@@ -39,6 +39,7 @@ import { StarsBackground } from "@/components/StarsBackground";
 import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
 import { NavigationDock } from "@/components/NavigationDock";
+import { MouseTourGuide } from "@/components/MouseTourGuide";
 import { Analytics } from "@vercel/analytics/next";
 import { PortfolioShell } from "@/components/PortfolioShell";
 import { CreativeModeProvider } from "@/features/creative-mode";
@@ -207,6 +208,8 @@ export default async function RootLayout({
                 {/* Persistent Floating Navigation Dock */}
                 <NavigationDock />
 
+                {/* Autonomous Mouse Tour Guide System (Inspired by bryllim.com) */}
+                <MouseTourGuide />
 
                 {/* Vercel Web Analytics */}
                 <Analytics />

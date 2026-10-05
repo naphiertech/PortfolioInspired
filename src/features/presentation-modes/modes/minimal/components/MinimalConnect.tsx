@@ -34,6 +34,7 @@ export function MinimalConnect() {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-mono text-zinc-600 dark:text-[#9e998e]">
         <a
           href={`mailto:${SOCIAL_PROFILES.email}`}
+          data-cursor-label="Send me an email."
           className="text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
         >
           Email ↗
@@ -41,6 +42,7 @@ export function MinimalConnect() {
         <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
         <a
           href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
+          data-cursor-label="Let's talk."
           className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
         >
           Schedule a Call ↗
@@ -50,6 +52,7 @@ export function MinimalConnect() {
           href={SOCIAL_PROFILES.github}
           target="_blank"
           rel="noopener noreferrer"
+          data-cursor-label="My code and projects."
           className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
         >
           GitHub ↗
@@ -59,6 +62,7 @@ export function MinimalConnect() {
           href={SOCIAL_PROFILES.linkedin}
           target="_blank"
           rel="noopener noreferrer"
+          data-cursor-label="My professional profile."
           className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
         >
           LinkedIn ↗

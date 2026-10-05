@@ -457,6 +457,9 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
 
       // Persist active session
       saveToSession(reducedSnapped, selectedDock, selectedTextIds);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("thanos-snap-completed"));
+      }
       return;
     }
 
@@ -626,6 +629,9 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
         selectedDock,
         selectedTextIds
       );
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("thanos-snap-completed"));
+      }
     }
   }, [
     isSnapping,

@@ -4,6 +4,7 @@ import React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { fullProjects } from "@/lib/data";
 import { MinimalProjectActions } from "./MinimalActionPreview";
+import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 /**
  * MinimalProjects
@@ -23,7 +24,7 @@ export function MinimalProjects() {
 
   return (
     <TooltipPrimitive.Provider delayDuration={100} skipDelayDuration={150}>
-      <section data-creative-note="projects" className="space-y-6 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
+      <section data-guide="projects" data-creative-note="projects" className="space-y-6 pt-8 pb-10 border-b border-zinc-200/80 dark:border-white/[0.08]">
         <h2 className="font-serif italic text-lg sm:text-xl text-zinc-800 dark:text-[#dedad0] font-normal">
           Selected Work
         </h2>
@@ -37,7 +38,11 @@ export function MinimalProjects() {
             const techList = project.tags.slice(0, 5).join(" · ");
 
             return (
-              <article key={project.slug} className="space-y-2.5">
+              <article
+                key={project.slug}
+                data-cursor-label={PROJECT_CURSOR_LABELS[project.slug] || "One of my full-stack projects."}
+                className="space-y-2.5"
+              >
                 {/* Project Title & Direct Links */}
                 <div className="flex items-baseline justify-between gap-3 flex-wrap">
                   <h3 className="font-serif text-[17px] sm:text-[18px] text-zinc-900 dark:text-[#eae6df] font-medium tracking-tight">

@@ -90,6 +90,7 @@ export function FooterGrid() {
               href={SOCIAL_PROFILES.linkedin}
               target="_blank"
               rel="noopener noreferrer"
+              data-cursor-label="My professional profile."
               className="flex flex-col items-center justify-center p-3 rounded-md bg-surface/30 border border-border-hairline/60 hover:border-border-muted hover:bg-surface hover:text-ink transition-[color,background-color,border-color] group cursor-pointer"
             >
               <svg className="w-4 h-4 fill-current text-muted-foreground group-hover:text-ink mb-1.5" viewBox="0 0 24 24">
@@ -104,6 +105,7 @@ export function FooterGrid() {
               href={SOCIAL_PROFILES.github}
               target="_blank"
               rel="noopener noreferrer"
+              data-cursor-label="My code and projects."
               className="flex flex-col items-center justify-center p-3 rounded-md bg-surface/30 border border-border-hairline/60 hover:border-border-muted hover:bg-surface hover:text-ink transition-[color,background-color,border-color] group cursor-pointer"
             >
               <svg className="w-4 h-4 fill-current text-muted-foreground group-hover:text-ink mb-1.5" viewBox="0 0 24 24">

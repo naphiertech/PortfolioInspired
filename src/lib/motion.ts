@@ -12,16 +12,16 @@ export const easeOutCubic: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 export const dockSpring: Transition = {
   type: "spring",
-  stiffness: 420,
-  damping: 36,
-  mass: 0.8,
+  stiffness: 500,
+  damping: 34,
+  mass: 0.4,
 };
 
 export const magneticSpring: Transition = {
   type: "spring",
-  stiffness: 380,
-  damping: 26,
-  mass: 0.4,
+  stiffness: 440,
+  damping: 24,
+  mass: 0.25,
 };
 
 /**

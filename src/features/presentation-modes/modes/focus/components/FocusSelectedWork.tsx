@@ -5,6 +5,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { fullProjects, FullProjectItem } from "@/lib/data";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { TechIcon } from "@/components/TechIcon";
+import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 export function FocusSelectedWork() {
   // Key projects to highlight in Focus Mode
@@ -14,7 +15,7 @@ export function FocusSelectedWork() {
     .filter((p): p is FullProjectItem => Boolean(p));
 
   return (
-    <section aria-label="Selected projects" className="w-full">
+    <section data-guide="projects" aria-label="Selected projects" className="w-full">
       {/* Section Index Header */}
       <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-4">
         <h2 className="tracking-wider font-medium font-mono text-xs">
@@ -36,6 +37,7 @@ export function FocusSelectedWork() {
           return (
             <article
               key={project.slug}
+              data-cursor-label={PROJECT_CURSOR_LABELS[project.slug] || "One of my full-stack projects."}
               className="py-10 lg:py-12 first:pt-4 last:pb-4 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center"
             >
               {/* Project Image: Order-1 on mobile, alternates on desktop */}

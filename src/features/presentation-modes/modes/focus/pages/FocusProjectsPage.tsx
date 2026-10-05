@@ -10,6 +10,7 @@ import { EditorialDivider } from "@/components/EditorialDivider";
 import { TechIcon } from "@/components/TechIcon";
 import { useUISound } from "@/context/SoundContext";
 import { FocusNavigation } from "../components/FocusNavigation";
+import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 /**
  * FocusProjectsPage
@@ -70,6 +71,7 @@ export function FocusProjectsPage() {
           return (
             <article
               key={project.slug}
+              data-cursor-label={PROJECT_CURSOR_LABELS[project.slug] || "One of my full-stack projects."}
               className="rounded-2xl border border-border-hairline bg-surface/30 p-4 sm:p-5 flex flex-col justify-between hover:border-border transition-all duration-200 group/card"
             >
               {/* Project Screenshot on top */}

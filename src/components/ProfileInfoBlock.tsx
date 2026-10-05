@@ -17,6 +17,7 @@ export function ProfileInfoBlock() {
     <div
       className="w-full select-none my-4 sm:my-5"
       aria-label="Profile Highlights"
+      data-guide="focus"
     >
       {/* Architectural Cohesive Matrix: Editorial Focus, Structured Capabilities, Concise Principles */}
       <motion.div

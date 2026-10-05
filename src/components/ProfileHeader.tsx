@@ -71,6 +71,7 @@ export function ProfileHeader() {
           <div
             className="relative w-28 h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl ring-4 ring-page bg-surface border border-border-hairline overflow-hidden shadow-lg flex-shrink-0 cursor-pointer group transition-transform duration-200 sm:ml-3"
             title={`${SITE_NAME} (${isDark ? "Dark theme sunglasses" : "Light theme"})`}
+            data-guide="avatar"
           >
             {/* Static Base Image */}
             <NextImage
@@ -109,7 +110,10 @@ export function ProfileHeader() {
         <div className="space-y-3 text-center sm:text-left">
           {/* Name & Handle & Mobile Availability Badge */}
           <div className="flex flex-col items-center sm:items-start">
-            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight flex items-center justify-center sm:justify-start gap-1.5">
+            <h1
+              data-guide="name"
+              className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight flex items-center justify-center sm:justify-start gap-1.5"
+            >
               <span>{SITE_NAME}</span>
               <span className="text-muted-foreground/60 text-lg sm:text-xl select-none" aria-hidden="true">✧</span>
             </h1>
@@ -133,7 +137,11 @@ export function ProfileHeader() {
           </div>
 
           {/* Introduction condensed from the former standalone About section */}
-          <p data-creative-note="about" className="font-sans text-sm sm:text-[15px] text-body max-w-[65ch] mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0">
+          <p
+            data-creative-note="about"
+            data-guide="about"
+            className="font-sans text-sm sm:text-[15px] text-body max-w-[65ch] mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0"
+          >
             I&apos;m an IT student who enjoys turning ideas into practical web applications—from school systems and productivity tools to personal projects. I care about clean interfaces, thoughtful user experiences, and reliable functionality, with a growing interest in UI/UX, web animation, and AI-assisted development.
           </p>
 
@@ -203,10 +211,11 @@ export function ProfileHeader() {
           {/* Action Buttons Group with Profile-First Hierarchy */}
           <div className="relative pt-2">
             {/* Mobile Vertical Stack / Desktop Horizontal Flow */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-2.5 sm:pr-14 sm:pr-20">
+            <div data-guide="socials" className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-2.5 sm:pr-14 sm:pr-20">
               {/* Primary Action: Schedule a Call (Full-width on mobile) */}
               <a
                 href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
+                data-cursor-label="Let's talk."
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-ink text-page font-sans text-xs sm:text-[12.5px] font-semibold hover:opacity-90 transition-[opacity,transform] shadow-xs active:scale-[0.98] cursor-pointer"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,6 +229,7 @@ export function ProfileHeader() {
                 {/* Secondary Action: Send Email */}
                 <a
                   href={`mailto:${SOCIAL_PROFILES.email}`}
+                  data-cursor-label="Send me an email."
                   className="tactile-btn gap-1.5 text-xs sm:text-[12.5px] px-3.5 py-2.5 sm:py-1.5 w-full sm:w-auto justify-center"
                 >
                   <svg className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,6 +257,7 @@ export function ProfileHeader() {
                 href={SOCIAL_PROFILES.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cursor-label="My code and projects."
                 className="tactile-btn gap-1.5 text-xs sm:text-[12.5px] px-3 py-2.5 sm:py-1.5 w-full sm:w-auto justify-center text-muted-foreground hover:text-ink"
               >
                 <svg className="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24">

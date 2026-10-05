@@ -9,6 +9,7 @@ import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { ProjectMedia } from "@/components/ProjectMedia";
 import { EditorialDivider } from "@/components/EditorialDivider";
 import { useUISound } from "@/context/SoundContext";
+import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 export function ProjectsPageClient() {
   const { playHover, playClick } = useUISound();
@@ -57,6 +58,7 @@ export function ProjectsPageClient() {
               href={`/projects/${project.slug}`}
               onMouseEnter={playHover}
               onClick={playClick}
+              data-cursor-label={PROJECT_CURSOR_LABELS[project.slug] || "One of my full-stack projects."}
               className="absolute inset-0 z-10 cursor-pointer rounded-[3px]"
               aria-label={`View details for ${project.title}`}
             />

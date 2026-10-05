@@ -292,7 +292,7 @@ export function PresentationModeSwitcher({
               aria-expanded={isOpen}
               aria-label="Change presentation view"
               title="Change view"
-              className={`h-[54px] w-[54px] rounded-full bg-dock backdrop-blur-[16px] border border-border-hairline shadow-nav-dock flex items-center justify-center text-ink/80 hover:text-ink hover:border-border hover:scale-105 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer ${
+              className={`h-[54px] w-[54px] rounded-full bg-dock backdrop-blur-[16px] border border-border-hairline shadow-nav-dock flex items-center justify-center text-ink/80 hover:text-ink hover:border-border hover:scale-105 active:scale-92 transition-[transform,background-color,border-color,color,box-shadow] duration-150 ease-out outline-none focus-visible:ring-2 focus-visible:ring-brand cursor-pointer will-change-transform ${
                 isOpen
                   ? "border-ink/40 text-ink bg-surface shadow-md scale-105"
                   : ""

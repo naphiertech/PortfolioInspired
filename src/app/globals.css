@@ -333,7 +333,8 @@ html.theme-transitioning *::after {
   justify-content: center;
   padding: 6px 12px;
   user-select: none;
-  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  transition: background-color 150ms cubic-bezier(0.22, 1, 0.36, 1), border-color 150ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 @media (max-width: 640px) {
@@ -369,7 +370,8 @@ html.theme-transitioning *::after {
   transition: border-color 200ms ease, background-color 200ms ease, transform 150ms ease;
 }
 
-.cad-project-card:hover {
+.cad-project-card:hover,
+.cad-project-card.gc-hover {
   border-color: var(--border-reticle);
   background-color: var(--bg-surface-hover);
 }
@@ -388,6 +390,7 @@ html.theme-transitioning *::after {
 }
 
 .cad-project-card:hover .cad-reticle,
+.cad-project-card.gc-hover .cad-reticle,
 .cad-project-card:focus .cad-reticle,
 .cad-project-card:focus-visible .cad-reticle,
 .cad-project-card:focus-within .cad-reticle {
@@ -402,6 +405,7 @@ html.theme-transitioning *::after {
 }
 
 .cad-project-card:hover .cad-reticle--tl,
+.cad-project-card.gc-hover .cad-reticle--tl,
 .cad-project-card:focus .cad-reticle--tl,
 .cad-project-card:focus-visible .cad-reticle--tl,
 .cad-project-card:focus-within .cad-reticle--tl {
@@ -416,6 +420,7 @@ html.theme-transitioning *::after {
 }
 
 .cad-project-card:hover .cad-reticle--tr,
+.cad-project-card.gc-hover .cad-reticle--tr,
 .cad-project-card:focus .cad-reticle--tr,
 .cad-project-card:focus-visible .cad-reticle--tr,
 .cad-project-card:focus-within .cad-reticle--tr {
@@ -430,6 +435,7 @@ html.theme-transitioning *::after {
 }
 
 .cad-project-card:hover .cad-reticle--br,
+.cad-project-card.gc-hover .cad-reticle--br,
 .cad-project-card:focus .cad-reticle--br,
 .cad-project-card:focus-visible .cad-reticle--br,
 .cad-project-card:focus-within .cad-reticle--br {
@@ -444,10 +450,29 @@ html.theme-transitioning *::after {
 }
 
 .cad-project-card:hover .cad-reticle--bl,
+.cad-project-card.gc-hover .cad-reticle--bl,
 .cad-project-card:focus .cad-reticle--bl,
 .cad-project-card:focus-visible .cad-reticle--bl,
 .cad-project-card:focus-within .cad-reticle--bl {
   transform: translate(-1.5px, 1.5px);
+}
+
+/* CAD project card virtual tour hover feedback */
+.cad-project-card.gc-hover {
+  outline: none !important;
+}
+
+.cad-project-card.gc-hover h3 {
+  color: var(--text-brand) !important;
+}
+
+.cad-project-card.gc-hover .lucide-arrow-up-right {
+  color: var(--text-ink) !important;
+  transform: translate(2px, -2px);
+}
+
+.cad-project-card.gc-hover img {
+  filter: grayscale(0) contrast(1) brightness(1) !important;
 }
 
 /* Skill Tag Pill */
@@ -674,6 +699,182 @@ html.theme-transitioning *::after {
   content-visibility: auto;
   contain-intrinsic-size: 1px 650px;
 }
+
+/* ========================================================================= */
+/* Autonomous Mouse Tour Guide System (Inspired by bryllim.com)             */
+/* ========================================================================= */
+#guideCursor {
+  display: none;
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  #guideCursor {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 95;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    will-change: transform;
+  }
+
+  #guideCursor.is-here {
+    opacity: 1;
+  }
+
+  #guideCursor.is-away {
+    opacity: 0;
+  }
+
+  .gc-arrow {
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 24px;
+    height: 24px;
+    overflow: visible;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.28));
+  }
+
+  .gc-arrow path {
+    stroke-linejoin: round;
+  }
+
+  /* Light mode: dark arrow body with crisp white rim */
+  .gc-rim {
+    stroke: #ffffff;
+    stroke-width: 6.5;
+  }
+
+  .gc-body {
+    fill: #111111;
+    stroke: #111111;
+    stroke-width: 4;
+  }
+
+  /* Dark mode: crisp white/silver arrow body with dark rim */
+  .dark .gc-rim {
+    stroke: #0a0b0d;
+  }
+
+  .dark .gc-body {
+    fill: #f3f4f6;
+    stroke: #f3f4f6;
+  }
+
+  /* Name tag badge that smoothly expands into the typewriter speech bubble */
+  .gc-tag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 4px 10px 5px;
+    border-radius: 6px 15px 15px 15px;
+    background: #111111;
+    color: #ffffff;
+    font-family: var(--font-figtree, system-ui, sans-serif);
+    white-space: nowrap;
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.5);
+    transform: translate(16px, 19px);
+    transition: transform 0.32s cubic-bezier(0.3, 1.2, 0.4, 1), border-radius 0.3s ease;
+  }
+
+  .dark .gc-tag {
+    background: #f3f4f6;
+    color: #111111;
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.8);
+  }
+
+  #guideCursor.is-up .gc-tag {
+    transform: translate(16px, calc(-100% - 1px));
+    border-radius: 15px 15px 15px 6px;
+  }
+
+  #guideCursor.is-left .gc-tag {
+    transform: translate(calc(-100% - 1px), 19px);
+    border-radius: 15px 6px 15px 15px;
+  }
+
+  #guideCursor.is-up.is-left .gc-tag {
+    transform: translate(calc(-100% - 1px), calc(-100% - 1px));
+    border-radius: 15px 15px 6px 15px;
+  }
+
+  .gc-name {
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    transition: opacity 0.25s ease;
+  }
+
+  .gc-tag.is-talking .gc-name {
+    opacity: 0.6;
+  }
+
+  .gc-clip {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    transition: width 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .gc-text {
+    position: relative;
+    width: max-content;
+    max-width: 250px;
+    padding-top: 1px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.45;
+    white-space: normal;
+  }
+
+  .gc-measure {
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .gc-ch {
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+
+  .gc-ch.is-on {
+    opacity: 1;
+  }
+
+  .gc-caret {
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 1.5px;
+    height: 14px;
+    border-radius: 1px;
+    background: currentColor;
+    opacity: 0;
+    transition: transform 0.07s linear, opacity 0.2s ease;
+  }
+
+  .gc-tag.is-typing .gc-caret {
+    opacity: 0.9;
+  }
+
+  /* Highlight target while guide points at it */
+  .gc-hover:not(.cad-project-card) {
+    outline: 2px dashed rgba(160, 160, 160, 0.5) !important;
+    outline-offset: 4px !important;
+    transition: outline 0.2s ease !important;
+  }
+}
+
 
 
 

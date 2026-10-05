@@ -90,6 +90,9 @@ export function GauntletTrigger() {
       // 1. SNAP ACTION: Play Snap animation (thanos_snap.png, 48 frames, 2.25s)
       setMode("snap");
       playThanosAudio("snap");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("thanos-snap-initiated"));
+      }
     }
   };
 
@@ -98,6 +101,9 @@ export function GauntletTrigger() {
       // Snap animation completed (2.25s): glove enters settled pose, destruction initiates
       setMode("settled");
       triggerSnap({ skipSound: true, delayMs: 150 });
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("thanos-snapping-active"));
+      }
     } else if (mode === "time") {
       // Time Stone restore animation completed: return to idle
       setMode("idle");

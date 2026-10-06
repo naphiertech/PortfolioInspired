@@ -1,5 +1,6 @@
 .footer { position: relative; }
 .content { position: relative; z-index: 1; width: 100%; }
+
 .metadata {
   display: flex;
   align-items: baseline;
@@ -15,31 +16,127 @@
 .build { display: flex; flex-wrap: wrap; gap: 5px; }
 .modeLabel { flex-basis: 100%; }
 .build time { color: var(--text-body); }
+
+.scenicWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 16px auto 0;
+}
+
+.quoteBlock {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+  max-width: 660px;
+  margin: 0 auto;
+}
+.quoteIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--text-muted);
+  opacity: 0.35;
+  margin-bottom: 12px;
+}
+.quoteText {
+  font-size: clamp(15px, 1.9vw, 19px);
+  line-height: 1.55;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--text-body);
+  letter-spacing: -0.015em;
+  margin: 0;
+  padding: 0;
+}
+.quoteAuthor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+}
+.quoteLine {
+  width: 28px;
+  height: 1px;
+  background-color: var(--border-hairline, rgba(128, 128, 128, 0.25));
+}
+.footer[data-footer-mode="minimal"] .quoteText {
+  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-size: clamp(17px, 2.2vw, 21px);
+  line-height: 1.6;
+}
+.footer[data-footer-mode="focus"] .quoteText {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+  font-size: clamp(14px, 1.7vw, 17px);
+  font-style: normal;
+  letter-spacing: -0.01em;
+}
+
 .scene {
   position: relative;
-  width: 100vw;
-  left: 50%;
-  transform: translateX(-50%);
-  height: clamp(220px, 20vw, 300px);
-  overflow: visible;
+  width: 100%;
+  max-width: 100%;
+  height: clamp(280px, 34vw, 360px);
+  overflow: hidden;
   pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
 }
 .landscape {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
-  height: auto;
-}
-@media (min-width: 640px) and (max-width: 1023px) {
-  .scene { height: clamp(200px, 26vw, 260px); }
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
 }
 @media (max-width: 639px) {
   .metadata { flex-direction: column; gap: 6px; padding-bottom: 6px; }
-  .scene { height: clamp(220px, 60vw, 280px); }
-}
-@media (max-width: 1023px) {
-  .landscape { height: 100%; object-fit: cover; object-position: 20% bottom; }
-  .footer[data-footer-mode="focus"] .landscape { object-position: right bottom; }
-  .footer[data-footer-mode="minimal"] .landscape { object-position: 80% bottom; }
+  .scenicWrapper { margin-top: 12px; }
+  .quoteBlock {
+    top: 8px;
+    padding: 0 16px;
+  }
+  .quoteIcon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 8px;
+  }
+  .quoteText {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .quoteAuthor {
+    margin-top: 10px;
+    font-size: 10px;
+  }
+  .scene {
+    height: clamp(260px, 68vw, 320px);
+  }
 }

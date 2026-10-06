@@ -7,6 +7,9 @@ import { useSnap } from "@/context/SnapContext";
 // Ensures the tour runs once per full page refresh, without restarting during client navigation
 let tourPlayedThisSession = false;
 
+const TOUR_COOLDOWN_KEY = "naphier_tour_last_played";
+const TOUR_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24-hour cooldown
+
 interface TourStep {
   els?: () => HTMLElement[];
   at?:
@@ -46,6 +49,31 @@ export function MouseTourGuide() {
     // Strictly restrict the autonomous tour guide to the home page only
     if (pathname !== "/" || tourPlayedThisSession) {
       return;
+    }
+
+    const searchParams =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search)
+        : null;
+    const forceTour = searchParams?.get("tour") === "true";
+    const resetTour = searchParams?.get("tour") === "reset";
+
+    if (resetTour && typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(TOUR_COOLDOWN_KEY);
+      } catch {}
+    }
+
+    if (!forceTour) {
+      try {
+        const lastPlayed = localStorage.getItem(TOUR_COOLDOWN_KEY);
+        if (lastPlayed) {
+          const elapsed = Date.now() - parseInt(lastPlayed, 10);
+          if (!isNaN(elapsed) && elapsed < TOUR_COOLDOWN_MS) {
+            return;
+          }
+        }
+      } catch {}
     }
 
     const desktop = window.matchMedia(
@@ -781,12 +809,60 @@ export function MouseTourGuide() {
       }
     }
 
+    function recordTourPlayed() {
+      try {
+        localStorage.setItem(TOUR_COOLDOWN_KEY, Date.now().toString());
+      } catch {}
+    }
+
+    function handleUserIntervene() {
+      if (!running || isShocked) return;
+      running = false;
+      recordTourPlayed();
+      setHover(null);
+      typing = false;
+      if (cancelCurrentType) {
+        cancelCurrentType();
+        cancelCurrentType = null;
+      }
+      hush();
+      if (move) {
+        const d = move.done;
+        move = null;
+        d();
+      }
+      if (wakeSleep) {
+        wakeSleep();
+        wakeSleep = null;
+      }
+      root?.classList.remove("is-here");
+      if (rAFId !== null) {
+        cancelAnimationFrame(rAFId);
+        rAFId = null;
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        handleUserIntervene();
+      }
+    }
+
+    function handleReplayTour() {
+      start();
+    }
+
     window.addEventListener("thanos-snap-initiated", handleThanosSnap);
     window.addEventListener("thanos-snapping-active", handleThanosSnap);
     window.addEventListener("thanos-snap-completed", handleThanosComplete);
+    window.addEventListener("wheel", handleUserIntervene, { passive: true });
+    window.addEventListener("touchmove", handleUserIntervene, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("replay-tour-guide", handleReplayTour);
 
     function start() {
       if (running) return;
+      recordTourPlayed();
       running = true;
       move = null;
       rest = null;
@@ -812,6 +888,10 @@ export function MouseTourGuide() {
       window.removeEventListener("thanos-snap-initiated", handleThanosSnap);
       window.removeEventListener("thanos-snapping-active", handleThanosSnap);
       window.removeEventListener("thanos-snap-completed", handleThanosComplete);
+      window.removeEventListener("wheel", handleUserIntervene);
+      window.removeEventListener("touchmove", handleUserIntervene);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("replay-tour-guide", handleReplayTour);
       running = false;
       if (rAFId !== null) cancelAnimationFrame(rAFId);
       timeouts.forEach((id) => clearTimeout(id));

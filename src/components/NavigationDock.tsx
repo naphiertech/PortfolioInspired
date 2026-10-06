@@ -269,6 +269,57 @@ export function NavigationDock() {
   }, []);
 
   const isDefaultMode = mode === "default";
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  // Animate dock out cleanly when user scrolls down to the footer
+  useEffect(() => {
+    if (typeof window === "undefined" || !isDefaultMode) return;
+
+    let observer: IntersectionObserver | null = null;
+    let cancelled = false;
+
+    const findAndObserve = () => {
+      if (cancelled) return;
+      const footer = document.querySelector("footer");
+      if (!footer) {
+        requestAnimationFrame(findAndObserve);
+        return;
+      }
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            setIsFooterVisible(entry.isIntersecting);
+          }
+        },
+        {
+          root: null,
+          threshold: 0.05,
+          rootMargin: "0px 0px -40px 0px",
+        }
+      );
+
+      observer.observe(footer);
+    };
+
+    findAndObserve();
+
+    const handleScroll = () => {
+      const footer = document.querySelector("footer");
+      if (footer) {
+        const rect = footer.getBoundingClientRect();
+        setIsFooterVisible(rect.top <= window.innerHeight - 40);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      cancelled = true;
+      if (observer) observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname, mode, isDefaultMode]);
 
   // Warmup the Next.js router cache eagerly so every route transition happens instantaneously
   useEffect(() => {
@@ -287,7 +338,23 @@ export function NavigationDock() {
               ? { opacity: 0, y: 12 }
               : false
           }
-          animate={{ opacity: 1, y: 0 }}
+          animate={
+            isFooterVisible
+              ? {
+                  opacity: 0,
+                  y: 42,
+                  transition: shouldReduceMotion
+                    ? { duration: 0.01 }
+                    : { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+                }
+              : {
+                  opacity: 1,
+                  y: 0,
+                  transition: shouldReduceMotion
+                    ? { duration: 0.01 }
+                    : { duration: 0.32, ease: [0.22, 1, 0.36, 1] },
+                }
+          }
           exit={
             !shouldReduceMotion
               ? {
@@ -297,11 +364,16 @@ export function NavigationDock() {
                 }
               : { opacity: 0, transition: { duration: 0.05 } }
           }
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-[70] pointer-events-none max-sm:bottom-4 px-3 will-change-[transform,opacity]"
+          className={`fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-[70] max-sm:bottom-4 px-3 will-change-[transform,opacity] ${
+            isFooterVisible ? "!pointer-events-none" : "pointer-events-none"
+          }`}
         >
       {/* Separate Circular Presentation Mode Switcher */}
-      <div className="pointer-events-auto flex-shrink-0 z-[70]">
+      <div
+        className={`flex-shrink-0 z-[70] ${
+          isFooterVisible ? "!pointer-events-none" : "pointer-events-auto"
+        }`}
+      >
         <PresentationModeSwitcher variant="dock" />
       </div>
 
@@ -314,7 +386,9 @@ export function NavigationDock() {
             ? { duration: 0 }
             : { type: "spring", stiffness: 380, damping: 32 },
         }}
-        className="nav-dock pointer-events-auto flex items-center justify-center gap-0.5 sm:gap-1 z-40"
+        className={`nav-dock flex items-center justify-center gap-0.5 sm:gap-1 z-40 ${
+          isFooterVisible ? "!pointer-events-none" : "pointer-events-auto"
+        }`}
         aria-label="Bottom Quick Navigation"
       >
         <AnimatePresence initial={false}>

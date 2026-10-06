@@ -52,7 +52,7 @@ export function FocusFieldNotes() {
             {/* Middle Column: Technical metadata, Title, and Excerpt */}
             <div className="flex-1 min-w-0 space-y-1">
               <div className="flex items-center gap-2 font-mono text-[10px] sm:text-[11px] text-muted-foreground/80 uppercase tracking-wider">
-                <span className="text-emerald-500 font-bold">//</span>
+                <span className="text-emerald-500 font-bold">{"//"}</span>
                 <span className="font-semibold text-ink/90 group-hover:text-ink">
                   {note.category}
                 </span>

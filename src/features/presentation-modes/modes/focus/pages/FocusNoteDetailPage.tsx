@@ -71,7 +71,7 @@ export function FocusNoteDetailPage({
             </h1>
 
             <div className="flex items-center flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
-              <span className="text-ink font-semibold">// {note.category}</span>
+              <span className="text-ink font-semibold">{"//"} {note.category}</span>
               <span className="text-border-divider">•</span>
               <time dateTime={note.date}>{note.formattedDate}</time>
               <span className="text-border-divider">•</span>

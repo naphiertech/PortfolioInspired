@@ -3,6 +3,7 @@ import { ebGaramond } from "./fonts";
 import { MinimalHeader } from "./components/MinimalHeader";
 import { MinimalIntro } from "./components/MinimalIntro";
 import { MinimalProjects } from "./components/MinimalProjects";
+import { MinimalFieldNotes } from "./components/MinimalFieldNotes";
 import { MinimalStack } from "./components/MinimalStack";
 import { MinimalCurrent } from "./components/MinimalCurrent";
 import { MinimalContributions } from "./components/MinimalContributions";
@@ -14,7 +15,7 @@ import { MinimalConnect } from "./components/MinimalConnect";
  * One-page, text-first personal presentation mode inspired by classical editorial typography.
  * - Old-style Roman serif typography (EB Garamond) scoped to this layout
  * - Narrow centered reading width (~640px) with generous whitespace
- * - Only 6 curated sections: Intro, Selected Work, What I Work With, Currently, GitHub Contributions, Connect
+ * - Curated sections: Intro, Contributions, Selected Work, Field Notes, Stack, Currently, Connect
  */
 export function MinimalModeLayout() {
   return (
@@ -35,10 +36,13 @@ export function MinimalModeLayout() {
         {/* 3. Selected Work */}
         <MinimalProjects />
 
-        {/* 4. What I Work With */}
+        {/* 4. Field Notes */}
+        <MinimalFieldNotes />
+
+        {/* 5. What I Work With */}
         <MinimalStack />
 
-        {/* 5. Currently */}
+        {/* 6. Currently */}
         <MinimalCurrent />
 
         {/* 7. Connect & Minimal Footer */}

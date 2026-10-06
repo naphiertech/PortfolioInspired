@@ -848,3 +848,12 @@ export const profileInfo: ProfileInfoData = {
     { label: "INTERESTS", value: "SaaS · Dashboards · Developer Tools" },
   ],
 };
+
+export {
+  fieldNotes,
+  getFieldNotes,
+  getFieldNoteBySlug,
+  getNextPrevFieldNotes,
+  type FieldNote,
+  type FieldNoteContentSection,
+} from "./fieldNotes";

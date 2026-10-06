@@ -1,6 +1,6 @@
 import React from "react";
 import { ProfileHeader } from "@/components/ProfileHeader";
-import { NowSection } from "@/components/NowSection";
+import { FieldNotesSection } from "@/components/FieldNotesSection";
 import { RecentProjects } from "@/components/RecentProjects";
 import { TechStack } from "@/components/TechStack";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
@@ -28,10 +28,10 @@ export function DefaultModeLayout() {
       {/* 1. Identity & Hero (Permanent - Never snapped) */}
       <ProfileHeader />
 
-      {/* 3. Live Focus & Development Activity (Merged Currently Building + Latest Activity) */}
-      <SnapSectionWrapper id="now">
+      {/* 3. Field Notes Index (Editorial Engineering Observations) */}
+      <SnapSectionWrapper id="field-notes">
         <EditorialDivider className="mt-4 mb-6 sm:mt-6 sm:mb-8" />
-        <NowSection />
+        <FieldNotesSection />
       </SnapSectionWrapper>
 
       {/* 4. Selected Projects (Top 3 Strongest) */}

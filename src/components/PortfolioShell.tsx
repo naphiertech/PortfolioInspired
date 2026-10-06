@@ -42,6 +42,8 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const isMinimal = mode === "minimal";
   const isAgent = mode === "agent";
   const isAgentHome = isAgent && pathname === "/";
+  // Omit the scenic footer when reading an individual chosen field note (/notes/:slug)
+  const isReadingNote = pathname.startsWith("/notes/") && pathname !== "/notes";
   const { state: creative, active: creativeActive, effectiveMotion } = useCreativeMode();
   const mapping = supportsCreativeMode(mode) ? CREATIVE_MAPPINGS[mode] : null;
   const radii = mapping?.radii[creative.corners];
@@ -121,28 +123,30 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       </main>
       <CreativeNotes key={`${mode}:${pathname}`} contentRef={contentRef} />
 
-      {/* Scenic ending for supported modes; Agent keeps its existing footer path. */}
-      <div
-        className={`transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
-          isAgentHome ? "hidden pointer-events-none" : "opacity-100"
-        }`}
-        aria-hidden={isAgentHome}
-      >
-        {mode !== "agent" ? <LandscapeFooter mode={mode} /> : <>
-        <EditorialDivider className="mt-16 mb-6" />
-        <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
-          <p>
-            &copy; 2026 {SITE_NAME}. Designed with precision & craft.
-          </p>
-          <p className="flex items-center gap-1.5 text-muted-foreground/80">
-            <span>Portfolio build ·</span>
-            <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
-              {BUILD_INFO.formattedDate}
-            </time>
-          </p>
-        </footer>
-        </>}
-      </div>
+      {/* Scenic ending for supported modes; Agent keeps its existing footer path; omitted when reading a chosen note */}
+      {!isReadingNote && (
+        <div
+          className={`transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+            isAgentHome ? "hidden pointer-events-none" : "opacity-100"
+          }`}
+          aria-hidden={isAgentHome}
+        >
+          {mode !== "agent" ? <LandscapeFooter mode={mode} /> : <>
+          <EditorialDivider className="mt-16 mb-6" />
+          <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
+            <p>
+              &copy; 2026 {SITE_NAME}. Designed with precision & craft.
+            </p>
+            <p className="flex items-center gap-1.5 text-muted-foreground/80">
+              <span>Portfolio build ·</span>
+              <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
+                {BUILD_INFO.formattedDate}
+              </time>
+            </p>
+          </footer>
+          </>}
+        </div>
+      )}
     </div>
   );
 }

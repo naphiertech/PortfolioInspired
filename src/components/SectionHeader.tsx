@@ -92,7 +92,7 @@ export function SectionHeader({
       {showDivider && (
         <motion.div
           variants={shouldReduceMotion ? undefined : sectionLineVariants}
-          className="h-[1px] w-full bg-border-hairline/40 origin-left"
+          className="h-[1px] w-full bg-[var(--border-divider)] origin-left"
         />
       )}
     </div>

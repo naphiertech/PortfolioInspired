@@ -19,7 +19,7 @@ export function FocusSelectedWork() {
       {/* Section Index Header */}
       <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-4">
         <h2 className="tracking-wider font-medium font-mono text-xs">
-          [ 02 // PROJECTS ]
+          [ 03 // PROJECTS ]
         </h2>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           SELECTED PROJECTS ({projects.length})

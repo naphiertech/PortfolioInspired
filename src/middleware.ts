@@ -64,8 +64,10 @@ export function middleware(request: NextRequest) {
     shouldSetCookie = false;
   }
 
-  // Minimal is strictly one page: redirect any deep route requests back to "/"
-  if (effectiveMode === "minimal" && !isRoot) {
+  const isNotesRoute = request.nextUrl.pathname.startsWith("/notes");
+
+  // Minimal is strictly one page except for Field Notes: redirect other deep route requests back to "/"
+  if (effectiveMode === "minimal" && !isRoot && !isNotesRoute) {
     const redirectUrl = new URL("/", request.url);
     if (hasValidQueryMode && queryMode) {
       redirectUrl.searchParams.set(PRESENTATION_QUERY_PARAM, "minimal");

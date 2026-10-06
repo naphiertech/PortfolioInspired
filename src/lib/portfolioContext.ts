@@ -11,6 +11,7 @@ import {
   getProjectBySlug,
   getProjectsUsingTech,
   getCanonicalTechName,
+  getFieldNoteBySlug,
 } from "./data";
 import { AUTHOR_INFO, AVAILABILITY, EDUCATION, GITHUB_USERNAME, SOCIAL_PROFILES } from "./siteConfig";
 import { retrieveGroundedContext } from "./portfolioKnowledge";
@@ -24,9 +25,12 @@ export interface PortfolioPageContext {
     | "project_detail"
     | "tech_stack"
     | "certifications"
+    | "notes"
+    | "note_detail"
     | "other";
   title: string;
   projectSlug?: string;
+  noteSlug?: string;
   selectedTech?: string;
 }
 
@@ -118,6 +122,29 @@ export function getPortfolioPageContext(
     };
   }
 
+  // 7. Field Notes Index
+  if (normalizedPath === "/notes") {
+    return {
+      pathname: "/notes",
+      pageType: "notes",
+      title: "Field Notes Index",
+    };
+  }
+
+  // 8. Field Note Detail
+  if (normalizedPath.startsWith("/notes/")) {
+    const slug = normalizedPath.replace("/notes/", "").split("?")[0].split("#")[0].trim();
+    const note = getFieldNoteBySlug(slug);
+    if (note) {
+      return {
+        pathname: normalizedPath,
+        pageType: "note_detail",
+        title: note.title,
+        noteSlug: note.slug,
+      };
+    }
+  }
+
   // Fallback
   return {
     pathname: normalizedPath,
@@ -180,6 +207,20 @@ export function getSuggestedQuestions(context: PortfolioPageContext): string[] {
         "Which certification relates to web development?",
       ];
 
+    case "notes":
+      return [
+        "What engineering topics does Naphier write about?",
+        "What are his thoughts on AI-assisted development?",
+        "Why does he prioritize boring architecture?",
+      ];
+
+    case "note_detail":
+      return [
+        "What is the main takeaway of this note?",
+        "How does this philosophy apply to real projects?",
+        "What other field notes has Naphier written?",
+      ];
+
     default:
       return [
         `What projects has ${AUTHOR_INFO.shortName} built?`,
@@ -203,7 +244,7 @@ export function validatePortfolioLink(href: string): { isValid: boolean; normali
   }
 
   // 1. Internal static routes
-  if (["/", "/work", "/projects", "/tech-stack", "/certifications"].includes(trimmed)) {
+  if (["/", "/work", "/projects", "/tech-stack", "/certifications", "/notes"].includes(trimmed)) {
     return { isValid: true, normalizedHref: trimmed, isExternal: false };
   }
 
@@ -212,6 +253,14 @@ export function validatePortfolioLink(href: string): { isValid: boolean; normali
     const slug = trimmed.replace("/projects/", "").split("?")[0].split("#")[0].trim();
     if (getProjectBySlug(slug)) {
       return { isValid: true, normalizedHref: `/projects/${slug}`, isExternal: false };
+    }
+  }
+
+  // 2b. Note detail route: /notes/:slug
+  if (trimmed.startsWith("/notes/")) {
+    const slug = trimmed.replace("/notes/", "").split("?")[0].split("#")[0].trim();
+    if (getFieldNoteBySlug(slug)) {
+      return { isValid: true, normalizedHref: `/notes/${slug}`, isExternal: false };
     }
   }
 

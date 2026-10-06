@@ -33,7 +33,7 @@ export function FocusTechStack() {
       {/* Section Index */}
       <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-3.5">
         <h2 className="tracking-wider font-medium font-mono text-xs">
-          [ 03 // TECH STACK ]
+          [ 04 // TECH STACK ]
         </h2>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           CORE TECHNOLOGIES

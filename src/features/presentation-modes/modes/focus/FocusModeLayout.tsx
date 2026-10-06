@@ -3,6 +3,7 @@ import { EditorialDivider } from "@/components/EditorialDivider";
 import { FocusNavigation } from "./components/FocusNavigation";
 import { FocusHero } from "./components/FocusHero";
 import { FocusCapabilities } from "./components/FocusCapabilities";
+import { FocusFieldNotes } from "./components/FocusFieldNotes";
 import { FocusSelectedWork } from "./components/FocusSelectedWork";
 import { FocusTechStack } from "./components/FocusTechStack";
 import { FocusExperience } from "./components/FocusExperience";
@@ -32,7 +33,13 @@ export function FocusModeLayout() {
       {/* Structural Divider */}
       <EditorialDivider className="my-6 sm:my-7" />
 
-      {/* 02 // SELECTED FLAGSHIP SYSTEMS */}
+      {/* 02 // FIELD NOTES (Editorial Engineering Observations) */}
+      <FocusFieldNotes />
+
+      {/* Structural Divider */}
+      <EditorialDivider className="my-6 sm:my-7" />
+
+      {/* 03 // SELECTED FLAGSHIP SYSTEMS */}
       <FocusSelectedWork />
 
       {/* Structural Divider */}

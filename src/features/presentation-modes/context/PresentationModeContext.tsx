@@ -123,7 +123,11 @@ export function PresentationModeProvider({
 
         // 2. Clean URL Synchronization & One-Page Minimal Redirect
         if (typeof window !== "undefined") {
-          if (newMode === "minimal" && window.location.pathname !== "/") {
+          if (
+            newMode === "minimal" &&
+            window.location.pathname !== "/" &&
+            !window.location.pathname.startsWith("/notes")
+          ) {
             router.replace("/");
             return;
           }

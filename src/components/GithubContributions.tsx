@@ -112,6 +112,7 @@ export function GithubContributions() {
     target: HTMLElement;
   } | null>(null);
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const tooltipTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     setMounted(true);
@@ -142,16 +143,39 @@ export function GithubContributions() {
       }
     }
 
-    fetchContributions();
+    function initObserver() {
+      if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0]?.isIntersecting) {
+              fetchContributions();
+              observer.disconnect();
+            }
+          },
+          { rootMargin: "250px" }
+        );
+        if (containerRef.current) {
+          observer.observe(containerRef.current);
+        } else {
+          fetchContributions();
+        }
+        return () => observer.disconnect();
+      } else {
+        fetchContributions();
+      }
+    }
+
+    const cleanupObserver = initObserver();
 
     return () => {
       isMounted = false;
+      if (cleanupObserver) cleanupObserver();
     };
   }, []);
 
   if (error) {
     return (
-      <div className="w-full mt-4 pt-1 font-mono text-[11px] text-muted-foreground flex items-center justify-between">
+      <div ref={containerRef} className="w-full mt-4 pt-1 font-mono text-[11px] text-muted-foreground flex items-center justify-between">
         <a
           href={SOCIAL_PROFILES.github}
           target="_blank"
@@ -166,7 +190,7 @@ export function GithubContributions() {
 
   if (loading || !data) {
     return (
-      <div className="w-full mt-5 pt-1 space-y-2 select-none animate-pulse">
+      <div ref={containerRef} className="w-full mt-5 pt-1 space-y-2 select-none animate-pulse">
         <div className="h-3 w-48 bg-muted-subtle rounded" />
         <div className="h-20 w-full max-w-[690px] bg-muted-subtle/50 rounded border border-border-hairline" />
         <div className="h-3 w-64 bg-muted-subtle rounded" />
@@ -178,7 +202,7 @@ export function GithubContributions() {
   const columnCount = data.weeks.length;
 
   return (
-    <div className="w-full">
+    <div ref={containerRef} className="w-full">
       <ContributionTruck>
       <div className="relative min-w-0">
         <div className="w-full">

@@ -86,6 +86,7 @@ export function LatestActivity() {
       <motion.div variants={shouldReduceMotion ? undefined : contentBlockVariants}>
         <Link
           href={activity.href}
+          prefetch={false}
           target={activity.isProject ? undefined : "_blank"}
           rel={activity.isProject ? undefined : "noopener noreferrer"}
           onMouseEnter={playHover}

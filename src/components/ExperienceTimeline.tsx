@@ -275,6 +275,7 @@ export function ExperienceTimeline() {
                                 {projectIndex > 0 && <span aria-hidden="true" className="text-muted-foreground/60">·</span>}
                                 <Link
                                   href={proj.href}
+                                  prefetch={false}
                                   className="inline-flex items-center gap-0.5 whitespace-nowrap text-ink/90 hover:underline font-mono text-[11px] leading-4"
                                 >
                                   <span>{proj.title}</span>

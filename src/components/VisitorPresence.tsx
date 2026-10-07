@@ -174,6 +174,8 @@ function VisitorPresenceContent({
                   <AvatarImage
                     src={member.data?.src}
                     alt={member.data?.name || "Visitor"}
+                    loading="lazy"
+                    fetchPriority="low"
                   />
                   <AvatarFallback className="text-[10px] font-mono">
                     {member.data?.fallback || "??"}
@@ -300,8 +302,36 @@ export function VisitorPresence() {
   const [visitor, setVisitor] = useState<VisitorProfile | null>(null);
 
   useEffect(() => {
-    const v = getOrCreateVisitor();
-    setVisitor(v);
+    let started = false;
+
+    const init = () => {
+      if (started) return;
+      started = true;
+      clearTimeout(timerId);
+      window.removeEventListener("scroll", init);
+      window.removeEventListener("touchstart", init);
+      window.removeEventListener("pointerdown", init);
+      window.removeEventListener("keydown", init);
+      const v = getOrCreateVisitor();
+      setVisitor(v);
+    };
+
+    // Initialize on first user engagement (scroll, touch, click, key)
+    window.addEventListener("scroll", init, { passive: true, once: true });
+    window.addEventListener("touchstart", init, { passive: true, once: true });
+    window.addEventListener("pointerdown", init, { passive: true, once: true });
+    window.addEventListener("keydown", init, { passive: true, once: true });
+
+    // Fallback to 5.5s timer so presence still activates if user stays completely still
+    const timerId = setTimeout(init, 5500);
+
+    return () => {
+      clearTimeout(timerId);
+      window.removeEventListener("scroll", init);
+      window.removeEventListener("touchstart", init);
+      window.removeEventListener("pointerdown", init);
+      window.removeEventListener("keydown", init);
+    };
   }, []);
 
   if (!visitor) {

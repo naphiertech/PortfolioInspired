@@ -76,6 +76,7 @@ export function SectionHeader({
             ) : (
               <Link
                 href={actionHref!}
+                prefetch={false}
                 className="font-mono text-xs text-muted-foreground hover:text-ink flex items-center gap-1 transition-colors duration-200 group"
               >
                 <span>{actionLabel}</span>

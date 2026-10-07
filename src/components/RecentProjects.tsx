@@ -4,13 +4,21 @@ import React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { fullProjects } from "@/lib/data";
 import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
 import { ProjectStatusBadge } from "./ProjectStatusBadge";
 import { ProjectMedia } from "./ProjectMedia";
-import { FloatingTerrain } from "./FloatingTerrain";
 import { useUISound } from "@/context/SoundContext";
+
+const FloatingTerrain = dynamic(
+  () => import("./FloatingTerrain").then((m) => m.FloatingTerrain),
+  {
+    ssr: false,
+    loading: () => <div className="w-full aspect-[760/172]" aria-hidden="true" />,
+  }
+);
 import {
   sectionContainerVariants,
   staggeredGridVariants,
@@ -56,6 +64,7 @@ export function RecentProjects() {
           >
             <Link
               href={`/projects/${project.slug}`}
+              prefetch={false}
               onMouseEnter={playHover}
               onClick={playClick}
               data-cursor-label={PROJECT_CURSOR_LABELS[project.slug] || "One of my full-stack projects."}

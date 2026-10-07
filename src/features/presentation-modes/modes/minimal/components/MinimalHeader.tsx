@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
 import { PresentationModeSwitcher } from "../../../components/PresentationModeSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { CreativeModeToggle } from "@/features/creative-mode";
+import { CreativeModeToggle } from "@/features/creative-mode/components/CreativeModeToggle";
 
 /**
  * MinimalHeader

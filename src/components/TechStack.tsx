@@ -110,6 +110,7 @@ export function TechStack() {
                   <Link
                     key={tech}
                     href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
+                    prefetch={false}
                     onMouseEnter={playHover}
                     onPointerEnter={() => setHovered({ category: section.title, tech })}
                     onPointerLeave={() => setHovered({ category: section.title })}

@@ -5,9 +5,60 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { galleryImages } from "@/lib/data";
-import { MomentsEnvironment } from "./MomentsEnvironment";
 import styles from "./Gallery.module.css";
+
+const MomentsEnvironment = dynamic(
+  () => import("./MomentsEnvironment").then((m) => m.MomentsEnvironment),
+  {
+    ssr: false,
+    loading: () => <div className="w-full aspect-[720/160]" aria-hidden="true" />,
+  }
+);
+
+function DeferredMomentsEnvironment() {
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (inView) return;
+    const timer = setTimeout(() => setInView(true), 6000);
+
+    if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            setInView(true);
+            clearTimeout(timer);
+            observer.disconnect();
+          }
+        },
+        { rootMargin: "300px" }
+      );
+      if (containerRef.current) {
+        observer.observe(containerRef.current);
+      }
+      return () => {
+        clearTimeout(timer);
+        observer.disconnect();
+      };
+    } else {
+      setInView(true);
+    }
+    return () => clearTimeout(timer);
+  }, [inView]);
+
+  return (
+    <div ref={containerRef} className="w-full aspect-[720/160]">
+      {inView ? (
+        <MomentsEnvironment />
+      ) : (
+        <div className="w-full aspect-[720/160]" aria-hidden="true" />
+      )}
+    </div>
+  );
+}
 import { useScrollLock } from "@/lib/scrollLock";
 import { useUISound } from "@/context/SoundContext";
 import { sectionContainerVariants, contentBlockVariants } from "@/lib/motion";
@@ -103,7 +154,7 @@ export function Gallery() {
         </div>
 
         {/* Environment Artwork sitting directly above the cards */}
-        <MomentsEnvironment />
+        <DeferredMomentsEnvironment />
       </div>
 
       {/* Horizontal Strip (Compact 4-image preview) attached directly beneath concrete platform */}

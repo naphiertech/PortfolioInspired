@@ -1,15 +1,22 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { ProfileFrameOverlay } from "./ProfileFrameOverlay";
 import NextImage from "next/image";
 import { useTheme } from "./ThemeProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { SoundToggle } from "./SoundToggle";
-import { CreativeModeToggle } from "@/features/creative-mode";
 import dynamic from "next/dynamic";
+
+const CreativeModeToggle = dynamic(
+  () => import("@/features/creative-mode/components/CreativeModeToggle").then((m) => m.CreativeModeToggle),
+  {
+    ssr: false,
+    loading: () => <div className="w-[44px] h-[24px] rounded-full border border-border-hairline bg-surface" aria-hidden="true" />,
+  }
+);
 import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
-import { SnapTrigger } from "./SnapTrigger";
 import { EditorialDivider } from "./EditorialDivider";
 import { StatusBadge } from "./ProjectStatusBadge";
 import {
@@ -19,6 +26,14 @@ import {
   SITE_NAME,
   SOCIAL_PROFILES,
 } from "@/lib/siteConfig";
+
+const SnapTrigger = dynamic(
+  () => import("./SnapTrigger").then((m) => m.SnapTrigger),
+  {
+    ssr: false,
+    loading: () => <div className="w-[80px] h-[80px]" aria-hidden="true" />,
+  }
+);
 
 const GithubContributions = dynamic(
   () => import("./GithubContributions").then(module => module.GithubContributions),
@@ -34,6 +49,53 @@ const GithubContributions = dynamic(
   },
 );
 
+function DeferredGithubContributions() {
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (inView) return;
+    const timer = setTimeout(() => setInView(true), 6000);
+
+    if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            setInView(true);
+            clearTimeout(timer);
+            observer.disconnect();
+          }
+        },
+        { rootMargin: "100px" }
+      );
+      if (containerRef.current) {
+        observer.observe(containerRef.current);
+      }
+      return () => {
+        clearTimeout(timer);
+        observer.disconnect();
+      };
+    } else {
+      setInView(true);
+    }
+    return () => clearTimeout(timer);
+  }, [inView]);
+
+  return (
+    <div ref={containerRef} className="min-h-[132px]">
+      {inView ? (
+        <GithubContributions />
+      ) : (
+        <div className="min-h-[132px] space-y-3" role="status" aria-label="Loading GitHub contributions">
+          <div className="h-3 w-48 bg-muted-subtle rounded" />
+          <div className="h-20 w-full max-w-[690px] rounded border border-border-hairline" />
+          <div className="h-3 w-64 bg-muted-subtle rounded" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ProfileHeader() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -43,13 +105,13 @@ export function ProfileHeader() {
       <div className="group relative w-full h-44 sm:h-44 md:h-48 rounded-2xl overflow-hidden border border-border-hairline bg-surface/40 shadow-xs">
         {/* Custom Header Background Image */}
         <NextImage
-          src="/background-header/background.png"
+          src="/background-header/background.webp"
           alt="Header Background"
           fill
           priority
           fetchPriority="high"
           sizes="(max-width: 768px) 100vw, 760px"
-          className="object-cover object-center grayscale transition-all duration-500 ease-out group-hover:grayscale-0 hover:grayscale-0"
+          className="object-cover object-center grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0 hover:grayscale-0"
         />
 
         {/* Subtle Theme-Aware Bottom Vignette for Seamless Portrait Transition */}
@@ -79,7 +141,6 @@ export function ProfileHeader() {
               alt={SITE_NAME}
               fill
               priority
-              fetchPriority="high"
               sizes="120px"
               className="object-cover transition-opacity duration-300"
               style={{ objectPosition: "center 25%" }}
@@ -294,7 +355,7 @@ export function ProfileHeader() {
       <EditorialDivider className="mt-6 mb-6 sm:mt-8 sm:mb-7" />
 
       {/* Real GitHub Contribution Graph */}
-      <GithubContributions />
+      <DeferredGithubContributions />
     </section>
   );
 }

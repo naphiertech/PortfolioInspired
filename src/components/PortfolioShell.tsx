@@ -4,21 +4,82 @@ import React, { ReactNode, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { SnapRouteGuard } from "@/components/SnapRouteGuard";
+import dynamic from "next/dynamic";
 import { EditorialDivider } from "@/components/EditorialDivider";
 import { TechnicalGrid } from "@/components/TechnicalGrid";
-import { VisitorPresence } from "@/components/VisitorPresence";
+
+const VisitorPresence = dynamic(
+  () => import("@/components/VisitorPresence").then((m) => m.VisitorPresence),
+  {
+    ssr: false,
+  }
+);
+
+function DeferredVisitorPresence() {
+  const [ready, setReady] = React.useState(false);
+
+  React.useEffect(() => {
+    const trigger = () => setReady(true);
+    const timer = setTimeout(trigger, 6000);
+    const onInteract = () => {
+      trigger();
+      clearTimeout(timer);
+      window.removeEventListener("scroll", onInteract);
+      window.removeEventListener("touchstart", onInteract);
+      window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("keydown", onInteract);
+    };
+
+    window.addEventListener("scroll", onInteract, { passive: true, once: true });
+    window.addEventListener("touchstart", onInteract, { passive: true, once: true });
+    window.addEventListener("pointerdown", onInteract, { passive: true, once: true });
+    window.addEventListener("keydown", onInteract, { passive: true, once: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", onInteract);
+      window.removeEventListener("touchstart", onInteract);
+      window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("keydown", onInteract);
+    };
+  }, []);
+
+  if (!ready) return null;
+  return <VisitorPresence />;
+}
 import { SITE_NAME } from "@/lib/siteConfig";
 import { BUILD_INFO } from "@/lib/buildInfo";
-import { MusicEdgeDrawer } from "@/features/music-drawer";
-import { ResourcesEdgeDrawer } from "@/features/resources-drawer";
+const MusicEdgeDrawer = dynamic(
+  () => import("@/features/music-drawer").then((m) => m.MusicEdgeDrawer),
+  { ssr: false }
+);
+const ResourcesEdgeDrawer = dynamic(
+  () => import("@/features/resources-drawer").then((m) => m.ResourcesEdgeDrawer),
+  { ssr: false }
+);
 import { SideDrawerProvider } from "@/features/side-drawers/SideDrawerProvider";
 import styles from "./ContentSurfaces.module.css";
-import { CreativeModeHost, useCreativeMode } from "@/features/creative-mode";
+const CreativeModeHost = dynamic(
+  () => import("@/features/creative-mode/components/CreativeModeHost").then((m) => m.CreativeModeHost),
+  { ssr: false }
+);
+import { useCreativeMode } from "@/features/creative-mode";
 import { CREATIVE_MAPPINGS, supportsCreativeMode } from "@/features/creative-mode/lib/creativeModeConfig";
-import creativeStyles from "@/features/creative-mode/creativeMode.module.css";
-import { creativeFontVariables, CREATIVE_FONT_PAIRINGS } from "@/features/creative-mode/lib/creativeFonts";
-import { LandscapeFooter } from "./LandscapeFooter";
-import { CreativeNotes } from "@/features/creative-mode/components/CreativeNotes";
+const CreativeFontStyles = dynamic(
+  () => import("@/features/creative-mode/components/CreativeFontStyles"),
+  { ssr: false }
+);
+const LandscapeFooter = dynamic(
+  () => import("./LandscapeFooter").then((m) => m.LandscapeFooter),
+  {
+    ssr: false,
+    loading: () => <div className="h-64 w-full" aria-hidden="true" />,
+  }
+);
+const CreativeNotes = dynamic(
+  () => import("@/features/creative-mode/components/CreativeNotes").then((m) => m.CreativeNotes),
+  { ssr: false }
+);
 
 interface PortfolioShellProps {
   children: ReactNode;
@@ -48,7 +109,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const mapping = supportsCreativeMode(mode) ? CREATIVE_MAPPINGS[mode] : null;
   const radii = mapping?.radii[creative.corners];
   const motion = mapping?.motion[effectiveMotion];
-  const fontPairing = creativeActive && creative.fontPairing !== "original" ? CREATIVE_FONT_PAIRINGS[creative.fontPairing] : null;
+  const isCustomFont = creativeActive && creative.fontPairing !== "original";
 
   return (
     <div
@@ -89,16 +150,16 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       {/* Top Center Visitor Presence Indicator */}
       {!isAgentHome && !isMinimal && (
         <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-center z-30 pointer-events-auto">
-          <VisitorPresence />
+          <DeferredVisitorPresence />
         </div>
       )}
 
       <main
         ref={contentRef}
-        className={`${creativeActive ? creativeFontVariables : ""} ${creativeStyles.scope} w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}
+        className={`w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}
         data-creative-mode={creativeActive ? "on" : undefined}
         data-creative-presentation={creativeActive ? mode : undefined}
-        data-creative-font={fontPairing ? creative.fontPairing : undefined}
+        data-creative-font={isCustomFont ? creative.fontPairing : undefined}
         data-creative-corners={creativeActive ? creative.corners : undefined}
         data-creative-spacing={creativeActive ? creative.spacing : undefined}
         data-creative-motion={creativeActive ? effectiveMotion : undefined}
@@ -111,14 +172,9 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
           "--creative-motion-duration": `${motion.duration}s`,
           "--creative-motion-distance": `${motion.distance}px`,
           "--creative-motion-scale": motion.scale,
-          ...(fontPairing ? {
-            "--creative-font-heading": fontPairing.heading,
-            "--creative-font-body": fontPairing.body,
-            "--creative-font-mono": fontPairing.mono,
-            "--creative-font-heading-weight": fontPairing.weight,
-          } : {}),
         } as React.CSSProperties : undefined}
       >
+        {creativeActive && <CreativeFontStyles fontPairing={creative.fontPairing} />}
         <SnapRouteGuard>{children}</SnapRouteGuard>
       </main>
       <CreativeNotes key={`${mode}:${pathname}`} contentRef={contentRef} />

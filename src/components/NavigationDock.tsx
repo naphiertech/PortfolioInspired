@@ -9,6 +9,7 @@ import {
   FolderGit2,
   Cpu,
   Award,
+  LayoutTemplate,
 } from "lucide-react";
 import {
   motion,
@@ -20,9 +21,62 @@ import {
 import { useUISound } from "@/context/SoundContext";
 import { useSnap } from "@/context/SnapContext";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
-import { PresentationModeSwitcher } from "@/features/presentation-modes/components/PresentationModeSwitcher";
+import dynamic from "next/dynamic";
 import { dockSpring, magneticSpring } from "@/lib/motion";
 import { NAV_CURSOR_LABELS } from "@/lib/cursorConfig";
+
+const PresentationModeSwitcher = dynamic(
+  () => import("@/features/presentation-modes/components/PresentationModeSwitcher").then(m => m.PresentationModeSwitcher),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[54px] w-[54px] rounded-full bg-dock backdrop-blur-[16px] border border-border-hairline shadow-nav-dock flex items-center justify-center" aria-hidden="true" />
+    ),
+  }
+);
+
+function DeferredPresentationModeSwitcher() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const trigger = () => setReady(true);
+    const timerId = setTimeout(trigger, 6000);
+
+    const onInteract = () => {
+      trigger();
+      clearTimeout(timerId);
+      window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("touchstart", onInteract);
+      window.removeEventListener("keydown", onInteract);
+    };
+
+    window.addEventListener("pointerdown", onInteract, { once: true, passive: true });
+    window.addEventListener("touchstart", onInteract, { once: true, passive: true });
+    window.addEventListener("keydown", onInteract, { once: true, passive: true });
+
+    return () => {
+      clearTimeout(timerId);
+      window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("touchstart", onInteract);
+      window.removeEventListener("keydown", onInteract);
+    };
+  }, []);
+
+  if (!ready) {
+    return (
+      <button
+        type="button"
+        aria-label="Change presentation view"
+        title="Change view"
+        className="h-[54px] w-[54px] rounded-full bg-dock backdrop-blur-[16px] border border-border-hairline shadow-nav-dock flex items-center justify-center text-ink/80 opacity-90 transition-transform cursor-pointer"
+      >
+        <LayoutTemplate className="w-[18px] h-[18px] text-ink/80" />
+      </button>
+    );
+  }
+
+  return <PresentationModeSwitcher variant="dock" />;
+}
 
 interface NavItem {
   name: string;
@@ -58,6 +112,8 @@ function NavItemLink({
   const itemRef = useRef<HTMLAnchorElement>(null);
   const rectRef = useRef<DOMRect | null>(null);
 
+  const router = useRouter();
+
   // Pure GPU / RAF-driven motion values — zero React component re-renders on mousemove
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
@@ -77,6 +133,7 @@ function NavItemLink({
   }, [onRegisterRef]);
 
   const handleMouseEnter = () => {
+    router.prefetch(item.href);
     onHover();
     if (itemRef.current) {
       // Cache bounding box once on entry to avoid layout thrashing during mouse movements
@@ -157,10 +214,11 @@ function NavItemLink({
       <Link
         ref={itemRef}
         href={item.href}
-        prefetch={true}
+        prefetch={false}
         onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={() => router.prefetch(item.href)}
         onClick={onClick}
         data-cursor-label={NAV_CURSOR_LABELS[item.name]}
         className={`flex flex-col items-center justify-center gap-1 px-3 py-1 cursor-pointer relative group select-none transition-colors duration-150 ease-out ${
@@ -321,11 +379,20 @@ export function NavigationDock() {
     };
   }, [pathname, mode, isDefaultMode]);
 
-  // Warmup the Next.js router cache eagerly so every route transition happens instantaneously
+  // Idle warmup of the router cache after initial render settles
   useEffect(() => {
-    NAV_ITEMS.forEach((item) => {
-      router.prefetch(item.href);
-    });
+    const warmup = () => {
+      NAV_ITEMS.forEach((item) => {
+        router.prefetch(item.href);
+      });
+    };
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const handle = (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number; cancelIdleCallback: (id: number) => void }).requestIdleCallback(warmup, { timeout: 4000 });
+      return () => (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(warmup, 4000);
+      return () => clearTimeout(timer);
+    }
   }, [router]);
 
   return (
@@ -374,7 +441,7 @@ export function NavigationDock() {
           isFooterVisible ? "!pointer-events-none" : "pointer-events-auto"
         }`}
       >
-        <PresentationModeSwitcher variant="dock" />
+        <DeferredPresentationModeSwitcher />
       </div>
 
       {/* Main Navigation Dock */}

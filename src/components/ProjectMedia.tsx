@@ -125,6 +125,7 @@ export function ProjectMedia({
           alt={alt}
           fill
           priority={priority}
+          loading={priority ? undefined : "lazy"}
           sizes={sizes}
           className={`object-cover transition-[filter,opacity] duration-300 ease-out ${
             validPreviewSrc && previewActive ? "opacity-0" : "opacity-100"

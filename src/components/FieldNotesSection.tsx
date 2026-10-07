@@ -4,11 +4,19 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { fieldNotes } from "@/lib/fieldNotes";
 import { SectionHeader } from "./SectionHeader";
-import { FloatingTerrain } from "./FloatingTerrain";
 import { useUISound } from "@/context/SoundContext";
 import { sectionContainerVariants } from "@/lib/motion";
+
+const FloatingTerrain = dynamic(
+  () => import("./FloatingTerrain").then((m) => m.FloatingTerrain),
+  {
+    ssr: false,
+    loading: () => <div className="w-full aspect-[760/172]" aria-hidden="true" />,
+  }
+);
 
 /**
  * FieldNotesSection
@@ -46,6 +54,7 @@ export function FieldNotesSection() {
             <Link
               key={note.slug}
               href={`/notes/${note.slug}`}
+              prefetch={false}
               onMouseEnter={playHover}
               onClick={playClick}
               className="group relative flex items-start gap-4 sm:gap-6 py-4 sm:py-5 px-2.5 sm:px-3 hover:bg-surface/35 focus-visible:bg-surface/50 transition-colors duration-150 outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-none"

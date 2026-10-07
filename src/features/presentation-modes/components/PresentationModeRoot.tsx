@@ -4,18 +4,20 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { usePresentationMode } from "../context/PresentationModeContext";
 
+import { DefaultModeLayout } from "../modes/default/DefaultModeLayout";
+
 // Inactive presentation modes are code-split to keep the initial landing bundle lean
-const DefaultModeLayout = dynamic(
-  () => import("../modes/default/DefaultModeLayout").then((m) => m.DefaultModeLayout)
-);
 const FocusModeLayout = dynamic(
-  () => import("../modes/focus/FocusModeLayout").then((m) => m.FocusModeLayout)
+  () => import("../modes/focus/FocusModeLayout").then((m) => m.FocusModeLayout),
+  { ssr: false }
 );
 const MinimalModeLayout = dynamic(
-  () => import("../modes/minimal/MinimalModeLayout").then((m) => m.MinimalModeLayout)
+  () => import("../modes/minimal/MinimalModeLayout").then((m) => m.MinimalModeLayout),
+  { ssr: false }
 );
 const AgentFolioLayout = dynamic(
-  () => import("../modes/agent/AgentFolioLayout").then((m) => m.AgentFolioLayout)
+  () => import("../modes/agent/AgentFolioLayout").then((m) => m.AgentFolioLayout),
+  { ssr: false }
 );
 
 /**
@@ -33,8 +35,8 @@ export function PresentationModeRoot() {
     <div
       key={mode}
       data-mode={mode}
-      className={`w-full presentation-mode-enter ${
-        isSwitch ? "presentation-mode-switch" : ""
+      className={`w-full ${
+        isSwitch ? "presentation-mode-enter presentation-mode-switch" : ""
       }`}
     >
       {mode === "minimal" ? (

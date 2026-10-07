@@ -47,7 +47,11 @@ function enqueue(frame: number, essential: boolean) {
       image.decoding = "async";
       try {
         const format = frame === PROFILE_FRAMES[PROFILE_FRAMES.length - 1] ? "webp" : "png";
-        const url = "/profile/ezgif-frame-" + String(frame).padStart(3, "0") + "." + format;
+        const rawPath = "/profile/ezgif-frame-" + String(frame).padStart(3, "0") + "." + format;
+        // Optimize the resting dark frame through Next.js Image Optimization to serve ~8KB instead of 305KB
+        const url = frame === PROFILE_FRAMES[PROFILE_FRAMES.length - 1]
+          ? `/_next/image?url=${encodeURIComponent(rawPath)}&w=256&q=75`
+          : rawPath;
         if (typeof image.decode === "function") {
           image.src = url;
           await image.decode();

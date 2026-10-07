@@ -93,6 +93,7 @@ export function CurrentlyBuilding() {
                 <Link
                   key={tech}
                   href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
+                  prefetch={false}
                   onMouseEnter={playHover}
                   onClick={playClick}
                   className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] bg-muted-subtle border border-border-hairline text-muted-foreground hover:text-ink hover:border-border-hairline text-[11px] font-sans font-medium transition-colors"
@@ -114,6 +115,7 @@ export function CurrentlyBuilding() {
                   ? `/projects/${referencedProject.slug}`
                   : currentBuild.href!
               }
+              prefetch={false}
               onMouseEnter={playHover}
               onClick={playClick}
               className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground hover:text-ink transition-colors group ml-auto"

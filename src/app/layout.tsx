@@ -33,16 +33,11 @@ import { SnapProvider } from "@/context/SnapContext";
 import { PresentationModeProvider } from "@/features/presentation-modes/context/PresentationModeContext";
 import { resolveInitialPresentationMode } from "@/features/presentation-modes/lib/resolveMode";
 import { PRESENTATION_COOKIE_NAME, STARS_COOKIE_NAME, GRID_COOKIE_NAME } from "@/features/presentation-modes/types/config";
-import { DustCanvas } from "@/components/DustCanvas";
-import { FlickeringGrid } from "@/components/FlickeringGrid";
-import { StarsBackground } from "@/components/StarsBackground";
-import { ChatWidget } from "@/components/ChatWidget";
 import { PWARegister } from "@/components/PWARegister";
-import { NavigationDock } from "@/components/NavigationDock";
-import { MouseTourGuide } from "@/components/MouseTourGuide";
 import { Analytics } from "@vercel/analytics/next";
 import { PortfolioShell } from "@/components/PortfolioShell";
-import { CreativeModeProvider } from "@/features/creative-mode";
+import { CreativeModeProvider } from "@/features/creative-mode/context/CreativeModeContext";
+import { AppOverlays } from "@/components/AppOverlays";
 import {
   SITE_URL,
   SITE_DEFAULT_TITLE,
@@ -186,30 +181,15 @@ export default async function RootLayout({
                 <PWARegister />
 
                 <CreativeModeProvider>
+                  {/* Mode-Aware Centered Page Shell Container */}
+                  <PortfolioShell>{children}</PortfolioShell>
 
-                {/* 1. Global Flickering Blueprint Grid Layer (Behind stars and content) */}
-                <FlickeringGrid />
-
-                {/* 2. Ambient Global Stars Background Canvas (Fixed behind content) */}
-                <StarsBackground />
-
-                {/* 3. Mode-Aware Centered Page Shell Container */}
-                <PortfolioShell>{children}</PortfolioShell>
-                {/* Chat shares Creative visibility in Minimal; its state stays persistent. */}
-                <ChatWidget />
+                  {/* Ambient overlays, dock, widgets, and canvas (client-split) */}
+                  <AppOverlays />
                 </CreativeModeProvider>
-
-                {/* High-Performance Canvas for Snap Dust Disintegration */}
-                <DustCanvas />
 
                 {/* Bottom Progressive Blur Overlay */}
                 <div className="bottom-progressive-blur" aria-hidden="true" />
-
-                {/* Persistent Floating Navigation Dock */}
-                <NavigationDock />
-
-                {/* Autonomous Mouse Tour Guide System (Inspired by bryllim.com) */}
-                <MouseTourGuide />
 
                 {/* Vercel Web Analytics */}
                 <Analytics />

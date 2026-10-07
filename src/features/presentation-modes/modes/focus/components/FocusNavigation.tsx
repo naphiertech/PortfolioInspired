@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { PresentationModeSwitcher } from "../../../components/PresentationModeSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { CreativeModeToggle } from "@/features/creative-mode";
+import { CreativeModeToggle } from "@/features/creative-mode/components/CreativeModeToggle";
 import { useUISound } from "@/context/SoundContext";
 import { NAV_CURSOR_LABELS } from "@/lib/cursorConfig";
 

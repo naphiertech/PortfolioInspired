@@ -1,67 +1,288 @@
 import { NextResponse } from "next/server";
-import { GITHUB_USERNAME } from "@/lib/siteConfig";
+import { GITHUB_ACCOUNTS } from "@/lib/siteConfig";
+import {
+  type ContributionData,
+  type ContributionDay,
+  type ContributionWeek,
+  type MonthLabel,
+  mergeContributionData,
+} from "@/lib/githubContributions";
+import fallbackSnapshot from "@/data/githubContributionsFallback.json";
 
 export const dynamic = "force-dynamic";
 
-export interface ContributionDay {
-  date: string;
-  level: number; // 0..4
-  count: number;
-  tooltip: string;
-  dayOfWeek: number; // 0 = Sun, 6 = Sat
-}
-
-export interface ContributionWeek {
-  days: (ContributionDay | null)[];
-}
-
-export interface MonthLabel {
-  name: string;
-  weekIndex: number;
-}
-
 export interface GitHubContributionsResponse {
   success: boolean;
-  data?: {
-    username: string;
-    year: number;
-    total: number;
-    totalText: string;
-    weeks: ContributionWeek[];
-    months: MonthLabel[];
-    updatedAt: string;
-  };
+  data?: ContributionData;
   error?: string;
 }
 
-// In-memory cache keyed by username:year for 1 hour
 interface CachedPayload {
-  username: string;
-  year: number;
-  total: number;
-  totalText: string;
-  weeks: ContributionWeek[];
-  months: MonthLabel[];
-  updatedAt: string;
+  data: ContributionData;
+  timestamp: number;
 }
 
-const memoryCache = new Map<string, { data: CachedPayload; timestamp: number }>();
+// In-memory cache keyed by username:year or combined:accounts:year for 1 hour
+const memoryCache = new Map<string, CachedPayload>();
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
+/**
+ * Parses raw GitHub contributions HTML for a specific calendar year.
+ */
+async function scrapeGitHubUserContributions(
+  username: string,
+  year: number,
+): Promise<ContributionData | null> {
+  const githubUrl = `https://github.com/users/${encodeURIComponent(
+    username,
+  )}/contributions?from=${year}-01-01&to=${year}-12-31`;
+
+  const response = await fetch(githubUrl, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    },
+    next: { revalidate: 3600 },
+  });
+
+  if (!response.ok) {
+    throw new Error(`GitHub responded with HTTP ${response.status}`);
+  }
+
+  const html = await response.text();
+
+  // 1. Extract tooltips map: id -> text
+  const tooltipMap: Record<string, string> = {};
+  const tooltipRegex = /<tool-tip[^>]*for="([^"]+)"[^>]*>([\s\S]*?)<\/tool-tip>/gi;
+  let tMatch: RegExpExecArray | null;
+  while ((tMatch = tooltipRegex.exec(html)) !== null) {
+    tooltipMap[tMatch[1]] = tMatch[2].replace(/\s+/g, " ").trim();
+  }
+
+  // 2. Parse GitHub days for the requested year into a map
+  const githubDayMap = new Map<string, { level: number; count: number; tooltip: string }>();
+  const tdRegex = /<td([^>]+)>/gi;
+  let tdMatch: RegExpExecArray | null;
+  const yearPrefix = `${year}-`;
+
+  while ((tdMatch = tdRegex.exec(html)) !== null) {
+    const attrs = tdMatch[1];
+    const dateMatch = attrs.match(/data-date="([^"]+)"/);
+    const levelMatch = attrs.match(/data-level="([^"]+)"/);
+    const idMatch = attrs.match(/id="([^"]+)"/);
+
+    if (dateMatch && levelMatch) {
+      const dateStr = dateMatch[1];
+
+      // Strictly accept only dates in requested year
+      if (!dateStr.startsWith(yearPrefix)) {
+        continue;
+      }
+
+      const level = parseInt(levelMatch[1], 10);
+      const id = idMatch ? idMatch[1] : "";
+      const tooltip = tooltipMap[id] || "";
+
+      let count = 0;
+      const countMatch = tooltip.match(/^([0-9,]+)\s+contribution/i);
+      if (countMatch) {
+        count = parseInt(countMatch[1].replace(/,/g, ""), 10);
+      } else if (level > 0) {
+        count = level;
+      }
+
+      githubDayMap.set(dateStr, {
+        level,
+        count,
+        tooltip: tooltip || `${count} contribution${count === 1 ? "" : "s"} on ${dateStr}`,
+      });
+    }
+  }
+
+  // 3. Construct the complete calendar-year date array (Jan 1 -> Dec 31)
+  const allYearDays: ContributionDay[] = [];
+  const curDate = new Date(Date.UTC(year, 0, 1));
+  const endDate = new Date(Date.UTC(year, 11, 31));
+
+  while (curDate <= endDate) {
+    const yyyy = curDate.getUTCFullYear();
+    const mm = String(curDate.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(curDate.getUTCDate()).padStart(2, "0");
+    const dateStr = `${yyyy}-${mm}-${dd}`;
+    const dayOfWeek = curDate.getUTCDay(); // 0 = Sun, 6 = Sat
+
+    if (githubDayMap.has(dateStr)) {
+      const d = githubDayMap.get(dateStr)!;
+      allYearDays.push({
+        date: dateStr,
+        level: d.level,
+        count: d.count,
+        tooltip: d.tooltip,
+        dayOfWeek,
+      });
+    } else {
+      // Future date or day with 0 contributions
+      allYearDays.push({
+        date: dateStr,
+        level: 0,
+        count: 0,
+        tooltip: `No contributions on ${dateStr}`,
+        dayOfWeek,
+      });
+    }
+
+    curDate.setUTCDate(curDate.getUTCDate() + 1);
+  }
+
+  // 4. Compute total contributions for the year
+  const total = allYearDays.reduce((sum, d) => sum + d.count, 0);
+  const totalText = `${total.toLocaleString()} contributions in ${year}`;
+
+  // 5. Organize into 52-53 weekly columns (Sunday -> Saturday)
+  const weeks: ContributionWeek[] = [];
+  let currentWeek: (ContributionDay | null)[] = Array(7).fill(null);
+
+  if (allYearDays.length > 0) {
+    // Pad leading days before Jan 1 if Jan 1 is not Sunday
+    const firstDayOfWeek = allYearDays[0].dayOfWeek;
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      currentWeek[i] = null;
+    }
+
+    for (const day of allYearDays) {
+      currentWeek[day.dayOfWeek] = day;
+      if (day.dayOfWeek === 6) {
+        weeks.push({ days: [...currentWeek] });
+        currentWeek = Array(7).fill(null);
+      }
+    }
+
+    // If last week has trailing days (Dec 31 is not Saturday)
+    if (currentWeek.some((d) => d !== null)) {
+      weeks.push({ days: [...currentWeek] });
+    }
+  }
+
+  // 6. Generate the 12 month labels (Jan .. Dec) mapped to week column positions
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const months: MonthLabel[] = [];
+  let lastMonth = -1;
+
+  weeks.forEach((week, weekIdx) => {
+    const firstNonNullDay = week.days.find((d) => d !== null);
+    if (firstNonNullDay) {
+      const monthIndex = new Date(firstNonNullDay.date + "T00:00:00Z").getUTCMonth();
+      if (monthIndex !== lastMonth) {
+        months.push({
+          name: monthNames[monthIndex],
+          weekIndex: weekIdx,
+        });
+        lastMonth = monthIndex;
+      }
+    }
+  });
+
+  return {
+    username,
+    year,
+    total,
+    totalText,
+    weeks,
+    months,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+/**
+ * Retrieves contribution data for a single account with multi-tier caching:
+ * 1. Fresh memoryCache
+ * 2. Live GitHub scrape
+ * 3. Stale memoryCache (stale-while-revalidate on failure)
+ * 4. Static verified fallback snapshot (cold start resilience on rate limits)
+ */
+async function getAccountContributions(
+  username: string,
+  year: number,
+): Promise<ContributionData | null> {
+  const cacheKey = `${username.toLowerCase()}:${year}`;
+  const now = Date.now();
+  const cached = memoryCache.get(cacheKey);
+
+  // Return fresh cache if available
+  if (cached && now - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+
+  // Attempt live scrape from GitHub
+  try {
+    const liveData = await scrapeGitHubUserContributions(username, year);
+    if (liveData) {
+      memoryCache.set(cacheKey, { data: liveData, timestamp: now });
+      return liveData;
+    }
+  } catch (err) {
+    console.warn(`[GitHub API] Failed live fetch for ${username} (${year}):`, err);
+  }
+
+  // Fallback 1: Return stale cache if available
+  if (cached) {
+    return cached.data;
+  }
+
+  // Fallback 2: Return verified historical snapshot
+  const yearKey = String(year);
+  const fallbackRecord = fallbackSnapshot as unknown as Record<
+    string,
+    Record<string, ContributionData>
+  >;
+
+  if (fallbackRecord?.[yearKey]?.[username]) {
+    const fb = fallbackRecord[yearKey][username];
+    memoryCache.set(cacheKey, { data: fb, timestamp: now });
+    return fb;
+  }
+
+  return null;
+}
+
 export async function GET(req: Request) {
-  let cacheKey = "";
   try {
     const { searchParams } = new URL(req.url);
-    const username = searchParams.get("username") || GITHUB_USERNAME;
     const currentYear = new Date().getFullYear();
-    cacheKey = `${username.toLowerCase()}:${currentYear}`;
+    const rawYear = searchParams.get("year");
+    const parsedYear = rawYear ? parseInt(rawYear, 10) : currentYear;
+    const year =
+      !isNaN(parsedYear) && parsedYear >= 2020 && parsedYear <= currentYear + 1
+        ? parsedYear
+        : currentYear;
 
-    // Return cached data if fresh and matches current year
-    const now = Date.now();
-    const cached = memoryCache.get(cacheKey);
-    if (cached && now - cached.timestamp < CACHE_TTL) {
+    const singleUsername = searchParams.get("username");
+
+    // Case 1: Caller specifically requested a single user
+    if (singleUsername) {
+      const data = await getAccountContributions(singleUsername, year);
+      if (!data) {
+        return NextResponse.json(
+          { success: false, error: `Failed to load GitHub contributions for ${singleUsername}.` },
+          { status: 500 },
+        );
+      }
       return NextResponse.json(
-        { success: true, data: cached.data },
+        { success: true, data },
         {
           headers: {
             "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
@@ -70,184 +291,77 @@ export async function GET(req: Request) {
       );
     }
 
-    // Query GitHub specifically for the full calendar year (Jan 1 to Dec 31)
-    const githubUrl = `https://github.com/users/${encodeURIComponent(
-      username,
-    )}/contributions?from=${currentYear}-01-01&to=${currentYear}-12-31`;
+    // Case 2: Combined accounts mode (default)
+    const accountsParam = searchParams.get("accounts");
+    const targetAccounts = accountsParam
+      ? accountsParam
+          .split(",")
+          .map((a) => a.trim())
+          .filter(Boolean)
+      : [...GITHUB_ACCOUNTS];
 
-    const response = await fetch(githubUrl, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      },
-      next: { revalidate: 3600 },
-    });
+    const combinedCacheKey = `combined:${targetAccounts.slice().sort().join("+")}:${year}`;
+    const now = Date.now();
+    const cachedCombined = memoryCache.get(combinedCacheKey);
 
-    if (!response.ok) {
-      throw new Error(`GitHub responded with HTTP ${response.status}`);
+    if (cachedCombined && now - cachedCombined.timestamp < CACHE_TTL) {
+      return NextResponse.json(
+        { success: true, data: cachedCombined.data },
+        {
+          headers: {
+            "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
+          },
+        },
+      );
     }
 
-    const html = await response.text();
+    // Retrieve data for all accounts in parallel
+    const accountResults = await Promise.all(
+      targetAccounts.map(async (acc) => ({
+        username: acc,
+        data: await getAccountContributions(acc, year),
+      })),
+    );
 
-    // 1. Extract tooltips map: id -> text
-    const tooltipMap: Record<string, string> = {};
-    const tooltipRegex = /<tool-tip[^>]*for="([^"]+)"[^>]*>([\s\S]*?)<\/tool-tip>/gi;
-    let tMatch;
-    while ((tMatch = tooltipRegex.exec(html)) !== null) {
-      tooltipMap[tMatch[1]] = tMatch[2].replace(/\s+/g, " ").trim();
+    // Fail gracefully without silent partial data if any account is completely missing
+    const missing = accountResults.filter((r) => !r.data).map((r) => r.username);
+    if (missing.length > 0) {
+      console.error(`[GitHub API] Missing contributions data for: ${missing.join(", ")}`);
+      // If we have an expired combined cache, return it instead of failing
+      if (cachedCombined) {
+        return NextResponse.json(
+          { success: true, data: cachedCombined.data },
+          {
+            headers: {
+              "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400",
+            },
+          },
+        );
+      }
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Could not retrieve complete contribution data for all accounts: ${missing.join(", ")}`,
+        },
+        { status: 500 },
+      );
     }
 
-    // 2. Parse GitHub days for the current year into a map
-    const githubDayMap = new Map<string, { level: number; count: number; tooltip: string }>();
-    const tdRegex = /<td([^>]+)>/gi;
-    let tdMatch;
-    const yearPrefix = `${currentYear}-`;
+    const datasets = accountResults.map((r) => r.data!).filter(Boolean);
+    const combinedData = mergeContributionData(datasets);
 
-    while ((tdMatch = tdRegex.exec(html)) !== null) {
-      const attrs = tdMatch[1];
-      const dateMatch = attrs.match(/data-date="([^"]+)"/);
-      const levelMatch = attrs.match(/data-level="([^"]+)"/);
-      const idMatch = attrs.match(/id="([^"]+)"/);
-
-      if (dateMatch && levelMatch) {
-        const dateStr = dateMatch[1];
-
-        // Strictly accept only dates in currentYear
-        if (!dateStr.startsWith(yearPrefix)) {
-          continue;
-        }
-
-        const level = parseInt(levelMatch[1], 10);
-        const id = idMatch ? idMatch[1] : "";
-        const tooltip = tooltipMap[id] || "";
-
-        let count = 0;
-        const countMatch = tooltip.match(/^([0-9,]+)\s+contribution/i);
-        if (countMatch) {
-          count = parseInt(countMatch[1].replace(/,/g, ""), 10);
-        } else if (level > 0) {
-          count = level;
-        }
-
-        githubDayMap.set(dateStr, {
-          level,
-          count,
-          tooltip: tooltip || `${count} contribution${count === 1 ? "" : "s"} on ${dateStr}`,
-        });
-      }
+    if (!combinedData) {
+      return NextResponse.json(
+        { success: false, error: "Failed to merge contribution datasets." },
+        { status: 500 },
+      );
     }
 
-    // 3. Construct the complete 365/366 calendar-year date array (Jan 1 -> Dec 31)
-    const allYearDays: ContributionDay[] = [];
-    const curDate = new Date(Date.UTC(currentYear, 0, 1));
-    const endDate = new Date(Date.UTC(currentYear, 11, 31));
-
-    while (curDate <= endDate) {
-      const yyyy = curDate.getUTCFullYear();
-      const mm = String(curDate.getUTCMonth() + 1).padStart(2, "0");
-      const dd = String(curDate.getUTCDate()).padStart(2, "0");
-      const dateStr = `${yyyy}-${mm}-${dd}`;
-      const dayOfWeek = curDate.getUTCDay(); // 0 = Sun, 6 = Sat
-
-      if (githubDayMap.has(dateStr)) {
-        const data = githubDayMap.get(dateStr)!;
-        allYearDays.push({
-          date: dateStr,
-          level: data.level,
-          count: data.count,
-          tooltip: data.tooltip,
-          dayOfWeek,
-        });
-      } else {
-        // Future date or day with 0 contributions
-        allYearDays.push({
-          date: dateStr,
-          level: 0,
-          count: 0,
-          tooltip: `No contributions on ${dateStr}`,
-          dayOfWeek,
-        });
-      }
-
-      curDate.setUTCDate(curDate.getUTCDate() + 1);
-    }
-
-    // 4. Compute total contributions for the current year
-    const total = allYearDays.reduce((sum, d) => sum + d.count, 0);
-    const totalText = `${total.toLocaleString()} contributions in ${currentYear}`;
-
-    // 5. Organize into 52-53 weekly columns (Sunday -> Saturday)
-    const weeks: ContributionWeek[] = [];
-    let currentWeek: (ContributionDay | null)[] = Array(7).fill(null);
-
-    if (allYearDays.length > 0) {
-      // Pad leading days before Jan 1 if Jan 1 is not Sunday
-      const firstDayOfWeek = allYearDays[0].dayOfWeek;
-      for (let i = 0; i < firstDayOfWeek; i++) {
-        currentWeek[i] = null;
-      }
-
-      for (const day of allYearDays) {
-        currentWeek[day.dayOfWeek] = day;
-        if (day.dayOfWeek === 6) {
-          weeks.push({ days: [...currentWeek] });
-          currentWeek = Array(7).fill(null);
-        }
-      }
-
-      // If last week has trailing days (Dec 31 is not Saturday)
-      if (currentWeek.some((d) => d !== null)) {
-        weeks.push({ days: [...currentWeek] });
-      }
-    }
-
-    // 6. Generate the 12 month labels (Jan .. Dec) mapped to week column positions
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const months: MonthLabel[] = [];
-    let lastMonth = -1;
-
-    weeks.forEach((week, weekIdx) => {
-      const firstNonNullDay = week.days.find((d) => d !== null);
-      if (firstNonNullDay) {
-        const monthIndex = new Date(firstNonNullDay.date + "T00:00:00Z").getUTCMonth();
-        if (monthIndex !== lastMonth) {
-          months.push({
-            name: monthNames[monthIndex],
-            weekIndex: weekIdx,
-          });
-          lastMonth = monthIndex;
-        }
-      }
-    });
-
-    const parsedData: CachedPayload = {
-      username,
-      year: currentYear,
-      total,
-      totalText,
-      weeks,
-      months,
-      updatedAt: new Date().toISOString(),
-    };
-
-    memoryCache.set(cacheKey, { data: parsedData, timestamp: now });
+    memoryCache.set(combinedCacheKey, { data: combinedData, timestamp: now });
 
     return NextResponse.json(
-      { success: true, data: parsedData },
+      { success: true, data: combinedData },
       {
         headers: {
           "Cache-Control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
@@ -255,14 +369,7 @@ export async function GET(req: Request) {
       },
     );
   } catch (error: unknown) {
-    console.error("Error fetching GitHub contributions:", error);
-
-    // Fallback: If cache exists even if expired, return it
-    const fallbackCached = memoryCache.get(cacheKey);
-    if (fallbackCached) {
-      return NextResponse.json({ success: true, data: fallbackCached.data });
-    }
-
+    console.error("Error in /api/github-contributions:", error);
     return NextResponse.json(
       {
         success: false,

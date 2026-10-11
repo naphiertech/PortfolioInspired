@@ -22,7 +22,7 @@ export function FocusContact() {
       {/* Section Index */}
       <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/80 select-none mb-3.5">
         <h2 className="tracking-wider font-medium font-mono text-xs">
-          [ 06 // CONTACT ]
+          [ 07 // CONTACT ]
         </h2>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/70">
           CONTACT & AVAILABILITY
@@ -90,7 +90,7 @@ export function FocusContact() {
 
       {/* Secondary Social Channels Row */}
       <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-zinc-600 dark:text-zinc-400">
-        <div className="flex items-center gap-3.5">
+        <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1.5">
           <a
             href={SOCIAL_PROFILES.github}
             target="_blank"
@@ -101,7 +101,7 @@ export function FocusContact() {
             <span>GitHub</span>
             <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
           </a>
-          <span className="text-border">/</span>
+          <span className="text-border" aria-hidden="true">/</span>
           <a
             href={SOCIAL_PROFILES.linkedin}
             target="_blank"
@@ -110,6 +110,28 @@ export function FocusContact() {
             className="hover:text-ink transition-colors inline-flex items-center gap-1"
           >
             <span>LinkedIn</span>
+            <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
+          </a>
+          <span className="text-border" aria-hidden="true">/</span>
+          <a
+            href={SOCIAL_PROFILES.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor-label="Follow on Instagram."
+            className="hover:text-ink transition-colors inline-flex items-center gap-1"
+          >
+            <span>Instagram</span>
+            <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
+          </a>
+          <span className="text-border" aria-hidden="true">/</span>
+          <a
+            href={SOCIAL_PROFILES.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor-label="Follow on X."
+            className="hover:text-ink transition-colors inline-flex items-center gap-1"
+          >
+            <span>X (Twitter)</span>
             <ArrowUpRight className="w-3 h-3 opacity-60" aria-hidden="true" />
           </a>
         </div>

@@ -13,7 +13,7 @@ export function FocusCertifications() {
       {/* Section Index */}
       <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none mb-3.5">
         <span className="tracking-wider font-medium">
-          [ 05 // CERTIFICATIONS ]
+          [ 06 // CERTIFICATIONS ]
         </span>
         <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
           CERTIFICATIONS ({certifications.length})

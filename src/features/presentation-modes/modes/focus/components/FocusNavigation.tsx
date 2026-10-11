@@ -110,17 +110,19 @@ export function FocusNavigation() {
         </div>
 
         {/* --- MOBILE ACTIVE SECTION BADGE (< sm) --- */}
-        <div className="flex sm:hidden items-center gap-1.5 font-mono text-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-brand animate-status-breathe" />
-          <span className="font-semibold text-ink text-xs tracking-wider uppercase">
-            FOCUS // {currentActiveItem.name}
+        <div className="flex sm:hidden items-center gap-1.5 font-mono text-xs min-w-0 flex-shrink">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand animate-status-breathe flex-shrink-0" />
+          <span className="font-semibold text-ink text-xs tracking-wider uppercase truncate">
+            <span className="hidden min-[380px]:inline">FOCUS // </span>{currentActiveItem.name}
           </span>
         </div>
 
         {/* --- UTILITIES: Mode Switcher, Theme Toggle, and Mobile Menu --- */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
           <PresentationModeSwitcher variant="focus-nav" />
-          <CreativeModeToggle />
+          <div className="hidden min-[420px]:block">
+            <CreativeModeToggle />
+          </div>
           <ThemeToggle />
 
           {/* Mobile Menu Trigger Button (< sm) */}
@@ -184,6 +186,10 @@ export function FocusNavigation() {
                     </Link>
                   );
                 })}
+                <div className="min-[420px]:hidden px-3 py-2 border-t border-border-hairline/40 flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-muted-foreground">Creative Mode</span>
+                  <CreativeModeToggle />
+                </div>
               </div>
             )}
           </div>

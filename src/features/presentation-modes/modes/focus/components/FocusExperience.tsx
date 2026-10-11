@@ -17,16 +17,16 @@ export function FocusExperience() {
         </span>
       </div>
 
-      {/* Chronological Balanced Rows: 160px Period + Full Content Column */}
+      {/* Chronological Balanced Rows: 160px Period on Desktop, Structured Stack on Mobile */}
       <div className="divide-y divide-border-divider">
         {experiences.map((exp, index) => (
           <div
             key={`${exp.year}-${index}`}
-            className="py-4.5 sm:py-5 grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] gap-2 sm:gap-6 items-start"
+            className="py-4.5 sm:py-5 grid grid-cols-1 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-6 items-start"
           >
-            {/* Left Column: Date & Status Tag */}
-            <div className="min-w-0 flex items-center gap-2 pt-0.5">
-              <span className="font-mono text-xs sm:text-[13px] font-semibold text-ink">
+            {/* Desktop Left Column: Date & Status Tag */}
+            <div className="hidden sm:flex min-w-0 items-center gap-2 pt-0.5">
+              <span className="font-mono text-xs sm:text-[13px] font-semibold text-ink tabular-nums">
                 {exp.year}
               </span>
               {exp.isCurrent && (
@@ -34,20 +34,34 @@ export function FocusExperience() {
               )}
             </div>
 
-            {/* Right Column: Role, Company & Readable Line-Length Description */}
+            {/* Content Column */}
             <div className="min-w-0 flex flex-col">
-              <div className="flex items-baseline gap-2 flex-wrap">
-                <h3 className="font-sans font-semibold text-sm sm:text-base text-ink">
-                  {exp.role}
-                </h3>
-                <span className="text-zinc-400 dark:text-zinc-500 font-mono text-xs select-none">·</span>
-                <span className="font-mono text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400">
-                  {exp.company}
+              {/* Mobile Timeframe & Status Kicker */}
+              <div className="flex sm:hidden items-center justify-between gap-2 mb-1">
+                <span className="font-mono text-[11px] font-medium tracking-wider text-muted-foreground/80 uppercase tabular-nums">
+                  {exp.year}
                 </span>
+                {exp.isCurrent && (
+                  <StatusBadge status="active" size="sm" />
+                )}
               </div>
 
+              {/* Role & Company Header */}
+              <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
+                <h3 className="font-sans font-semibold text-[15px] sm:text-base text-ink leading-snug">
+                  {exp.role}
+                </h3>
+                <span className="hidden sm:inline text-zinc-400 dark:text-zinc-500 font-mono text-xs select-none" aria-hidden="true">
+                  ·
+                </span>
+                <p className="font-sans sm:font-mono text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400 mt-0.5 sm:mt-0 leading-normal">
+                  {exp.company}
+                </p>
+              </div>
+
+              {/* Description */}
               {exp.description && (
-                <p className="mt-1.5 text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 font-sans leading-[1.6] max-w-[62ch]">
+                <p className="mt-1.5 text-[13.5px] sm:text-[14.5px] text-zinc-600 dark:text-zinc-300 font-sans leading-relaxed max-w-[62ch]">
                   {exp.description}
                 </p>
               )}

@@ -143,33 +143,10 @@ export function GithubContributions() {
       }
     }
 
-    function initObserver() {
-      if (typeof window !== "undefined" && "IntersectionObserver" in window) {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            if (entries[0]?.isIntersecting) {
-              fetchContributions();
-              observer.disconnect();
-            }
-          },
-          { rootMargin: "250px" }
-        );
-        if (containerRef.current) {
-          observer.observe(containerRef.current);
-        } else {
-          fetchContributions();
-        }
-        return () => observer.disconnect();
-      } else {
-        fetchContributions();
-      }
-    }
-
-    const cleanupObserver = initObserver();
+    fetchContributions();
 
     return () => {
       isMounted = false;
-      if (cleanupObserver) cleanupObserver();
     };
   }, []);
 

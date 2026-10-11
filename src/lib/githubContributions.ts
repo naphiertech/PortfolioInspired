@@ -35,10 +35,10 @@ export interface GitHubContributionsApiResponse {
 
 /**
  * Normalizes contribution days by YYYY-MM-DD date and merges multiple datasets into one.
- * - For matching dates: combinedCount = naphiertechCount + bagatata05Count
- * - If a date exists on only one account, uses that account's count
- * - Calculates yearly total from the merged dataset
- * - Preserves monochrome intensity levels (0..4) and tooltip formatting
+ * - For matching dates: combinedCount = sum of all account counts on that date.
+ * - If a date exists on only one account, uses that account's count.
+ * - Calculates yearly total from the merged dataset.
+ * - Preserves monochrome intensity levels (0..4) and tooltip formatting.
  */
 export function mergeContributionData(
   datasets: (ContributionData | null | undefined)[],
@@ -92,7 +92,7 @@ export function mergeContributionData(
         }
       }
 
-      // Determine level:
+      // Determine level (0..4):
       // - 0 when 0 contributions
       // - If only one account has activity on that date, preserve that account's level
       // - If multiple accounts have activity on matching date, boost level appropriately (capped at 4)
@@ -105,16 +105,16 @@ export function mergeContributionData(
         level = Math.min(4, Math.max(maxLevel, 1) + 1);
       }
 
-      // Format tooltip
+      // Format tooltip matching GitHub's natural language style
       let tooltip = "";
       if (combinedCount === 0) {
         tooltip = list[0]?.tooltip || `No contributions on ${day.date}`;
       } else if (nonZeroAccounts <= 1 && sampleTooltip) {
         tooltip = sampleTooltip;
       } else {
-        const dateMatch = sampleTooltip.match(/on (.+)$/i);
-        const datePhrase = dateMatch ? dateMatch[1] : day.date;
-        tooltip = `${combinedCount} contribution${combinedCount === 1 ? "" : "s"} on ${datePhrase}`;
+        const dateMatch = sampleTooltip.match(/on (.+?)\.?$/i);
+        const datePhrase = dateMatch ? dateMatch[1].trim() : day.date;
+        tooltip = `${combinedCount} contribution${combinedCount === 1 ? "" : "s"} on ${datePhrase}.`;
       }
 
       return {
@@ -153,11 +153,18 @@ export function mergeContributionData(
 }
 
 /**
- * Fetches contribution data for a single account from the existing caching API route.
+ * Fetches contribution data for a single account from the caching API route.
  */
-export async function fetchUserContributions(username: string): Promise<ContributionData | null> {
+export async function fetchUserContributions(
+  username: string,
+  year?: number,
+): Promise<ContributionData | null> {
   try {
-    const res = await fetch(`/api/github-contributions?username=${encodeURIComponent(username)}`);
+    const params = new URLSearchParams({ username });
+    if (year) {
+      params.set("year", String(year));
+    }
+    const res = await fetch(`/api/github-contributions?${params.toString()}`);
     if (!res.ok) return null;
     const json: GitHubContributionsApiResponse = await res.json();
     if (json.success && json.data) {
@@ -170,26 +177,32 @@ export async function fetchUserContributions(username: string): Promise<Contribu
 }
 
 /**
- * Fetches contribution data for multiple accounts in parallel,
- * merges after both resolve, and handles one account failing gracefully without breaking the graph.
+ * Fetches pre-merged contribution data for multiple accounts directly from the server route.
+ * Combines in a single request, eliminating client-side network waterfalls and race conditions.
  */
 export async function fetchCombinedContributions(
   accounts: readonly string[] = GITHUB_ACCOUNTS,
+  year?: number,
 ): Promise<ContributionData | null> {
-  const settled = await Promise.allSettled(
-    accounts.map((username) => fetchUserContributions(username)),
-  );
-
-  const successfulDatasets: ContributionData[] = [];
-  for (const result of settled) {
-    if (result.status === "fulfilled" && result.value) {
-      successfulDatasets.push(result.value);
+  try {
+    const params = new URLSearchParams();
+    if (accounts && accounts.length > 0) {
+      params.set("accounts", accounts.join(","));
     }
-  }
+    if (year) {
+      params.set("year", String(year));
+    }
+    const queryString = params.toString();
+    const url = queryString ? `/api/github-contributions?${queryString}` : "/api/github-contributions";
 
-  if (successfulDatasets.length === 0) {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const json: GitHubContributionsApiResponse = await res.json();
+    if (json.success && json.data) {
+      return json.data;
+    }
+    return null;
+  } catch {
     return null;
   }
-
-  return mergeContributionData(successfulDatasets);
 }

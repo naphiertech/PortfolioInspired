@@ -104,7 +104,7 @@ export function PresentationModeSwitcher({
       // focus-nav or minimal
       setPopoverPos({
         top: rect.bottom + 6,
-        right: Math.max(16, window.innerWidth - rect.right),
+        right: isMobile ? 16 : Math.max(16, window.innerWidth - rect.right),
       });
     }
   }, [resolvedVariant]);
@@ -472,8 +472,8 @@ export function PresentationModeSwitcher({
                       : resolvedVariant === "dock"
                       ? styles.panel
                       : resolvedVariant === "focus-nav"
-                      ? "w-64 sm:w-72 p-1.5 rounded-md bg-surface dark:bg-[#141618] border border-border shadow-2xl font-mono"
-                      : "w-60 sm:w-64 p-3 rounded-none sm:rounded-sm bg-[#faf8f5] dark:bg-[#181816] border border-zinc-300 dark:border-white/[0.15] shadow-2xl font-serif"
+                      ? "w-[min(288px,calc(100vw-32px))] sm:w-72 p-1.5 rounded-md bg-surface dark:bg-[#141618] border border-border shadow-2xl font-mono"
+                      : "w-[min(264px,calc(100vw-32px))] sm:w-64 p-3 rounded-none sm:rounded-sm bg-[#faf8f5] dark:bg-[#181816] border border-zinc-300 dark:border-white/[0.15] shadow-2xl font-serif"
                   }`}
                   onKeyDown={handleKeyDown}
                 >

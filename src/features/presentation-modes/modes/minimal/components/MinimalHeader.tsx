@@ -19,9 +19,11 @@ export function MinimalHeader() {
       </span>
 
       {/* Global Utilities */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
         <PresentationModeSwitcher variant="minimal" />
-        <CreativeModeToggle />
+        <div className="hidden min-[380px]:block">
+          <CreativeModeToggle />
+        </div>
         <ThemeToggle />
       </div>
     </header>

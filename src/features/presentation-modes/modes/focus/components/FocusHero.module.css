@@ -73,12 +73,17 @@
 }
 @media (max-width: 767px) {
   .split { grid-template-columns: minmax(0, 1fr); gap: calc(24px * var(--creative-spacing, 1)); }
-  .portraitGroup { display: grid; grid-template-columns: minmax(0, 1fr); padding-right: 0; left: 0; }
-  .name { font-size: calc(clamp(44px, 10vw, 64px) * var(--creative-type-scale, 1)); }
-  .portraitComposition { max-width: 300px; justify-self: center; padding: 10px 10px 22px; }
-  .portrait { aspect-ratio: 1; }
+  .portraitGroup { display: grid; grid-template-columns: minmax(0, 1fr); padding-right: 0; left: 0; margin-top: 8px; }
+  .name { font-size: calc(clamp(40px, 9vw, 56px) * var(--creative-type-scale, 1)); }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  .primary, .secondary { width: 100%; min-height: 40px; padding: 8px 10px; font-size: 12px; }
+  .lowerIdentity { flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 22px; }
+  .note { border-left: none; padding-left: 0; border-top: 1px dashed var(--border-dashed); padding-top: 12px; max-width: 100%; width: 100%; }
+  .portraitComposition { max-width: 270px; justify-self: center; padding: 12px 12px 20px; }
+  .portrait { aspect-ratio: 0.85; }
   .codeNote, .processNote, .crosshair { display: none; }
-  .projectNote { right: 0; bottom: 10%; padding: 9px; font-size: 10px; }
+  .projectNote { right: -2px; bottom: 44px; padding: 6px 9px; font-size: 10px; }
+  .portraitCaption { justify-content: center; margin-top: 14px; }
   .metadata { gap: 8px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {

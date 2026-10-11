@@ -17,6 +17,7 @@ export const SOCIAL_PROFILES = {
   // Existing AI link allowlist alias; keep its matching behavior unchanged.
   linkedinLegacy: "https://www.linkedin.com/in/naphier-awalie",
   instagram: "https://www.instagram.com/bagatata05/",
+  twitter: "https://x.com/bagatata05",
   email: "naphiera@gmail.com",
 };
 

@@ -31,4 +31,6 @@ export const SOCIAL_CURSOR_LABELS = {
   linkedin: "My professional profile.",
   email: "Send me an email.",
   call: "Let's talk.",
+  instagram: "Follow on Instagram.",
+  twitter: "Follow on X.",
 } as const;

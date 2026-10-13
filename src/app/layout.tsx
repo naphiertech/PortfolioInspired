@@ -173,14 +173,14 @@ export default async function RootLayout({
         <meta name="description" content={SITE_DEFAULT_DESCRIPTION} />
         <link
           rel="preload"
-          href="/fonts/sakthi/c41ca59f1c34ba31-s.p.2moef4a_pkre2.woff2"
+          href="/fonts/artisan/c41ca59f1c34ba31-s.p.2moef4a_pkre2.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
-          href="/fonts/sakthi/e41d5df559864f9e-s.p.2rlzm4mj5kw8e.woff2"
+          href="/fonts/artisan/e41d5df559864f9e-s.p.2rlzm4mj5kw8e.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"

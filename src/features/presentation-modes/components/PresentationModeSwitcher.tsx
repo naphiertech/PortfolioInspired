@@ -372,7 +372,7 @@ export function PresentationModeSwitcher({
         )}
 
         {/* ========================================================================= */}
-        {/* 4. AGENT VARIANT: AI Workspace Command-Center Trigger                     */}
+        {/* 4. ARTISAN VARIANT: Tactile pill trigger matching Artisan page buttons     */}
         {/* ========================================================================= */}
         {resolvedVariant === "agent" && (
           <button
@@ -383,19 +383,19 @@ export function PresentationModeSwitcher({
             aria-haspopup="listbox"
             aria-expanded={isOpen}
             aria-label={`Presentation mode: ${currentConfig.label}. Click to switch.`}
-            className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-md bg-surface border border-border-hairline hover:border-border text-ink shadow-xs text-xs font-mono transition-all outline-none focus-visible:ring-1 focus-visible:ring-brand cursor-pointer whitespace-nowrap flex-shrink-0 ${
-              isOpen ? "border-ink/40 bg-surface-hover shadow-sm" : ""
+            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border bg-white/85 dark:bg-[#0a0a0a]/85 backdrop-blur-xl text-xs font-sans font-medium transition-all duration-200 outline-none focus-visible:ring-1 focus-visible:ring-foreground/30 cursor-pointer whitespace-nowrap flex-shrink-0 ${
+              isOpen
+                ? "border-black/25 dark:border-white/25 text-foreground shadow-[0_4px_16px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)]"
+                : "border-black/12 dark:border-white/12 hover:border-black/25 dark:hover:border-white/25 text-foreground/85 hover:text-foreground shadow-[0_2px_10px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
             }`}
           >
-            <span className="text-brand text-xs font-mono select-none flex-shrink-0" aria-hidden="true">
-              ◈
-            </span>
-            <span className="font-semibold uppercase text-xs tracking-wider text-ink whitespace-nowrap">
+            <Sparkles className="w-3.5 h-3.5 text-foreground/75 flex-shrink-0" aria-hidden="true" />
+            <span className="font-sans font-medium text-xs tracking-tight text-foreground whitespace-nowrap">
               {currentConfig.shortLabel || currentConfig.label}
             </span>
             <ChevronDown
-              className={`w-3 h-3 text-muted-foreground/60 transition-transform duration-150 flex-shrink-0 ${
-                isOpen ? "rotate-180 text-ink" : ""
+              className={`w-3.5 h-3.5 text-muted-foreground/70 transition-transform duration-200 flex-shrink-0 ${
+                isOpen ? "rotate-180 text-foreground" : ""
               }`}
               aria-hidden="true"
             />
@@ -436,7 +436,7 @@ export function PresentationModeSwitcher({
               }}
               className={`fixed outline-none z-[70] pointer-events-auto animate-in fade-in zoom-in-95 duration-150 ${
                 resolvedVariant === "agent"
-                  ? "w-[calc(100vw-32px)] sm:w-80 max-w-[340px] p-2 rounded-xl bg-surface dark:bg-[#121316] border border-border shadow-2xl font-mono text-ink"
+                  ? "artisan-mode w-[calc(100vw-32px)] sm:w-80 max-w-[336px] p-1.5 rounded-2xl bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-[0_12px_36px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.55)] font-sans text-foreground"
                   : resolvedVariant === "dock"
                   ? styles.panel
                   : resolvedVariant === "focus-nav"
@@ -445,23 +445,22 @@ export function PresentationModeSwitcher({
               }`}
               onKeyDown={handleKeyDown}
             >
+              <div
+                className={
+                  resolvedVariant === "agent"
+                    ? "rounded-xl border border-black/10 dark:border-white/10 bg-background p-2"
+                    : "contents"
+                }
+              >
                   {/* --- POPOVER HEADER (Mode-specific) --- */}
                   {resolvedVariant === "agent" && (
-                    <div className="px-3 py-2 border-b border-border/80 mb-1.5 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] text-ink font-bold tracking-widest uppercase">
-                          ARTISAN
-                        </span>
-                        <span className="font-mono text-[9px] text-muted-foreground/70 px-1.5 py-0.5 rounded bg-surface-hover/80 border border-border-hairline font-semibold">
-                          {availableModes.length} MODES
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-                        <span className="font-mono text-[9px] text-emerald-500 dark:text-emerald-400 font-bold tracking-wider">
-                          ACTIVE
-                        </span>
-                      </div>
+                    <div className="px-2.5 pt-1.5 pb-2.5 border-b border-black/10 dark:border-white/10 mb-1.5 flex items-center justify-between">
+                      <span className="font-mono text-base font-semibold tracking-tight text-foreground leading-none">
+                        Presentation Mode
+                      </span>
+                      <span className="font-sans text-[10px] font-medium text-muted-foreground px-2.5 py-0.5 rounded-full border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.03]">
+                        {availableModes.length} Views
+                      </span>
                     </div>
                   )}
 
@@ -549,43 +548,36 @@ export function PresentationModeSwitcher({
                               playHover();
                               setFocusedIndex(index);
                             }}
-                            className={`w-full text-left p-2.5 rounded-lg flex items-start gap-2.5 transition-all outline-none cursor-pointer border group ${
+                            className={`w-full text-left p-2.5 rounded-xl flex items-start gap-2.5 transition-all outline-none cursor-pointer border group ${
                               isSelected
-                                ? "bg-surface-hover/90 border-border text-ink shadow-2xs"
+                                ? "bg-black/[0.03] dark:bg-white/[0.05] border-black/15 dark:border-white/15 text-foreground shadow-2xs"
                                 : isFocused
-                                ? "bg-surface-hover/60 border-transparent text-ink"
-                                : "border-transparent text-muted-foreground hover:bg-surface-hover/40 hover:text-ink"
+                                ? "bg-black/[0.02] dark:bg-white/[0.03] border-black/10 dark:border-white/10 text-foreground"
+                                : "border-transparent text-muted-foreground hover:bg-black/[0.02] dark:hover:bg-white/[0.03] hover:border-black/10 dark:hover:border-white/10 hover:text-foreground"
                             }`}
                           >
-                            <div className="flex items-center gap-1.5 mt-0.5 flex-shrink-0">
-                              <span
-                                className={`font-mono text-xs select-none ${
-                                  isSelected ? "text-emerald-500 font-bold" : "text-muted-foreground/40"
-                                }`}
-                                aria-hidden="true"
-                              >
-                                {isSelected ? "●" : "◌"}
-                              </span>
-                              <ModeIcon
-                                className={`w-3.5 h-3.5 transition-colors ${
-                                  isSelected ? "text-ink" : "text-muted-foreground/60 group-hover:text-ink"
-                                }`}
-                                aria-hidden="true"
-                              />
+                            <div
+                              className={`size-8 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                                isSelected
+                                  ? "border-black/15 dark:border-white/15 bg-background text-foreground shadow-2xs"
+                                  : "border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.03] text-muted-foreground group-hover:text-foreground"
+                              }`}
+                            >
+                              <ModeIcon className="w-3.5 h-3.5" aria-hidden="true" />
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
-                                <span className="font-mono text-xs font-bold uppercase tracking-wider text-ink">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="font-sans text-xs font-semibold tracking-tight text-foreground">
                                   {item.label}
                                 </span>
                                 {isSelected && (
-                                  <span className="font-mono text-[9px] font-semibold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
-                                    ACTIVE
+                                  <span className="font-sans text-[10px] font-medium px-2 py-0.5 rounded-full bg-foreground text-background shrink-0">
+                                    Active
                                   </span>
                                 )}
                               </div>
-                              <p className="font-sans text-[11.5px] text-muted-foreground leading-snug mt-0.5">
+                              <p className="font-sans text-[11px] text-muted-foreground leading-relaxed mt-0.5">
                                 {item.description}
                               </p>
                             </div>
@@ -1052,7 +1044,8 @@ export function PresentationModeSwitcher({
                     </div>
                   )}
                 </div>
-              </>,
+              </div>
+            </>,
           document.body
         )}
     </>

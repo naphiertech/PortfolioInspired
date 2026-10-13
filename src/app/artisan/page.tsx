@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ArtisanPortfolioLayout } from "@/components/sites/sakthi-portfolio/ArtisanPortfolioLayout";
+import { ArtisanPortfolioLayout } from "@/features/presentation-modes/modes/artisan/ArtisanPortfolioLayout";
 
 export const metadata: Metadata = {
   title: "Artisan Portfolio | Naphier",
   description:
-    "Handcrafted sketch aesthetic portfolio with Three.js smoke reveal shaders, tactile train window, 3D confidential Manila folders, and interactive playground.",
+    "Interactive 3D workspace and handcrafted editorial portfolio with tactile train window, MacBook showcase, and field notes.",
 };
 
 export default function ArtisanPage() {

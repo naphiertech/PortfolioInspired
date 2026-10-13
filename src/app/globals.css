@@ -873,7 +873,7 @@ body:has(.artisan-mode) .bottom-progressive-blur,
 }
 
 /* ==========================================================================
-   Artisan Mode (Sakthi Portfolio Clone) Fonts & Visual Tokens
+   Artisan Mode Fonts & Visual Tokens
    ========================================================================== */
 
 @font-face {
@@ -881,7 +881,7 @@ body:has(.artisan-mode) .bottom-progressive-blur,
   font-style: normal;
   font-weight: 100 800;
   font-display: swap;
-  src: url("/fonts/sakthi/c41ca59f1c34ba31-s.p.2moef4a_pkre2.woff2") format("woff2");
+  src: url("/fonts/artisan/c41ca59f1c34ba31-s.p.2moef4a_pkre2.woff2") format("woff2");
 }
 
 @font-face {
@@ -889,7 +889,7 @@ body:has(.artisan-mode) .bottom-progressive-blur,
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("/fonts/sakthi/e41d5df559864f9e-s.p.2rlzm4mj5kw8e.woff2") format("woff2");
+  src: url("/fonts/artisan/e41d5df559864f9e-s.p.2rlzm4mj5kw8e.woff2") format("woff2");
 }
 
 @font-face {
@@ -897,7 +897,7 @@ body:has(.artisan-mode) .bottom-progressive-blur,
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("/fonts/sakthi/87d3ffffac5dafea-s.p.1e8puyswpvmbr.woff2") format("woff2");
+  src: url("/fonts/artisan/87d3ffffac5dafea-s.p.1e8puyswpvmbr.woff2") format("woff2");
 }
 
 @font-face {
@@ -905,7 +905,7 @@ body:has(.artisan-mode) .bottom-progressive-blur,
   font-style: normal;
   font-weight: 400 700;
   font-display: swap;
-  src: url("/fonts/sakthi/caveat-subset.woff2") format("woff2");
+  src: url("/fonts/artisan/caveat-subset.woff2") format("woff2");
 }
 
 .artisan-mode {

@@ -7,7 +7,7 @@ import {
   getResolvedModeLayout,
 } from "../context/PresentationModeContext";
 
-import { AgentFolioLayout } from "../modes/agent/AgentFolioLayout";
+import { ArtisanPortfolioLayout } from "../modes/artisan/ArtisanPortfolioLayout";
 
 // Inactive presentation modes are code-split to keep the initial landing bundle lean
 const DefaultModeLayout = dynamic(
@@ -38,7 +38,7 @@ export function PresentationModeRoot() {
   return (
     <div key={mode} data-mode={mode} className="w-full">
       {mode === "agent" ? (
-        <AgentFolioLayout />
+        <ArtisanPortfolioLayout />
       ) : ResolvedLayout ? (
         <ResolvedLayout />
       ) : mode === "minimal" ? (

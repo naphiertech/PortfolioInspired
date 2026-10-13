@@ -2,6 +2,7 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
+import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 
 const DustCanvas = dynamic(
   () => import("@/components/DustCanvas").then((m) => m.DustCanvas),
@@ -34,13 +35,19 @@ const MouseTourGuide = dynamic(
 );
 
 export function AppOverlays() {
+  const { mode, starsEnabled, gridEnabled } = usePresentationMode();
+
+  if (mode === "agent") {
+    return null;
+  }
+
   return (
     <>
       {/* 1. Global Flickering Blueprint Grid Layer (Behind stars and content) */}
-      <FlickeringGrid />
+      {gridEnabled && <FlickeringGrid />}
 
       {/* 2. Ambient Global Stars Background Canvas (Fixed behind content) */}
-      <StarsBackground />
+      {starsEnabled && <StarsBackground />}
 
       {/* 3. AI Assistant Chat Widget */}
       <ChatWidget />

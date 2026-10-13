@@ -106,8 +106,9 @@ function ChatWidgetContent() {
     setIsOpen(false);
   };
 
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
   // Minimal exposes the launcher only during Creative mode; Agent stays excluded.
-  if ((mode === "minimal" && !creativeActive) || mode === "agent") {
+  if ((mode === "minimal" && !creativeActive) || mode === "agent" || pathname === "/artisan") {
     return null;
   }
 

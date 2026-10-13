@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
+import { preload } from "react-dom";
 import { Doto, Figtree, JetBrains_Mono, Carrois_Gothic_SC } from "next/font/google";
 import "./globals.css";
 
@@ -7,18 +8,21 @@ const fontDoto = Doto({
   subsets: ["latin"],
   variable: "--font-doto",
   display: "swap",
+  preload: false,
 });
 
 const fontFigtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
   display: "swap",
+  preload: false,
 });
 
 const fontJetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
   display: "swap",
+  preload: false,
 });
 
 const fontCarroisGothic = Carrois_Gothic_SC({
@@ -26,6 +30,7 @@ const fontCarroisGothic = Carrois_Gothic_SC({
   subsets: ["latin"],
   variable: "--font-carrois-gothic-sc",
   display: "swap",
+  preload: false,
 });
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SoundProvider } from "@/context/SoundContext";
@@ -147,16 +152,46 @@ export default async function RootLayout({
   const initialStarsEnabled = cookieStars === "true";
   const initialGridEnabled = cookieGrid === "true";
 
+  if (initialMode === "agent") {
+    preload("/homepage-bg/3D-Room-Dark-Cutout-mobile.webp", {
+      as: "image",
+      type: "image/webp",
+      media: "(max-width: 640px)",
+      fetchPriority: "high",
+    });
+    preload("/homepage-bg/3D-Room-Dark-Cutout.webp", {
+      as: "image",
+      type: "image/webp",
+      media: "(min-width: 641px)",
+      fetchPriority: "high",
+    });
+  }
+
   return (
     <html lang="en" suppressHydrationWarning className={`dark ${fontDoto.variable} ${fontFigtree.variable} ${fontJetBrainsMono.variable} ${fontCarroisGothic.variable}`}>
       <head>
+        <meta name="description" content={SITE_DEFAULT_DESCRIPTION} />
+        <link
+          rel="preload"
+          href="/fonts/sakthi/c41ca59f1c34ba31-s.p.2moef4a_pkre2.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/sakthi/e41d5df559864f9e-s.p.2rlzm4mj5kw8e.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         {/* Anti-flash theme initialization script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
                 var saved = localStorage.getItem('naphier_theme');
-                var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches) || (saved === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                var isDark = saved ? (saved === 'dark' || (saved === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) : true;
                 if (isDark) {
                   document.documentElement.classList.add('dark');
                   document.documentElement.classList.remove('light');
@@ -191,8 +226,8 @@ export default async function RootLayout({
                 {/* Bottom Progressive Blur Overlay */}
                 <div className="bottom-progressive-blur" aria-hidden="true" />
 
-                {/* Vercel Web Analytics */}
-                <Analytics />
+                {/* Vercel Web Analytics (active when deployed) */}
+                {process.env.VERCEL && <Analytics />}
               </PresentationModeProvider>
             </SnapProvider>
           </SoundProvider>

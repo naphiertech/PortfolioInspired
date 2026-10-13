@@ -206,8 +206,7 @@
 /* Dark expands over light; on return, the old dark snapshot contracts above light. */
 html.theme-transitioning[data-theme-transition="expand-dark"]::view-transition-new(root) {
   clip-path: circle(0px at var(--theme-clip-x, 50%) var(--theme-clip-y, 50%));
-  animation: theme-reveal 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
-  animation-play-state: paused !important;
+  animation: theme-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
   opacity: 1;
 }
 
@@ -221,19 +220,11 @@ html.theme-transitioning[data-theme-transition="expand-dark"]::view-transition-o
   clip-path: none !important;
 }
 
-html.theme-transitioning[data-theme-transition="expand-dark"][data-theme-reveal-driver="waapi"]::view-transition-new(root) {
-  animation: none !important;
-}
-
-html.theme-transitioning[data-theme-transition="expand-dark"][data-theme-reveal-driver="css"]::view-transition-new(root) {
-  animation-play-state: running !important;
-}
-
 html.theme-transitioning[data-theme-transition="collapse-dark"]::view-transition-old(root) {
   z-index: 99999 !important;
   will-change: clip-path;
   clip-path: circle(var(--theme-clip-radius, 150vmax) at var(--theme-clip-x, 50%) var(--theme-clip-y, 50%));
-  animation: theme-conceal 850ms cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  animation: theme-conceal 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
 }
 
 html.theme-transitioning[data-theme-transition="collapse-dark"]::view-transition-new(root) {
@@ -359,6 +350,12 @@ html.theme-transitioning *::after {
   -webkit-mask-image: linear-gradient(to top, black 30%, transparent 100%);
   transition: background 200ms ease;
 }
+
+body:has(.artisan-mode) .bottom-progressive-blur,
+.artisan-mode ~ .bottom-progressive-blur {
+  display: none !important;
+}
+
 
 /* Project CAD Card with Corner Drafting Reticles */
 .cad-project-card {
@@ -875,6 +872,176 @@ html.theme-transitioning *::after {
   }
 }
 
+/* ==========================================================================
+   Artisan Mode (Sakthi Portfolio Clone) Fonts & Visual Tokens
+   ========================================================================== */
 
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("/fonts/sakthi/c41ca59f1c34ba31-s.p.2moef4a_pkre2.woff2") format("woff2");
+}
 
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/sakthi/e41d5df559864f9e-s.p.2rlzm4mj5kw8e.woff2") format("woff2");
+}
 
+@font-face {
+  font-family: "Courier Prime";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/sakthi/87d3ffffac5dafea-s.p.1e8puyswpvmbr.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/sakthi/caveat-subset.woff2") format("woff2");
+}
+
+.artisan-mode {
+  --font-geist-sans: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Instrument Serif", Georgia, Cambria, serif;
+  --font-prime: "Courier Prime", monospace;
+  --font-caveat: "Caveat", cursive, sans-serif;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --muted-foreground: #737373;
+  --stroke-color: #171717;
+  font-family: var(--font-geist-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.dark .artisan-mode,
+.artisan-mode.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --muted-foreground: #a1a1a1;
+  --stroke-color: #262626;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.artisan-mode .font-mono {
+  font-family: var(--font-mono) !important;
+}
+
+.artisan-mode .font-sans {
+  font-family: var(--font-geist-sans) !important;
+}
+
+.artisan-mode .font-serif {
+  font-family: var(--font-mono) !important;
+}
+
+.artisan-mode .font-prime {
+  font-family: var(--font-prime) !important;
+}
+
+.artisan-mode .font-caveat {
+  font-family: var(--font-caveat) !important;
+}
+
+.artisan-mode .transform-3d {
+  transform-style: preserve-3d;
+}
+
+.artisan-mode .perspective-midrange {
+  perspective: 800px;
+}
+
+.artisan-mode .inset-shadow-sm {
+  box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.artisan-mode .inset-shadow-white\/60 {
+  box-shadow: inset 0 1px 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.artisan-mode .inset-shadow-black\/50 {
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.artisan-mode .inset-shadow-black\/20 {
+  box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.artisan-mode .rounded-4xl {
+  border-radius: 2rem;
+}
+
+.artisan-mode .rounded-t-4xl {
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+}
+
+.artisan-mode .shadow-xs {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.artisan-mode .shadow-2xs {
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+@keyframes layoutWhirlpoolSpin {
+  0% {
+    transform: rotate(-110deg) scale(1.06);
+  }
+  42%,
+  58% {
+    transform: rotate(0deg) scale(1);
+  }
+  100% {
+    transform: rotate(110deg) scale(1.06);
+  }
+}
+
+@keyframes layoutWhirlpoolStroke {
+  0% {
+    stroke-dashoffset: 1;
+    stroke-width: 2px;
+  }
+  42%,
+  58% {
+    stroke-dashoffset: 0;
+    stroke-width: 560px;
+  }
+  100% {
+    stroke-dashoffset: -1;
+    stroke-width: 2px;
+  }
+}
+
+.layout-whirlpool-svg {
+  animation: layoutWhirlpoolSpin 1.05s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.layout-whirlpool-path {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  stroke-width: 2px;
+  animation: layoutWhirlpoolStroke 1.05s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes artisanShutterLouver {
+  0% {
+    transform: translate3d(0, 100%, 0);
+  }
+  30%,
+  70% {
+    transform: translate3d(0, 0%, 0);
+  }
+  100% {
+    transform: translate3d(0, -100%, 0);
+  }
+}

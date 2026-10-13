@@ -1,9 +1,14 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useSnap } from "@/context/SnapContext";
-import { SnappedRouteFallback } from "./SnappedRouteFallback";
+
+const SnappedRouteFallback = dynamic(
+  () => import("./SnappedRouteFallback").then((m) => m.SnappedRouteFallback),
+  { ssr: false }
+);
 
 interface SnapRouteGuardProps {
   children: React.ReactNode;

@@ -14,7 +14,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("dark");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
   const activeTransitionRef = React.useRef(0);
@@ -157,13 +157,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.style.setProperty("--theme-clip-radius", `${endRadius}px`);
     document.documentElement.classList.add("theme-transitioning");
     document.documentElement.dataset.themeTransition = expandingDark ? "expand-dark" : "collapse-dark";
-    delete document.documentElement.dataset.themeRevealDriver;
 
     const cleanup = () => {
       if (activeTransitionRef.current === transitionId) {
         document.documentElement.classList.remove("theme-transitioning");
         delete document.documentElement.dataset.themeTransition;
-        delete document.documentElement.dataset.themeRevealDriver;
         document.documentElement.style.removeProperty("--theme-clip-x");
         document.documentElement.style.removeProperty("--theme-clip-y");
         document.documentElement.style.removeProperty("--theme-clip-radius");
@@ -188,49 +186,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
       });
 
-      transition.ready
-        .then(async () => {
-          if (activeTransitionRef.current !== transitionId) return;
-          try {
-            const anim = document.documentElement.animate(
-              {
-                clipPath: expandingDark ? [
-                  `circle(0px at ${x}px ${y}px)`,
-                  `circle(${endRadius}px at ${x}px ${y}px)`,
-                ] : [
-                  `circle(${endRadius}px at ${x}px ${y}px)`,
-                  `circle(0px at ${x}px ${y}px)`,
-                ],
-              },
-              {
-                duration: expandingDark ? 800 : 850,
-                easing: expandingDark ? "cubic-bezier(0.22, 1, 0.36, 1)" : "cubic-bezier(0.4, 0, 0.2, 1)",
-                pseudoElement: expandingDark ? "::view-transition-new(root)" : "::view-transition-old(root)",
-                fill: expandingDark ? "both" : "forwards",
-              }
-            );
-            if (expandingDark) {
-              // WAAPI is now installed, including its zero-radius first frame.
-              // Release the paused CSS fallback without running a second reveal.
-              document.documentElement.dataset.themeRevealDriver = "waapi";
-            }
-            await anim.finished;
-          } catch {
-            if (expandingDark && activeTransitionRef.current === transitionId) {
-              document.documentElement.dataset.themeRevealDriver = "css";
-            }
-            // In browsers where WAAPI on pseudoElement is unsupported (e.g. Safari 18),
-            // the CSS animation @keyframes theme-reveal in globals.css takes over seamlessly.
-          }
-        })
-        .catch(() => {
-          // Gracefully handled if browser transition gets canceled
-        });
-
-      transition.finished
-        .finally(() => {
-          cleanup();
-        });
+      transition.finished.finally(() => {
+        cleanup();
+      });
     } catch {
       cleanup();
       applyThemeUpdate();

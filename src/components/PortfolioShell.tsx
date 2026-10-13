@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { SnapRouteGuard } from "@/components/SnapRouteGuard";
 import dynamic from "next/dynamic";
-import { EditorialDivider } from "@/components/EditorialDivider";
 import { TechnicalGrid } from "@/components/TechnicalGrid";
 
 const VisitorPresence = dynamic(
@@ -47,8 +46,6 @@ function DeferredVisitorPresence() {
   if (!ready) return null;
   return <VisitorPresence />;
 }
-import { SITE_NAME } from "@/lib/siteConfig";
-import { BUILD_INFO } from "@/lib/buildInfo";
 const MusicEdgeDrawer = dynamic(
   () => import("@/features/music-drawer").then((m) => m.MusicEdgeDrawer),
   { ssr: false }
@@ -57,7 +54,10 @@ const ResourcesEdgeDrawer = dynamic(
   () => import("@/features/resources-drawer").then((m) => m.ResourcesEdgeDrawer),
   { ssr: false }
 );
-import { SideDrawerProvider } from "@/features/side-drawers/SideDrawerProvider";
+const SideDrawerProvider = dynamic(
+  () => import("@/features/side-drawers/SideDrawerProvider").then((m) => m.SideDrawerProvider),
+  { ssr: false }
+);
 import styles from "./ContentSurfaces.module.css";
 const CreativeModeHost = dynamic(
   () => import("@/features/creative-mode/components/CreativeModeHost").then((m) => m.CreativeModeHost),
@@ -101,8 +101,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const pathname = usePathname();
   const isFocus = mode === "focus";
   const isMinimal = mode === "minimal";
-  const isAgent = mode === "agent";
-  const isAgentHome = isAgent && pathname === "/";
+  const isAgent = mode === "agent" || pathname === "/artisan";
   // Omit the scenic footer when reading an individual chosen field note (/notes/:slug)
   const isReadingNote = pathname.startsWith("/notes/") && pathname !== "/notes";
   const { state: creative, active: creativeActive, effectiveMotion } = useCreativeMode();
@@ -116,11 +115,11 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       style={{
         "--creative-grid-opacity": creativeActive ? 1 : 0,
         ...(creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : {}),
-        ...(mode !== "agent" ? { paddingBottom: 0 } : {}),
+        ...(mode !== "agent" && pathname !== "/artisan" ? { paddingBottom: 0 } : {}),
       } as React.CSSProperties}
       className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 ${
-        isAgentHome
-          ? "max-w-3xl px-3 sm:px-6 pt-3 sm:pt-4 pb-3 sm:pb-4 min-h-[100dvh] flex flex-col"
+        isAgent
+          ? "w-full max-w-none p-0 m-0 min-h-screen flex flex-col"
           : isMinimal
           ? "max-w-[640px] px-5 sm:px-6 md:px-8 pt-8 pb-20"
           : isFocus
@@ -129,26 +128,30 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       }`}
     >
       {/* Keep one player and resources toolbox across Default routes; leaving Default unmounts them. */}
-      {mode === "default" && (
+      {mode === "default" && pathname !== "/artisan" && (
         <SideDrawerProvider>
           <MusicEdgeDrawer />
           <ResourcesEdgeDrawer />
         </SideDrawerProvider>
       )}
-      <CreativeModeHost />
+      {!isAgent && <CreativeModeHost />}
 
-      {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal & Agent Home) */}
-      <div
-        className={`transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
-          isMinimal || isAgentHome ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
-        aria-hidden="true"
-      >
-        <TechnicalGrid />
-      </div>
+      {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal, omitted in Agent) */}
+      {!isAgent && (
+        <div
+          className={`${
+            isMinimal
+              ? "opacity-0 pointer-events-none transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+              : "opacity-100 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+          }`}
+          aria-hidden="true"
+        >
+          <TechnicalGrid />
+        </div>
+      )}
 
       {/* Top Center Visitor Presence Indicator */}
-      {!isAgentHome && !isMinimal && (
+      {!isAgent && !isMinimal && (
         <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-center z-30 pointer-events-auto">
           <DeferredVisitorPresence />
         </div>
@@ -156,7 +159,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
 
       <main
         ref={contentRef}
-        className={`w-full relative z-10 ${isAgentHome ? "flex-1 flex flex-col" : ""}`}
+        className={`w-full relative z-10 ${isAgent ? "min-h-screen flex flex-col" : ""}`}
         data-creative-mode={creativeActive ? "on" : undefined}
         data-creative-presentation={creativeActive ? mode : undefined}
         data-creative-font={isCustomFont ? creative.fontPairing : undefined}
@@ -177,30 +180,14 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         {creativeActive && <CreativeFontStyles fontPairing={creative.fontPairing} />}
         <SnapRouteGuard>{children}</SnapRouteGuard>
       </main>
-      <CreativeNotes key={`${mode}:${pathname}`} contentRef={contentRef} />
+      {!isAgent && <CreativeNotes key={`${mode}:${pathname}`} contentRef={contentRef} />}
 
-      {/* Scenic ending for supported modes; Agent keeps its existing footer path; omitted when reading a chosen note */}
-      {!isReadingNote && (
+      {/* Scenic ending for supported modes; Agent keeps its own layout */}
+      {!isReadingNote && !isAgent && (
         <div
-          className={`transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
-            isAgentHome ? "hidden pointer-events-none" : "opacity-100"
-          }`}
-          aria-hidden={isAgentHome}
+          className="transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none opacity-100"
         >
-          {mode !== "agent" ? <LandscapeFooter mode={mode} /> : <>
-          <EditorialDivider className="mt-16 mb-6" />
-          <footer className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-muted-foreground select-none">
-            <p>
-              &copy; 2026 {SITE_NAME}. Designed with precision & craft.
-            </p>
-            <p className="flex items-center gap-1.5 text-muted-foreground/80">
-              <span>Portfolio build ·</span>
-              <time dateTime={BUILD_INFO.isoDate} className="text-ink/90 font-medium">
-                {BUILD_INFO.formattedDate}
-              </time>
-            </p>
-          </footer>
-          </>}
+          <LandscapeFooter mode={mode} />
         </div>
       )}
     </div>

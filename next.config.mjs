@@ -9,10 +9,10 @@ const nextConfig = {
   serverExternalPackages: ['ably'],
   outputFileTracingRoot: __dirname,
   experimental: {
+    inlineCss: true,
     optimizePackageImports: [
       'lucide-react',
       'react-icons',
-      'framer-motion',
       '@radix-ui/react-avatar',
       '@radix-ui/react-dropdown-menu',
       '@radix-ui/react-tooltip',

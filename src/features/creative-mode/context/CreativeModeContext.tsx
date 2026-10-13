@@ -1,7 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { useReducedMotion } from "framer-motion";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 import { INITIAL_CREATIVE_STATE, supportsCreativeMode } from "../lib/creativeModeConfig";
 import type { CreativeModeState, CreativeSettings, MotionLevel } from "../types/creativeMode";
@@ -22,7 +21,14 @@ const CreativeModeContext = createContext<CreativeModeValue | null>(null);
 /** One in-memory owner under the root presentation provider, never keyed by route. */
 export function CreativeModeProvider({ children }: { children: ReactNode }) {
   const { mode } = usePresentationMode();
-  const reducedMotion = useReducedMotion();
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
   const [state, setState] = useState<CreativeModeState>(INITIAL_CREATIVE_STATE);
   const [panelOpen, setPanelOpen] = useState(false);
   const active = supportsCreativeMode(mode) && state.enabled;

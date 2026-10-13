@@ -326,7 +326,7 @@ export function NavigationDock() {
     }
   }, []);
 
-  const isDefaultMode = mode === "default";
+  const isDefaultMode = mode === "default" && pathname !== "/artisan";
   const [isFooterVisible, setIsFooterVisible] = useState(false);
 
   // Animate dock out cleanly when user scrolls down to the footer

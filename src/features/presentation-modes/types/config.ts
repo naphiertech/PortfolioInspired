@@ -1,13 +1,13 @@
 import { PresentationMode, PresentationModeConfig } from "./presentation";
 
-export const DEFAULT_PRESENTATION_MODE: PresentationMode = "default";
-export const AGENT_FOLIO_ENABLED = false;
+export const DEFAULT_PRESENTATION_MODE: PresentationMode = "agent";
+export const AGENT_FOLIO_ENABLED = true;
 
 export function normalizePresentationMode(mode: PresentationMode): PresentationMode {
-  return mode === "agent" && !AGENT_FOLIO_ENABLED ? DEFAULT_PRESENTATION_MODE : mode;
+  return mode === "agent" && !AGENT_FOLIO_ENABLED ? "default" : mode;
 }
 
-export const PRESENTATION_COOKIE_NAME = "naphier_presentation_mode";
+export const PRESENTATION_COOKIE_NAME = "naphier_presentation_mode_v2";
 export const PRESENTATION_QUERY_PARAM = "mode";
 export const PRESENTATION_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
@@ -20,8 +20,8 @@ export const GRID_STORAGE_KEY = "naphier_flickering_grid";
 export const PRESENTATION_MODES: Record<PresentationMode, PresentationModeConfig> = {
   default: {
     id: "default",
-    label: "Default",
-    shortLabel: "Default",
+    label: "Standard",
+    shortLabel: "Standard",
     tagline: "Full portfolio experience",
     description: "Full portfolio experience",
     isAvailable: true,
@@ -44,10 +44,10 @@ export const PRESENTATION_MODES: Record<PresentationMode, PresentationModeConfig
   },
   agent: {
     id: "agent",
-    label: "Agent Folio",
-    shortLabel: "Agent",
-    tagline: "Conversational portfolio workspace",
-    description: "Interactive AI agent to explore projects, tech stack, and background",
+    label: "Artisan (Default)",
+    shortLabel: "Artisan",
+    tagline: "Interactive 3D workspace & editorial portfolio",
+    description: "Interactive 3D workspace, editorial typography, and tactile craft",
     isAvailable: AGENT_FOLIO_ENABLED,
   },
 };

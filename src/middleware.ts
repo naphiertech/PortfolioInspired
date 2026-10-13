@@ -47,6 +47,7 @@ export function middleware(request: NextRequest) {
   // Priority 2: Existing User Preference Cookie
   const hasValidCookieMode = Boolean(cookieMode && isValidPresentationMode(cookieMode));
 
+  const isRscRequest = Boolean(request.headers.get("RSC"));
   let effectiveMode: PresentationMode;
   let shouldSetCookie = false;
 
@@ -54,12 +55,16 @@ export function middleware(request: NextRequest) {
     // Explicit mode always wins and synchronizes to cookie for persistence
     effectiveMode = queryMode;
     shouldSetCookie = true;
+  } else if (isRoot && !isRscRequest) {
+    // Direct entry/refresh at "/" without an explicit ?mode= query always shows Artisan (Default)
+    effectiveMode = DEFAULT_PRESENTATION_MODE;
+    shouldSetCookie = Boolean(cookieMode && cookieMode !== DEFAULT_PRESENTATION_MODE);
   } else if (hasValidCookieMode && cookieMode && isValidPresentationMode(cookieMode)) {
-    // Existing preference is authoritative; never overwrite with randomization
+    // Preserve active mode across subpage navigations
     effectiveMode = cookieMode;
     shouldSetCookie = false;
   } else {
-    // Priority 3: Default mode for fresh visitors with no explicit preference
+    // Default mode fallback ("agent" / Artisan)
     effectiveMode = DEFAULT_PRESENTATION_MODE;
     shouldSetCookie = false;
   }
@@ -89,11 +94,12 @@ export function middleware(request: NextRequest) {
 
     const requestHeaders = new Headers(request.headers);
     const existingCookieHeader = request.headers.get("cookie") || "";
-    const cookieEntry = `${PRESENTATION_COOKIE_NAME}=${effectiveMode}`;
-    const newCookieHeader = existingCookieHeader
-      ? `${existingCookieHeader}; ${cookieEntry}`
-      : cookieEntry;
-    requestHeaders.set("cookie", newCookieHeader);
+    const filteredCookies = existingCookieHeader
+      .split(";")
+      .map((c) => c.trim())
+      .filter((c) => Boolean(c) && !c.startsWith(`${PRESENTATION_COOKIE_NAME}=`));
+    filteredCookies.push(`${PRESENTATION_COOKIE_NAME}=${effectiveMode}`);
+    requestHeaders.set("cookie", filteredCookies.join("; "));
 
     const response = NextResponse.next({
       request: {

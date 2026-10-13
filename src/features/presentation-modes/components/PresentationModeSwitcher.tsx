@@ -3,8 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, LayoutTemplate, Target, AlignLeft, Bot, Sparkles, Grid, Plus, ScanLine, Minus, Crosshair, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { usePresentationMode } from "../context/PresentationModeContext";
+import { usePresentationMode, preloadAllModeLayouts } from "../context/PresentationModeContext";
 import { PRESENTATION_MODES } from "../types/config";
 import { PresentationMode } from "../types/presentation";
 import { useUISound } from "@/context/SoundContext";
@@ -39,7 +38,6 @@ export function PresentationModeSwitcher({
   } = usePresentationMode();
   const { playClick, playHover } = useUISound();
   const { hasDismissedHint, dismissHint } = useViewHint();
-  const shouldReduceMotion = useReducedMotion();
 
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
@@ -75,7 +73,10 @@ export function PresentationModeSwitcher({
   // Keep unavailable modes discoverable, but exclude them from activation/navigation.
   const availableModes = Object.values(PRESENTATION_MODES);
 
-  const currentConfig = PRESENTATION_MODES[mode] || PRESENTATION_MODES.default;
+  const currentConfig =
+    resolvedVariant === "agent"
+      ? PRESENTATION_MODES.agent
+      : PRESENTATION_MODES[mode] || PRESENTATION_MODES.default;
 
   const closePopover = useCallback(() => {
     setIsOpen(false);
@@ -130,14 +131,6 @@ export function PresentationModeSwitcher({
     };
   }, [isOpen]);
 
-  // Prefetch inactive mode chunks as soon as switcher opens for instant transitions
-  useEffect(() => {
-    if (isOpen) {
-      import("../modes/focus/FocusModeLayout");
-      import("../modes/minimal/MinimalModeLayout");
-    }
-  }, [isOpen]);
-
   // Close when clicking outside container or popover
   useEffect(() => {
     if (!isOpen) return;
@@ -175,20 +168,20 @@ export function PresentationModeSwitcher({
 
       setIsOpen(false);
       setFocusedIndex(-1);
-
-      // Universal in-place switch: reset scroll to top immediately during layout transition
-      if (typeof window !== "undefined") {
-        window.scrollTo({ top: 0, behavior: "instant" });
-      }
       setMode(newMode);
     },
     [mode, setMode, playClick, closePopover, dismissHint]
   );
 
-  const totalNavItems = availableModes.length + 2;
+  const hasAnimationControls = resolvedVariant !== "agent";
+  const totalNavItems = availableModes.length + (hasAnimationControls ? 2 : 0);
   const navigableIndices = availableModes
-    .flatMap((item, index) => item.isAvailable ? [index] : [])
-    .concat(availableModes.length, availableModes.length + 1);
+    .flatMap((item, index) => (item.isAvailable ? [index] : []))
+    .concat(
+      hasAnimationControls
+        ? [availableModes.length, availableModes.length + 1]
+        : []
+    );
 
   // Keyboard navigation within the popover
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -226,10 +219,10 @@ export function PresentationModeSwitcher({
         e.preventDefault();
         if (focusedIndex >= 0 && focusedIndex < availableModes.length) {
           handleSelectMode(availableModes[focusedIndex].id);
-        } else if (focusedIndex === availableModes.length) {
+        } else if (hasAnimationControls && focusedIndex === availableModes.length) {
           playClick();
           toggleStars();
-        } else if (focusedIndex === availableModes.length + 1) {
+        } else if (hasAnimationControls && focusedIndex === availableModes.length + 1) {
           playClick();
           toggleGrid();
         }
@@ -253,6 +246,7 @@ export function PresentationModeSwitcher({
     playClick();
     dismissHint();
     if (!isOpen) {
+      preloadAllModeLayouts();
       setFocusedIndex(availableModes.findIndex((item) => item.id === mode));
     }
     setIsOpen((prev) => !prev);
@@ -413,76 +407,50 @@ export function PresentationModeSwitcher({
       {/* PORTALED FULL-SCREEN BACKDROP & POPOVER (At root level: z-[60] & z-[70])   */}
       {/* ========================================================================= */}
       {mounted &&
+        isOpen &&
         createPortal(
-          <AnimatePresence>
-            {isOpen && (
-              <>
-                {/* 1. Full-Screen Blurred Backdrop (z-[60]) */}
-                <motion.div
-                  key="presentation-switcher-backdrop"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{
-                    duration: shouldReduceMotion ? 0.05 : 0.18,
-                    ease: "easeOut",
-                  }}
-                  onClick={closePopover}
-                  className="fixed inset-0 z-[60] bg-black/15 dark:bg-black/50 backdrop-blur-[6px] pointer-events-auto cursor-default select-none"
-                  aria-hidden="true"
-                />
+          <>
+            {/* 1. Full-Screen Blurred Backdrop (z-[60]) */}
+            <div
+              onClick={closePopover}
+              className="fixed inset-0 z-[60] bg-black/15 dark:bg-black/50 backdrop-blur-[6px] pointer-events-auto cursor-default select-none animate-in fade-in duration-150"
+              aria-hidden="true"
+            />
 
-                {/* 2. Mode-Specific Popover Menu (z-[70]) */}
-                <motion.div
-                  key="presentation-switcher-popover"
-                  ref={popoverRef}
-                  role={resolvedVariant === "dock" ? undefined : "listbox"}
-                  aria-label="Available Presentation Modes"
-                  initial={{
-                    opacity: 0,
-                    scale: shouldReduceMotion ? 1 : 0.97,
-                    y: shouldReduceMotion ? 0 : -4,
-                  }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{
-                    opacity: 0,
-                    scale: shouldReduceMotion ? 1 : 0.99,
-                    y: shouldReduceMotion ? 0 : -4,
-                    transition: { duration: shouldReduceMotion ? 0.05 : 0.15, ease: [0.22, 1, 0.36, 1] },
-                  }}
-                  transition={{
-                    duration: shouldReduceMotion ? 0.05 : 0.25,
-                    ease: [0.22, 1, 0.36, 1] as const,
-                  }}
-                  style={{
-                    position: "fixed",
-                    maxHeight: resolvedVariant === "dock" ? `calc(100dvh - ${popoverPos.bottom ?? 100}px - 16px)` : undefined,
-                    top: popoverPos.top !== undefined ? `${popoverPos.top}px` : undefined,
-                    bottom: popoverPos.bottom !== undefined ? `${popoverPos.bottom}px` : undefined,
-                    left: popoverPos.left !== undefined ? `${popoverPos.left}px` : undefined,
-                    right: popoverPos.right !== undefined ? `${popoverPos.right}px` : undefined,
-                    transformOrigin:
-                      resolvedVariant === "dock"
-                        ? "bottom left"
-                        : "top right",
-                  }}
-                  className={`fixed outline-none z-[70] pointer-events-auto will-change-[transform,opacity] ${
-                    resolvedVariant === "agent"
-                      ? "w-[calc(100vw-32px)] sm:w-80 max-w-[340px] p-2 rounded-xl bg-surface dark:bg-[#121316] border border-border shadow-2xl font-mono text-ink"
-                      : resolvedVariant === "dock"
-                      ? styles.panel
-                      : resolvedVariant === "focus-nav"
-                      ? "w-[min(288px,calc(100vw-32px))] sm:w-72 p-1.5 rounded-md bg-surface dark:bg-[#141618] border border-border shadow-2xl font-mono"
-                      : "w-[min(264px,calc(100vw-32px))] sm:w-64 p-3 rounded-none sm:rounded-sm bg-[#faf8f5] dark:bg-[#181816] border border-zinc-300 dark:border-white/[0.15] shadow-2xl font-serif"
-                  }`}
-                  onKeyDown={handleKeyDown}
-                >
+            {/* 2. Mode-Specific Popover Menu (z-[70]) */}
+            <div
+              ref={popoverRef}
+              role={resolvedVariant === "dock" ? undefined : "listbox"}
+              aria-label="Available Presentation Modes"
+              style={{
+                position: "fixed",
+                maxHeight: resolvedVariant === "dock" ? `calc(100dvh - ${popoverPos.bottom ?? 100}px - 16px)` : undefined,
+                top: popoverPos.top !== undefined ? `${popoverPos.top}px` : undefined,
+                bottom: popoverPos.bottom !== undefined ? `${popoverPos.bottom}px` : undefined,
+                left: popoverPos.left !== undefined ? `${popoverPos.left}px` : undefined,
+                right: popoverPos.right !== undefined ? `${popoverPos.right}px` : undefined,
+                transformOrigin:
+                  resolvedVariant === "dock"
+                    ? "bottom left"
+                    : "top right",
+              }}
+              className={`fixed outline-none z-[70] pointer-events-auto animate-in fade-in zoom-in-95 duration-150 ${
+                resolvedVariant === "agent"
+                  ? "w-[calc(100vw-32px)] sm:w-80 max-w-[340px] p-2 rounded-xl bg-surface dark:bg-[#121316] border border-border shadow-2xl font-mono text-ink"
+                  : resolvedVariant === "dock"
+                  ? styles.panel
+                  : resolvedVariant === "focus-nav"
+                  ? "w-[min(288px,calc(100vw-32px))] sm:w-72 p-1.5 rounded-md bg-surface dark:bg-[#141618] border border-border shadow-2xl font-mono"
+                  : "w-[min(264px,calc(100vw-32px))] sm:w-64 p-3 rounded-none sm:rounded-sm bg-[#faf8f5] dark:bg-[#181816] border border-zinc-300 dark:border-white/[0.15] shadow-2xl font-serif"
+              }`}
+              onKeyDown={handleKeyDown}
+            >
                   {/* --- POPOVER HEADER (Mode-specific) --- */}
                   {resolvedVariant === "agent" && (
                     <div className="px-3 py-2 border-b border-border/80 mb-1.5 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-[10px] text-ink font-bold tracking-widest uppercase">
-                          AGENT
+                          ARTISAN
                         </span>
                         <span className="font-mono text-[9px] text-muted-foreground/70 px-1.5 py-0.5 rounded bg-surface-hover/80 border border-border-hairline font-semibold">
                           {availableModes.length} MODES
@@ -556,13 +524,13 @@ export function PresentationModeSwitcher({
                         );
                       }
 
-                      // 1. AGENT WORKSPACE CONTROL ITEM
+                      // 1. ARTISAN WORKSPACE CONTROL ITEM
                       if (resolvedVariant === "agent") {
                         const modeIcons = {
                           default: LayoutTemplate,
                           focus: Target,
                           minimal: AlignLeft,
-                          agent: Bot,
+                          agent: Sparkles,
                         };
                         const ModeIcon = modeIcons[item.id as keyof typeof modeIcons] || LayoutTemplate;
 
@@ -761,169 +729,7 @@ export function PresentationModeSwitcher({
                     })}
                   </div>
 
-                  {/* --- ANIMATIONS SECTION (Mode-specific) --- */}
-
-                  {/* 1. AGENT VARIANT ANIMATIONS (Command-Center Workspace Controls) */}
-                  {resolvedVariant === "agent" && (
-                    <div className="mt-2 pt-2 border-t border-border/80">
-                      <div className="px-2.5 py-1 mb-1 flex items-center justify-between">
-                        <span className="font-mono text-[10px] text-muted-foreground/70 tracking-widest uppercase font-semibold">
-                          ANIMATIONS
-                        </span>
-                        <span className="font-mono text-[9px] text-muted-foreground/50 uppercase">
-                          GLOBAL
-                        </span>
-                      </div>
-
-                      <div className="space-y-1">
-                        {/* Stars Background Toggle */}
-                        <button
-                          ref={(el) => {
-                            optionRefs.current[availableModes.length] = el;
-                          }}
-                          type="button"
-                          role="switch"
-                          aria-checked={starsEnabled}
-                          tabIndex={focusedIndex === availableModes.length ? 0 : -1}
-                          aria-label="Toggle Stars Background"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            playClick();
-                            toggleStars();
-                          }}
-                          onMouseEnter={() => {
-                            playHover();
-                            setFocusedIndex(availableModes.length);
-                          }}
-                          className={`w-full text-left p-2.5 rounded-lg flex items-center justify-between transition-all outline-none cursor-pointer border ${
-                            focusedIndex === availableModes.length
-                              ? "bg-surface-hover/90 border-border text-ink shadow-2xs"
-                              : "border-border-hairline/60 bg-surface/40 hover:bg-surface-hover/80 hover:border-border text-ink"
-                          } group focus-visible:ring-1 focus-visible:ring-brand`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div
-                              className={`w-7 h-7 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
-                                starsEnabled
-                                  ? "bg-amber-500/10 dark:bg-amber-400/15 border-amber-500/30 text-amber-500 dark:text-amber-400"
-                                  : "bg-surface-hover/70 dark:bg-zinc-800/70 border-border-hairline text-muted-foreground/50"
-                              }`}
-                              aria-hidden="true"
-                            >
-                              <Sparkles className="w-3.5 h-3.5" />
-                            </div>
-                            <div className="flex flex-col min-w-0">
-                              <span className="font-mono text-xs font-bold uppercase text-ink tracking-wider truncate">
-                                Stars Background
-                              </span>
-                              <span className="font-sans text-[11px] text-muted-foreground leading-tight mt-0.5 truncate">
-                                Subtle cosmic starfield
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2.5 flex-shrink-0 ml-2">
-                            <span
-                              className={`font-mono text-[9px] font-semibold tracking-wider px-1.5 py-0.5 rounded border transition-colors ${
-                                starsEnabled
-                                  ? "bg-emerald-500/10 border-emerald-500/25 text-emerald-600 dark:text-emerald-400"
-                                  : "bg-surface-hover/80 dark:bg-zinc-800/80 border-border-hairline text-muted-foreground/70"
-                              }`}
-                            >
-                              {starsEnabled ? "[ ON ]" : "[ OFF ]"}
-                            </span>
-                            <div
-                              className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border p-0.5 transition-colors duration-200 ease-in-out ${
-                                starsEnabled
-                                  ? "bg-emerald-500 border-emerald-600 dark:border-emerald-400/40 shadow-xs"
-                                  : "bg-zinc-200 dark:bg-zinc-700/90 border-zinc-300 dark:border-zinc-600 shadow-inner"
-                              }`}
-                              aria-hidden="true"
-                            >
-                              <span
-                                className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition duration-200 ease-in-out ${
-                                  starsEnabled ? "translate-x-4" : "translate-x-0"
-                                }`}
-                              />
-                            </div>
-                          </div>
-                        </button>
-
-                        {/* Flickering Grid Toggle */}
-                        <button
-                          ref={(el) => {
-                            optionRefs.current[availableModes.length + 1] = el;
-                          }}
-                          type="button"
-                          role="switch"
-                          aria-checked={gridEnabled}
-                          tabIndex={focusedIndex === availableModes.length + 1 ? 0 : -1}
-                          aria-label="Toggle Flickering Grid"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            playClick();
-                            toggleGrid();
-                          }}
-                          onMouseEnter={() => {
-                            playHover();
-                            setFocusedIndex(availableModes.length + 1);
-                          }}
-                          className={`w-full text-left p-2.5 rounded-lg flex items-center justify-between transition-all outline-none cursor-pointer border ${
-                            focusedIndex === availableModes.length + 1
-                              ? "bg-surface-hover/90 border-border text-ink shadow-2xs"
-                              : "border-border-hairline/60 bg-surface/40 hover:bg-surface-hover/80 hover:border-border text-ink"
-                          } group focus-visible:ring-1 focus-visible:ring-brand`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div
-                              className={`w-7 h-7 rounded-md border flex items-center justify-center flex-shrink-0 transition-colors ${
-                                gridEnabled
-                                  ? "bg-cyan-500/10 dark:bg-cyan-400/15 border-cyan-500/30 text-cyan-600 dark:text-cyan-400"
-                                  : "bg-surface-hover/70 dark:bg-zinc-800/70 border-border-hairline text-muted-foreground/50"
-                              }`}
-                              aria-hidden="true"
-                            >
-                              <Grid className="w-3.5 h-3.5" />
-                            </div>
-                            <div className="flex flex-col min-w-0">
-                              <span className="font-mono text-xs font-bold uppercase text-ink tracking-wider truncate">
-                                Flickering Grid
-                              </span>
-                              <span className="font-sans text-[11px] text-muted-foreground leading-tight mt-0.5 truncate">
-                                Technical blueprint grid
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2.5 flex-shrink-0 ml-2">
-                            <span
-                              className={`font-mono text-[9px] font-semibold tracking-wider px-1.5 py-0.5 rounded border transition-colors ${
-                                gridEnabled
-                                  ? "bg-emerald-500/10 border-emerald-500/25 text-emerald-600 dark:text-emerald-400"
-                                  : "bg-surface-hover/80 dark:bg-zinc-800/80 border-border-hairline text-muted-foreground/70"
-                              }`}
-                            >
-                              {gridEnabled ? "[ ON ]" : "[ OFF ]"}
-                            </span>
-                            <div
-                              className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border p-0.5 transition-colors duration-200 ease-in-out ${
-                                gridEnabled
-                                  ? "bg-emerald-500 border-emerald-600 dark:border-emerald-400/40 shadow-xs"
-                                  : "bg-zinc-200 dark:bg-zinc-700/90 border-zinc-300 dark:border-zinc-600 shadow-inner"
-                              }`}
-                              aria-hidden="true"
-                            >
-                              <span
-                                className={`pointer-events-none inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition duration-200 ease-in-out ${
-                                  gridEnabled ? "translate-x-4" : "translate-x-0"
-                                }`}
-                              />
-                            </div>
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  {/* --- ANIMATIONS SECTION (Non-Artisan modes only) --- */}
 
                   {/* Default-only visual-layer controls. */}
                   {resolvedVariant === "dock" && (
@@ -967,6 +773,7 @@ export function PresentationModeSwitcher({
                       </div>
                     </section>
                   )}
+
                   {/* 2. FOCUS VARIANT ANIMATIONS */}
                   {resolvedVariant === "focus-nav" && (
                     <div className="mt-2 pt-1.5 border-t border-border-divider">
@@ -1244,10 +1051,8 @@ export function PresentationModeSwitcher({
                       </button>
                     </div>
                   )}
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>,
+                </div>
+              </>,
           document.body
         )}
     </>

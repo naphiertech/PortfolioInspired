@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useSnap } from "@/context/SnapContext";
+import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 
 // Ensures the tour runs once per full page refresh, without restarting during client navigation
 let tourPlayedThisSession = false;
@@ -24,6 +25,7 @@ interface TourStep {
 
 export function MouseTourGuide() {
   const pathname = usePathname();
+  const { mode } = usePresentationMode();
   const { isSnapping, isSnapped } = useSnap();
   const rootRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
@@ -47,7 +49,7 @@ export function MouseTourGuide() {
 
   useEffect(() => {
     // Strictly restrict the autonomous tour guide to the home page only
-    if (pathname !== "/" || tourPlayedThisSession) {
+    if (pathname !== "/" || mode === "agent" || tourPlayedThisSession) {
       return;
     }
 
@@ -899,7 +901,7 @@ export function MouseTourGuide() {
       intervals.forEach((id) => clearInterval(id));
       intervals.clear();
     };
-  }, [pathname]);
+  }, [pathname, mode]);
 
   if (pathname !== "/") {
     return null;

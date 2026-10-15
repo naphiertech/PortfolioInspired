@@ -102,7 +102,7 @@ export function ProjectMedia({
         <motion.div
           initial={{ scaleX: 1, opacity: 1 }}
           whileInView={{ scaleX: 0, opacity: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
+          viewport={{ once: true, amount: 0.01 }}
           transition={{ duration: 0.42, ease: easeOutCubic }}
           style={{ transformOrigin: "right" }}
           aria-hidden="true"

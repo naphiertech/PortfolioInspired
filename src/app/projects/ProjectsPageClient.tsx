@@ -81,7 +81,6 @@ export function ProjectsPageClient() {
                 alt={project.title}
                 sizes="(max-width: 640px) 100vw, 360px"
                 className="mb-3"
-                category={project.category}
                 badge={
                   project.status && (
                     <ProjectStatusBadge
@@ -99,9 +98,11 @@ export function ProjectsPageClient() {
                   <h2 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors duration-150">
                     {project.title}
                   </h2>
-                  <span className="font-mono text-[11px] text-muted-foreground flex-shrink-0">
-                    {project.year}
-                  </span>
+                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground flex-shrink-0">
+                    <span>{project.category}</span>
+                    <span>•</span>
+                    <span>{project.year}</span>
+                  </div>
                 </div>
 
                 <p className="font-mono text-xs text-muted-foreground line-clamp-3 leading-relaxed">

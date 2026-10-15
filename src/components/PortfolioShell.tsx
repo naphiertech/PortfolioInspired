@@ -102,6 +102,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const isFocus = mode === "focus";
   const isMinimal = mode === "minimal";
   const isAgent = mode === "agent" || pathname === "/artisan";
+  const isAgentHome = (mode === "agent" && pathname === "/") || pathname === "/artisan";
   // Omit the scenic footer when reading an individual chosen field note (/notes/:slug)
   const isReadingNote = pathname.startsWith("/notes/") && pathname !== "/notes";
   const { state: creative, active: creativeActive, effectiveMotion } = useCreativeMode();
@@ -115,10 +116,10 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       style={{
         "--creative-grid-opacity": creativeActive ? 1 : 0,
         ...(creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : {}),
-        ...(mode !== "agent" && pathname !== "/artisan" ? { paddingBottom: 0 } : {}),
+        ...(!isAgentHome ? { paddingBottom: 0 } : {}),
       } as React.CSSProperties}
       className={`${styles.content} w-full mx-auto relative min-h-screen flex flex-col justify-between z-10 ${
-        isAgent
+        isAgentHome
           ? "w-full max-w-none p-0 m-0 min-h-screen flex flex-col"
           : isMinimal
           ? "max-w-[640px] px-5 sm:px-6 md:px-8 pt-8 pb-20"

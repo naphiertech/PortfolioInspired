@@ -54,7 +54,7 @@ export function MacbookPro({
           y="21.32"
           width="501.22"
           height="323.85"
-          preserveAspectRatio="xMidYMin slice"
+          preserveAspectRatio="none"
           clipPath={`url(#${clipPathId})`}
         />
       )}

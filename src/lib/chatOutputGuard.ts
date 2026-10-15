@@ -98,10 +98,11 @@ export function inspectGeneratedOutput(generatedText: string): OutputGuardResult
       "linkedin.com",
       "vercel.app",
       "netlify.app",
+      "pages.dev",
       "assetlink-supabase-landing.vercel.app",
       "mkbridertrack.vercel.app",
       "naphix-resume.netlify.app",
-      "phierplay.vercel.app",
+      "phierplay.pages.dev",
       "naphier.tech",
       "localhost",
     ];

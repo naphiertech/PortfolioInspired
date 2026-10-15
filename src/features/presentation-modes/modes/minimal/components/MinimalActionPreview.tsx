@@ -204,14 +204,14 @@ export function MinimalProjectActions({ project }: MinimalProjectActionsProps) {
                 </div>
 
                 {/* Screenshot frame */}
-                <div className="relative w-full aspect-[16/10] overflow-hidden rounded-md border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-zinc-900/80">
+                <div className="relative w-full aspect-video overflow-hidden rounded-md border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-zinc-900/80">
                   {hasLiveInteracted && project.image && (
                     <Image
                       src={project.image}
                       alt={project.title}
                       fill
                       sizes="(max-width: 640px) 290px, 320px"
-                      className="object-cover object-top"
+                      className="object-cover object-center"
                     />
                   )}
                 </div>

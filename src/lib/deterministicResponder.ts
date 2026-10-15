@@ -456,7 +456,7 @@ Both systems employ custom Row Level Security (RLS) policies to prevent unauthor
 
 3. **[MovieStream (PhierPlay)](/projects/moviestream)** (2025, Active)
    Modern video streaming web application with TMDB API integration, dynamic search, watchlist persistence, and responsive media streaming.
-   [Open Project](/projects/moviestream) · [Live Demo](https://phierplay.vercel.app)
+   [Open Project](/projects/moviestream) · [Live Demo](https://phierplay.pages.dev/)
 
 4. **[Naphix Resume Builder](/projects/naphix-resume)** (2026, Active)
    Modular real-time resume creator with drag-and-drop section reordering (@dnd-kit) and instant client-side PDF and Word export.

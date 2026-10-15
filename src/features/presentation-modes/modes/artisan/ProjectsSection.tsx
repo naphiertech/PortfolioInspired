@@ -274,13 +274,13 @@ export function ProjectsSection() {
                 </div>
 
                 {/* Primary Preview Screenshot */}
-                <div className="relative w-full aspect-[16/10] rounded-xl sm:rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-muted/40">
+                <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-muted/40">
                   <Image
                     src={activeImage || selectedProject.image}
                     alt={selectedProject.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 800px"
-                    className="object-cover object-top"
+                    className="object-cover object-center"
                   />
                 </div>
 

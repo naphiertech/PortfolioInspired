@@ -363,7 +363,7 @@ export const fullProjects: FullProjectItem[] = [
           "Progressive poster placeholders and lazy poster image loading kept the initial viewport payload minimal even when browsing extensive genre catalogs.",
       },
     ],
-    live: "https://phierplay.vercel.app/",
+    live: "https://phierplay.pages.dev/",
     status: "live",
     featured: true,
     focusHighlight: "Fast, beautiful, and built for movie lovers.",

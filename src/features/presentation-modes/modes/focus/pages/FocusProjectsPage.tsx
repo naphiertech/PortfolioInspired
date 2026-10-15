@@ -80,7 +80,7 @@ export function FocusProjectsPage() {
                   href={`/projects/${project.slug}`}
                   onMouseEnter={playHover}
                   onClick={playClick}
-                  className="block relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-border-hairline/80 group-hover/img:border-border bg-muted/20 mb-4 transition-colors duration-200 group/img"
+                  className="block relative w-full aspect-video rounded-xl overflow-hidden border border-border-hairline/80 group-hover/img:border-border bg-muted/20 mb-4 transition-colors duration-200 group/img"
                   tabIndex={-1}
                   aria-hidden="true"
                 >
@@ -91,7 +91,7 @@ export function FocusProjectsPage() {
                     sizes="(max-width: 768px) 100vw, 500px"
                     loading={idx < 2 ? "eager" : "lazy"}
                     priority={idx < 2}
-                    className="object-cover object-top transition-[filter,opacity] duration-300 ease-out group-hover/img:brightness-[1.02] dark:group-hover/img:brightness-105"
+                    className="object-cover object-center transition-[filter,opacity] duration-300 ease-out group-hover/img:brightness-[1.02] dark:group-hover/img:brightness-105"
                   />
                 </Link>
 

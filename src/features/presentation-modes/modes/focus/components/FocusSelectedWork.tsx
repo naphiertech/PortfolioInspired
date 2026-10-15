@@ -48,7 +48,7 @@ export function FocusSelectedWork() {
               >
                 <Link
                   href={`/projects/${project.slug}`}
-                  className="block relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-border-hairline group-hover/img:border-border bg-surface/50 dark:bg-surface/30 shadow-xs transition-colors duration-200 group/img"
+                  className="block relative w-full aspect-video rounded-xl overflow-hidden border border-border-hairline group-hover/img:border-border bg-surface/50 dark:bg-surface/30 shadow-xs transition-colors duration-200 group/img"
                   tabIndex={-1}
                   aria-hidden="true"
                 >
@@ -58,7 +58,7 @@ export function FocusSelectedWork() {
                     fill
                     sizes="(max-width: 1024px) 100vw, 520px"
                     loading="lazy"
-                    className="object-cover object-top transition-[filter,opacity] duration-300 ease-out group-hover/img:brightness-[1.02] dark:group-hover/img:brightness-105"
+                    className="object-cover object-center transition-[filter,opacity] duration-300 ease-out group-hover/img:brightness-[1.02] dark:group-hover/img:brightness-105"
                   />
                 </Link>
               </div>

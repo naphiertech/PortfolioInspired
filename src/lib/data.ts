@@ -683,7 +683,7 @@ export const certifications: CertificationItem[] = [
 export const experiences: ExperienceItem[] = [
   {
     role: "Full-Stack Developer",
-    company: "Student Developer · Personal & Academic Projects",
+    company: "Student Developer · Personal Projects",
     year: "2025 - Present",
     yearNode: "PRESENT",
     isCurrent: true,
@@ -739,7 +739,7 @@ export const experiences: ExperienceItem[] = [
   },
   {
     role: EDUCATION.degree,
-    company: `Academic Experience · ${EDUCATION.institution}`,
+    company: `Academic Experience · ${EDUCATION.abbreviation}`,
     year: EDUCATION.period,
     yearNode: "2023",
     description:

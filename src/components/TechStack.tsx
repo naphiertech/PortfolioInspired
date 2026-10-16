@@ -62,7 +62,7 @@ export function TechStack() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-5 select-none mb-0"
+      className="w-full space-y-3 select-none mb-0"
       aria-label="Tech Stack"
     >
       {/* Consistent Section Header */}
@@ -71,13 +71,13 @@ export function TechStack() {
         description="Technologies, frameworks, and development tools I work with."
         actionHref="/tech-stack"
         actionLabel="all technologies"
-        className="mb-5 pb-2 border-b border-border-hairline/40"
+        className="mb-2 pb-2 border-b border-border-hairline/40"
       />
 
       {/* Core Categories with Code-Syntax Headings and Vector-Icon Pills */}
       <motion.div
         variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-        className={`space-y-5 ${circuitStyles.environment}`}
+        className={`space-y-3.5 ${circuitStyles.environment}`}
       >
         {displayedSections.map((section) => {
           const syntaxTag =

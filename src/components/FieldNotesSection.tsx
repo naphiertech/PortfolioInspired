@@ -35,7 +35,7 @@ export function FieldNotesSection() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-4 select-none mb-0"
+      className="w-full space-y-2 select-none mb-0"
       aria-label="Field Notes"
     >
       {/* Section Header */}
@@ -44,7 +44,7 @@ export function FieldNotesSection() {
         description="Things I've been thinking about while building."
         actionHref="/notes"
         actionLabel="all notes"
-        className="mb-4 pb-2 border-b border-border-divider"
+        className="mb-1 pb-2 border-b border-border-divider"
       />
 
       {/* Editorial Content Index Container */}
@@ -57,7 +57,7 @@ export function FieldNotesSection() {
               prefetch={false}
               onMouseEnter={playHover}
               onClick={playClick}
-              className="group relative flex items-start gap-4 sm:gap-6 py-4 sm:py-5 px-2.5 sm:px-3 hover:bg-surface/35 focus-visible:bg-surface/50 transition-colors duration-150 outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-none"
+              className="group relative flex items-start gap-4 sm:gap-5 py-2.5 sm:py-3 px-2.5 sm:px-3 hover:bg-surface/35 focus-visible:bg-surface/50 transition-colors duration-150 outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-none"
             >
               {/* Large Sequential Number */}
               <span className="font-mono text-xl sm:text-2xl font-light text-muted-foreground/45 group-hover:text-ink transition-colors duration-150 select-none tabular-nums w-7 sm:w-8 flex-shrink-0 pt-0.5">

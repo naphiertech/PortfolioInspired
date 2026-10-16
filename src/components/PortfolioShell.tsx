@@ -110,11 +110,15 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const radii = mapping?.radii[creative.corners];
   const motion = mapping?.motion[effectiveMotion];
   const isCustomFont = creativeActive && creative.fontPairing !== "original";
+  // Architectural grid stays permanently visible in Standard and Focus modes even when Creative Mode is off.
+  const showGrid = !isMinimal && !(creativeActive && creative.gridStyle === "hidden");
+  const activeGridStyle = creativeActive ? creative.gridStyle : "blueprint";
 
   return (
     <div
+      data-grid-style={activeGridStyle}
       style={{
-        "--creative-grid-opacity": creativeActive ? 1 : 0,
+        "--creative-grid-opacity": showGrid ? 1 : 0,
         ...(creativeActive && mapping ? { maxWidth: mapping.widths[creative.contentWidth] } : {}),
         ...(!isAgentHome ? { paddingBottom: 0 } : {}),
       } as React.CSSProperties}
@@ -124,8 +128,8 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
           : isMinimal
           ? "max-w-[640px] px-5 sm:px-6 md:px-8 pt-8 pb-20"
           : isFocus
-          ? "max-w-[1020px] px-4 sm:px-6 md:px-8 pt-12 pb-32"
-          : "max-w-reading px-4 sm:px-6 md:px-8 pt-12 pb-32"
+          ? "grid-rail-inset max-w-[1020px] px-4 sm:px-6 md:px-8 pt-12 pb-32"
+          : "grid-rail-inset max-w-reading px-4 sm:px-6 md:px-8 pt-12 pb-32"
       }`}
     >
       {/* Keep one player and resources toolbox across Default routes; leaving Default unmounts them. */}

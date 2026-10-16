@@ -29,16 +29,21 @@ const NavigationDock = dynamic(
   { ssr: false }
 );
 
+import { usePathname } from "next/navigation";
+
 const MouseTourGuide = dynamic(
   () => import("@/components/MouseTourGuide").then((m) => m.MouseTourGuide),
   { ssr: false }
 );
 
 export function AppOverlays() {
+  const pathname = usePathname();
   const { mode, starsEnabled, gridEnabled } = usePresentationMode();
 
-  if (mode === "agent") {
-    return null;
+  const isArtisan = mode === "agent" || pathname === "/artisan";
+
+  if (isArtisan) {
+    return <MouseTourGuide />;
   }
 
   return (

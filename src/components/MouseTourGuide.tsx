@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import { useSnap } from "@/context/SnapContext";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
 
-// Ensures the tour runs once per full page refresh, without restarting during client navigation
-let tourPlayedThisSession = false;
+// Tracks whether each mode's tour has played this session to avoid restarting during navigation
+const playedModesThisSession = new Set<string>();
 
 const TOUR_COOLDOWN_KEY = "naphier_tour_last_played";
+const ARTISAN_TOUR_COOLDOWN_KEY = "naphier_tour_artisan_last_played";
 const TOUR_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24-hour cooldown
 
 interface TourStep {
@@ -48,8 +49,13 @@ export function MouseTourGuide() {
   }, [isSnapped]);
 
   useEffect(() => {
-    // Strictly restrict the autonomous tour guide to the home page only
-    if (pathname !== "/" || mode === "agent" || tourPlayedThisSession) {
+    const isArtisan = mode === "agent" || pathname === "/artisan";
+    const modeKey = isArtisan ? "agent" : (mode || "default");
+    const cooldownKey = isArtisan ? ARTISAN_TOUR_COOLDOWN_KEY : TOUR_COOLDOWN_KEY;
+
+    // Restrict tour guide to home page or direct artisan route
+    const isValidRoute = pathname === "/" || pathname === "/artisan";
+    if (!isValidRoute || playedModesThisSession.has(modeKey)) {
       return;
     }
 
@@ -62,13 +68,16 @@ export function MouseTourGuide() {
 
     if (resetTour && typeof window !== "undefined") {
       try {
+        localStorage.removeItem(cooldownKey);
         localStorage.removeItem(TOUR_COOLDOWN_KEY);
+        localStorage.removeItem(ARTISAN_TOUR_COOLDOWN_KEY);
       } catch {}
     }
 
-    if (!forceTour) {
+    const isDev = process.env.NODE_ENV === "development";
+    if (!forceTour && !isDev) {
       try {
-        const lastPlayed = localStorage.getItem(TOUR_COOLDOWN_KEY);
+        const lastPlayed = localStorage.getItem(cooldownKey);
         if (lastPlayed) {
           const elapsed = Date.now() - parseInt(lastPlayed, 10);
           if (!isNaN(elapsed) && elapsed < TOUR_COOLDOWN_MS) {
@@ -115,8 +124,52 @@ export function MouseTourGuide() {
     const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
     const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
-    // Tour Steps tailored to Naphier's portfolio
-    const steps: TourStep[] = [
+    // Tour steps tailored specifically to Artisan workspace
+    const artisanSteps: TourStep[] = [
+      {
+        els: () => hooks("artisan-intro"),
+        at: "right",
+        text: "Welcome to my Artisan folio. Let me show you around the workspace.",
+      },
+      {
+        els: () =>
+          within("artisan-actions", "button, a").length
+            ? within("artisan-actions", "button, a")
+            : hooks("artisan-actions"),
+        at: "below",
+        text: "Quick access: start a conversation, explore my GitHub, or grab my resume.",
+      },
+      {
+        els: () => hooks("artisan-stack"),
+        at: "right",
+        text: "My core engineering stack: TypeScript, Next.js, React, Supabase, and cloud databases.",
+      },
+      {
+        els: () => hooks("artisan-3d"),
+        at: "left",
+        text: "This 3D workspace desk is fully interactive — click, drag, and inspect the setup.",
+      },
+      {
+        els: () =>
+          within("artisan-dock", "button").length
+            ? within("artisan-dock", "button").slice(0, 4)
+            : hooks("artisan-dock"),
+        at: "above",
+        text: "Use this dock to navigate through my Experience, Projects, and Field Notes.",
+      },
+      {
+        els: () => hooks("artisan-switcher"),
+        at: "left",
+        text: "You can switch presentation modes anytime right up here.",
+      },
+      {
+        free: true,
+        text: "The workspace is all yours — explore at your own pace! ✌️",
+      },
+    ];
+
+    // Tour Steps tailored to Naphier's default portfolio
+    const defaultSteps: TourStep[] = [
       {
         els: () => (hooks("name").length ? hooks("name") : hooks("avatar")),
         at: "above",
@@ -173,6 +226,8 @@ export function MouseTourGuide() {
         text: "That's the quick pass. The floor is yours — explore at your own pace! ✌️",
       },
     ];
+
+    const steps: TourStep[] = isArtisan ? artisanSteps : defaultSteps;
 
     // Clock & Spring Physics
     const goal = { x: 0, y: 0 };
@@ -387,6 +442,12 @@ export function MouseTourGuide() {
             y: r.top + Math.min(55, Math.max(35, r.height * 0.2)),
           };
         }
+        if (el.getAttribute("data-guide") === "artisan-3d" || el.closest('[data-guide="artisan-3d"]')) {
+          return {
+            x: Math.round(window.innerWidth * 0.62),
+            y: Math.round(window.innerHeight * 0.46),
+          };
+        }
         if (at === "above") return { x: r.left + Math.min(28, r.width / 2), y: Math.max(16, r.top - 20) };
         if (at === "below") return { x: r.left + Math.min(48, Math.max(16, r.width / 3)), y: Math.min(window.innerHeight - 30, r.bottom + 8) };
         if (at === "left") return { x: Math.max(16, r.left - 20), y: r.top + r.height / 2 };
@@ -454,7 +515,7 @@ export function MouseTourGuide() {
     }
 
     async function scrollComfortablyIntoView(el: HTMLElement) {
-      if (!running || isShocked || isFixedElement(el)) return;
+      if (!running || isShocked || isFixedElement(el) || isArtisan) return;
 
       const projectsSection = (el.getAttribute("data-guide") === "projects" ? el : el.closest('[data-guide="projects"]')) as HTMLElement | null;
       // If the target is part of the projects section, scroll so the top of the section is framed near top: 28px
@@ -520,7 +581,9 @@ export function MouseTourGuide() {
       }
       hovered = el || null;
       if (hovered) {
-        hovered.classList.add("gc-hover");
+        if (hovered.getAttribute("data-guide") !== "artisan-3d") {
+          hovered.classList.add("gc-hover");
+        }
         try {
           hovered.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true, cancelable: true, view: window }));
           hovered.dispatchEvent(new MouseEvent("mouseover", { bubbles: true, cancelable: true, view: window }));
@@ -774,7 +837,7 @@ export function MouseTourGuide() {
       root?.classList.remove("is-here");
 
       // Smoothly return the user back to the top of the portfolio
-      if (window.scrollY > 20) {
+      if (!isArtisan && window.scrollY > 20) {
         await smoothScrollTo(0, 800);
       }
 
@@ -813,7 +876,7 @@ export function MouseTourGuide() {
 
     function recordTourPlayed() {
       try {
-        localStorage.setItem(TOUR_COOLDOWN_KEY, Date.now().toString());
+        localStorage.setItem(cooldownKey, Date.now().toString());
       } catch {}
     }
 
@@ -861,6 +924,7 @@ export function MouseTourGuide() {
     window.addEventListener("touchmove", handleUserIntervene, { passive: true });
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("replay-tour-guide", handleReplayTour);
+    window.addEventListener("artisan-tab-switch", handleUserIntervene);
 
     function start() {
       if (running) return;
@@ -882,8 +946,8 @@ export function MouseTourGuide() {
       run();
     }
 
-    // Automatically begin the tour on page load/refresh of the home page
-    tourPlayedThisSession = true;
+    // Automatically begin the tour on page load/refresh of the eligible view
+    playedModesThisSession.add(modeKey);
     start();
 
     return () => {
@@ -894,6 +958,7 @@ export function MouseTourGuide() {
       window.removeEventListener("touchmove", handleUserIntervene);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("replay-tour-guide", handleReplayTour);
+      window.removeEventListener("artisan-tab-switch", handleUserIntervene);
       running = false;
       if (rAFId !== null) cancelAnimationFrame(rAFId);
       timeouts.forEach((id) => clearTimeout(id));
@@ -903,7 +968,7 @@ export function MouseTourGuide() {
     };
   }, [pathname, mode]);
 
-  if (pathname !== "/") {
+  if (pathname !== "/" && pathname !== "/artisan") {
     return null;
   }
 

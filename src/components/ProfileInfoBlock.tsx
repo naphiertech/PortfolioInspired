@@ -15,7 +15,7 @@ export function ProfileInfoBlock() {
 
   return (
     <div
-      className="w-full select-none my-4 sm:my-5"
+      className="w-full select-none my-2 sm:my-3"
       aria-label="Profile Highlights"
       data-guide="focus"
     >
@@ -30,7 +30,7 @@ export function ProfileInfoBlock() {
         {/* Column 1 — Current Focus: Editorial & Textual Statement */}
         <motion.div
           variants={shouldReduceMotion ? undefined : gridItemVariants}
-          className="p-4 sm:p-4.5 flex flex-col justify-between space-y-3 group hover:bg-surface/30 transition-colors"
+          className="p-3 sm:p-3.5 flex flex-col justify-between space-y-2.5 group hover:bg-surface/30 transition-colors"
         >
           <div className="space-y-2">
             <div className="flex items-center gap-1.5">
@@ -57,7 +57,7 @@ export function ProfileInfoBlock() {
         {/* Column 2 — What I Build: Scannable Capability Matrix */}
         <motion.div
           variants={shouldReduceMotion ? undefined : gridItemVariants}
-          className="p-4 sm:p-4.5 flex flex-col justify-between space-y-3 group hover:bg-surface/30 transition-colors"
+          className="p-3 sm:p-3.5 flex flex-col justify-between space-y-2.5 group hover:bg-surface/30 transition-colors"
         >
           <div className="space-y-2.5">
             <div className="flex items-center gap-1.5">
@@ -103,7 +103,7 @@ export function ProfileInfoBlock() {
         {/* Column 3 — How I Work: Concise Engineering Principles */}
         <motion.div
           variants={shouldReduceMotion ? undefined : gridItemVariants}
-          className="p-4 sm:p-4.5 flex flex-col justify-between space-y-3 group hover:bg-surface/30 transition-colors"
+          className="p-3 sm:p-3.5 flex flex-col justify-between space-y-2.5 group hover:bg-surface/30 transition-colors"
         >
           <div className="space-y-2">
             <div className="flex items-center gap-1.5">

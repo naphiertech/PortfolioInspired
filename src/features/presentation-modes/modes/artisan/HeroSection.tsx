@@ -88,24 +88,26 @@ export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
       <div className="relative z-20 w-full lg:h-full pointer-events-none text-foreground flex flex-col justify-start">
         {/* 1. Top Intro: Title, Bio, and Action Buttons */}
         <div className="order-1 relative z-10 pt-10 sm:pt-12 md:pt-14 lg:pt-14 px-5 sm:px-8 md:px-12 lg:px-14 xl:px-16 space-y-3 max-w-xl">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
-            {HERO_DATA.title}
-          </h1>
+          <div data-guide="artisan-intro" className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
+              {HERO_DATA.title}
+            </h1>
 
-          <p className="w-[95%] sm:w-[85%] lg:w-full lg:max-w-[355px] xl:max-w-[370px] text-xs sm:text-sm text-foreground/80 leading-relaxed font-sans font-normal min-h-[5rem] sm:min-h-[4.25rem] lg:min-h-0">
-            Hey, I&apos;m{" "}
-            <span className="font-caveat font-bold text-lg sm:text-xl italic tracking-wide text-foreground leading-none">
-              {HERO_DATA.name}
-            </span>
-            . {HERO_DATA.bio}{" "}
-            {HERO_DATA.status && (
-              <span className="text-foreground/90 font-sans text-xs font-medium whitespace-nowrap">
-                ({HERO_DATA.status})
+            <p className="w-[95%] sm:w-[85%] lg:w-full lg:max-w-[355px] xl:max-w-[370px] text-xs sm:text-sm text-foreground/80 leading-relaxed font-sans font-normal min-h-[5rem] sm:min-h-[4.25rem] lg:min-h-0">
+              Hey, I&apos;m{" "}
+              <span className="font-caveat font-bold text-lg sm:text-xl italic tracking-wide text-foreground leading-none">
+                {HERO_DATA.name}
               </span>
-            )}
-          </p>
+              . {HERO_DATA.bio}{" "}
+              {HERO_DATA.status && (
+                <span className="text-foreground/90 font-sans text-xs font-medium whitespace-nowrap">
+                  ({HERO_DATA.status})
+                </span>
+              )}
+            </p>
+          </div>
 
-          <div className="w-fit pointer-events-auto flex flex-wrap gap-3 items-center pt-1">
+          <div data-guide="artisan-actions" className="w-fit pointer-events-auto flex flex-wrap gap-3 items-center pt-1">
             {/* Let's Talk Popover */}
             <div ref={talkRef} className="relative inline-block">
               <button
@@ -175,7 +177,10 @@ export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
         </div>
 
         {/* 2. 3D Workspace (Middle section on mobile, right-offset background on desktop) */}
-        <div className="order-2 relative lg:absolute lg:inset-0 z-0 my-4 lg:my-0 flex justify-center items-center pointer-events-auto lg:translate-x-[13%] xl:translate-x-[10%] 2xl:translate-x-[7%] transition-transform duration-500">
+        <div
+          data-guide="artisan-3d"
+          className="order-2 relative lg:absolute lg:inset-0 z-0 my-4 lg:my-0 flex justify-center items-center pointer-events-auto lg:translate-x-[13%] xl:translate-x-[10%] 2xl:translate-x-[7%] transition-transform duration-500"
+        >
           <Hero3DBackground isDark={isDark} />
         </div>
 
@@ -183,7 +188,7 @@ export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
         <div className="order-3 relative z-10 px-5 sm:px-8 md:px-12 lg:px-14 xl:px-16 pt-2 lg:pt-3 w-full max-w-xl">
           <div className="flex flex-col gap-3.5 w-full lg:max-w-[355px] xl:max-w-[370px] pointer-events-auto lg:max-h-[calc(100dvh-295px)] lg:overflow-y-auto scrollbar-hide lg:pr-1 pb-6 lg:pb-14 font-sans">
             {/* A. Core Skills & Stack */}
-            <div className="space-y-2 pt-3 border-t border-black/10 dark:border-white/10">
+            <div data-guide="artisan-stack" className="space-y-2 pt-3 border-t border-black/10 dark:border-white/10">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-foreground/90">
                   <LuCode className="size-3.5 text-muted-foreground" aria-hidden="true" />

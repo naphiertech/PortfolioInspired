@@ -92,7 +92,7 @@ export function ExperienceTimeline() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.12 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className={`w-full space-y-6 select-none mb-0 ${towerStyles.section}`}
+      className={`w-full space-y-3 select-none mb-0 ${towerStyles.section}`}
       aria-label="Experience Timeline"
     >
       {/* Consistent Section Header */}
@@ -101,7 +101,7 @@ export function ExperienceTimeline() {
         description="A timeline of my growth, from my first line of code to where I am today."
         actionHref="/work"
         actionLabel="view work & experience"
-        className="mb-6 pb-2 border-b border-border-hairline/40"
+        className="mb-2 pb-2 border-b border-border-hairline/40"
       />
 
       {/* Vertical Milestone Timeline Container */}
@@ -126,7 +126,7 @@ export function ExperienceTimeline() {
                 <ExperienceTowerNode index={index} current={!!isCurrent} year={yearLabel} />
 
                 {/* Milestone Row Editorial Container */}
-                <div className="flex-1 min-w-0 pb-3 pt-1 border-b border-border-hairline/30 last:border-b-0 flex flex-col justify-start">
+                <div className="flex-1 min-w-0 pb-3 pt-[19.5px] border-b border-border-hairline/30 last:border-b-0 flex flex-col justify-start">
                   {/* Accessible Accordion Disclosure Trigger */}
                   <button
                     type="button"
@@ -134,15 +134,14 @@ export function ExperienceTimeline() {
                     aria-expanded={isOpen}
                     aria-controls={`timeline-detail-${index}`}
                     id={`timeline-trigger-${index}`}
-                    className="w-full text-left cursor-pointer group/btn focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-md p-1 -m-1 transition-colors hover:bg-surface/30"
+                    className="w-full text-left cursor-pointer group/btn focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-md p-0 transition-colors hover:bg-surface/30"
                   >
-                    {/* Unified responsive composition: zero DOM duplication */}
                     <div className="w-full">
-                      <div className="flex flex-col sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_auto] sm:items-center gap-2 sm:gap-4 p-0.5">
-                        {/* Left: Icon + Role & Context */}
-                        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+                      {/* Milestone Row Header: Icon + Role Title + Status Badge + Company + Date + Chevron */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
                           <div
-                            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-0 transition-colors ${
+                            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md border border-border-hairline flex items-center justify-center flex-shrink-0 transition-colors ${
                               isCurrent
                                 ? "bg-surface text-ink"
                                 : "bg-surface/50 text-muted-foreground group-hover/btn:text-ink"
@@ -151,46 +150,26 @@ export function ExperienceTimeline() {
                             {getIcon(exp.role)}
                           </div>
 
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                              <h3 className="font-sans text-[13px] sm:text-sm font-semibold text-ink leading-snug group-hover/btn:text-brand transition-colors break-words">
-                                {exp.role}
-                              </h3>
-                              {isCurrent && (
-                                <StatusBadge status="current" size="sm" className="flex-shrink-0" />
-                              )}
+                          <div className="min-w-0 flex-1 pt-0.5 sm:pt-1">
+                            <div className="flex items-baseline gap-x-2 gap-y-0.5 flex-wrap">
+                              <div className="inline-flex items-center gap-1.5 flex-shrink-0">
+                                <h3 className="font-sans text-[13px] sm:text-sm font-semibold text-ink leading-snug group-hover/btn:text-brand transition-colors whitespace-nowrap">
+                                  {exp.role}
+                                </h3>
+                                {isCurrent && (
+                                  <StatusBadge status="current" size="sm" className="flex-shrink-0" />
+                                )}
+                              </div>
+                              <span className="font-sans text-xs text-muted-foreground leading-normal before:content-['·\00a0'] before:text-muted-foreground/40 before:inline">
+                                {exp.company}
+                              </span>
                             </div>
-                            <p className="font-sans text-xs text-muted-foreground leading-tight sm:leading-normal mt-0.5 truncate">
-                              {exp.company}
-                            </p>
-                          </div>
-
-                          {/* Mobile-Only Date & Chevron (Top Right) */}
-                          <div className="flex sm:hidden items-center gap-1.5 flex-shrink-0 pt-0.5 ml-auto">
-                            <span className="font-mono text-[11px] text-muted-foreground/80">
-                              {exp.year}
-                            </span>
-                            <ChevronDown
-                              className={`w-3.5 h-3.5 text-muted-foreground/50 transition-transform duration-200 ${
-                                isOpen ? "rotate-180 text-brand" : "group-hover/btn:text-ink"
-                              }`}
-                              aria-hidden="true"
-                            />
                           </div>
                         </div>
 
-                        {/* Middle: Description (indented on mobile, middle column on desktop) */}
-                        {exp.description && (
-                          <div className="pl-9 sm:pl-2 min-w-0">
-                            <p className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 leading-relaxed line-clamp-2">
-                              {exp.description}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Right: Date Range & Chevron (Desktop Only) */}
-                        <div className="hidden sm:flex items-center gap-2 flex-shrink-0 ml-auto">
-                          <span className="font-mono text-xs text-muted-foreground/80">
+                        {/* Right: Date Range & Chevron */}
+                        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-auto pt-0.5 sm:pt-1">
+                          <span className="font-mono text-[11px] sm:text-xs text-muted-foreground/80 whitespace-nowrap">
                             {exp.year}
                           </span>
                           <div className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground/50 transition-colors">
@@ -203,6 +182,15 @@ export function ExperienceTimeline() {
                           </div>
                         </div>
                       </div>
+
+                      {/* Description Line: full-width indented neatly under the text */}
+                      {exp.description && (
+                        <div className="pl-[38px] sm:pl-[44px] pt-1 pr-2">
+                          <p className="font-sans text-xs sm:text-[13px] text-muted-foreground/90 leading-relaxed">
+                            {exp.description}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </button>
 

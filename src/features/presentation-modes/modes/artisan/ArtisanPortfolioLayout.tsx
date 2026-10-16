@@ -131,6 +131,9 @@ export function ArtisanPortfolioLayout({
   const handleSelectTab = useCallback(
     (newTab: string) => {
       const tab = newTab as TabType;
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("artisan-tab-switch"));
+      }
       if (tab === activeTab) {
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
@@ -177,7 +180,10 @@ export function ArtisanPortfolioLayout({
       }`}
     >
       {/* 1. Discreet Presentation Mode Switcher in Top Right */}
-      <div className="fixed top-3 sm:top-5 right-3 sm:right-6 z-50 pointer-events-auto">
+      <div
+        data-guide="artisan-switcher"
+        className="fixed top-3 sm:top-5 right-3 sm:right-6 z-50 pointer-events-auto"
+      >
         <PresentationModeSwitcher variant="agent" />
       </div>
 

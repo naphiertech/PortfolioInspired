@@ -30,45 +30,45 @@ export function DefaultModeLayout() {
 
       {/* 3. Field Notes Index (Editorial Engineering Observations) */}
       <SnapSectionWrapper id="field-notes">
-        <EditorialDivider className="mt-4 mb-6 sm:mt-6 sm:mb-8" />
+        <EditorialDivider className="my-3 sm:my-4" />
         <FieldNotesSection />
       </SnapSectionWrapper>
 
       {/* 4. Selected Projects (Top 3 Strongest) */}
       <SnapSectionWrapper id="recent-projects">
-        <EditorialDivider className="my-4 sm:my-6" />
+        <EditorialDivider className="my-3 sm:my-4" />
         <RecentProjects />
       </SnapSectionWrapper>
 
       {/* 5. Tech Stack (Curated High-Signal Preview) */}
       <SnapSectionWrapper id="tech-stack" className="content-auto">
-        <EditorialDivider className="my-4 sm:my-6" />
+        <EditorialDivider className="my-3 sm:my-4" />
         <TechStack />
       </SnapSectionWrapper>
 
       {/* 6. Work Experience Timeline (Top 3 Recent Milestones) */}
       <SnapSectionWrapper id="experience" className="content-auto">
-        <EditorialDivider className="my-4 sm:my-6" />
+        <EditorialDivider className="my-3 sm:my-4" />
         <ExperienceTimeline />
       </SnapSectionWrapper>
 
       {/* 8. Recommendations (Rendered only when real approved recommendations exist) */}
       {hasApprovedRecommendations && (
         <SnapSectionWrapper id="recommendations" className="content-auto">
-          <EditorialDivider className="my-4 sm:my-6" />
+          <EditorialDivider className="my-3 sm:my-4" />
           <Recommendations />
         </SnapSectionWrapper>
       )}
 
       {/* 9. Compact Moments Gallery (4-Moment Preview) */}
       <SnapSectionWrapper id="gallery" className="content-auto">
-        <EditorialDivider className="my-4 sm:my-6" />
+        <EditorialDivider className="my-3 sm:my-4" />
         <Gallery />
       </SnapSectionWrapper>
 
       {/* 10. Contact, Social & Memberships Matrix (Permanent - Never snapped) */}
       <div className="content-auto">
-        <EditorialDivider className="my-4 sm:my-6" />
+        <EditorialDivider className="my-3 sm:my-4" />
         <FooterGrid />
       </div>
     </div>

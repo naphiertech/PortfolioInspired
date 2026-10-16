@@ -212,7 +212,7 @@ export function ProfileHeader() {
       {/* Profile Header Content Container */}
       <div className="px-1 sm:px-2">
         {/* Upper Row: Overlapping Portrait + Desktop Status & Controls */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-3 -mt-14 sm:-mt-12 md:-mt-14 mb-4 sm:mb-3.5 relative z-20">
+        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-3 -mt-14 sm:-mt-12 md:-mt-14 mb-3 sm:mb-2.5 relative z-20">
           {/* Overlapping Profile Avatar with Animated Frames */}
           <div
             className="relative w-28 h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl ring-4 ring-page bg-surface border border-border-hairline overflow-hidden shadow-lg flex-shrink-0 cursor-pointer group transition-transform duration-200 sm:ml-3"
@@ -252,7 +252,7 @@ export function ProfileHeader() {
         </div>
 
         {/* Profile Information Hierarchy */}
-        <div className="space-y-3 text-center sm:text-left">
+        <div className="space-y-2 text-center sm:text-left">
           {/* Name & Handle & Mobile Availability Badge */}
           <div className="flex flex-col items-center sm:items-start">
             <h1
@@ -403,13 +403,13 @@ export function ProfileHeader() {
       </div>
 
       {/* Horizontal Structural Rail before Developer Profile Matrix */}
-      <EditorialDivider className="mt-8 mb-6 sm:mt-10 sm:mb-7" />
+      <EditorialDivider className="mt-5 mb-3 sm:mt-6 sm:mb-4" />
 
       {/* Structured Developer Profile Matrix (Current Focus, Capabilities, Principles) */}
       <ProfileInfoBlock />
 
       {/* Horizontal Structural Rail before GitHub Graph */}
-      <EditorialDivider className="mt-6 mb-6 sm:mt-8 sm:mb-7" />
+      <EditorialDivider className="my-3 sm:my-4" />
 
       {/* Real GitHub Contribution Graph */}
       <DeferredGithubContributions />

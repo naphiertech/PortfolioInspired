@@ -50,7 +50,7 @@ export function Recommendations() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.2 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-4 select-none mb-0"
+      className="w-full space-y-3 select-none mb-0"
       aria-label="Recommendations"
     >
       {/* Consistent Section Header */}
@@ -90,7 +90,7 @@ export function Recommendations() {
             </button>
           ) : null
         }
-        className="mb-4 pb-2 border-b border-border-hairline/40"
+        className="mb-2 pb-2 border-b border-border-hairline/40"
       />
 
       {/* Empty State vs. Published Recommendations */}

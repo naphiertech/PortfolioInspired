@@ -39,7 +39,7 @@ export function LandscapeFooter({ mode }: { mode: keyof typeof FOOTER_ART }) {
   return (
     <footer className={styles.footer} data-footer-mode={mode}>
       <div className={styles.content}>
-        <EditorialDivider className={mode === "default" ? "mt-8 sm:mt-10 mb-4 sm:mb-5" : "mt-12 sm:mt-14 mb-6"} />
+        <EditorialDivider className={mode === "default" ? "mt-4 sm:mt-5 mb-3 sm:mb-3.5" : "mt-12 sm:mt-14 mb-6"} />
         <div className={styles.metadata}>
           {mode === "minimal" && <p className={styles.modeLabel}>Minimal presentation</p>}
           <p>&copy; 2026 {SITE_NAME}. Designed with precision &amp; craft.</p>

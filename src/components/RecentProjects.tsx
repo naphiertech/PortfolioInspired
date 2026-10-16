@@ -38,7 +38,7 @@ export function RecentProjects() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-5 select-none mb-0"
+      className="w-full space-y-3 select-none mb-0"
       aria-label="Selected Projects"
     >
       {/* Section Header */}
@@ -47,14 +47,14 @@ export function RecentProjects() {
         description="Selected software engineering, full-stack, and mobile applications."
         actionHref="/projects"
         actionLabel="all projects"
-        className="mb-5 pb-2 border-b border-border-hairline/40"
+        className="mb-2 pb-2 border-b border-border-hairline/40"
       />
 
       {/* Projects Foundation Complex: Project grid rests atop floating mountain terrain */}
       <div className="relative">
         <motion.div
           variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-5 relative z-10"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10"
         >
         {featuredProjects.map((project) => (
           <motion.div

@@ -64,7 +64,10 @@ export function DockNav({
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[70] pointer-events-none flex justify-center">
-      <nav className="relative flex h-14 w-fit items-center justify-center gap-1.5 sm:gap-2 overflow-visible rounded-t-[32px] bg-white/95 dark:bg-[#0a0a0a]/95 text-foreground px-3.5 py-2 border-t border-x border-black/10 dark:border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.12)] backdrop-blur-3xl pointer-events-auto transition-all duration-300 ease-out">
+      <nav
+        data-guide="artisan-dock"
+        className="relative flex h-14 w-fit items-center justify-center gap-1.5 sm:gap-2 overflow-visible rounded-t-[32px] bg-white/95 dark:bg-[#0a0a0a]/95 text-foreground px-3.5 py-2 border-t border-x border-black/10 dark:border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.12)] backdrop-blur-3xl pointer-events-auto transition-all duration-300 ease-out"
+      >
         {items.map((item, idx) => {
           if (item.type === "divider") {
             return (

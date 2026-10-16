@@ -24,11 +24,13 @@
   --border-divider: rgba(255, 255, 255, 0.06);
 
   /* Technical Editorial Grid System Tokens */
-  --grid-guide: rgba(255, 255, 255, 0.085);
-  --grid-guide-subtle: rgba(255, 255, 255, 0.045);
-  --grid-crosshair: rgba(255, 255, 255, 0.12);
+  --grid-guide: rgba(255, 255, 255, 0.095);
+  --grid-guide-strong: rgba(255, 255, 255, 0.145);
+  --grid-guide-subtle: rgba(255, 255, 255, 0.05);
+  --grid-crosshair: rgba(255, 255, 255, 0.34);
   --grid-dot: transparent;
-  --grid-hatch: rgba(255, 255, 255, 0.035);
+  --grid-hatch: rgba(255, 255, 255, 0.04);
+  --grid-mark: rgba(255, 255, 255, 0.34);
   
   /* Shared Structural Layout Dimensions */
   --grid-width-default: 760px;
@@ -89,10 +91,12 @@
 
   /* Technical Editorial Grid (Light extension) */
   --grid-guide: rgba(0, 0, 0, 0.11);
-  --grid-guide-subtle: rgba(0, 0, 0, 0.07);
-  --grid-crosshair: rgba(0, 0, 0, 0.16);
+  --grid-guide-strong: rgba(0, 0, 0, 0.175);
+  --grid-guide-subtle: rgba(0, 0, 0, 0.065);
+  --grid-crosshair: rgba(0, 0, 0, 0.36);
   --grid-dot: transparent;
-  --grid-hatch: rgba(0, 0, 0, 0.055);
+  --grid-hatch: rgba(0, 0, 0, 0.05);
+  --grid-mark: rgba(0, 0, 0, 0.36);
 
   --status-active: #09090b;
   --status-ping: rgba(0, 0, 0, 0.4);
@@ -578,45 +582,116 @@ body:has(.artisan-mode) .bottom-progressive-blur,
 
 /* Technical Editorial Grid Utilities */
 .bg-technical-dots {
-  display: none;
+  background-image: radial-gradient(var(--grid-guide-subtle) 1px, transparent 1px);
+  background-size: 12px 12px;
 }
 
-/* Subtle Architectural Gutter Accent for outer margin gutters */
+/* Precision 45° Architectural Diagonal Hatch for outer margin gutters */
 .bg-architectural-hatch {
-  background-image: linear-gradient(
-    to bottom,
-    transparent,
-    var(--grid-hatch)
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--grid-hatch) 0px,
+    var(--grid-hatch) 1px,
+    transparent 1px,
+    transparent 7px
   );
 }
 
-/* Architectural Layout Grid Line Utilities (Crisp 1px solid lines) */
+/* Architectural Layout Grid Line Utilities */
 .grid-line-v {
   pointer-events: none;
   user-select: none;
-  width: 0px;
-  border-right: 1px solid var(--grid-guide);
+  width: 1px;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0px,
+    var(--grid-guide) 28px,
+    var(--grid-guide) calc(100% - 72px),
+    transparent 100%
+  );
 }
 
 .grid-line-v-subtle {
   pointer-events: none;
   user-select: none;
   width: 0px;
-  border-right: 1px solid var(--grid-guide-subtle);
+  border-right: 1px dashed var(--grid-guide-subtle);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0px,
+    black 40px,
+    black calc(100% - 96px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0px,
+    black 40px,
+    black calc(100% - 96px),
+    transparent 100%
+  );
 }
 
 .grid-line-h {
   pointer-events: none;
   user-select: none;
-  height: 0px;
-  border-bottom: 1px solid var(--grid-guide);
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--grid-guide-subtle) 7%,
+    var(--grid-guide) 22%,
+    var(--grid-guide) 78%,
+    var(--grid-guide-subtle) 93%,
+    transparent 100%
+  );
 }
 
 .grid-line-h-subtle {
   pointer-events: none;
   user-select: none;
   height: 0px;
-  border-bottom: 1px solid var(--grid-guide-subtle);
+  border-bottom: 1px dashed var(--grid-guide-subtle);
+}
+
+[data-grid-style="fine"] .grid-line-v {
+  width: 0px;
+  background-image: none;
+  border-right: 1px dashed var(--grid-guide);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0px,
+    black 28px,
+    black calc(100% - 72px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0px,
+    black 28px,
+    black calc(100% - 72px),
+    transparent 100%
+  );
+}
+
+[data-grid-style="fine"] .grid-line-h {
+  height: 0px;
+  background-image: none;
+  border-bottom: 1px dashed var(--grid-guide);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
 }
 
 /* ========================================================================= */
@@ -865,7 +940,7 @@ body:has(.artisan-mode) .bottom-progressive-blur,
   }
 
   /* Highlight target while guide points at it */
-  .gc-hover:not(.cad-project-card) {
+  .gc-hover:not(.cad-project-card):not([data-guide="artisan-3d"]) {
     outline: 2px dashed rgba(160, 160, 160, 0.5) !important;
     outline-offset: 4px !important;
     transition: outline 0.2s ease !important;

@@ -53,9 +53,9 @@ export const HOTSPOTS: HotspotItem[] = [
   },
   {
     id: "headphones",
-    title: "Studio Audio",
-    category: "SOUNDSCAPE",
-    hint: "Click for Lo-Fi focus beats & player",
+    title: "Now Playing",
+    category: "MUSIC",
+    hint: "Click to see what I'm listening to",
     points: "835,140 925,140 940,365 835,365",
     tooltipPos: { top: "25%", left: "75%" },
     color: "#fb923c",

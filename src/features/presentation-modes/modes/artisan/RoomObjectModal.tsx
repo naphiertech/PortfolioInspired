@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -9,18 +9,22 @@ import {
   LuGamepad2,
   LuLamp,
   LuBookOpen,
-  LuPlay,
-  LuPause,
   LuArrowUpRight,
   LuSparkles,
   LuZap,
   LuCheck,
-  LuDisc,
   LuCode,
 } from "react-icons/lu";
 import { HotspotId, HOTSPOTS } from "./RoomHotspots";
 import { HERO_DATA } from "./data";
 import { techSections, fullProjects } from "@/lib/data";
+import {
+  MusicFeaturedSong,
+  MusicPlaylist,
+  FAVORITE_TRACKS,
+  DEFAULT_TRACK,
+  type MusicTrack,
+} from "@/features/music-drawer";
 
 interface RoomObjectModalProps {
   hotspotId: HotspotId | null;
@@ -488,172 +492,26 @@ function PCRigContent() {
 }
 
 /* =========================================================================
-   3. HEADPHONES: Lo-Fi Web Audio Synthesizer & Focus Soundscape
+   3. HEADPHONES: Now Playing — shared music-drawer CD, featured song & rotation
    ========================================================================= */
 function HeadphonesContent() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState<"rain" | "drone" | "vinyl">(
-    "rain"
-  );
-  const audioCtxRef = useRef<AudioContext | null>(null);
-
-  const startAudio = () => {
-    try {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext;
-      const ctx = new AudioCtx();
-      audioCtxRef.current = ctx;
-
-      const bufferSize = ctx.sampleRate * 2;
-      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const output = noiseBuffer.getChannelData(0);
-      let b0 = 0,
-        b1 = 0,
-        b2 = 0;
-
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99 * b0 + white * 0.05;
-        b1 = 0.95 * b1 + white * 0.1;
-        b2 = 0.85 * b2 + white * 0.2;
-        output[i] = (b0 + b1 + b2) * 0.3;
-      }
-
-      const whiteNoise = ctx.createBufferSource();
-      whiteNoise.buffer = noiseBuffer;
-      whiteNoise.loop = true;
-
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value =
-        currentTrack === "rain" ? 800 : currentTrack === "drone" ? 400 : 1200;
-
-      const gain = ctx.createGain();
-      gain.gain.value = 0.18;
-
-      whiteNoise.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-
-      whiteNoise.start();
-      setIsPlaying(true);
-    } catch {
-      // Audio context fallback
-    }
-  };
-
-  const stopAudio = () => {
-    if (audioCtxRef.current) {
-      audioCtxRef.current.close();
-      audioCtxRef.current = null;
-    }
-    setIsPlaying(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioCtxRef.current) {
-        audioCtxRef.current.close();
-      }
-    };
-  }, []);
+  const [currentTrack, setCurrentTrack] = useState<MusicTrack>(DEFAULT_TRACK);
 
   return (
     <div className="space-y-5">
-      {/* Audio Visualizer & Player Card */}
-      <div className="p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] flex flex-col items-center justify-center gap-4 text-center">
-        <div className="flex items-center gap-1.5 h-8">
-          {[40, 70, 30, 90, 50, 80, 20, 60, 100, 45, 75, 35].map(
-            (height, i) => (
-              <span
-                key={i}
-                className="w-1 rounded-full bg-foreground transition-all duration-300"
-                style={{
-                  height: isPlaying ? `${height}%` : "18%",
-                  opacity: isPlaying ? 0.85 : 0.2,
-                  animation: isPlaying
-                    ? `pulse 1.${(i % 5) + 2}s infinite alternate`
-                    : "none",
-                }}
-              />
-            )
-          )}
-        </div>
-
-        <div className="space-y-1">
-          <h4 className="font-mono text-xl font-semibold text-foreground">
-            {currentTrack === "rain" && "Gentle Lo-Fi Rain"}
-            {currentTrack === "drone" && "Deep Binaural Focus"}
-            {currentTrack === "vinyl" && "Warm Vinyl Ambiance"}
-          </h4>
-          <p className="font-sans text-xs text-muted-foreground">
-            Real-time synthesized Web Audio soundscape
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={isPlaying ? stopAudio : startAudio}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-foreground text-background font-sans text-xs font-medium hover:opacity-90 active:scale-95 transition-all cursor-pointer"
-        >
-          {isPlaying ? (
-            <>
-              <LuPause className="size-3.5" />
-              <span>Pause Soundscape</span>
-            </>
-          ) : (
-            <>
-              <LuPlay className="size-3.5" />
-              <span>Play Soundscape</span>
-            </>
-          )}
-        </button>
-
-        {/* Sound Selection Chips */}
-        <div className="flex items-center gap-1.5 pt-1">
-          {(["rain", "drone", "vinyl"] as const).map((track) => (
-            <button
-              key={track}
-              type="button"
-              onClick={() => {
-                setCurrentTrack(track);
-                if (isPlaying) {
-                  stopAudio();
-                  setTimeout(startAudio, 100);
-                }
-              }}
-              className={`px-3 py-1 rounded-full text-[11px] font-sans font-medium capitalize transition-colors cursor-pointer ${
-                currentTrack === track
-                  ? "bg-foreground text-background"
-                  : "border border-black/12 dark:border-white/10 text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {track}
-            </button>
-          ))}
-        </div>
+      {/* Featured Song: rotating CD + Spotify / YouTube Music links */}
+      <div className="p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02]">
+        <MusicFeaturedSong track={currentTrack} />
       </div>
 
-      {/* Music Playlist Recs */}
-      <div className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] space-y-3">
-        <h5 className="font-mono text-lg font-semibold text-foreground">
-          Studio Focus Rotation
-        </h5>
-        <div className="space-y-2 text-xs font-sans text-foreground/80">
-          {[
-            "Synthwave & Retrowave (Gunship, HOME)",
-            "Lofi Girl / Chillhop Study Beats",
-            "Night City Ambient & Electronic",
-            "Persona 5 Instrumental & Smooth Jazz",
-          ].map((item) => (
-            <div key={item} className="flex items-center gap-2.5">
-              <LuDisc className="size-3.5 text-muted-foreground shrink-0" />
-              <span>{item}</span>
-            </div>
-          ))}
-        </div>
+      {/* My Rotation: same playlist as the default layout music drawer */}
+      <div className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] h-[360px] flex flex-col">
+        <MusicPlaylist
+          tracks={FAVORITE_TRACKS}
+          currentTrack={currentTrack}
+          onSelectTrack={setCurrentTrack}
+          className="mt-0 pt-0 border-t-0"
+        />
       </div>
     </div>
   );

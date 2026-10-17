@@ -84,14 +84,14 @@ export function ProjectsSection() {
           <div className="space-y-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-              <span className="font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
                 {activeProject.category} • {activeProject.year}
               </span>
             </div>
             <h3 className="font-mono text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
               {activeProject.title}
             </h3>
-            <p className="font-sans text-xs sm:text-sm text-foreground/75 leading-relaxed line-clamp-1">
+            <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed line-clamp-1">
               {activeProject.overview}
             </p>
           </div>
@@ -122,12 +122,12 @@ export function ProjectsSection() {
 
       {/* 3. Project Titles Directory Below MacBook */}
       <section className="w-full max-w-2xl px-2 pt-2">
-        <div className="flex items-center justify-between pb-2.5">
-          <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <div className="flex items-center justify-between gap-3 pb-2.5">
+          <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
             Project Index
-          </span>
-          <span className="font-sans text-[11px] text-muted-foreground">
-            Select or hover to preview
+          </h3>
+          <span className="font-sans text-xs text-muted-foreground">
+            {fullProjects.length} Projects
           </span>
         </div>
 
@@ -240,10 +240,10 @@ export function ProjectsSection() {
               {/* Sticky Top Bar */}
               <div className="sticky top-0 z-20 flex items-center justify-between p-4 sm:p-5 bg-background/90 backdrop-blur-md border-b border-black/10 dark:border-white/10">
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded bg-muted text-foreground/80 border border-black/10 dark:border-white/10">
+                  <span className="font-sans text-xs font-medium px-2.5 py-1 rounded-full bg-muted text-foreground/80 border border-black/10 dark:border-white/10">
                     {selectedProject.year}
                   </span>
-                  <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                  <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
                     {selectedProject.category}
                   </span>
                 </div>
@@ -262,11 +262,11 @@ export function ProjectsSection() {
               <div className="p-5 sm:p-8 space-y-8">
                 {/* Header Title & Subtext */}
                 <div className="space-y-2">
-                  <h3 className="text-2xl sm:text-3xl font-mono font-bold tracking-tight text-foreground">
+                  <h3 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
                     {selectedProject.title}
                   </h3>
                   {selectedProject.role && (
-                    <p className="font-mono text-xs sm:text-sm text-muted-foreground">
+                    <p className="font-sans font-medium text-sm sm:text-base text-foreground/90">
                       {selectedProject.role}
                       {selectedProject.client ? ` • ${selectedProject.client}` : ""}
                     </p>
@@ -287,7 +287,7 @@ export function ProjectsSection() {
                 {/* Gallery Thumbnails (if any) */}
                 {selectedProject.gallery && selectedProject.gallery.length > 0 && (
                   <div className="space-y-2">
-                    <span className="font-mono text-xs font-medium text-muted-foreground">
+                    <span className="font-sans text-xs font-medium text-muted-foreground">
                       Gallery Screens:
                     </span>
                     <div className="flex items-center gap-2 overflow-x-auto pb-2">
@@ -334,10 +334,10 @@ export function ProjectsSection() {
 
                 {/* Description Narrative */}
                 <div className="space-y-3">
-                  <h4 className="font-mono text-sm font-semibold tracking-wider text-foreground uppercase">
-                    Overview & Architecture
+                  <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground">
+                    Overview &amp; Architecture
                   </h4>
-                  <p className="font-sans text-sm sm:text-base text-foreground/80 leading-relaxed">
+                  <p className="font-sans font-normal text-sm sm:text-base text-foreground/80 leading-relaxed">
                     {selectedProject.fullDescription || selectedProject.overview}
                   </p>
                 </div>
@@ -345,7 +345,7 @@ export function ProjectsSection() {
                 {/* Features Section */}
                 {selectedProject.features && selectedProject.features.length > 0 && (
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2 font-mono text-sm font-semibold tracking-wider text-foreground uppercase">
+                    <div className="flex items-center gap-2 font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground">
                       <LuCheck className="size-4 text-emerald-500" />
                       <span>Key Capabilities</span>
                     </div>
@@ -356,7 +356,7 @@ export function ProjectsSection() {
                           className="flex items-start gap-2 text-xs sm:text-sm text-foreground/85 p-2 rounded-lg bg-foreground/[0.02] border border-black/10 dark:border-white/10"
                         >
                           <span className="font-mono text-xs text-muted-foreground pt-0.5">•</span>
-                          <span>{feat}</span>
+                          <span className="font-sans">{feat}</span>
                         </li>
                       ))}
                     </ul>
@@ -366,7 +366,7 @@ export function ProjectsSection() {
                 {/* Technical Decisions */}
                 {selectedProject.technicalDecisions && selectedProject.technicalDecisions.length > 0 && (
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2 font-mono text-sm font-semibold tracking-wider text-foreground uppercase">
+                    <div className="flex items-center gap-2 font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground">
                       <LuCpu className="size-4 text-foreground/70" />
                       <span>Technical Decisions</span>
                     </div>
@@ -376,10 +376,10 @@ export function ProjectsSection() {
                           key={i}
                           className="p-3.5 rounded-xl bg-muted/40 border border-black/10 dark:border-white/10 space-y-1"
                         >
-                          <p className="font-mono text-xs sm:text-sm font-semibold text-foreground">
+                          <p className="font-sans text-xs sm:text-sm font-semibold text-foreground">
                             {dec.title}
                           </p>
-                          <p className="font-sans text-xs sm:text-sm text-foreground/75 leading-relaxed">
+                          <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
                             {dec.description}
                           </p>
                         </div>
@@ -390,15 +390,15 @@ export function ProjectsSection() {
 
                 {/* Tech Stack */}
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 font-mono text-sm font-semibold tracking-wider text-foreground uppercase">
+                  <div className="flex items-center gap-2 font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground">
                     <LuLayers className="size-4 text-foreground/70" />
-                    <span>Tech Stack & Libraries</span>
+                    <span>Tech Stack &amp; Libraries</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {selectedProject.techStack.map((tech) => (
                       <span
                         key={tech}
-                        className="font-mono text-xs px-2.5 py-1 rounded-md bg-muted/80 text-foreground/80 border border-black/10 dark:border-white/10"
+                        className="inline-flex cursor-default items-center px-3 py-1 rounded-full text-xs font-sans border border-black/12 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.03] text-foreground/90"
                       >
                         {tech}
                       </span>
@@ -414,7 +414,7 @@ export function ProjectsSection() {
                         href={selectedProject.live}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm font-semibold text-background bg-foreground hover:opacity-90 px-4 py-2.5 rounded-xl transition-opacity cursor-pointer"
+                        className="inline-flex items-center gap-2 font-sans text-xs sm:text-sm font-medium text-background bg-foreground hover:opacity-90 px-4 py-2.5 rounded-xl transition-opacity cursor-pointer"
                       >
                         <span>Visit Live Platform</span>
                         <LuExternalLink className="size-4" />
@@ -425,7 +425,7 @@ export function ProjectsSection() {
                         href={selectedProject.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-foreground hover:bg-muted/80 px-4 py-2.5 rounded-xl border border-black/10 dark:border-white/10 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-2 font-sans text-xs sm:text-sm font-medium text-foreground hover:bg-muted/80 px-4 py-2.5 rounded-xl border border-black/10 dark:border-white/10 transition-colors cursor-pointer"
                       >
                         <FaGithub className="size-4" />
                         <span>Source Code</span>
@@ -436,7 +436,7 @@ export function ProjectsSection() {
                   <button
                     type="button"
                     onClick={() => setSelectedProject(null)}
-                    className="font-mono text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                    className="font-sans text-xs text-muted-foreground hover:text-foreground cursor-pointer"
                   >
                     Close Window [Esc]
                   </button>

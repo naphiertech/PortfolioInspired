@@ -30,7 +30,7 @@ export function NotesSection() {
     <div className="w-full flex flex-col items-center pt-10 pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
       <div className="w-full max-w-2xl text-center space-y-3 mb-12">
-        <h2 className="text-3xl sm:text-4xl font-mono font-semibold tracking-tight text-foreground">
+        <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
           Field Notes
         </h2>
         <p className="font-sans font-medium text-sm md:text-base text-foreground/80 leading-relaxed max-w-xl mx-auto">
@@ -40,16 +40,16 @@ export function NotesSection() {
 
       {/* 2. Notes List Archive */}
       <section className="w-full max-w-3xl space-y-4 pt-2">
-        <div className="flex items-center justify-between pb-2 border-b border-black/10 dark:border-white/10">
+        <div className="flex items-center justify-between gap-3 pb-2 border-b border-black/10 dark:border-white/10">
           <div className="space-y-1">
-            <h3 className="text-xl sm:text-2xl font-mono font-medium text-foreground">
-              Journal & Reflections
+            <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
+              Journal &amp; Reflections
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground">
+            <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
               Written essays, technical notes, and architectural observations.
             </p>
           </div>
-          <span className="font-mono text-xs font-semibold tracking-wider text-muted-foreground">
+          <span className="font-sans text-xs text-muted-foreground">
             {fieldNotes.length} Notes
           </span>
         </div>
@@ -63,7 +63,7 @@ export function NotesSection() {
               className="group relative flex items-start gap-4 sm:gap-6 py-6 px-3 sm:px-4 cursor-pointer hover:bg-foreground/[0.03] transition-colors rounded-xl"
             >
               {/* Note Sequential Number */}
-              <span className="font-mono text-2xl sm:text-3xl font-light text-foreground/35 group-hover:text-foreground transition-colors select-none tabular-nums w-8 sm:w-10 shrink-0 pt-0.5">
+              <span className="font-mono text-2xl sm:text-3xl font-normal text-foreground/35 group-hover:text-foreground transition-colors select-none tabular-nums w-8 sm:w-10 shrink-0 pt-0.5">
                 {note.number}
               </span>
 
@@ -71,10 +71,10 @@ export function NotesSection() {
               <div className="flex-1 min-w-0 space-y-2">
                 {/* Header Line */}
                 <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                  <h4 className="font-mono text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:underline">
+                  <h4 className="font-mono text-lg sm:text-xl font-semibold tracking-tight text-foreground group-hover:underline">
                     {note.title}
                   </h4>
-                  <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground tracking-wider shrink-0">
+                  <div className="flex items-center gap-2 font-sans text-xs text-muted-foreground shrink-0">
                     <span>{note.formattedDate || note.date}</span>
                     <span>•</span>
                     <span>{note.readTime}</span>
@@ -84,13 +84,13 @@ export function NotesSection() {
                 {/* Category & Emerald Dot */}
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                  <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                  <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
                     {note.category}
                   </span>
                 </div>
 
                 {/* Excerpt */}
-                <p className="font-sans text-xs sm:text-sm text-foreground/80 leading-relaxed line-clamp-2">
+                <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed line-clamp-2">
                   {note.excerpt}
                 </p>
 
@@ -100,14 +100,14 @@ export function NotesSection() {
                     {note.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] font-sans px-2 py-0.5 rounded-full border border-black/10 dark:border-white/10 text-muted-foreground bg-black/[0.03] dark:bg-white/[0.04]"
+                        className="text-[10px] font-sans px-2.5 py-0.5 rounded-full border border-black/10 dark:border-white/10 text-muted-foreground bg-black/[0.03] dark:bg-white/[0.04]"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  <span className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors group-hover:translate-x-1 duration-200">
+                  <span className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors group-hover:translate-x-1 duration-200">
                     <span>Read Note</span>
                     <LuArrowRight className="size-3.5" />
                   </span>
@@ -145,15 +145,15 @@ export function NotesSection() {
 
               {/* Note Metadata Header */}
               <div className="border-b border-black/10 dark:border-white/10 pb-4 space-y-2">
-                <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-                  <span className="text-emerald-500 font-bold">NOTE {selectedNote.number}</span>
+                <div className="flex items-center gap-2 font-sans text-xs text-muted-foreground">
+                  <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">NOTE {selectedNote.number}</span>
                   <span>•</span>
-                  <span>{selectedNote.category}</span>
+                  <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">{selectedNote.category}</span>
                   <span>•</span>
                   <span>{selectedNote.readTime}</span>
                 </div>
 
-                <h3 className="font-mono text-2xl sm:text-3xl font-bold text-foreground">
+                <h3 className="font-mono text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
                   {selectedNote.title}
                 </h3>
               </div>
@@ -164,11 +164,11 @@ export function NotesSection() {
               </p>
 
               {/* Note Sections */}
-              <div className="space-y-6 font-sans text-xs sm:text-sm text-foreground/80 leading-relaxed">
+              <div className="space-y-6 font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
                 {selectedNote.content.sections.map((section, sIdx) => (
                   <div key={sIdx} className="space-y-3">
                     {section.heading && (
-                      <h4 className="font-mono text-lg font-semibold text-foreground pt-2">
+                      <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground pt-2">
                         {section.heading}
                       </h4>
                     )}
@@ -178,12 +178,12 @@ export function NotesSection() {
                       </p>
                     ))}
                     {section.callout && (
-                      <div className="p-3.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 font-mono text-xs text-foreground/90 my-2">
+                      <div className="p-3.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 font-sans text-xs text-foreground/90 my-2">
                         💡 {section.callout}
                       </div>
                     )}
                     {section.codeSnippet && (
-                      <pre className="p-4 rounded-xl bg-black text-zinc-100 font-mono text-xs overflow-x-auto border border-zinc-800 my-2">
+                      <pre className="p-4 rounded-xl bg-black text-zinc-100 font-prime text-xs overflow-x-auto border border-zinc-800 my-2">
                         <code>{section.codeSnippet.code}</code>
                       </pre>
                     )}
@@ -203,7 +203,7 @@ export function NotesSection() {
               <div className="flex items-center justify-between pt-4 border-t border-black/10 dark:border-white/10 flex-wrap gap-3">
                 <Link
                   href={`/notes/${selectedNote.slug}`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background font-mono text-xs font-semibold hover:opacity-90 transition-opacity"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background font-sans text-xs font-medium hover:opacity-90 transition-opacity"
                 >
                   <span>Open Full Page</span>
                   <LuExternalLink className="size-3.5" />
@@ -212,7 +212,7 @@ export function NotesSection() {
                 <button
                   type="button"
                   onClick={() => setSelectedNote(null)}
-                  className="px-4 py-2 font-mono text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                  className="px-4 py-2 font-sans text-xs text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   Close Reader
                 </button>

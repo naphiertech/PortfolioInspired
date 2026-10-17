@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
@@ -9,6 +9,7 @@ import {
   techStackIntro,
   getProjectsUsingTech,
   getCanonicalTechName,
+  normalizeTechName,
 } from "@/lib/data";
 import { TechIcon } from "@/components/TechIcon";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
@@ -95,6 +96,29 @@ export function FocusTechStackPage() {
     router.push("/tech-stack", { scroll: false });
   };
 
+  const InlineTechBadge = ({ name }: { name: string }) => {
+    const isSelected =
+      selectedTech !== null &&
+      normalizeTechName(selectedTech) === normalizeTechName(name);
+
+    return (
+      <button
+        type="button"
+        onClick={() => handleTechClick(name)}
+        onMouseEnter={playHover}
+        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] border text-[11px] sm:text-xs font-sans align-middle transition-colors cursor-pointer my-0.5 ${
+          isSelected
+            ? "border-emerald-500/50 dark:border-emerald-500/40 bg-emerald-500/[0.08] text-ink font-medium"
+            : "border-black/[0.08] dark:border-white/[0.08] bg-transparent text-body hover:border-black/20 dark:hover:border-white/20 hover:text-ink"
+        }`}
+        title={`Filter projects built with ${name}`}
+      >
+        <TechIcon name={name} className="w-3 h-3 flex-shrink-0" />
+        <span>{name}</span>
+      </button>
+    );
+  };
+
   return (
     <div className="w-full select-none animate-in fade-in duration-200">
       {/* Focus Top Navigation */}
@@ -135,44 +159,26 @@ export function FocusTechStackPage() {
 
       <EditorialDivider className="mb-6" />
 
-      <section aria-labelledby="stack-overview-heading" className="mb-6">
-        <h2 id="stack-overview-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-3.5">
-          00 // STACK OVERVIEW
-        </h2>
-        <dl className="divide-y divide-border-divider border-b border-border-divider">
-          <div className="pt-1 pb-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-2 sm:gap-5 items-start">
-            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Generalist by project</dt>
-            <dd className="min-w-0 font-sans text-[14px] sm:text-[15px] text-ink font-medium leading-[1.6]">
-              {techStackIntro.headline}
-            </dd>
-          </div>
-          <div className="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-2 sm:gap-5 items-start">
-            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Core tools</dt>
-            <dd className="min-w-0 space-y-3">
-              <p className="font-sans text-[14px] sm:text-[15px] text-zinc-700 dark:text-zinc-300 leading-[1.6]">
-                Depending on the project, I work with these and other tools shown below.
-              </p>
-              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                {techStackIntro.highlightedTools.map((tech) => (
-                  <FocusTechChip
-                    key={tech}
-                    tech={tech}
-                    isSelected={selectedTech === tech}
-                    onSelect={handleTechClick}
-                    onHover={playHover}
-                  />
-                ))}
-              </div>
-            </dd>
-          </div>
-          <div className="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-2 sm:gap-5 items-start">
-            <dt className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider pt-0.5">Note</dt>
-            <dd className="min-w-0 font-sans text-[14px] sm:text-[15px] text-zinc-500 dark:text-zinc-400 leading-[1.6]">
-              {techStackIntro.footer}
-            </dd>
-          </div>
-        </dl>
-      </section>
+      {/* Natural Editorial Intro */}
+      <div className="mb-7 space-y-2.5 font-sans text-xs sm:text-[13px] leading-relaxed">
+        <p className="text-body">
+          {techStackIntro.headline}
+        </p>
+        <p className="leading-loose text-body">
+          Depending on the project, I work with{" "}
+          {techStackIntro.highlightedTools.map((tool, idx) => (
+            <React.Fragment key={tool}>
+              <InlineTechBadge name={tool} />
+              {idx < techStackIntro.highlightedTools.length - 1 ? ", " : ", and other tools shown below."}
+            </React.Fragment>
+          ))}
+        </p>
+        <p className="text-muted-foreground/75">
+          {techStackIntro.footer}
+        </p>
+      </div>
+
+      <EditorialDivider className="mb-6 sm:mb-8" />
 
       {/* Domain-Grouped Technology Ledger */}
       <div className="divide-y divide-border-divider">

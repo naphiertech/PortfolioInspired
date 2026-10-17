@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import {
   HiOutlineHome,
+  PiUserLight,
   PiChairLight,
   PiNotePencilLight,
   BsFolder2,
@@ -34,6 +35,11 @@ export function DockNav({
       icon: <HiOutlineHome aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
     },
     { type: "divider" },
+    {
+      id: "about",
+      label: "About",
+      icon: <PiUserLight aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
+    },
     {
       id: "experience",
       label: "Experience",

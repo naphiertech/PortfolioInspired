@@ -7,6 +7,9 @@ import { HeroSection } from "./HeroSection";
 import { DockNav } from "./DockNav";
 import { PageTransitionSpiral } from "./PageTransitionSpiral";
 import { PresentationModeSwitcher } from "@/features/presentation-modes/components/PresentationModeSwitcher";
+const AboutSection = dynamic(() =>
+  import("./AboutSection").then((m) => m.AboutSection)
+);
 const ExperienceSection = dynamic(() =>
   import("./ExperienceSection").then((m) => m.ExperienceSection)
 );
@@ -17,9 +20,10 @@ const NotesSection = dynamic(() =>
   import("./NotesSection").then((m) => m.NotesSection)
 );
 
-type TabType = "home" | "experience" | "projects" | "notes";
+type TabType = "home" | "about" | "experience" | "projects" | "notes";
 
 const RESOLVED_TABS: {
+  about?: React.ComponentType<{ onNavigateTab?: (tab: TabType) => void }>;
   experience?: React.ComponentType<{ isDark: boolean; onNavigateProjects?: () => void }>;
   projects?: React.ComponentType;
   notes?: React.ComponentType;
@@ -27,7 +31,10 @@ const RESOLVED_TABS: {
 
 async function preloadArtisanTab(tab: TabType): Promise<void> {
   try {
-    if (tab === "experience" && !RESOLVED_TABS.experience) {
+    if (tab === "about" && !RESOLVED_TABS.about) {
+      const mod = await import("./AboutSection");
+      RESOLVED_TABS.about = mod.AboutSection;
+    } else if (tab === "experience" && !RESOLVED_TABS.experience) {
       const mod = await import("./ExperienceSection");
       RESOLVED_TABS.experience = mod.ExperienceSection;
     } else if (tab === "projects" && !RESOLVED_TABS.projects) {
@@ -43,6 +50,10 @@ async function preloadArtisanTab(tab: TabType): Promise<void> {
 }
 
 const ARTISAN_TAB_QUOTES: Record<Exclude<TabType, "home">, { quote: string; author: string }> = {
+  about: {
+    quote: "Simplicity is about subtracting the obvious and adding the meaningful.",
+    author: "John Maeda",
+  },
   experience: {
     quote: "Details are not the details. They make the design.",
     author: "Charles Eames",
@@ -69,7 +80,7 @@ export function ArtisanPortfolioLayout({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const queryTab = params.get("tab") as TabType | null;
-    if (queryTab && ["home", "experience", "projects", "notes"].includes(queryTab)) {
+    if (queryTab && ["home", "about", "experience", "projects", "notes"].includes(queryTab)) {
       void preloadArtisanTab(queryTab);
       setActiveTab(queryTab);
     }
@@ -79,6 +90,7 @@ export function ArtisanPortfolioLayout({
   // Warm-preload sub-tabs after initial idle so tab switching is always instantaneous
   useEffect(() => {
     const timer = setTimeout(() => {
+      void preloadArtisanTab("about");
       void preloadArtisanTab("experience");
       void preloadArtisanTab("projects");
       void preloadArtisanTab("notes");
@@ -123,8 +135,8 @@ export function ArtisanPortfolioLayout({
   );
 
   const handleHoverTab = useCallback((tab: string) => {
-    if (tab === "experience" || tab === "projects" || tab === "notes") {
-      void preloadArtisanTab(tab);
+    if (tab === "about" || tab === "experience" || tab === "projects" || tab === "notes") {
+      void preloadArtisanTab(tab as TabType);
     }
   }, []);
 
@@ -167,6 +179,7 @@ export function ArtisanPortfolioLayout({
   }, []);
 
   const activeQuote = activeTab !== "home" ? ARTISAN_TAB_QUOTES[activeTab] : null;
+  const ResolvedAbout = RESOLVED_TABS.about || AboutSection;
   const ResolvedExperience = RESOLVED_TABS.experience || ExperienceSection;
   const ResolvedProjects = RESOLVED_TABS.projects || ProjectsSection;
   const ResolvedNotes = RESOLVED_TABS.notes || NotesSection;
@@ -200,6 +213,9 @@ export function ArtisanPortfolioLayout({
             isDark={isDark}
             onNavigate={(tab) => handleSelectTab(tab)}
           />
+        )}
+        {activeTab === "about" && (
+          <ResolvedAbout onNavigateTab={(tab) => handleSelectTab(tab)} />
         )}
         {activeTab === "experience" && (
           <ResolvedExperience

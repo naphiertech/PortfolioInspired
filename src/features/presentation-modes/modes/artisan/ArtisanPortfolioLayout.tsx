@@ -77,6 +77,17 @@ export function ArtisanPortfolioLayout({
 }: ArtisanPortfolioLayoutProps) {
   const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
 
+  const syncTabUrl = useCallback((tab: TabType) => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (tab === "home") {
+      url.searchParams.delete("tab");
+    } else {
+      url.searchParams.set("tab", tab);
+    }
+    window.history.replaceState({}, "", url.toString());
+  }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const queryTab = params.get("tab") as TabType | null;
@@ -181,9 +192,10 @@ export function ArtisanPortfolioLayout({
   const handleTransitionMidpoint = useCallback(() => {
     if (pendingTab) {
       setActiveTab(pendingTab);
+      syncTabUrl(pendingTab);
       window.scrollTo({ top: 0, behavior: "instant" });
     }
-  }, [pendingTab]);
+  }, [pendingTab, syncTabUrl]);
 
   const handleTransitionComplete = useCallback(() => {
     setIsTransitioning(false);

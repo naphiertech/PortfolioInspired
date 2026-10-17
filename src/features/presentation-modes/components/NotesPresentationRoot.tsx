@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { NotesPageClient } from "@/app/notes/NotesPageClient";
 import dynamic from "next/dynamic";
@@ -28,8 +29,15 @@ const MinimalNotesPage = dynamic(
  * Dispatches between Default list index, Focus engineering dossier, and Minimal essay archive.
  */
 export function NotesPresentationRoot() {
+  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
+
+  React.useEffect(() => {
+    if (mode === "agent" && typeof window !== "undefined") {
+      router.replace("/?tab=notes");
+    }
+  }, [mode, router]);
 
   return (
     <div

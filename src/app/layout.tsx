@@ -153,13 +153,13 @@ export default async function RootLayout({
   const initialGridEnabled = cookieGrid === "true";
 
   if (initialMode === "agent") {
-    preload("/homepage-bg/3D-Room-Dark-Cutout-mobile.webp", {
+    preload("/artisan-bg/room-light-cutout-mobile.webp", {
       as: "image",
       type: "image/webp",
       media: "(max-width: 640px)",
       fetchPriority: "high",
     });
-    preload("/homepage-bg/3D-Room-Dark-Cutout.webp", {
+    preload("/artisan-bg/room-light-cutout.webp", {
       as: "image",
       type: "image/webp",
       media: "(min-width: 641px)",
@@ -181,6 +181,13 @@ export default async function RootLayout({
         <link
           rel="preload"
           href="/fonts/artisan/e41d5df559864f9e-s.p.2rlzm4mj5kw8e.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/artisan/87d3ffffac5dafea-s.p.1e8puyswpvmbr.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"

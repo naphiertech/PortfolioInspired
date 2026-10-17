@@ -27,7 +27,7 @@ export function NotesSection() {
   }, [selectedNote]);
 
   return (
-    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-28 sm:pb-4 px-4 sm:px-6">
+    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
       <div className="w-full max-w-2xl text-center space-y-3 mb-8 sm:mb-12">
         <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">

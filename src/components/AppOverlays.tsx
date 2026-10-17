@@ -43,7 +43,12 @@ export function AppOverlays() {
   const isArtisan = mode === "agent" || pathname === "/artisan";
 
   if (isArtisan) {
-    return <MouseTourGuide />;
+    return (
+      <>
+        <ChatWidget />
+        <MouseTourGuide />
+      </>
+    );
   }
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import type { FieldNote } from "@/lib/fieldNotes";
 import { NoteDetailClient } from "@/app/notes/[slug]/NoteDetailClient";
@@ -44,8 +45,15 @@ export function NoteDetailPresentationRoot({
   nextNote,
   totalNotes,
 }: NoteDetailPresentationRootProps) {
+  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
+
+  React.useEffect(() => {
+    if (mode === "agent" && typeof window !== "undefined") {
+      router.replace("/?tab=notes");
+    }
+  }, [mode, router]);
 
   return (
     <div

@@ -289,7 +289,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
   };
 
   return (
-    <div className="w-full flex flex-col items-center pt-8 pb-28 sm:pb-4 px-4 sm:px-6">
+    <div className="w-full flex flex-col items-center pt-8 pb-4 px-4 sm:px-6">
       {/* 1. Interactive Authentic Train Window */}
       <WindowShutter isDark={isDark} className="mb-6" />
 

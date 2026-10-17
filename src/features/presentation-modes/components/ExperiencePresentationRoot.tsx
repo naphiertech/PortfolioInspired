@@ -40,8 +40,11 @@ export function ExperiencePresentationRoot() {
   const isSwitch = previousMode !== null && previousMode !== mode;
 
   React.useEffect(() => {
-    if (mode === "minimal" && typeof window !== "undefined") {
+    if (typeof window === "undefined") return;
+    if (mode === "minimal") {
       router.replace("/");
+    } else if (mode === "agent") {
+      router.replace("/?tab=experience");
     }
   }, [mode, router]);
 

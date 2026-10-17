@@ -6,33 +6,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   LuX,
   LuTerminal,
-  LuGamepad2,
-  LuLamp,
-  LuBookOpen,
   LuArrowUpRight,
   LuSparkles,
   LuZap,
-  LuCheck,
   LuCode,
 } from "react-icons/lu";
+import { PhoneCall, PhoneOff } from "lucide-react";
 import { HotspotId, HOTSPOTS } from "./RoomHotspots";
 import { HERO_DATA } from "./data";
 import { techSections, fullProjects } from "@/lib/data";
-import {
-  MusicFeaturedSong,
-  MusicPlaylist,
-  FAVORITE_TRACKS,
-  DEFAULT_TRACK,
-  type MusicTrack,
-} from "@/features/music-drawer";
 
 interface RoomObjectModalProps {
   hotspotId: HotspotId | null;
   isDark: boolean;
   onClose: () => void;
   onSelectHotspot?: (id: HotspotId) => void;
-  customLightColor: string;
-  onUpdateLightColor: (color: string) => void;
+  isCallActive?: boolean;
+  isTransitionLocked?: boolean;
+  onToggleCall?: () => void;
 }
 
 export function RoomObjectModal({
@@ -40,8 +31,9 @@ export function RoomObjectModal({
   isDark,
   onClose,
   onSelectHotspot,
-  customLightColor,
-  onUpdateLightColor,
+  isCallActive = false,
+  isTransitionLocked = false,
+  onToggleCall,
 }: RoomObjectModalProps) {
   const [mounted, setMounted] = useState(false);
 
@@ -122,9 +114,9 @@ export function RoomObjectModal({
                 </button>
               </div>
 
-              {/* 2. Desk Object Switcher Grid (All 6 Visible) */}
+              {/* 2. Desk Object Switcher Grid */}
               {onSelectHotspot && (
-                <div className="px-6 py-3.5 border-b border-black/10 dark:border-white/10 grid grid-cols-2 sm:grid-cols-3 gap-2 shrink-0">
+                <div className="px-6 py-3.5 border-b border-black/10 dark:border-white/10 grid grid-cols-2 gap-2 shrink-0">
                   {HOTSPOTS.map((item) => {
                     const Icon = item.icon;
                     const isActive = item.id === hotspotId;
@@ -150,15 +142,19 @@ export function RoomObjectModal({
               {/* 3. Scrollable Drawer Body */}
               <div className="p-6 overflow-y-auto flex-1 space-y-6">
                 {hotspotId === "monitors" && <MonitorsContent />}
-                {hotspotId === "pc_rig" && <PCRigContent />}
-                {hotspotId === "headphones" && <HeadphonesContent />}
-                {hotspotId === "gamepad" && <GamepadContent />}
-                {hotspotId === "smart_lamp" && (
-                  <SmartLampContent
-                    currentColor={customLightColor}
-                    onSelectColor={onUpdateLightColor}
+                {hotspotId === "smartphone" && (
+                  <SmartphoneContent
+                    isCallActive={isCallActive}
+                    isTransitionLocked={isTransitionLocked}
+                    onToggleCall={() => {
+                      if (!isTransitionLocked && onToggleCall) {
+                        onToggleCall();
+                        onClose();
+                      }
+                    }}
                   />
                 )}
+                {hotspotId === "desk_corner" && <DeskCornerContent />}
                 {hotspotId === "bookshelf" && <BookshelfContent />}
               </div>
 
@@ -388,31 +384,100 @@ Stack: Next.js, React, TypeScript, Supabase, Tailwind CSS, Python`,
 }
 
 /* =========================================================================
-   2. PC RIG: Hardware Specs & Interactive Diagnostics
+   2. SMARTPHONE: Interactive Desk Phone Call Controller
    ========================================================================= */
-function PCRigContent() {
+function SmartphoneContent({
+  isCallActive,
+  isTransitionLocked = false,
+  onToggleCall,
+}: {
+  isCallActive: boolean;
+  isTransitionLocked?: boolean;
+  onToggleCall: () => void;
+}) {
+  return (
+    <div className="space-y-5">
+      <div className="p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] flex flex-col items-center justify-center gap-4 text-center">
+        <div
+          className={`size-16 rounded-full flex items-center justify-center border transition-all duration-300 ${
+            isCallActive
+              ? "bg-rose-500/15 border-rose-500/30 text-rose-500"
+              : "bg-emerald-500/15 border-emerald-500/30 text-emerald-500"
+          }`}
+        >
+          {isCallActive ? (
+            <PhoneOff className="size-7" />
+          ) : (
+            <PhoneCall className="size-7" />
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <h4 className="font-prime text-xl font-semibold text-foreground">
+            {isCallActive ? "Call in Progress" : "Chat with NaphBot"}
+          </h4>
+          <p className="font-sans text-xs text-muted-foreground max-w-sm">
+            {isCallActive
+              ? "Naphier is currently on the phone. Click below to end the call and watch him set the phone back on the desk."
+              : "Trigger the live desk phone animation sequence — Naphier will pause typing, pick up the smartphone on the desk, and take your call."}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          disabled={isTransitionLocked}
+          onClick={onToggleCall}
+          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-sans font-semibold transition-all ${
+            isTransitionLocked
+              ? "opacity-45 cursor-not-allowed bg-foreground/20 text-foreground/60"
+              : isCallActive
+                ? "bg-rose-600 text-white hover:bg-rose-500 cursor-pointer active:scale-95"
+                : "bg-foreground text-background hover:opacity-90 cursor-pointer active:scale-95"
+          }`}
+        >
+          {isCallActive ? (
+            <>
+              <PhoneOff className="size-3.5" />
+              <span className="font-prime">End Call</span>
+            </>
+          ) : (
+            <>
+              <PhoneCall className="size-3.5" />
+              <span className="font-prime">Chat with NaphBot</span>
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   3. DESK CORNER: Laptop Hardware Specs & Left-Side Desk Artifacts
+   ========================================================================= */
+function DeskCornerContent() {
   const [fanMode, setFanMode] = useState<"quiet" | "balanced" | "turbo">(
     "balanced"
   );
 
   const fanSpeeds = {
-    quiet: { rpm: "650 RPM", temp: "38°C", noise: "Silent (18dB)" },
-    balanced: { rpm: "1250 RPM", temp: "46°C", noise: "Smooth (26dB)" },
-    turbo: { rpm: "2200 RPM", temp: "58°C", noise: "Max Airflow (38dB)" },
+    quiet: { rpm: "1100 RPM", temp: "41°C", noise: "Whisper (19dB)" },
+    balanced: { rpm: "2100 RPM", temp: "48°C", noise: "Smooth (25dB)" },
+    turbo: { rpm: "3400 RPM", temp: "61°C", noise: "Performance (35dB)" },
   };
 
   const current = fanSpeeds[fanMode];
 
   const specs = [
-    { label: "Processor", value: "AMD Ryzen", sub: "Multi-Core Dev" },
-    { label: "Memory", value: "32 GB DDR5", sub: "Dual Channel" },
-    { label: "Fast NVMe", value: "2 TB PCIe 4.0", sub: "7000 MB/s Read" },
-    { label: "Environment", value: "Windows & WSL2", sub: "VS Code + Zsh" },
+    { label: "Laptop", value: "ASUS Vivobook 16", sub: "Aluminum Riser Stand" },
+    { label: "External Display", value: "27\" IPS Monitor", sub: "Borderless + Cyan LED" },
+    { label: "Keyboard", value: "Z-G61 60% Mech", sub: "White Compact Layout" },
+    { label: "Mouse", value: "Mloong MX301", sub: "Wireless Ergonomic" },
   ];
 
   return (
     <div className="space-y-5">
-      {/* Spec Breakdown */}
+      {/* Hardware Spec Breakdown */}
       <div className="grid grid-cols-2 gap-2.5">
         {specs.map((spec) => (
           <div
@@ -422,7 +487,7 @@ function PCRigContent() {
             <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground block">
               {spec.label}
             </span>
-            <span className="font-mono text-lg font-semibold text-foreground block">
+            <span className="font-mono text-base sm:text-lg font-semibold text-foreground block">
               {spec.value}
             </span>
             <span className="font-sans text-xs text-muted-foreground block">
@@ -432,13 +497,39 @@ function PCRigContent() {
         ))}
       </div>
 
-      {/* Fan & Performance Simulator */}
+      {/* Left Desk Extension Artifacts */}
+      <div className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] space-y-3">
+        <h4 className="font-mono text-lg font-semibold text-foreground">
+          Left-Side Desk Essentials
+        </h4>
+        <div className="grid grid-cols-3 gap-2 text-center">
+          {[
+            { name: "Monstera Plant", desc: "Ceramic planter" },
+            { name: "Hot Coffee", desc: "Cork coaster mug" },
+            { name: "Leather Journal", desc: "Architecture notes" },
+          ].map((item) => (
+            <div
+              key={item.name}
+              className="p-2.5 rounded-xl border border-black/10 dark:border-white/10 bg-background"
+            >
+              <span className="font-mono text-xs sm:text-sm font-semibold text-foreground block">
+                {item.name}
+              </span>
+              <span className="font-sans text-[10px] text-muted-foreground">
+                {item.desc}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Laptop Thermal Profile Simulator */}
       <div className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] space-y-4">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2">
             <LuZap className="size-4 text-foreground/80" />
             <h4 className="font-mono text-lg font-semibold text-foreground">
-              Cooling & Thermal Profile
+              Laptop Thermal Profile
             </h4>
           </div>
           <div className="flex gap-1.5">
@@ -459,7 +550,6 @@ function PCRigContent() {
           </div>
         </div>
 
-        {/* Live Gauges */}
         <div className="grid grid-cols-3 gap-3 pt-3 text-center border-t border-black/10 dark:border-white/10">
           <div>
             <span className="font-sans text-[10px] uppercase tracking-[0.14em] text-muted-foreground block">
@@ -492,224 +582,170 @@ function PCRigContent() {
 }
 
 /* =========================================================================
-   3. HEADPHONES: Now Playing — shared music-drawer CD, featured song & rotation
-   ========================================================================= */
-function HeadphonesContent() {
-  const [currentTrack, setCurrentTrack] = useState<MusicTrack>(DEFAULT_TRACK);
-
-  return (
-    <div className="space-y-5">
-      {/* Featured Song: rotating CD + Spotify / YouTube Music links */}
-      <div className="p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02]">
-        <MusicFeaturedSong track={currentTrack} />
-      </div>
-
-      {/* My Rotation: same playlist as the default layout music drawer */}
-      <div className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] h-[360px] flex flex-col">
-        <MusicPlaylist
-          tracks={FAVORITE_TRACKS}
-          currentTrack={currentTrack}
-          onSelectTrack={setCurrentTrack}
-          className="mt-0 pt-0 border-t-0"
-        />
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
-   4. GAMEPAD: Side Quests & Mini Bug Hunter Arcade
-   ========================================================================= */
-function GamepadContent() {
-  const [bugsSquashed, setBugsSquashed] = useState(0);
-  const [activeBugIndex, setActiveBugIndex] = useState(2);
-
-  const bugLabels = [
-    "CORS Policy Blocked",
-    "Memory Leak Detected",
-    "Undefined is not a function",
-    "SSR Hydration Mismatch",
-    "Missing Hook Dependency",
-  ];
-
-  const handleSquash = () => {
-    setBugsSquashed((prev) => prev + 1);
-    setActiveBugIndex(Math.floor(Math.random() * bugLabels.length));
-  };
-
-  return (
-    <div className="space-y-5">
-      {/* Mini Retro Arcade Game */}
-      <div className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <LuGamepad2 className="size-4 text-foreground/80" />
-            <h4 className="font-mono text-lg font-semibold text-foreground">
-              Bug Smasher Mini-Game
-            </h4>
-          </div>
-          <span className="font-sans text-xs font-semibold px-2.5 py-1 rounded-full border border-black/12 dark:border-white/10 text-foreground">
-            Squashed: {bugsSquashed}
-          </span>
-        </div>
-
-        <div className="p-5 rounded-xl border border-black/10 dark:border-white/10 bg-background text-center space-y-3.5">
-          <p className="font-sans text-xs text-muted-foreground">
-            A wild production bug appeared in the pipeline:
-          </p>
-          <div className="inline-block px-3.5 py-1.5 rounded-full border border-black/12 dark:border-white/10 bg-black/[0.03] dark:bg-white/[0.04] text-foreground font-sans text-xs font-medium">
-            {bugLabels[activeBugIndex]}
-          </div>
-          <div>
-            <button
-              type="button"
-              onClick={handleSquash}
-              className="px-4 py-2 rounded-full bg-foreground text-background font-sans text-xs font-medium hover:opacity-90 active:scale-95 transition-all cursor-pointer"
-            >
-              Squash Bug
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Favorite Games & Quests */}
-      <div className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] space-y-3">
-        <h5 className="font-mono text-lg font-semibold text-foreground">
-          Off-Hours Inspiration
-        </h5>
-        <div className="divide-y divide-black/10 dark:divide-white/10">
-          {[
-            {
-              title: "Elden Ring",
-              note: "Patience, deliberate timing, and systems mastery.",
-            },
-            {
-              title: "Cyberpunk 2077",
-              note: "Diegetic interface design and atmospheric worldbuilding.",
-            },
-            {
-              title: "Hollow Knight",
-              note: "Responsive controls and handcrafted environmental detail.",
-            },
-            {
-              title: "Hades & Celeste",
-              note: "Tight feedback loops and kinetic polish.",
-            },
-          ].map((game) => (
-            <div key={game.title} className="py-2.5 first:pt-0 last:pb-0">
-              <span className="font-mono text-base font-semibold text-foreground block">
-                {game.title}
-              </span>
-              <p className="font-sans text-xs text-muted-foreground">
-                {game.note}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
-   5. SMART LAMP: Interactive Room RGB Atmosphere Controller
-   ========================================================================= */
-function SmartLampContent({
-  currentColor,
-  onSelectColor,
-}: {
-  currentColor: string;
-  onSelectColor: (c: string) => void;
-}) {
-  const presets = [
-    { name: "Studio Cyan", hex: "#06b6d4" },
-    { name: "Warm Amber", hex: "#f59e0b" },
-    { name: "Emerald Calm", hex: "#10b981" },
-    { name: "Soft Violet", hex: "#a855f7" },
-    { name: "Sunset Rose", hex: "#f43f5e" },
-    { name: "Daylight Sky", hex: "#38bdf8" },
-  ];
-
-  return (
-    <div className="space-y-5">
-      <div className="p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] flex flex-col items-center justify-center gap-4 text-center">
-        <div
-          className="size-16 rounded-full flex items-center justify-center transition-all duration-500 border border-black/10 dark:border-white/10"
-          style={{
-            backgroundColor: `${currentColor}20`,
-            boxShadow: `0 0 32px ${currentColor}35`,
-          }}
-        >
-          <LuLamp className="size-7" style={{ color: currentColor }} />
-        </div>
-
-        <div className="space-y-1">
-          <h4 className="font-mono text-xl font-semibold text-foreground">
-            Workspace Ambient Aura
-          </h4>
-          <p className="font-sans text-xs text-muted-foreground">
-            Adjust the ambient halo glow behind the 3D desk setup
-          </p>
-        </div>
-
-        {/* Color Presets */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-          {presets.map((p) => {
-            const isSelected = currentColor === p.hex;
-            return (
-              <button
-                key={p.name}
-                type="button"
-                onClick={() => onSelectColor(p.hex)}
-                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-sans font-medium transition-colors cursor-pointer ${
-                  isSelected
-                    ? "bg-foreground text-background border-foreground"
-                    : "border-black/12 dark:border-white/10 text-foreground/85 hover:border-black/20 dark:hover:border-white/20"
-                }`}
-              >
-                <span
-                  className="size-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: p.hex }}
-                />
-                <span>{p.name}</span>
-                {isSelected && <LuCheck className="size-3" />}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
-   6. BOOKSHELF: Reading List & Engineering Influences
+   4. BOOKSHELF: Tactile Book Covers & Official Reading Links
    ========================================================================= */
 function BookshelfContent() {
   const books = [
     {
+      id: "ddia",
       title: "Designing Data-Intensive Applications",
       author: "Martin Kleppmann",
+      publisher: "O'Reilly Media",
+      domain: "dataintensive.net",
+      url: "https://dataintensive.net/",
       lesson:
         "Reliability, scalability, and maintainability are the foundational pillars of lasting data systems.",
+      cover: (
+        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#faf7f2] text-[#18181b] border border-black/15 shadow-[2px_4px_10px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
+          {/* Book Spine Crease */}
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-black/20 via-black/5 to-transparent pointer-events-none" />
+          {/* O'Reilly Crimson Top Band */}
+          <div className="w-full h-2.5 bg-[#991b1b] rounded-[1px] flex items-center justify-between px-1">
+            <span className="font-sans text-[4.5px] font-bold tracking-widest uppercase text-white/95">
+              O&apos;REILLY
+            </span>
+            <span className="size-1 rounded-full bg-white/80" />
+          </div>
+          {/* Title & Node Graph Motif */}
+          <div className="pl-1 space-y-1">
+            <div className="font-mono text-[6px] font-bold leading-[1.1] tracking-tight text-[#111111]">
+              DATA-INTENSIVE
+              <br />
+              APPLICATIONS
+            </div>
+            <svg viewBox="0 0 40 22" className="w-8 h-4 text-[#991b1b]" fill="none">
+              <circle cx="8" cy="11" r="3" stroke="currentColor" strokeWidth="1.4" />
+              <circle cx="22" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.3" />
+              <circle cx="22" cy="17" r="2.5" stroke="currentColor" strokeWidth="1.3" />
+              <circle cx="34" cy="11" r="3" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M11 10L19.5 6M11 12L19.5 16M24.5 6L31 10M24.5 16L31 12" stroke="currentColor" strokeWidth="1" />
+            </svg>
+          </div>
+          {/* Bottom Author Line */}
+          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-neutral-500 truncate">
+            M. Kleppmann
+          </div>
+        </div>
+      ),
     },
     {
+      id: "pragprog",
       title: "The Pragmatic Programmer",
       author: "David Thomas & Andrew Hunt",
+      publisher: "20th Anniversary Ed.",
+      domain: "pragprog.com",
+      url: "https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/",
       lesson:
         "Care about your craft, think critically about your work, and build adaptable software.",
+      cover: (
+        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#18181b] text-white border border-white/15 shadow-[2px_4px_10px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
+          {/* Book Spine Crease */}
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-white/15 via-black/30 to-transparent pointer-events-none" />
+          {/* Top Gold Foil Header */}
+          <div className="pl-1 flex items-center justify-between">
+            <span className="font-sans text-[4.5px] font-semibold uppercase tracking-widest text-amber-400">
+              20TH ED
+            </span>
+            <span className="w-2.5 h-[1.5px] bg-amber-400/80" />
+          </div>
+          {/* Center Title & Craft Emblem */}
+          <div className="pl-1 space-y-1">
+            <div className="font-mono text-[6px] font-bold leading-[1.1] tracking-tight text-amber-50">
+              THE PRAGMATIC
+              <br />
+              PROGRAMMER
+            </div>
+            <div className="w-full h-3.5 rounded-[2px] bg-amber-500/15 border border-amber-400/40 flex items-center justify-center">
+              <span className="font-mono text-[6px] text-amber-300 tracking-widest">
+                {"</>"}
+              </span>
+            </div>
+          </div>
+          {/* Bottom Author */}
+          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-neutral-400 truncate">
+            Thomas · Hunt
+          </div>
+        </div>
+      ),
     },
     {
+      id: "refactoring-ui",
       title: "Refactoring UI",
       author: "Adam Wathan & Steve Schoger",
+      publisher: "Tailwind Labs",
+      domain: "refactoringui.com",
+      url: "https://www.refactoringui.com/",
       lesson:
         "Design with clear visual hierarchy, deliberate spacing, and restrained typography.",
+      cover: (
+        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#0f172a] text-white border border-sky-400/25 shadow-[2px_4px_10px_rgba(0,0,0,0.18)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
+          {/* Book Spine Crease */}
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-white/15 via-black/25 to-transparent pointer-events-none" />
+          {/* Top Grid Accent */}
+          <div className="pl-1 flex items-center gap-1">
+            <span className="size-1.5 rounded-full bg-sky-400" />
+            <span className="font-sans text-[4.5px] font-semibold uppercase tracking-widest text-sky-300">
+              DESIGN
+            </span>
+          </div>
+          {/* UI Wireframe Card Motif */}
+          <div className="pl-1 space-y-1">
+            <div className="font-mono text-[6.5px] font-bold leading-[1.08] text-white">
+              Refactoring
+              <br />
+              <span className="text-sky-400">UI</span>
+            </div>
+            <div className="p-1 rounded-[2px] bg-white/10 border border-white/15 space-y-0.5">
+              <div className="w-4 h-1 rounded-full bg-sky-400/90" />
+              <div className="w-6 h-0.5 rounded-full bg-white/50" />
+              <div className="w-5 h-0.5 rounded-full bg-white/30" />
+            </div>
+          </div>
+          {/* Bottom Author */}
+          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-slate-400 truncate">
+            Wathan · Schoger
+          </div>
+        </div>
+      ),
     },
     {
+      id: "clean-arch",
       title: "Clean Architecture",
       author: "Robert C. Martin",
+      publisher: "Prentice Hall",
+      domain: "oreilly.com",
+      url: "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
       lesson:
         "Keep core domain logic independent of frameworks, user interfaces, and external databases.",
+      cover: (
+        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#172554] text-white border border-blue-300/20 shadow-[2px_4px_10px_rgba(0,0,0,0.18)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
+          {/* Book Spine Crease */}
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-white/15 via-black/25 to-transparent pointer-events-none" />
+          {/* Top Band */}
+          <div className="pl-1 flex items-center justify-between">
+            <span className="font-sans text-[4.5px] font-semibold uppercase tracking-wider text-sky-200">
+              ROBERT C. MARTIN
+            </span>
+          </div>
+          {/* Concentric Ring Motif */}
+          <div className="pl-1 flex flex-col items-start gap-1">
+            <div className="font-mono text-[6px] font-bold leading-[1.08] text-white">
+              CLEAN
+              <br />
+              ARCHITECTURE
+            </div>
+            <svg viewBox="0 0 24 24" className="size-4 text-amber-300" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.2" opacity="0.55" />
+              <circle cx="12" cy="12" r="5.5" stroke="#38bdf8" strokeWidth="1.2" opacity="0.85" />
+              <circle cx="12" cy="12" r="2.2" fill="#f43f5e" />
+            </svg>
+          </div>
+          {/* Bottom Tag */}
+          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-blue-200/70 truncate">
+            Craftsman Series
+          </div>
+        </div>
+      ),
     },
   ];
 
@@ -717,25 +753,42 @@ function BookshelfContent() {
     <div className="space-y-5">
       <div className="space-y-3">
         {books.map((b) => (
-          <div
-            key={b.title}
-            className="p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] space-y-2"
+          <a
+            key={b.id}
+            href={b.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group block p-4 rounded-2xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] hover:border-black/25 dark:hover:border-white/25 hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-all duration-200"
           >
-            <div className="flex items-start gap-2.5">
-              <LuBookOpen className="size-4 text-muted-foreground shrink-0 mt-1" />
-              <div>
-                <h5 className="font-mono text-lg font-semibold text-foreground leading-snug">
-                  {b.title}
-                </h5>
-                <span className="font-sans text-xs text-muted-foreground">
-                  by {b.author}
-                </span>
+            <div className="flex items-start gap-4">
+              {/* Tactile Miniature Hardcover Book Jacket */}
+              <div className="shrink-0 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:-rotate-2">
+                {b.cover}
+              </div>
+
+              {/* Book Details & Takeaway */}
+              <div className="flex-1 min-w-0 space-y-1.5">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h5 className="font-mono text-base sm:text-lg font-semibold text-foreground leading-snug group-hover:underline">
+                      {b.title}
+                    </h5>
+                    <span className="font-sans text-xs text-muted-foreground block">
+                      by {b.author} · {b.publisher}
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-sans font-medium border border-black/10 dark:border-white/10 text-muted-foreground group-hover:text-foreground group-hover:border-black/20 dark:group-hover:border-white/20 shrink-0 transition-colors">
+                    <span>{b.domain}</span>
+                    <LuArrowUpRight className="size-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </span>
+                </div>
+
+                <p className="font-sans text-xs text-foreground/80 leading-relaxed pt-1.5 border-t border-black/10 dark:border-white/10">
+                  {b.lesson}
+                </p>
               </div>
             </div>
-            <p className="font-sans text-xs text-foreground/80 leading-relaxed pt-2 border-t border-black/10 dark:border-white/10">
-              {b.lesson}
-            </p>
-          </div>
+          </a>
         ))}
       </div>
 

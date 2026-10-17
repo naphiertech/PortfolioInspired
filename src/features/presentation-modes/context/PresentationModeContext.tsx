@@ -213,30 +213,77 @@ export function PresentationModeProvider({
         // 1. Authoritative Server-Readable Cookie Persistence
         document.cookie = `${PRESENTATION_COOKIE_NAME}=${newMode}; path=/; max-age=${PRESENTATION_COOKIE_MAX_AGE}; SameSite=Lax`;
 
-        // 2. Clean URL Synchronization & One-Page Minimal Redirect
+        // 2. Clean URL Synchronization & Cross-Mode Route Mapping
         if (typeof window !== "undefined") {
-          // If on /artisan and choosing a different presentation mode, route to / with the selected mode
-          if (window.location.pathname === "/artisan" && newMode !== "agent") {
-            router.replace(newMode === DEFAULT_PRESENTATION_MODE ? "/" : `/?mode=${newMode}`);
-            return;
+          const currentPath = window.location.pathname;
+          const url = new URL(window.location.href);
+
+          // A. Switching INTO Artisan (agent) from Standard/Focus/Minimal subpages
+          if (newMode === "agent") {
+            if (currentPath.startsWith("/projects")) {
+              router.replace("/?tab=projects");
+              return;
+            }
+            if (currentPath.startsWith("/experience")) {
+              router.replace("/?tab=experience");
+              return;
+            }
+            if (currentPath.startsWith("/notes")) {
+              router.replace("/?tab=notes");
+              return;
+            }
+            if (currentPath !== "/" && currentPath !== "/artisan") {
+              router.replace("/");
+              return;
+            }
           }
 
+          // B. Switching OUT OF Artisan (agent) into Standard, Focus, or Minimal
+          if (mode === "agent" || currentPath === "/artisan") {
+            const activeArtisanTab = url.searchParams.get("tab");
+
+            if (newMode === "minimal") {
+              if (activeArtisanTab === "notes") {
+                router.replace("/notes");
+              } else {
+                router.replace("/");
+              }
+              return;
+            }
+
+            if (activeArtisanTab === "projects") {
+              router.replace("/projects");
+              return;
+            }
+            if (activeArtisanTab === "experience") {
+              router.replace("/experience");
+              return;
+            }
+            if (activeArtisanTab === "notes") {
+              router.replace("/notes");
+              return;
+            }
+            if (currentPath === "/artisan" || activeArtisanTab) {
+              router.replace("/");
+              return;
+            }
+          }
+
+          // C. Switching into Minimal from non-supported subpages
           if (
             newMode === "minimal" &&
-            window.location.pathname !== "/" &&
-            !window.location.pathname.startsWith("/notes")
+            currentPath !== "/" &&
+            !currentPath.startsWith("/notes")
           ) {
             router.replace("/");
             return;
           }
 
-          const url = new URL(window.location.href);
+          url.searchParams.delete("tab");
           if (newMode === DEFAULT_PRESENTATION_MODE) {
             url.searchParams.delete(PRESENTATION_QUERY_PARAM);
-          } else {
-            if (url.searchParams.has(PRESENTATION_QUERY_PARAM)) {
-              url.searchParams.set(PRESENTATION_QUERY_PARAM, newMode);
-            }
+          } else if (url.searchParams.has(PRESENTATION_QUERY_PARAM)) {
+            url.searchParams.set(PRESENTATION_QUERY_PARAM, newMode);
           }
           window.history.replaceState({}, "", url.toString());
         }

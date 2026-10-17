@@ -8,11 +8,8 @@ import {
   LuChevronLeft,
   LuChevronRight,
   LuMapPin,
-  LuGraduationCap,
-  LuSparkles,
   LuArrowUpRight,
   LuLayers,
-  LuCompass,
   LuBriefcase,
 } from "react-icons/lu";
 import {
@@ -29,7 +26,6 @@ import {
   ArtisanGalleryItem,
   ABOUT_PHILOSOPHY_ROW_1,
   ABOUT_PHILOSOPHY_ROW_2,
-  AboutPhilosophyItem,
 } from "./data";
 import { EDUCATION, RESUME_PATH, AVAILABILITY } from "@/lib/siteConfig";
 
@@ -178,7 +174,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
   }, [selectedPhoto, closeLightbox, nextPhoto, prevPhoto]);
 
   return (
-    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-28 sm:pb-4 px-4 sm:px-6">
+    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
       <div className="w-full max-w-2xl text-center space-y-3 mb-8 sm:mb-12">
         <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
@@ -195,11 +191,11 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
           aria-label="Profile and background"
           className="w-full space-y-8"
         >
-          <div className="flex flex-col sm:flex-row gap-5 sm:gap-8 items-start">
-            {/* Left Column on Desktop / Top Profile Info on Mobile */}
-            <div className="flex flex-col shrink-0 w-full sm:w-36 space-y-2.5 sm:space-y-2">
-              {/* Avatar + Mobile Badge Row */}
-              <div className="flex sm:flex-col items-center sm:items-center gap-4 sm:gap-2">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-start">
+            {/* Left Column on Desktop / Clean Containerless Profile + Single-Row Tool Icons on Mobile */}
+            <div className="flex flex-col shrink-0 w-full sm:w-36 space-y-4 sm:space-y-2">
+              {/* Avatar + Mobile Identity Header Row */}
+              <div className="flex sm:flex-col items-center gap-4 sm:gap-2">
                 {/* Profile Avatar matching other layouts */}
                 <div className="relative group shrink-0 w-24 h-24 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-sm bg-surface">
                   <Image
@@ -213,78 +209,81 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
                   />
                 </div>
 
-                {/* Mobile Header: Availability & Location next to avatar */}
-                <div className="flex-1 sm:hidden space-y-1.5 pl-1">
+                {/* Mobile Header: Availability, Name & Location */}
+                <div className="flex-1 min-w-0 sm:hidden space-y-1.5">
                   <span className="font-sans text-[10px] font-medium uppercase tracking-[0.18em] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     {AVAILABILITY.label}
                   </span>
-                  <p className="font-sans text-xs text-muted-foreground flex items-center gap-1 pt-0.5">
-                    <LuMapPin className="size-3 text-muted-foreground" aria-hidden="true" />
+                  <h3 className="font-mono text-xl font-semibold tracking-tight text-foreground leading-tight">
+                    Hi, I&apos;m Naphier Awalie
+                  </h3>
+                  <p className="font-sans text-xs text-muted-foreground flex items-center gap-1">
+                    <LuMapPin className="size-3 text-muted-foreground shrink-0" aria-hidden="true" />
                     Zamboanga City, PH
                   </p>
                 </div>
               </div>
 
-              {/* AI & Dev Tools Grid: 4 columns on mobile, 2 columns on desktop */}
+              {/* AI & Dev Tools: Single clean bare row of 8 on mobile, 2 columns on desktop */}
               <div
                 aria-label="AI & Dev Tools"
-                className="grid grid-cols-4 sm:grid-cols-2 gap-x-3 sm:gap-x-3.5 gap-y-2.5 sm:gap-y-3 pt-2 justify-center mx-auto w-fit"
+                className="grid grid-cols-8 sm:grid-cols-2 gap-x-2 sm:gap-x-3.5 gap-y-2.5 sm:gap-y-3 sm:pt-2 items-center justify-items-center sm:justify-center w-full sm:w-fit sm:mx-auto"
               >
                 <div
                   title="Claude"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <ClaudeIcon className="size-9 sm:size-10" />
+                  <ClaudeIcon className="size-7 sm:size-10" />
                 </div>
 
                 <div
                   title="Codex"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <CodexIcon className="size-9 sm:size-10" />
+                  <CodexIcon className="size-7 sm:size-10" />
                 </div>
 
                 <div
                   title="Gemini"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <GeminiIcon className="size-9 sm:size-10" />
+                  <GeminiIcon className="size-7 sm:size-10" />
                 </div>
 
                 <div
                   title="Cursor"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <CursorIcon className="size-9 sm:size-10" />
+                  <CursorIcon className="size-7 sm:size-10" />
                 </div>
 
                 <div
                   title="Antigravity"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <AntigravityIcon className="size-9 sm:size-10" />
+                  <AntigravityIcon className="size-7 sm:size-10" />
                 </div>
 
                 <div
                   title="OpenCode"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <OpenCodeIcon className="size-9 sm:size-10" />
+                  <OpenCodeIcon className="size-7 sm:size-10" />
                 </div>
 
                 <div
                   title="VS Code"
                   className="hover:scale-110 transition-transform duration-200 cursor-default text-[#007ACC]"
                 >
-                  <VscVscode className="size-9 sm:size-10" />
+                  <VscVscode className="size-7 sm:size-10" />
                 </div>
 
                 <div
                   title="Supabase"
                   className="hover:scale-110 transition-transform duration-200 cursor-default text-[#3ECF8E]"
                 >
-                  <SiSupabase className="size-9 sm:size-10" />
+                  <SiSupabase className="size-7 sm:size-10" />
                 </div>
               </div>
             </div>
@@ -303,7 +302,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
                 </span>
               </div>
 
-              <h3 className="font-mono text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              <h3 className="hidden sm:block font-mono text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
                 Hi, I&apos;m Naphier Awalie
               </h3>
 
@@ -481,7 +480,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
           </div>
 
           {/* Gallery Bento Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-6 gap-3.5 sm:gap-4 pt-1">
             {ARTISAN_GALLERY.map((item, idx) => (
               <div
                 key={item.id}
@@ -495,14 +494,18 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
                   }
                 }}
                 className={`group relative rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-foreground/[0.02] cursor-pointer transition-all duration-300 hover:border-black/25 dark:hover:border-white/25 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground ${
-                  idx === 0 ? "sm:col-span-2 sm:row-span-1 aspect-[16/10] sm:aspect-[21/10]" : "aspect-[16/11]"
+                  idx === 0
+                    ? "sm:col-span-4 sm:row-span-2 aspect-[16/10] sm:aspect-auto sm:h-full"
+                    : idx === 1 || idx === 2
+                      ? "sm:col-span-2 sm:row-span-1 aspect-[16/10]"
+                      : "sm:col-span-3 aspect-[16/10]"
                 }`}
               >
                 <Image
                   src={item.src}
                   alt={item.title}
                   fill
-                  sizes={idx === 0 ? "(max-width: 640px) 100vw, 800px" : "(max-width: 640px) 100vw, 400px"}
+                  sizes={idx === 0 ? "(max-width: 640px) 100vw, 800px" : "(max-width: 640px) 100vw, 450px"}
                   className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 />
               </div>
@@ -722,45 +725,23 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
               <LuChevronRight className="size-5" aria-hidden="true" />
             </button>
 
-            {/* Main Stage Image & Caption Card */}
+            {/* Main Stage Image */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl w-full max-h-[85dvh] flex flex-col items-center rounded-2xl overflow-hidden border border-white/15 bg-neutral-900/90 shadow-2xl"
+              className="relative max-w-4xl w-full h-[70vh] sm:h-[78vh] flex items-center justify-center rounded-2xl overflow-hidden"
             >
-              <div className="relative w-full h-[52vh] sm:h-[62vh] bg-black/40">
-                <Image
-                  src={selectedPhoto.src}
-                  alt={selectedPhoto.title}
-                  fill
-                  sizes="(max-width: 1024px) 95vw, 1024px"
-                  className="object-contain"
-                  priority
-                />
-              </div>
-
-              <div className="w-full p-4 sm:p-5 bg-neutral-900/95 border-t border-white/10 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="space-y-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-emerald-400">
-                      {selectedPhoto.tag}
-                    </span>
-                    <span className="text-white/40">•</span>
-                    <span className="font-sans text-xs text-white/60">
-                      {selectedPhoto.date} {selectedPhoto.location && `· ${selectedPhoto.location}`}
-                    </span>
-                  </div>
-                  <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-white truncate">
-                    {selectedPhoto.title}
-                  </h4>
-                  <p className="font-sans font-normal text-xs sm:text-sm text-white/80 leading-relaxed">
-                    {selectedPhoto.caption}
-                  </p>
-                </div>
-              </div>
+              <Image
+                src={selectedPhoto.src}
+                alt={selectedPhoto.title}
+                fill
+                sizes="(max-width: 1024px) 95vw, 1024px"
+                className="object-contain"
+                priority
+              />
             </motion.div>
           </motion.div>
         )}

@@ -112,6 +112,16 @@ export const ARTISAN_GALLERY: ArtisanGalleryItem[] = [
     aspect: "landscape",
   },
   {
+    id: "recursia",
+    src: "/gallery/recursia.jpg",
+    title: "Recursia Tech Summit",
+    caption: "Participating in developer events and engaging with local tech enthusiasts and peer builders.",
+    tag: "Community",
+    date: "2025",
+    location: "Student Summit",
+    aspect: "landscape",
+  },
+  {
     id: "hackathon-team",
     src: "/gallery/hackathon-team.jpg",
     title: "Hackathon Engineering Team",
@@ -129,16 +139,6 @@ export const ARTISAN_GALLERY: ArtisanGalleryItem[] = [
     tag: "Academic",
     date: "2025",
     location: "ZPPSU CICS",
-    aspect: "landscape",
-  },
-  {
-    id: "recursia",
-    src: "/gallery/recursia.jpg",
-    title: "Recursia Tech Summit",
-    caption: "Participating in developer events and engaging with local tech enthusiasts and peer builders.",
-    tag: "Community",
-    date: "2025",
-    location: "Student Summit",
     aspect: "landscape",
   },
   {

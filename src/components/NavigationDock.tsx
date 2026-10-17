@@ -7,8 +7,6 @@ import {
   Home,
   Briefcase,
   FolderGit2,
-  Cpu,
-  Award,
   BookOpen,
   LayoutTemplate,
 } from "lucide-react";

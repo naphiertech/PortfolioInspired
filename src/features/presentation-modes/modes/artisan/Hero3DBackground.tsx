@@ -325,9 +325,12 @@ export function Hero3DBackground({ isDark }: Hero3DBackgroundProps) {
       {/* Centered Constrained Isometric Room Container (~13% smaller for balanced breathing room) */}
       <div
         style={{
-          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(${
-            isHovered ? 1.02 : 1
-          }, ${isHovered ? 1.02 : 1}, 1)`,
+          transform:
+            isHovered || tilt.x !== 0 || tilt.y !== 0
+              ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(${
+                  isHovered ? 1.02 : 1
+                }, ${isHovered ? 1.02 : 1}, 1)`
+              : undefined,
           transition: isHovered
             ? "transform 0.12s ease-out"
             : "transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
@@ -346,7 +349,7 @@ export function Hero3DBackground({ isDark }: Hero3DBackgroundProps) {
           />
         </div>
 
-        {/* 2. Live 3D Isometric Room Box with Exact Polygon Clip-Path (applied once on parent to prevent subpixel fringe) */}
+        {/* 2. Live 3D Isometric Room Box with Exact Polygon Clip-Path */}
         <div
           style={{
             clipPath: ISOMETRIC_BOX_CLIP,
@@ -354,29 +357,8 @@ export function Hero3DBackground({ isDark }: Hero3DBackgroundProps) {
           }}
           className="relative w-full h-full overflow-hidden"
         >
-          {/* Light Theme Cutout Poster (instant 0ms LCP) */}
-          {(!isDark || isVideoMounted) && (
-            <picture className="absolute inset-0 w-full h-full select-none pointer-events-none opacity-100 dark:opacity-0">
-              <source
-                media="(max-width: 640px)"
-                srcSet="/artisan-bg/room-light-cutout-mobile.webp"
-                type="image/webp"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/artisan-bg/room-light-cutout.webp"
-                alt="3D Developer Workspace"
-                width={988}
-                height={1038}
-                fetchPriority={!isDark ? "high" : "low"}
-                decoding="async"
-                className="w-full h-full object-cover select-none pointer-events-none"
-              />
-            </picture>
-          )}
-
-          {/* Dark Theme Cutout Poster (instant 0ms LCP) */}
-          <picture className="absolute inset-0 w-full h-full select-none pointer-events-none opacity-0 dark:opacity-100 dark:brightness-[0.84] dark:contrast-[1.06] dark:saturate-[0.96]">
+          {/* Unified Cutout Poster (instant 0ms LCP) */}
+          <picture className="absolute inset-0 w-full h-full select-none pointer-events-none dark:brightness-[0.84] dark:contrast-[1.06] dark:saturate-[0.96]">
             <source
               media="(max-width: 640px)"
               srcSet="/artisan-bg/room-light-cutout-mobile.webp"
@@ -397,7 +379,11 @@ export function Hero3DBackground({ isDark }: Hero3DBackgroundProps) {
           {/* Double-Buffered Video Players for Zero-Flash State Transitions */}
           {isVideoMounted && (
             <div
-              className={`absolute inset-0 w-full h-full pointer-events-none transition-[filter,opacity] duration-300 dark:brightness-[0.84] dark:contrast-[1.06] dark:saturate-[0.96] ${
+              style={{
+                clipPath: ISOMETRIC_BOX_CLIP,
+                WebkitClipPath: ISOMETRIC_BOX_CLIP,
+              }}
+              className={`absolute inset-0 w-full h-full overflow-hidden pointer-events-none transition-opacity duration-300 dark:brightness-[0.84] dark:contrast-[1.06] dark:saturate-[0.96] ${
                 isVideoReady ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -408,6 +394,10 @@ export function Hero3DBackground({ isDark }: Hero3DBackgroundProps) {
                 preload="auto"
                 onEnded={() => handleSlotEnded(0)}
                 aria-label="3D Developer Workspace animation stream A"
+                style={{
+                  clipPath: ISOMETRIC_BOX_CLIP,
+                  WebkitClipPath: ISOMETRIC_BOX_CLIP,
+                }}
                 className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-200 ${
                   activeSlot === 0 ? "opacity-100 z-10" : "opacity-0 z-0"
                 }`}
@@ -419,6 +409,10 @@ export function Hero3DBackground({ isDark }: Hero3DBackgroundProps) {
                 preload="auto"
                 onEnded={() => handleSlotEnded(1)}
                 aria-label="3D Developer Workspace animation stream B"
+                style={{
+                  clipPath: ISOMETRIC_BOX_CLIP,
+                  WebkitClipPath: ISOMETRIC_BOX_CLIP,
+                }}
                 className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-200 ${
                   activeSlot === 1 ? "opacity-100 z-10" : "opacity-0 z-0"
                 }`}
@@ -450,6 +444,16 @@ export function Hero3DBackground({ isDark }: Hero3DBackgroundProps) {
             className="hidden dark:block absolute inset-0 w-full h-full pointer-events-none mix-blend-screen z-20"
           />
         </div>
+
+        {/* Subpixel GPU compositing edge guard along the 0.3% unclipped margin */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 -right-px w-[2px] bg-background z-30"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 -left-px w-[2px] bg-background z-30"
+        />
 
         {/* 2.5 Interactive Hotspots Overlay */}
         <RoomHotspots

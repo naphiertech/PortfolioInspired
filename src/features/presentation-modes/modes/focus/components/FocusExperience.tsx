@@ -73,7 +73,7 @@ export function FocusExperience() {
       {/* Full Work Page Link */}
       <div className="mt-3.5 flex justify-end">
         <Link
-          href="/work"
+          href="/experience"
           className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground hover:text-brand transition-colors"
         >
           <span>View work and experience</span>

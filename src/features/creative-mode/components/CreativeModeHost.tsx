@@ -38,10 +38,10 @@ function StyleLauncher({ triggerRef, panelId, panelOpen, onClick }: {
       exit={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
       transition={{ duration: reducedMotion ? 0.05 : 0.24, ease: "easeOut" }}
       style={{ pointerEvents: isPresent ? "auto" : "none" }}
-      className={`tactile-btn gap-1.5 sm:gap-2 h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/95 backdrop-blur-md cursor-pointer ${styles.launcher}`}
+      className={`tactile-btn gap-1.5 sm:gap-2 h-9 sm:h-10 px-3 sm:px-3.5 rounded-full shadow-lg border border-border-hairline bg-surface/95 backdrop-blur-md cursor-pointer ${styles.launcher}`}
     >
-      <SlidersHorizontal className="w-3.5 h-3.5 text-brand/80" aria-hidden="true" />
-      <span className="text-[11px] sm:text-xs font-sans font-medium">Style</span>
+      <SlidersHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand/80" aria-hidden="true" />
+      <span className="text-xs sm:text-xs font-sans font-medium">Style</span>
     </motion.button>
   );
 }

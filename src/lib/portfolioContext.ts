@@ -20,6 +20,7 @@ export interface PortfolioPageContext {
   pathname: string;
   pageType:
     | "home"
+    | "experience"
     | "work"
     | "projects"
     | "project_detail"
@@ -58,12 +59,33 @@ export function getPortfolioPageContext(
     };
   }
 
-  // 2. Work & Availability
+  // 2. Experience Dossier (Work, Tech Stack, Certifications)
+  if (normalizedPath === "/experience") {
+    let techParam: string | null = null;
+    if (searchParams) {
+      if (typeof (searchParams as URLSearchParams).get === "function") {
+        techParam = (searchParams as URLSearchParams).get("tech");
+      } else {
+        const val = (searchParams as Record<string, string | string[] | undefined>)["tech"];
+        techParam = Array.isArray(val) ? val[0] : val || null;
+      }
+    }
+    const canonicalTech = techParam ? getCanonicalTechName(techParam) : null;
+
+    return {
+      pathname: "/experience",
+      pageType: "experience",
+      title: canonicalTech ? `Experience (${canonicalTech})` : "Experience & Background",
+      selectedTech: canonicalTech || undefined,
+    };
+  }
+
+  // Legacy Work & Availability (Redirects to /experience)
   if (normalizedPath === "/work") {
     return {
-      pathname: "/work",
-      pageType: "work",
-      title: "Work & Experience",
+      pathname: "/experience",
+      pageType: "experience",
+      title: "Experience & Background",
     };
   }
 
@@ -244,8 +266,8 @@ export function validatePortfolioLink(href: string): { isValid: boolean; normali
   }
 
   // 1. Internal static routes
-  if (["/", "/work", "/projects", "/tech-stack", "/certifications", "/notes"].includes(trimmed)) {
-    return { isValid: true, normalizedHref: trimmed, isExternal: false };
+  if (["/", "/experience", "/work", "/projects", "/tech-stack", "/certifications", "/notes"].includes(trimmed)) {
+    return { isValid: true, normalizedHref: trimmed === "/work" || trimmed === "/tech-stack" || trimmed === "/certifications" ? "/experience" : trimmed, isExternal: false };
   }
 
   // 2. Project detail route: /projects/:slug

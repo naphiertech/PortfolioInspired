@@ -47,7 +47,7 @@ export function ProjectsSection() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-4 px-4 sm:px-6">
+    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-28 sm:pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
       <div className="space-y-3 text-center max-w-xl px-4 pb-6">
         <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">

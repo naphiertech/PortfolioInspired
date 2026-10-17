@@ -27,9 +27,9 @@ export function NotesSection() {
   }, [selectedNote]);
 
   return (
-    <div className="w-full flex flex-col items-center pt-10 pb-4 px-4 sm:px-6">
+    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-28 sm:pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
-      <div className="w-full max-w-2xl text-center space-y-3 mb-12">
+      <div className="w-full max-w-2xl text-center space-y-3 mb-8 sm:mb-12">
         <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
           Field Notes
         </h2>
@@ -39,7 +39,7 @@ export function NotesSection() {
       </div>
 
       {/* 2. Notes List Archive */}
-      <section className="w-full max-w-3xl space-y-4 pt-2">
+      <section className="w-full max-w-2xl sm:max-w-3xl space-y-4 pt-2">
         <div className="flex items-center justify-between gap-3 pb-2 border-b border-black/10 dark:border-white/10">
           <div className="space-y-1">
             <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
@@ -60,7 +60,7 @@ export function NotesSection() {
             <article
               key={note.slug}
               onClick={() => setSelectedNote(note)}
-              className="group relative flex items-start gap-4 sm:gap-6 py-6 px-3 sm:px-4 cursor-pointer hover:bg-foreground/[0.03] transition-colors rounded-xl"
+              className="group relative flex items-start gap-3 sm:gap-6 py-5 sm:py-6 px-1 sm:px-4 cursor-pointer hover:bg-foreground/[0.03] transition-colors rounded-xl"
             >
               {/* Note Sequential Number */}
               <span className="font-mono text-2xl sm:text-3xl font-normal text-foreground/35 group-hover:text-foreground transition-colors select-none tabular-nums w-8 sm:w-10 shrink-0 pt-0.5">

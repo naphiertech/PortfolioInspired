@@ -27,7 +27,9 @@ import {
   HERO_DATA,
   ARTISAN_GALLERY,
   ArtisanGalleryItem,
-  ABOUT_PHILOSOPHY,
+  ABOUT_PHILOSOPHY_ROW_1,
+  ABOUT_PHILOSOPHY_ROW_2,
+  AboutPhilosophyItem,
 } from "./data";
 import { EDUCATION, RESUME_PATH, AVAILABILITY } from "@/lib/siteConfig";
 
@@ -176,9 +178,9 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
   }, [selectedPhoto, closeLightbox, nextPhoto, prevPhoto]);
 
   return (
-    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-4 px-4 sm:px-6">
+    <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-28 sm:pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
-      <div className="w-full max-w-2xl text-center space-y-3 mb-10 sm:mb-12">
+      <div className="w-full max-w-2xl text-center space-y-3 mb-8 sm:mb-12">
         <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
           About Me
         </h2>
@@ -187,94 +189,110 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
         </p>
       </div>
 
-      <div className="w-full max-w-3xl space-y-12">
-        {/* 2. Personal Story & Profile Card */}
+      <div className="w-full max-w-2xl sm:max-w-3xl px-1 sm:px-0 space-y-12 sm:space-y-12">
+        {/* 2. Personal Story & Profile */}
         <section
           aria-label="Profile and background"
-          className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-background/80 backdrop-blur-sm p-6 sm:p-8 space-y-6"
+          className="w-full space-y-8"
         >
-          <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start">
-            {/* Left Column: Portrait & 2x2 AI Tools */}
-            <div className="flex flex-col items-center shrink-0 space-y-2.5 w-28 sm:w-36">
-              {/* Profile Avatar matching other layouts */}
-              <div className="relative group shrink-0 w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-sm bg-surface">
-                <Image
-                  src="/profile/ezgif-frame-001.png"
-                  alt="Naphier Awalie"
-                  fill
-                  sizes="(max-width: 640px) 112px, 144px"
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  style={{ objectPosition: "center 20%" }}
-                  priority
-                />
+          <div className="flex flex-col sm:flex-row gap-5 sm:gap-8 items-start">
+            {/* Left Column on Desktop / Top Profile Info on Mobile */}
+            <div className="flex flex-col shrink-0 w-full sm:w-36 space-y-2.5 sm:space-y-2">
+              {/* Avatar + Mobile Badge Row */}
+              <div className="flex sm:flex-col items-center sm:items-center gap-4 sm:gap-2">
+                {/* Profile Avatar matching other layouts */}
+                <div className="relative group shrink-0 w-24 h-24 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-sm bg-surface">
+                  <Image
+                    src="/profile/ezgif-frame-001.png"
+                    alt="Naphier Awalie"
+                    fill
+                    sizes="(max-width: 640px) 96px, 144px"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    style={{ objectPosition: "center 20%" }}
+                    priority
+                  />
+                </div>
+
+                {/* Mobile Header: Availability & Location next to avatar */}
+                <div className="flex-1 sm:hidden space-y-1.5 pl-1">
+                  <span className="font-sans text-[10px] font-medium uppercase tracking-[0.18em] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    {AVAILABILITY.label}
+                  </span>
+                  <p className="font-sans text-xs text-muted-foreground flex items-center gap-1 pt-0.5">
+                    <LuMapPin className="size-3 text-muted-foreground" aria-hidden="true" />
+                    Zamboanga City, PH
+                  </p>
+                </div>
               </div>
 
-              {/* AI & Dev Tools Grid */}
+              {/* AI & Dev Tools Grid: 4 columns on mobile, 2 columns on desktop */}
               <div
                 aria-label="AI & Dev Tools"
-                className="grid grid-cols-2 gap-2.5 sm:gap-3 py-1 place-items-center"
+                className="grid grid-cols-4 sm:grid-cols-2 gap-x-3 sm:gap-x-3.5 gap-y-2.5 sm:gap-y-3 pt-2 justify-center mx-auto w-fit"
               >
                 <div
                   title="Claude"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <ClaudeIcon className="size-8 sm:size-9" />
+                  <ClaudeIcon className="size-9 sm:size-10" />
                 </div>
 
                 <div
                   title="Codex"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <CodexIcon className="size-8 sm:size-9" />
+                  <CodexIcon className="size-9 sm:size-10" />
                 </div>
 
                 <div
                   title="Gemini"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <GeminiIcon className="size-8 sm:size-9" />
+                  <GeminiIcon className="size-9 sm:size-10" />
                 </div>
 
                 <div
                   title="Cursor"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <CursorIcon className="size-8 sm:size-9" />
+                  <CursorIcon className="size-9 sm:size-10" />
                 </div>
 
                 <div
                   title="Antigravity"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <AntigravityIcon className="size-8 sm:size-9" />
+                  <AntigravityIcon className="size-9 sm:size-10" />
                 </div>
 
                 <div
                   title="OpenCode"
                   className="hover:scale-110 transition-transform duration-200 cursor-default"
                 >
-                  <OpenCodeIcon className="size-8 sm:size-9" />
+                  <OpenCodeIcon className="size-9 sm:size-10" />
                 </div>
 
                 <div
                   title="VS Code"
                   className="hover:scale-110 transition-transform duration-200 cursor-default text-[#007ACC]"
                 >
-                  <VscVscode className="size-8 sm:size-9" />
+                  <VscVscode className="size-9 sm:size-10" />
                 </div>
 
                 <div
                   title="Supabase"
                   className="hover:scale-110 transition-transform duration-200 cursor-default text-[#3ECF8E]"
                 >
-                  <SiSupabase className="size-8 sm:size-9" />
+                  <SiSupabase className="size-9 sm:size-10" />
                 </div>
               </div>
             </div>
 
             {/* Profile Narrative */}
-            <div className="space-y-3 flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
+            <div className="space-y-3 flex-1 min-w-0 w-full">
+              {/* Desktop Only Badge & Location Header */}
+              <div className="hidden sm:flex flex-wrap items-center gap-2">
                 <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   {AVAILABILITY.label}
@@ -341,7 +359,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
           </div>
 
           {/* Quick Facts Strip */}
-          <div className="pt-4 border-t border-black/10 dark:border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+          <div className="pt-6 sm:pt-7 border-t border-black/10 dark:border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
             <div className="space-y-0.5">
               <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">Focus</span>
               <p className="font-sans font-medium text-xs sm:text-sm text-foreground/90">Full-Stack &amp; UI/UX</p>
@@ -505,23 +523,90 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 pt-1">
-            {ABOUT_PHILOSOPHY.map((item) => (
-              <div
-                key={item.badge}
-                className="p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-background/80 backdrop-blur-sm space-y-2.5 transition-colors hover:bg-foreground/[0.02]"
-              >
-                <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground block">
-                  {item.badge}
-                </span>
-                <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
-                  {item.title}
-                </h4>
-                <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
-                  {item.description}
-                </p>
+          <div className="relative overflow-hidden w-full py-1 space-y-3.5">
+            {/* Row 1: Moves Left */}
+            <div className="overflow-hidden">
+              <div className="animate-marquee-left">
+                <div className="flex gap-3.5 sm:gap-4 shrink-0 pr-3.5 sm:pr-4">
+                  {ABOUT_PHILOSOPHY_ROW_1.map((item) => (
+                    <div
+                      key={item.badge}
+                      className="w-[280px] sm:w-[340px] shrink-0 p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-background/80 backdrop-blur-sm space-y-2.5 transition-colors hover:bg-foreground/[0.02] hover:border-black/25 dark:hover:border-white/25 select-none"
+                    >
+                      <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground block">
+                        {item.badge}
+                      </span>
+                      <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
+                        {item.title}
+                      </h4>
+                      <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-3.5 sm:gap-4 shrink-0 pr-3.5 sm:pr-4" aria-hidden="true">
+                  {ABOUT_PHILOSOPHY_ROW_1.map((item, idx) => (
+                    <div
+                      key={`r1-dup-${idx}`}
+                      className="w-[280px] sm:w-[340px] shrink-0 p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-background/80 backdrop-blur-sm space-y-2.5 transition-colors hover:bg-foreground/[0.02] hover:border-black/25 dark:hover:border-white/25 select-none"
+                    >
+                      <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground block">
+                        {item.badge}
+                      </span>
+                      <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
+                        {item.title}
+                      </h4>
+                      <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            </div>
+
+            {/* Row 2: Moves Right */}
+            <div className="overflow-hidden">
+              <div className="animate-marquee-right">
+                <div className="flex gap-3.5 sm:gap-4 shrink-0 pr-3.5 sm:pr-4">
+                  {ABOUT_PHILOSOPHY_ROW_2.map((item) => (
+                    <div
+                      key={item.badge}
+                      className="w-[280px] sm:w-[340px] shrink-0 p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-background/80 backdrop-blur-sm space-y-2.5 transition-colors hover:bg-foreground/[0.02] hover:border-black/25 dark:hover:border-white/25 select-none"
+                    >
+                      <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground block">
+                        {item.badge}
+                      </span>
+                      <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
+                        {item.title}
+                      </h4>
+                      <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-3.5 sm:gap-4 shrink-0 pr-3.5 sm:pr-4" aria-hidden="true">
+                  {ABOUT_PHILOSOPHY_ROW_2.map((item, idx) => (
+                    <div
+                      key={`r2-dup-${idx}`}
+                      className="w-[280px] sm:w-[340px] shrink-0 p-5 rounded-2xl border border-black/10 dark:border-white/10 bg-background/80 backdrop-blur-sm space-y-2.5 transition-colors hover:bg-foreground/[0.02] hover:border-black/25 dark:hover:border-white/25 select-none"
+                    >
+                      <span className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground block">
+                        {item.badge}
+                      </span>
+                      <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
+                        {item.title}
+                      </h4>
+                      <p className="font-sans font-normal text-xs sm:text-sm text-foreground/80 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

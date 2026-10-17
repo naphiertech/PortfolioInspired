@@ -69,7 +69,7 @@ export function TechStack() {
       <SectionHeader
         label="TECH-STACK"
         description="Technologies, frameworks, and development tools I work with."
-        actionHref="/tech-stack"
+        actionHref="/experience#tech-stack"
         actionLabel="all technologies"
         className="mb-2 pb-2 border-b border-border-hairline/40"
       />
@@ -109,7 +109,7 @@ export function TechStack() {
                 {section.items.map((tech) => (
                   <Link
                     key={tech}
-                    href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
+                    href={`/experience?tech=${encodeURIComponent(tech.toLowerCase())}#tech-stack`}
                     prefetch={false}
                     onMouseEnter={playHover}
                     onPointerEnter={() => setHovered({ category: section.title, tech })}

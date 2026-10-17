@@ -99,7 +99,7 @@ export function Certifications() {
       <SectionHeader
         label="CERTIFICATIONS"
         description="Programs and achievements that reflect my continued learning."
-        actionHref="/certifications"
+        actionHref="/experience#certifications"
         actionLabel="view all certifications"
         className="mb-6 pb-2 border-b border-border-hairline/40"
       />

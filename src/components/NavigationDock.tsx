@@ -9,6 +9,7 @@ import {
   FolderGit2,
   Cpu,
   Award,
+  BookOpen,
   LayoutTemplate,
 } from "lucide-react";
 import {
@@ -268,8 +269,8 @@ const NAV_ITEMS: NavItem[] = [
     icon: <Home className="w-[18px] h-[18px]" />,
   },
   {
-    name: "Work",
-    href: "/work",
+    name: "Experience",
+    href: "/experience",
     icon: <Briefcase className="w-[18px] h-[18px]" />,
   },
   {
@@ -278,14 +279,9 @@ const NAV_ITEMS: NavItem[] = [
     icon: <FolderGit2 className="w-[18px] h-[18px]" />,
   },
   {
-    name: "Tech",
-    href: "/tech-stack",
-    icon: <Cpu className="w-[18px] h-[18px]" />,
-  },
-  {
-    name: "Certs",
-    href: "/certifications",
-    icon: <Award className="w-[18px] h-[18px]" />,
+    name: "Notes",
+    href: "/notes",
+    icon: <BookOpen className="w-[18px] h-[18px]" />,
   },
 ];
 

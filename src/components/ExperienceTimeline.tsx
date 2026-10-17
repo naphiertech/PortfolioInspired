@@ -99,8 +99,8 @@ export function ExperienceTimeline() {
       <SectionHeader
         label="EXPERIENCE-TIMELINE"
         description="A timeline of my growth, from my first line of code to where I am today."
-        actionHref="/work"
-        actionLabel="view work & experience"
+        actionHref="/experience#work"
+        actionLabel="view all experience"
         className="mb-2 pb-2 border-b border-border-hairline/40"
       />
 

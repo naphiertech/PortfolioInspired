@@ -123,6 +123,7 @@ export function ArtisanPortfolioLayout({
 
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [pendingTab, setPendingTab] = useState<TabType | null>(null);
+  const [targetHash, setTargetHash] = useState<string | null>(null);
 
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -142,12 +143,23 @@ export function ArtisanPortfolioLayout({
 
   const handleSelectTab = useCallback(
     (newTab: string) => {
-      const tab = newTab as TabType;
+      const [tabStr, hashStr] = newTab.split("#");
+      const tab = tabStr as TabType;
+      const target = hashStr || null;
+      setTargetHash(target);
+
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("artisan-tab-switch"));
       }
       if (tab === activeTab) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (target) {
+          const el = document.getElementById(target);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          }
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
         return;
       }
       if (isTransitioning) return;
@@ -176,7 +188,24 @@ export function ArtisanPortfolioLayout({
   const handleTransitionComplete = useCallback(() => {
     setIsTransitioning(false);
     setPendingTab(null);
-  }, []);
+    if (targetHash) {
+      let attempts = 0;
+      const maxAttempts = 15;
+      const tryScroll = () => {
+        const el = document.getElementById(targetHash);
+        if (el) {
+          requestAnimationFrame(() => {
+            el.scrollIntoView({ behavior: "smooth" });
+          });
+          setTargetHash(null);
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(tryScroll, 60);
+        }
+      };
+      setTimeout(tryScroll, 60);
+    }
+  }, [targetHash]);
 
   const activeQuote = activeTab !== "home" ? ARTISAN_TAB_QUOTES[activeTab] : null;
   const ResolvedAbout = RESOLVED_TABS.about || AboutSection;
@@ -229,7 +258,7 @@ export function ArtisanPortfolioLayout({
         {activeQuote && (
           <footer
             aria-label="Page closing quote"
-            className="w-full max-w-2xl mx-auto px-6 pt-8 sm:pt-10 mt-6 sm:mt-8 border-t border-black/10 dark:border-white/10 flex flex-col items-center text-center"
+            className="w-full max-w-2xl mx-auto px-6 pt-8 sm:pt-10 pb-8 sm:pb-0 mt-6 sm:mt-8 border-t border-black/10 dark:border-white/10 flex flex-col items-center text-center"
           >
             <svg
               className="w-5 h-5 text-muted-foreground/40 mb-3"

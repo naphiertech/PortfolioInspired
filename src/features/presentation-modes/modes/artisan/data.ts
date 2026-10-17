@@ -169,21 +169,44 @@ export interface AboutPhilosophyItem {
   badge: string;
 }
 
-export const ABOUT_PHILOSOPHY: AboutPhilosophyItem[] = [
+export const ABOUT_PHILOSOPHY_ROW_1: AboutPhilosophyItem[] = [
   {
-    title: "Tactile Craft & Interaction",
-    description: "Software should feel responsive and tangible. I care about microinteractions, clean layout physics, and typography that make digital tools delightful.",
+    title: "Tactile Physics & Microinteractions",
+    description: "Interfaces should feel mechanical and physical. I build with instant keyboard feedback, Web Audio synthesizers, responsive hover mechanics, and typography tuned for visual hierarchy.",
     badge: "01 // CRAFT",
   },
   {
-    title: "Pragmatic Architecture",
-    description: "Solid TypeScript types, well-modeled relational databases, and clean modular code. Choosing simplicity and stability over unnecessary abstraction.",
-    badge: "02 // SYSTEMS",
+    title: "Defensive Type Safety",
+    description: "Zero-any TypeScript contracts, explicit runtime schemas, and strict data boundaries. Designing APIs and components where invalid states are unrepresentable by construction.",
+    badge: "02 // ARCHITECTURE",
   },
   {
-    title: "Continuous Curiosity",
-    description: "Always experimenting with new technologies—from edge functions and WebGL to AI agent workflows—while staying grounded in fundamentals.",
-    badge: "03 // GROWTH",
+    title: "AI-Augmented Engineering",
+    description: "Leveraging LLMs and AI agent workflows for rapid scaffolding while maintaining strict human architectural verification, zero hallucination tolerance, and surgical diffs.",
+    badge: "03 // VELOCITY",
   },
+];
+
+export const ABOUT_PHILOSOPHY_ROW_2: AboutPhilosophyItem[] = [
+  {
+    title: "Local-First & Offline Resilience",
+    description: "Prioritizing client-side compute, optimistic UI mutations, and state caching. Applications should work smoothly even under spotty network conditions without data loss.",
+    badge: "04 // RESILIENCE",
+  },
+  {
+    title: "YAGNI & Surgical Simplicity",
+    description: "The best code is the code never written. Rejecting speculative abstractions in favor of direct, maintainable solutions that solve real domain problems immediately.",
+    badge: "05 // PRAGMATISM",
+  },
+  {
+    title: "Zero-Jank Runtime Hygiene",
+    description: "Zero layout shifts (CLS), lazy chunk loading, efficient bundle trees, and GPU-accelerated compositing. Crafting web applications that run at a persistent 60fps.",
+    badge: "06 // PERFORMANCE",
+  },
+];
+
+export const ABOUT_PHILOSOPHY: AboutPhilosophyItem[] = [
+  ...ABOUT_PHILOSOPHY_ROW_1,
+  ...ABOUT_PHILOSOPHY_ROW_2,
 ];
 

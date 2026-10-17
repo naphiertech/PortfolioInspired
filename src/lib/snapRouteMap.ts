@@ -1,8 +1,10 @@
 export const SNAP_ROUTE_MAPPINGS = [
+  { dockId: "Experience", pathPrefix: "/experience", label: "Experience & Background" },
   { dockId: "Work", pathPrefix: "/work", label: "Work & Availability" },
   { dockId: "Projects", pathPrefix: "/projects", label: "Projects" },
   { dockId: "Tech", pathPrefix: "/tech-stack", label: "Tech Stack" },
   { dockId: "Certs", pathPrefix: "/certifications", label: "Certifications" },
+  { dockId: "Notes", pathPrefix: "/notes", label: "Field Notes" },
 ] as const;
 
 export type MappedDockId = (typeof SNAP_ROUTE_MAPPINGS)[number]["dockId"];

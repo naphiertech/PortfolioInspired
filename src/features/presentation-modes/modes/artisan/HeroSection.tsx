@@ -197,7 +197,7 @@ export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
                 {onNavigate && (
                   <button
                     type="button"
-                    onClick={() => onNavigate("experience")}
+                    onClick={() => onNavigate("experience#tech-stack")}
                     className="font-sans text-xs font-medium text-muted-foreground hover:text-foreground hover:underline cursor-pointer inline-flex items-center gap-0.5 transition-colors"
                   >
                     <span>All skills</span>
@@ -229,9 +229,20 @@ export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
                   <LuAward className="size-3.5 text-muted-foreground" aria-hidden="true" />
                   <span>Certificates</span>
                 </span>
-                <span className="font-sans text-xs text-muted-foreground">
-                  {certifications.length} Verified
-                </span>
+                {onNavigate ? (
+                  <button
+                    type="button"
+                    onClick={() => onNavigate("experience#certifications")}
+                    className="font-sans text-xs font-medium text-muted-foreground hover:text-foreground hover:underline cursor-pointer inline-flex items-center gap-0.5 transition-colors"
+                  >
+                    <span>{certifications.length} Verified</span>
+                    <LuArrowUpRight className="size-3" aria-hidden="true" />
+                  </button>
+                ) : (
+                  <span className="font-sans text-xs text-muted-foreground">
+                    {certifications.length} Verified
+                  </span>
+                )}
               </div>
 
               <div className="space-y-1.5">

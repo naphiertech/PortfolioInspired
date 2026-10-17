@@ -7,10 +7,12 @@
 
 export const NAV_CURSOR_LABELS: Record<string, string> = {
   Home: "Back to the beginning.",
+  Experience: "My work history, tech stack, and credentials.",
   Work: "My experience and work.",
   Projects: "Things I've built.",
   Tech: "Tools I work with.",
   Certifications: "Certificates and credentials.",
+  Notes: "Field notes and technical thoughts.",
 };
 
 export const PROJECT_CURSOR_LABELS: Record<string, string> = {

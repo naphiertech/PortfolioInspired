@@ -155,7 +155,7 @@ export function ProjectDetailClient({
           {project.techStack.map((tech) => (
             <Link
               key={tech}
-              href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
+              href={`/experience?tech=${encodeURIComponent(tech.toLowerCase())}#tech-stack`}
               onMouseEnter={playHover}
               onClick={playClick}
               className="skill-pill cursor-pointer hover:border-border-hairline hover:text-ink transition-colors"

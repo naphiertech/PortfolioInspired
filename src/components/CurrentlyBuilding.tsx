@@ -92,7 +92,7 @@ export function CurrentlyBuilding() {
               {currentBuild.technologies.map((tech) => (
                 <Link
                   key={tech}
-                  href={`/tech-stack?tech=${encodeURIComponent(tech.toLowerCase())}`}
+                  href={`/experience?tech=${encodeURIComponent(tech.toLowerCase())}#tech-stack`}
                   prefetch={false}
                   onMouseEnter={playHover}
                   onClick={playClick}

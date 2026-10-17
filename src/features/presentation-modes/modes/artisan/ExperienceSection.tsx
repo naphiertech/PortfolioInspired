@@ -289,7 +289,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
   };
 
   return (
-    <div className="w-full flex flex-col items-center pt-8 pb-4 px-4 sm:px-6">
+    <div className="w-full flex flex-col items-center pt-8 pb-28 sm:pb-4 px-4 sm:px-6">
       {/* 1. Interactive Authentic Train Window */}
       <WindowShutter isDark={isDark} className="mb-6" />
 
@@ -306,7 +306,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
 
       {/* 3. Timeline */}
       <div className="w-full max-w-2xl px-2 sm:px-4 pt-4">
-        <div className="space-y-12 sm:space-y-16 pb-2">
+        <div id="work" className="space-y-12 sm:space-y-16 pb-2 scroll-mt-20">
           {/* Work Experiences */}
           {experiences.map((exp, idx) => (
             <div key={idx} className="space-y-3 relative group">
@@ -343,7 +343,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
           ))}
 
           {/* Skills Section */}
-          <div className="space-y-6 pt-4 border-t border-black/10 dark:border-white/10">
+          <div id="tech-stack" className="space-y-6 pt-4 border-t border-black/10 dark:border-white/10 scroll-mt-20">
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
                 Skills
@@ -395,7 +395,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
           </div>
 
           {/* Certifications Section */}
-          <div className="space-y-5 pt-4 border-t border-black/10 dark:border-white/10">
+          <div id="certifications" className="space-y-5 pt-4 border-t border-black/10 dark:border-white/10 scroll-mt-20">
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
                 Certifications

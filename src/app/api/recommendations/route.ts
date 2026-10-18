@@ -17,8 +17,19 @@ const MAX_SUBMISSIONS_PER_WINDOW = 3;
 
 export async function POST(request: Request) {
   try {
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const ip =
+      request.headers.get("x-real-ip") ||
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "unknown";
     const now = Date.now();
+
+    if (submissionTracker.size > 500) {
+      for (const [k, times] of submissionTracker.entries()) {
+        const active = times.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+        if (active.length === 0) submissionTracker.delete(k);
+        else submissionTracker.set(k, active);
+      }
+    }
 
     // Check rate limit
     const timestamps = submissionTracker.get(ip) || [];
@@ -98,7 +109,13 @@ export async function POST(request: Request) {
 
     if (profileUrl && typeof profileUrl === "string" && profileUrl.trim().length > 0) {
       try {
-        new URL(profileUrl);
+        const parsed = new URL(profileUrl.trim());
+        if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+          return NextResponse.json(
+            { error: "Profile URL must use http:// or https://." },
+            { status: 400 }
+          );
+        }
       } catch {
         return NextResponse.json(
           { error: "Please provide a valid LinkedIn or portfolio URL (e.g. https://...)." },

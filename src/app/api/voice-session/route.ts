@@ -146,9 +146,201 @@ function buildVoiceSystemInstruction(visitorMemoryBlock?: string): string {
   ].join("\n");
 }
 
+const VOICE_TOOL_DECLARATIONS = [
+  {
+    name: "navigate_tab",
+    description:
+      "Switch the portfolio tab to home, about, experience, projects, or notes (supports #section hash like experience#tech-stack or about#about-moments).",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        tab: {
+          type: "STRING",
+          description:
+            "Target tab: home, about, experience, projects, or notes (or tab#section)",
+        },
+      },
+      required: ["tab"],
+    },
+  },
+  {
+    name: "scroll_page",
+    description:
+      "Scroll the current page up/down/top/bottom OR jump and smooth-scroll directly to a specific section on any page (work, tech-stack, certifications, education, about-bio, about-gear, about-moments, about-philosophy, projects-stage, projects-index, notes-list).",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        target: {
+          type: "STRING",
+          description:
+            "Direction ('down', 'up', 'top', 'bottom') or section ID ('work', 'tech-stack', 'certifications', 'education', 'about-bio', 'about-gear', 'about-moments', 'about-philosophy', 'projects-stage', 'projects-index', 'notes-list')",
+        },
+      },
+      required: ["target"],
+    },
+  },
+  {
+    name: "select_project",
+    description:
+      "Navigate to the Projects page, highlight a specific project on the MacBook Pro stage, and optionally open its full Case Study modal.",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        project: {
+          type: "STRING",
+          description:
+            "Project slug or name: 'mkb-ridertrack', 'assetlink', 'moviestream', or 'naphix-resume'",
+        },
+        openModal: {
+          type: "BOOLEAN",
+          description:
+            "Set true if the visitor asks to open/read the full case study modal, or false to preview it on the MacBook stage.",
+        },
+      },
+      required: ["project"],
+    },
+  },
+  {
+    name: "open_desk_object",
+    description:
+      "Open an interactive 3D desk object modal (bookshelf, monitors, desk_corner).",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        objectId: {
+          type: "STRING",
+          description: "bookshelf, monitors, or desk_corner",
+        },
+      },
+      required: ["objectId"],
+    },
+  },
+  {
+    name: "open_contact_options",
+    description:
+      "Pop open the 'Let's Talk' contact menu on the left side of the Home screen showing Email, LinkedIn, and X/Twitter.",
+    parameters: {
+      type: "OBJECT",
+      properties: {},
+    },
+  },
+  {
+    name: "toggle_theme",
+    description: "Switch between dark and light mode.",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        mode: {
+          type: "STRING",
+          description: "dark, light, or toggle",
+        },
+      },
+    },
+  },
+  {
+    name: "save_visitor_memory",
+    description:
+      "Save visitor name, company, or interest to persistent browser memory.",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        visitorName: { type: "STRING" },
+        roleOrCompany: { type: "STRING" },
+        interest: { type: "STRING" },
+        note: { type: "STRING" },
+      },
+    },
+  },
+];
+
+// Bounded in-memory IP rate limiter for voice session endpoints
+const voiceRateMap = new Map<string, number[]>();
+const VOICE_WINDOW_MS = 60 * 1000;
+const MAX_VOICE_SESSIONS_PER_MIN = 8;
+
+function checkVoiceRateLimit(ip: string): boolean {
+  const now = Date.now();
+  if (voiceRateMap.size > 500) {
+    for (const [k, times] of voiceRateMap.entries()) {
+      const active = times.filter((t) => now - t < VOICE_WINDOW_MS);
+      if (active.length === 0) voiceRateMap.delete(k);
+      else voiceRateMap.set(k, active);
+    }
+  }
+  const recent = (voiceRateMap.get(ip) || []).filter(
+    (t) => now - t < VOICE_WINDOW_MS
+  );
+  if (recent.length >= MAX_VOICE_SESSIONS_PER_MIN) {
+    return false;
+  }
+  recent.push(now);
+  voiceRateMap.set(ip, recent);
+  return true;
+}
+
+function isAllowedBrowserOrigin(req: Request): boolean {
+  const secFetchSite = req.headers.get("sec-fetch-site");
+  if (secFetchSite && secFetchSite !== "same-origin" && secFetchSite !== "none") {
+    return false;
+  }
+  const host = req.headers.get("host") || "";
+  const origin = req.headers.get("origin");
+  const referer = req.headers.get("referer");
+  if (origin) {
+    try {
+      if (new URL(origin).host !== host) return false;
+    } catch {
+      return false;
+    }
+  } else if (referer) {
+    try {
+      if (new URL(referer).host !== host) return false;
+    } catch {
+      return false;
+    }
+  } else if (process.env.NODE_ENV === "production" && !secFetchSite) {
+    // Reject non-browser direct curl/scraper requests in production
+    return false;
+  }
+  return true;
+}
+
+function sanitizeMemoryParam(raw: string): string {
+  return raw
+    .replace(/[\r\n\t=#`<>]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 350);
+}
+
 export async function GET(req: Request) {
+  if (!isAllowedBrowserOrigin(req)) {
+    return NextResponse.json(
+      { mode: "web_speech" },
+      {
+        status: 403,
+        headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
+      }
+    );
+  }
+
+  const ip =
+    req.headers.get("x-real-ip") ||
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "unknown";
+
+  if (!checkVoiceRateLimit(ip)) {
+    return NextResponse.json(
+      { mode: "web_speech" },
+      {
+        status: 429,
+        headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
+      }
+    );
+  }
+
   const { searchParams } = new URL(req.url);
-  const memoryContext = searchParams.get("memory") || "";
+  const memoryContext = sanitizeMemoryParam(searchParams.get("memory") || "");
   const systemInstruction = buildVoiceSystemInstruction(memoryContext);
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -160,7 +352,6 @@ export async function GET(req: Request) {
     return NextResponse.json(
       {
         mode: "web_speech",
-        systemInstruction,
       },
       {
         headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
@@ -170,8 +361,8 @@ export async function GET(req: Request) {
 
   try {
     const now = Date.now();
-    const expireTime = new Date(now + 15 * 60 * 1000).toISOString();
-    const newSessionExpireTime = new Date(now + 60 * 1000).toISOString();
+    const expireTime = new Date(now + 10 * 60 * 1000).toISOString();
+    const newSessionExpireTime = new Date(now + 45 * 1000).toISOString();
 
     const tokenRes = await fetch(
       "https://generativelanguage.googleapis.com/v1alpha/auth_tokens",
@@ -185,6 +376,32 @@ export async function GET(req: Request) {
           uses: 1,
           expireTime,
           newSessionExpireTime,
+          bidiGenerateContentSetup: {
+            model: "models/gemini-3.1-flash-live-preview",
+            generationConfig: {
+              responseModalities: ["AUDIO"],
+              thinkingConfig: {
+                thinkingBudget: 0,
+              },
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: {
+                    voiceName: "Puck",
+                  },
+                },
+              },
+            },
+            inputAudioTranscription: {},
+            outputAudioTranscription: {},
+            systemInstruction: {
+              parts: [{ text: systemInstruction }],
+            },
+            tools: [
+              {
+                functionDeclarations: VOICE_TOOL_DECLARATIONS,
+              },
+            ],
+          },
         }),
         cache: "no-store",
       }
@@ -194,7 +411,6 @@ export async function GET(req: Request) {
       return NextResponse.json(
         {
           mode: "web_speech",
-          systemInstruction,
         },
         {
           headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
@@ -210,7 +426,6 @@ export async function GET(req: Request) {
       return NextResponse.json(
         {
           mode: "web_speech",
-          systemInstruction,
         },
         {
           headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
@@ -222,10 +437,6 @@ export async function GET(req: Request) {
       {
         mode: "gemini_live",
         wsUrl: `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=${encodeURIComponent(ephemeralToken)}`,
-        model: "models/gemini-3.1-flash-live-preview",
-        fallbackModel: "models/gemini-2.5-flash-native-audio-preview-09-2025",
-        voiceName: "Puck",
-        systemInstruction,
       },
       {
         headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
@@ -235,7 +446,6 @@ export async function GET(req: Request) {
     return NextResponse.json(
       {
         mode: "web_speech",
-        systemInstruction,
       },
       {
         headers: { "Cache-Control": "no-store, no-cache, must-revalidate" },
@@ -246,25 +456,44 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    if (!isAllowedBrowserOrigin(req)) {
+      return NextResponse.json({ memoryPatch: null }, { status: 403 });
+    }
+
+    const ip =
+      req.headers.get("x-real-ip") ||
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "unknown";
+
+    if (!checkVoiceRateLimit(ip)) {
+      return NextResponse.json({ memoryPatch: null }, { status: 429 });
+    }
+
     const body = await req.json();
 
     if (body?.action === "consolidate_memory") {
       const apiKey = process.env.GEMINI_API_KEY;
-      const transcript = Array.isArray(body.transcript) ? body.transcript : [];
+      const rawTranscript = Array.isArray(body.transcript)
+        ? body.transcript.slice(0, 20)
+        : [];
 
       if (
         !apiKey ||
         apiKey === "your_gemini_api_key_here" ||
-        transcript.length === 0
+        rawTranscript.length === 0
       ) {
         return NextResponse.json({ memoryPatch: null });
       }
 
-      const formattedTranscript = transcript
-        .map(
-          (t: { role: string; text: string }) =>
-            `${t.role === "user" ? "Visitor" : "NaphBot"}: ${t.text}`
-        )
+      const formattedTranscript = rawTranscript
+        .map((t: { role?: unknown; text?: unknown }) => {
+          const roleLabel = t?.role === "user" ? "Visitor" : "NaphBot";
+          const safeText = String(t?.text || "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .slice(0, 300);
+          return `${roleLabel}: ${safeText}`;
+        })
         .join("\n");
 
       const prompt = [

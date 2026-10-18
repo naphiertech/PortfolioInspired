@@ -270,14 +270,26 @@ export async function GET(req: Request) {
         ? parsedYear
         : currentYear;
 
-    const singleUsername = searchParams.get("username");
+    const allowedMap = new Map(
+      GITHUB_ACCOUNTS.map((acc) => [acc.toLowerCase(), acc])
+    );
 
-    // Case 1: Caller specifically requested a single user
+    const singleUsername = searchParams.get("username")?.trim();
+
+    // Case 1: Caller specifically requested a single user (must be in GITHUB_ACCOUNTS allowlist)
     if (singleUsername) {
-      const data = await getAccountContributions(singleUsername, year);
+      const canonicalUser = allowedMap.get(singleUsername.toLowerCase());
+      if (!canonicalUser) {
+        return NextResponse.json(
+          { success: false, error: "Unsupported GitHub account." },
+          { status: 400 }
+        );
+      }
+
+      const data = await getAccountContributions(canonicalUser, year);
       if (!data) {
         return NextResponse.json(
-          { success: false, error: `Failed to load GitHub contributions for ${singleUsername}.` },
+          { success: false, error: `Failed to load GitHub contributions for ${canonicalUser}.` },
           { status: 500 },
         );
       }
@@ -291,14 +303,18 @@ export async function GET(req: Request) {
       );
     }
 
-    // Case 2: Combined accounts mode (default)
+    // Case 2: Combined accounts mode (strictly filtered to GITHUB_ACCOUNTS allowlist)
     const accountsParam = searchParams.get("accounts");
-    const targetAccounts = accountsParam
+    const parsedAccounts = accountsParam
       ? accountsParam
           .split(",")
-          .map((a) => a.trim())
-          .filter(Boolean)
-      : [...GITHUB_ACCOUNTS];
+          .map((a) => allowedMap.get(a.trim().toLowerCase()))
+          .filter((a): a is (typeof GITHUB_ACCOUNTS)[number] => Boolean(a))
+      : [];
+    const targetAccounts =
+      parsedAccounts.length > 0
+        ? Array.from(new Set(parsedAccounts))
+        : [...GITHUB_ACCOUNTS];
 
     const combinedCacheKey = `combined:${targetAccounts.slice().sort().join("+")}:${year}`;
     const now = Date.now();

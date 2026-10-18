@@ -9,14 +9,60 @@ import { tryDeterministicAnswer } from "@/lib/deterministicResponder";
 import { normalizeUserQuery } from "@/lib/queryNormalizer";
 import { retrieveGroundedContext } from "@/lib/portfolioKnowledge";
 
+const chatRateMap = new Map<string, number[]>();
+const CHAT_WINDOW_MS = 60 * 1000;
+const MAX_CHAT_REQUESTS_PER_MIN = 20;
+
+function checkChatRateLimit(ip: string): boolean {
+  const now = Date.now();
+  if (chatRateMap.size > 500) {
+    for (const [k, times] of chatRateMap.entries()) {
+      const active = times.filter((t) => now - t < CHAT_WINDOW_MS);
+      if (active.length === 0) chatRateMap.delete(k);
+      else chatRateMap.set(k, active);
+    }
+  }
+  const recent = (chatRateMap.get(ip) || []).filter(
+    (t) => now - t < CHAT_WINDOW_MS
+  );
+  if (recent.length >= MAX_CHAT_REQUESTS_PER_MIN) return false;
+  recent.push(now);
+  chatRateMap.set(ip, recent);
+  return true;
+}
+
 export async function POST(req: Request) {
   try {
+    const secFetchSite = req.headers.get("sec-fetch-site");
+    if (
+      secFetchSite &&
+      secFetchSite !== "same-origin" &&
+      secFetchSite !== "none"
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const ip =
+      req.headers.get("x-real-ip") ||
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "unknown";
+
+    if (!checkChatRateLimit(ip)) {
+      return NextResponse.json(
+        {
+          reply:
+            "You're sending messages pretty fast! Give me a few seconds and ask me anything about my projects or experience.",
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     let messages = body.messages;
     const pageContext: PortfolioPageContext | undefined = body.pageContext;
 
     if (!messages && body.message) {
-      messages = [{ role: "user", content: body.message }];
+      messages = [{ role: "user", content: String(body.message).slice(0, 1000) }];
     }
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -25,6 +71,11 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+
+    messages = messages.slice(-20).map((m: { role?: unknown; content?: unknown }) => ({
+      role: m?.role === "assistant" ? "assistant" : "user",
+      content: String(m?.content || "").slice(0, 1200),
+    }));
 
     // 1. Extract latest user query for Pre-Generation Intent Gate
     const lastUserMessage =

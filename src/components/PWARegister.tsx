@@ -29,23 +29,14 @@ export function PWARegister() {
       // In development: unregister all service workers and clear cache storage
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         for (const registration of registrations) {
-          registration.unregister().then((success) => {
-            if (success) {
-              console.log(
-                "[PWA Dev] Unregistered development service worker:",
-                registration.scope,
-              );
-            }
-          });
+          registration.unregister();
         }
       });
 
       if ("caches" in window) {
         caches.keys().then((keys) => {
           for (const key of keys) {
-            caches.delete(key).then(() => {
-              console.log("[PWA Dev] Cleared stale CacheStorage:", key);
-            });
+            caches.delete(key);
           }
         });
       }
@@ -56,13 +47,9 @@ export function PWARegister() {
     // In production: register service worker for offline caching
     const handleRegister = async () => {
       try {
-        const registration = await navigator.serviceWorker.register("/sw.js");
-        console.log(
-          "[PWA] Service Worker registered successfully at scope:",
-          registration.scope,
-        );
-      } catch (error) {
-        console.error("[PWA] Service Worker registration failed:", error);
+        await navigator.serviceWorker.register("/sw.js");
+      } catch {
+        // Ignore service worker registration errors
       }
     };
 

@@ -100,23 +100,22 @@ export async function POST(req: Request) {
       },
     );
 
-    // Default to Gemini 2.5 Flash, with graceful fallback to 1.5 Flash
+    // Default to Gemini 3.5 Flash-Lite ($0 highest free-tier quota), with fallback to Gemini 3.5 Flash
     const candidateModels = [
-      "gemini-2.5-flash",
-      "gemini-1.5-flash",
+      "gemini-3.5-flash-lite",
       "gemini-3.5-flash",
     ];
     let replyText = "";
-    let lastError = "";
 
     for (const model of candidateModels) {
       try {
         const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              "x-goog-api-key": apiKey.trim(),
             },
             body: JSON.stringify({
               contents: formattedContents,
@@ -140,16 +139,13 @@ export async function POST(req: Request) {
           replyText =
             data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
           if (replyText) break;
-        } else {
-          lastError = await response.text();
         }
-      } catch (err: unknown) {
-        lastError = err instanceof Error ? err.message : String(err);
+      } catch {
+        // Try next candidate model or fall back to local grounded response
       }
     }
 
     if (!replyText) {
-      console.warn("Gemini API unavailable or failed:", lastError);
       const grounded = retrieveGroundedContext(
         gateResult.normalizedQuery?.normalizedText || lastUserMessage,
         messages,
@@ -173,8 +169,7 @@ export async function POST(req: Request) {
     const finalReply = guardResult.sanitizedReply.trim();
 
     return NextResponse.json({ reply: finalReply });
-  } catch (error: unknown) {
-    console.error("Error in chat API route:", error);
+  } catch {
     return NextResponse.json({
       reply:
         "I am currently operating in local mode. Feel free to ask about Naphier's projects (MKBRiderTrack, AssetLink, MovieStream, Naphix-Resume), technical skills, or experience!",

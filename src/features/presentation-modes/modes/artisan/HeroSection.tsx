@@ -35,6 +35,7 @@ import { Hero3DBackground } from "./Hero3DBackground";
 
 interface HeroSectionProps {
   isDark: boolean;
+  isHomeActive?: boolean;
   onNavigate?: (tab: string) => void;
 }
 
@@ -51,7 +52,7 @@ const HERO_SKILLS = [
   { name: "Docker", icon: FaDocker },
 ];
 
-export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
+export function HeroSection({ isDark, isHomeActive = true, onNavigate }: HeroSectionProps) {
   const [isTalkOpen, setIsTalkOpen] = useState(false);
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null);
   const talkRef = useRef<HTMLDivElement>(null);
@@ -69,6 +70,14 @@ export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [isTalkOpen]);
+
+  useEffect(() => {
+    const handleOpenLetsTalk = () => setIsTalkOpen(true);
+    window.addEventListener("artisan-open-lets-talk", handleOpenLetsTalk);
+    return () => {
+      window.removeEventListener("artisan-open-lets-talk", handleOpenLetsTalk);
+    };
+  }, []);
 
   useEffect(() => {
     if (!selectedCert) return;
@@ -181,7 +190,11 @@ export function HeroSection({ isDark, onNavigate }: HeroSectionProps) {
           data-guide="artisan-3d"
           className="order-2 relative lg:absolute lg:inset-0 z-0 my-4 lg:my-0 flex justify-center items-center pointer-events-auto lg:translate-x-[13%] xl:translate-x-[10%] 2xl:translate-x-[7%] transition-transform duration-500"
         >
-          <Hero3DBackground isDark={isDark} />
+          <Hero3DBackground
+            isDark={isDark}
+            isHomeActive={isHomeActive}
+            onNavigate={onNavigate}
+          />
         </div>
 
         {/* 3. Extended Information (Below 3D Desk on mobile, Left Column on desktop) */}

@@ -39,7 +39,7 @@ export function NotesSection() {
       </div>
 
       {/* 2. Notes List Archive */}
-      <section className="w-full max-w-2xl sm:max-w-3xl space-y-4 pt-2">
+      <section id="notes-list" className="w-full max-w-2xl sm:max-w-3xl space-y-4 pt-2 scroll-mt-20">
         <div className="flex items-center justify-between gap-3 pb-2 border-b border-black/10 dark:border-white/10">
           <div className="space-y-1">
             <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">

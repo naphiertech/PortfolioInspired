@@ -188,8 +188,9 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
       <div className="w-full max-w-2xl sm:max-w-3xl px-1 sm:px-0 space-y-12 sm:space-y-12">
         {/* 2. Personal Story & Profile */}
         <section
+          id="about-bio"
           aria-label="Profile and background"
-          className="w-full space-y-8"
+          className="w-full space-y-8 scroll-mt-20"
         >
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-start">
             {/* Left Column on Desktop / Clean Containerless Profile + Single-Row Tool Icons on Mobile */}
@@ -379,7 +380,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
         </section>
 
         {/* 3. Everyday Carry & Workspace */}
-        <section aria-label="Everyday carry and workspace" className="space-y-4">
+        <section id="about-gear" aria-label="Everyday carry and workspace" className="space-y-4 scroll-mt-20">
           <div className="flex items-center justify-between pb-2 border-b border-black/8 dark:border-white/[0.05]">
             <div className="space-y-1">
               <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
@@ -464,7 +465,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
         </section>
 
         {/* 4. Moments & Photo Gallery */}
-        <section aria-label="Moments and photo gallery" className="space-y-4">
+        <section id="about-moments" aria-label="Moments and photo gallery" className="space-y-4 scroll-mt-20">
           <div className="flex items-center justify-between pb-2 border-b border-black/10 dark:border-white/10">
             <div className="space-y-1">
               <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
@@ -514,7 +515,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
         </section>
 
         {/* 5. Craft Philosophy */}
-        <section aria-label="Craft philosophy" className="space-y-4">
+        <section id="about-philosophy" aria-label="Craft philosophy" className="space-y-4 scroll-mt-20">
           <div className="flex items-center justify-between pb-2 border-b border-black/10 dark:border-white/10">
             <div className="space-y-1">
               <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">

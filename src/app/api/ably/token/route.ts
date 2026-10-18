@@ -7,8 +7,8 @@ export async function GET(request: NextRequest) {
   const apiKey = process.env.ABLY_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "ABLY_API_KEY is not configured on server" },
-      { status: 500 }
+      { error: "Realtime presence service unavailable" },
+      { status: 503 }
     );
   }
 
@@ -33,10 +33,9 @@ export async function GET(request: NextRequest) {
         "Cache-Control": "no-store, no-cache, must-revalidate",
       },
     });
-  } catch (error) {
-    console.error("Failed to create Ably token request:", error);
+  } catch {
     return NextResponse.json(
-      { error: "Failed to generate Ably token request" },
+      { error: "Failed to generate token request" },
       { status: 500 }
     );
   }
@@ -46,8 +45,8 @@ export async function POST(request: NextRequest) {
   const apiKey = process.env.ABLY_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "ABLY_API_KEY is not configured on server" },
-      { status: 500 }
+      { error: "Realtime presence service unavailable" },
+      { status: 503 }
     );
   }
 
@@ -77,10 +76,9 @@ export async function POST(request: NextRequest) {
         "Cache-Control": "no-store, no-cache, must-revalidate",
       },
     });
-  } catch (error) {
-    console.error("Failed to create Ably token request:", error);
+  } catch {
     return NextResponse.json(
-      { error: "Failed to generate Ably token request" },
+      { error: "Failed to generate token request" },
       { status: 500 }
     );
   }

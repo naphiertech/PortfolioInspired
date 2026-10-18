@@ -453,28 +453,30 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
           </div>
 
           {/* Education */}
-          {EDUCATION_DATA.map((edu, idx) => (
-            <div key={idx} className="space-y-3 pt-4 border-t border-black/10 dark:border-white/10">
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <h3 className="font-mono text-lg font-semibold tracking-wider text-foreground">
-                  {edu.degree}
-                </h3>
-                <span className="text-xs text-muted-foreground">
-                  {edu.timeline}
-                </span>
-              </div>
+          <div id="education" className="scroll-mt-20">
+            {EDUCATION_DATA.map((edu, idx) => (
+              <div key={idx} className="space-y-3 pt-4 border-t border-black/10 dark:border-white/10">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <h3 className="font-mono text-lg font-semibold tracking-wider text-foreground">
+                    {edu.degree}
+                  </h3>
+                  <span className="text-xs text-muted-foreground">
+                    {edu.timeline}
+                  </span>
+                </div>
 
-              <div>
-                <span className="font-sans font-medium text-sm text-foreground/90">
-                  {edu.institution}
-                </span>
-              </div>
+                <div>
+                  <span className="font-sans font-medium text-sm text-foreground/90">
+                    {edu.institution}
+                  </span>
+                </div>
 
-              <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-sans font-normal">
-                {edu.description}
-              </p>
-            </div>
-          ))}
+                <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-sans font-normal">
+                  {edu.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

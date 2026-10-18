@@ -46,6 +46,40 @@ export function ProjectsSection() {
     setActiveImage(proj.image);
   };
 
+  // Allow NaphBot voice agent to select a project on the MacBook stage or open its Case Study modal
+  useEffect(() => {
+    const handleVoiceSelectProject = (e: Event) => {
+      const detail = (e as CustomEvent<{ slug?: string; openModal?: boolean; closeModal?: boolean }>).detail;
+      if (!detail) return;
+      if (detail.closeModal) {
+        setSelectedProject(null);
+        return;
+      }
+      if (detail.slug) {
+        const target = detail.slug.toLowerCase();
+        const idx = fullProjects.findIndex(
+          (p) =>
+            p.slug.toLowerCase().includes(target) ||
+            p.title.toLowerCase().includes(target)
+        );
+        if (idx !== -1) {
+          setActiveIndex(idx);
+          const proj = fullProjects[idx];
+          if (detail.openModal && proj) {
+            setSelectedProject(proj);
+            setActiveImage(proj.image);
+          } else {
+            setSelectedProject(null);
+          }
+        }
+      }
+    };
+    window.addEventListener("artisan-select-project", handleVoiceSelectProject);
+    return () => {
+      window.removeEventListener("artisan-select-project", handleVoiceSelectProject);
+    };
+  }, []);
+
   return (
     <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
@@ -59,7 +93,7 @@ export function ProjectsSection() {
       </div>
 
       {/* 2. MacBook Pro Stage */}
-      <div className="w-full max-w-2xl flex flex-col items-center">
+      <div id="projects-stage" className="w-full max-w-2xl flex flex-col items-center scroll-mt-20">
         <div
           onClick={() => openProjectModal(activeProject)}
           role="button"
@@ -121,7 +155,7 @@ export function ProjectsSection() {
       </div>
 
       {/* 3. Project Titles Directory Below MacBook */}
-      <section className="w-full max-w-2xl px-2 pt-2">
+      <section id="projects-index" className="w-full max-w-2xl px-2 pt-2 scroll-mt-20">
         <div className="flex items-center justify-between gap-3 pb-2.5">
           <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
             Project Index

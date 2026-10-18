@@ -249,12 +249,13 @@ export function ArtisanPortfolioLayout({
             : "min-h-screen flex flex-col justify-between pb-24 sm:pb-28"
         }`}
       >
-        {activeTab === "home" && (
+        <div className={activeTab === "home" ? "block w-full h-full" : "hidden"}>
           <HeroSection
             isDark={isDark}
+            isHomeActive={activeTab === "home"}
             onNavigate={(tab) => handleSelectTab(tab)}
           />
-        )}
+        </div>
         {activeTab === "about" && (
           <ResolvedAbout onNavigateTab={(tab) => handleSelectTab(tab)} />
         )}

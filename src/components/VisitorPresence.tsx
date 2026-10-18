@@ -134,8 +134,8 @@ function VisitorPresenceContent({
         fallback: updated.fallback,
         variantIndex: updated.variantIndex,
       });
-    } catch (err) {
-      console.error("Failed to update Ably presence avatar:", err);
+    } catch {
+      // Ignore transient presence update failure
     }
   };
 

@@ -104,6 +104,8 @@ export function inspectGeneratedOutput(generatedText: string): OutputGuardResult
       "naphix-resume.netlify.app",
       "phierplay.pages.dev",
       "naphier.tech",
+      "naphierawalie.tech",
+      "www.naphierawalie.tech",
       "localhost",
     ];
     for (const link of linkMatches) {

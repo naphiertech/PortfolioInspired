@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { fullProjects } from "@/lib/data";
+import { fieldNotes } from "@/lib/fieldNotes";
 import { SITE_URL } from "@/lib/siteConfig";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -20,19 +21,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/work`,
+      url: `${SITE_URL}/experience`,
       lastModified: currentDate,
       changeFrequency: "monthly",
-      priority: 0.8,
+      priority: 0.9,
     },
     {
-      url: `${SITE_URL}/tech-stack`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/certifications`,
+      url: `${SITE_URL}/notes`,
       lastModified: currentDate,
       changeFrequency: "monthly",
       priority: 0.8,
@@ -47,5 +42,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  return [...staticRoutes, ...projectRoutes];
+  // Dynamic field note detail routes derived from fieldNotes
+  const noteRoutes: MetadataRoute.Sitemap = fieldNotes.map((note) => ({
+    url: `${SITE_URL}/notes/${note.slug}`,
+    lastModified: currentDate,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...noteRoutes];
 }

@@ -2,7 +2,7 @@
 
 A minimalist, high-craft developer portfolio and engineering showcase designed with an editorial, dark-first aesthetic, micro-animations, and live interactive data integrations.
 
-**Live Deployment:** [https://naphiernode.vercel.app/](https://naphiernode.vercel.app/)  
+**Live Deployment:** [https://www.naphierawalie.tech/](https://www.naphierawalie.tech/)  
 **GitHub Profile:** [@naphiertech](https://github.com/naphiertech)
 
 ---

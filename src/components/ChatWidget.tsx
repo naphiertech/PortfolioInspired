@@ -9,8 +9,9 @@ import { SiClaude, SiPerplexity } from "react-icons/si";
 import { useUISound } from "@/context/SoundContext";
 import { useCreativeMode } from "@/features/creative-mode";
 import { usePresentationMode } from "@/features/presentation-modes/context/PresentationModeContext";
+import { SITE_URL } from "@/lib/siteConfig";
 
-const PORTFOLIO_URL = "https://naphiernode.vercel.app";
+const PORTFOLIO_URL = SITE_URL;
 const AI_PORTFOLIO_PROMPT = `Analyze the portfolio at ${PORTFOLIO_URL}. Give me an overview of Naphier Awalie, his background as a full-stack developer, core tech stack, and key projects (like MKBRiderTrack, Naphix Resume, and AssetLink).`;
 
 interface AIService {

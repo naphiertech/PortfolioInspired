@@ -3,7 +3,7 @@
  * Single source of truth for canonical site origin, default metadata, and structured data schemas.
  */
 
-export const SITE_URL = "https://naphiernode.vercel.app";
+export const SITE_URL = "https://www.naphierawalie.tech";
 
 export const SITE_NAME = "Naphier Awalie";
 export const GITHUB_USERNAME = "naphiertech";

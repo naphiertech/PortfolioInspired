@@ -21,6 +21,16 @@ import type { PresentationMode } from "@/features/presentation-modes/types/prese
  * Ensures 100% server-client agreement with zero hydration mismatch and zero blank frames.
  */
 export function middleware(request: NextRequest) {
+  // Permanently redirect legacy Vercel domain to authoritative custom domain
+  const host = request.headers.get("host")?.toLowerCase() || "";
+  if (host === "naphiernode.vercel.app") {
+    const targetUrl = new URL(
+      request.nextUrl.pathname + request.nextUrl.search,
+      "https://www.naphierawalie.tech"
+    );
+    return NextResponse.redirect(targetUrl, 308);
+  }
+
   const queryMode = request.nextUrl.searchParams.get(PRESENTATION_QUERY_PARAM);
   const cookieMode = request.cookies.get(PRESENTATION_COOKIE_NAME)?.value;
 

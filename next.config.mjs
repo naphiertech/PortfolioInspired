@@ -28,6 +28,14 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'www.naphierawalie.tech',
+      },
+      {
+        protocol: 'https',
+        hostname: 'naphierawalie.tech',
+      },
+      {
+        protocol: 'https',
         hostname: 'naphiernode.vercel.app',
       },
       {
@@ -35,6 +43,21 @@ const nextConfig = {
         hostname: 'm.media-amazon.com',
       },
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'naphiernode.vercel.app',
+          },
+        ],
+        destination: 'https://www.naphierawalie.tech/:path*',
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

@@ -393,6 +393,15 @@ export async function GET(req: Request) {
             },
             inputAudioTranscription: {},
             outputAudioTranscription: {},
+            realtimeInputConfig: {
+              automaticActivityDetection: {
+                disabled: false,
+                startOfSpeechSensitivity: "START_SENSITIVITY_LOW",
+                endOfSpeechSensitivity: "END_SENSITIVITY_LOW",
+                prefixPaddingMs: 300,
+                silenceDurationMs: 650,
+              },
+            },
             systemInstruction: {
               parts: [{ text: systemInstruction }],
             },

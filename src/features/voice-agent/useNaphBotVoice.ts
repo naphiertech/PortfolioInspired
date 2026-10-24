@@ -176,6 +176,8 @@ export function useNaphBotVoice({
   const turnIdRef = useRef<number>(0);
   const activeAbortRef = useRef<AbortController | null>(null);
   const bargeInFramesRef = useRef<number>(0);
+  const gateOpenFramesRef = useRef<number>(0);
+  const lastMicRmsRef = useRef<number>(0);
   const outputAnalyserRef = useRef<AnalyserNode | null>(null);
   const micAnalyserRef = useRef<AnalyserNode | null>(null);
   const levelTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -612,24 +614,37 @@ export function useNaphBotVoice({
           }
         }
 
-        if (interim.trim()) {
-          // Instant Barge-in: cancel in-flight fetch and stop speaking immediately when visitor starts talking
-          turnIdRef.current += 1;
-          if (activeAbortRef.current) {
-            activeAbortRef.current.abort();
-            activeAbortRef.current = null;
-          }
+        const interimText = interim.trim();
+        if (interimText) {
+          const wordCount = interimText.split(/\s+/).filter(Boolean).length;
+          const isBotSpeakingOrThinking =
+            Boolean(activeAbortRef.current) ||
+            (typeof window !== "undefined" &&
+              "speechSynthesis" in window &&
+              window.speechSynthesis.speaking);
+
+          // Ignore distant background chatter (1-word stray noise or low mic energy while bot is speaking)
           if (
-            typeof window !== "undefined" &&
-            "speechSynthesis" in window &&
-            window.speechSynthesis.speaking
+            !isBotSpeakingOrThinking ||
+            (wordCount >= 2 && lastMicRmsRef.current > 0.045)
           ) {
-            window.speechSynthesis.cancel();
+            turnIdRef.current += 1;
+            if (activeAbortRef.current) {
+              activeAbortRef.current.abort();
+              activeAbortRef.current = null;
+            }
+            if (
+              typeof window !== "undefined" &&
+              "speechSynthesis" in window &&
+              window.speechSynthesis.speaking
+            ) {
+              window.speechSynthesis.cancel();
+            }
+            setStatus("listening");
+            setAudioLevel(0.45);
+            setCaptionRole("user");
+            setCaptionText(formatRollingCaption(interimText));
           }
-          setStatus("listening");
-          setAudioLevel(0.45);
-          setCaptionRole("user");
-          setCaptionText(formatRollingCaption(interim.trim()));
         }
 
         const query = finalTranscript.trim();
@@ -757,6 +772,8 @@ export function useNaphBotVoice({
     userUtteranceBufRef.current = "";
     botUtteranceBufRef.current = "";
     bargeInFramesRef.current = 0;
+    gateOpenFramesRef.current = 0;
+    lastMicRmsRef.current = 0;
     turnIdRef.current += 1;
     transcriptRef.current = [];
     setStatus("connecting");
@@ -789,7 +806,7 @@ export function useNaphBotVoice({
           channelCount: 1,
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true,
+          autoGainControl: false,
         },
       });
 
@@ -799,7 +816,7 @@ export function useNaphBotVoice({
       }
       mediaStreamRef.current = stream;
 
-      // Real-time AnalyserNodes for both speaker playback and microphone voice input
+      // Real-time AnalyserNodes for both speaker playback and vocal-band filtered microphone input
       const outputAnalyser = audioCtx.createAnalyser();
       outputAnalyser.fftSize = 256;
       outputAnalyser.connect(audioCtx.destination);
@@ -808,13 +825,33 @@ export function useNaphBotVoice({
       const micAnalyser = audioCtx.createAnalyser();
       micAnalyser.fftSize = 256;
       const micMonitorSource = audioCtx.createMediaStreamSource(stream);
-      micMonitorSource.connect(micAnalyser);
+      const monitorHighPass = audioCtx.createBiquadFilter();
+      monitorHighPass.type = "highpass";
+      monitorHighPass.frequency.value = 95;
+      const monitorLowPass = audioCtx.createBiquadFilter();
+      monitorLowPass.type = "lowpass";
+      monitorLowPass.frequency.value = 3400;
+      micMonitorSource.connect(monitorHighPass);
+      monitorHighPass.connect(monitorLowPass);
+      monitorLowPass.connect(micAnalyser);
       micAnalyserRef.current = micAnalyser;
 
       const sampleBuf = new Float32Array(outputAnalyser.fftSize);
       if (levelTimerRef.current) clearInterval(levelTimerRef.current);
       levelTimerRef.current = setInterval(() => {
         if (!isActiveRef.current) return;
+
+        // Always sample filtered mic energy so fallback SpeechRecognition can reject quiet background chatter
+        if (!micMutedRef.current && micAnalyserRef.current) {
+          micAnalyserRef.current.getFloatTimeDomainData(sampleBuf);
+          let sumSq = 0;
+          for (let i = 0; i < sampleBuf.length; i++) {
+            sumSq += sampleBuf[i] * sampleBuf[i];
+          }
+          lastMicRmsRef.current = Math.sqrt(sumSq / sampleBuf.length);
+        } else {
+          lastMicRmsRef.current = 0;
+        }
 
         // 1. If NaphBot audio is playing and speaker is unmuted, sample actual speaker output
         if (activeSourcesRef.current.size > 0 && !speakerMutedRef.current && outputAnalyserRef.current) {
@@ -829,16 +866,10 @@ export function useNaphBotVoice({
           return;
         }
 
-        // 2. Otherwise sample user microphone with noise-floor gate so silent room stays at 0
+        // 2. Otherwise sample user microphone with near-field noise-floor gate so background room voices stay at 0
         if (!micMutedRef.current && micAnalyserRef.current) {
-          micAnalyserRef.current.getFloatTimeDomainData(sampleBuf);
-          let sumSq = 0;
-          for (let i = 0; i < sampleBuf.length; i++) {
-            sumSq += sampleBuf[i] * sampleBuf[i];
-          }
-          const rawRms = Math.sqrt(sumSq / sampleBuf.length);
-          // Gate out ambient fan/room noise below 0.022
-          const gated = rawRms > 0.022 ? Math.min(1, (rawRms - 0.022) * 7.5) : 0;
+          const rawRms = lastMicRmsRef.current;
+          const gated = rawRms > 0.032 ? Math.min(1, (rawRms - 0.032) * 7.5) : 0;
           setAudioLevel(gated);
           return;
         }
@@ -885,8 +916,14 @@ export function useNaphBotVoice({
             setupFinished = true;
             setStatus("listening");
 
-            // Start streaming resampled 16kHz microphone PCM chunks
+            // Start streaming vocal-band filtered + noise-gated 16kHz microphone PCM chunks
             const source = audioCtx.createMediaStreamSource(stream);
+            const highPass = audioCtx.createBiquadFilter();
+            highPass.type = "highpass";
+            highPass.frequency.value = 95;
+            const lowPass = audioCtx.createBiquadFilter();
+            lowPass.type = "lowpass";
+            lowPass.frequency.value = 3400;
             const processor = audioCtx.createScriptProcessor(2048, 1, 1);
             // Mute scriptProcessor output so mic never feeds back to speakers
             const silentGain = audioCtx.createGain();
@@ -904,26 +941,39 @@ export function useNaphBotVoice({
               const inputData = e.inputBuffer.getChannelData(0);
 
               let sumSq = 0;
-              for (let i = 0; i < inputData.length; i += 8) {
+              for (let i = 0; i < inputData.length; i += 4) {
                 sumSq += inputData[i] * inputData[i];
               }
-              const micRms = Math.min(
-                1,
-                Math.sqrt(sumSq / Math.max(1, inputData.length / 8)) * 5.5
+              const rawRms = Math.sqrt(
+                sumSq / Math.max(1, inputData.length / 4)
               );
+              const micRms = Math.min(1, rawRms * 5.5);
 
-              // Client-side Barge-In: if visitor speaks clearly while NaphBot audio is still queued/playing, flush old audio immediately
-              if (activeSourcesRef.current.size > 0) {
-                if (micRms > 0.25) {
+              const isBotSpeaking = activeSourcesRef.current.size > 0;
+              // Require stronger near-field voice energy while NaphBot is actively speaking
+              const gateThreshold = isBotSpeaking ? 0.058 : 0.032;
+              if (rawRms >= gateThreshold) {
+                // Keep gate open for ~380ms (9 frames) after speech dips so word endings aren't clipped
+                gateOpenFramesRef.current = 9;
+              } else if (gateOpenFramesRef.current > 0) {
+                gateOpenFramesRef.current -= 1;
+              }
+
+              // Client-side Barge-In: require sustained near-field voice (~340ms) to interrupt NaphBot
+              if (isBotSpeaking) {
+                if (micRms > 0.36) {
                   bargeInFramesRef.current += 1;
-                  if (bargeInFramesRef.current >= 3) {
+                  if (bargeInFramesRef.current >= 8) {
                     bargeInFramesRef.current = 0;
                     stopQueuedAudio();
                     botUtteranceBufRef.current = "";
                     setStatus("listening");
                   }
                 } else {
-                  bargeInFramesRef.current = 0;
+                  bargeInFramesRef.current = Math.max(
+                    0,
+                    bargeInFramesRef.current - 1
+                  );
                 }
               } else {
                 bargeInFramesRef.current = 0;
@@ -933,6 +983,10 @@ export function useNaphBotVoice({
                 inputData,
                 audioCtx.sampleRate
               );
+              // Send digital silence when noise gate is closed so distant room chatter never triggers Gemini VAD
+              if (gateOpenFramesRef.current === 0) {
+                resampled16k.fill(0);
+              }
               const base64PCM = floatTo16BitPCMBase64(resampled16k);
               ws.send(
                 JSON.stringify({
@@ -946,7 +1000,9 @@ export function useNaphBotVoice({
               );
             };
 
-            source.connect(processor);
+            source.connect(highPass);
+            highPass.connect(lowPass);
+            lowPass.connect(processor);
             processor.connect(silentGain);
             silentGain.connect(audioCtx.destination);
 
@@ -994,8 +1050,17 @@ export function useNaphBotVoice({
           const inputTranscriptChunk =
             msg.serverContent?.inputTranscription?.text;
           if (typeof inputTranscriptChunk === "string" && inputTranscriptChunk) {
-            // Instant Barge-In: if previous answer audio is still playing in browser buffer when user speaks a new question, flush it immediately!
-            if (activeSourcesRef.current.size > 0 || botUtteranceBufRef.current) {
+            userUtteranceBufRef.current += inputTranscriptChunk;
+            const cleanUser = formatRollingCaption(userUtteranceBufRef.current);
+            const spokenWordCount = cleanUser
+              .split(/\s+/)
+              .filter(Boolean).length;
+
+            // Flush playing NaphBot audio only when visitor speaks a multi-word phrase or triggers server interruption
+            if (
+              spokenWordCount >= 2 &&
+              (activeSourcesRef.current.size > 0 || botUtteranceBufRef.current)
+            ) {
               stopQueuedAudio();
               if (botUtteranceBufRef.current.trim()) {
                 transcriptRef.current.push({
@@ -1007,9 +1072,7 @@ export function useNaphBotVoice({
               setStatus("listening");
             }
 
-            userUtteranceBufRef.current += inputTranscriptChunk;
-            const cleanUser = formatRollingCaption(userUtteranceBufRef.current);
-            if (cleanUser) {
+            if (cleanUser && (activeSourcesRef.current.size === 0 || spokenWordCount >= 2)) {
               setCaptionRole("user");
               setCaptionText(cleanUser);
             }

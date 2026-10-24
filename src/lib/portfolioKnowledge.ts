@@ -8,6 +8,15 @@ import {
 } from "./data";
 import { EDUCATION, SOCIAL_PROFILES } from "./siteConfig";
 import { PortfolioPageContext, ValidatedLink } from "./portfolioContext";
+import {
+  WORKSPACE_GEAR,
+  WORKSPACE_DESK_SPECS,
+  WORKSPACE_DESK_ESSENTIALS,
+  WORKSPACE_DESK_ARTIFACTS,
+  WORKSPACE_AI_DEV_TOOLS,
+  WORKSPACE_BOOKSHELF,
+  ABOUT_PHILOSOPHY,
+} from "@/features/presentation-modes/modes/artisan/data";
 
 /**
  * Concrete AI architecture and model configuration currently implemented in this portfolio.
@@ -406,6 +415,51 @@ export function retrieveGroundedContext(
 - Backend Languages & Frameworks: ${backendSection?.items.join(", ") || "Node.js, Express.js, PHP, Laravel, Python, FastAPI, GraphQL, Prisma"}.
 - Databases & Cloud: ${dbSection?.items.join(", ") || "Supabase, PostgreSQL, MySQL, MongoDB, Firebase"}.
 - Core Backend Projects: MKBRiderTrack (Supabase PostgreSQL, strict Row Level Security, Dexie.js offline-first sync), AssetLink (Supabase PostgreSQL with RLS and dynamic QR code asset tags).`);
+  }
+
+  // 6B. Workspace, Gear, Desk Setup, Bookshelf & Philosophy Query Handling
+  if (
+    /\b(workspace|setup|gear|hardware|equipment|devices?|accessor(y|ies)|peripherals?|laptop|computer|vivobook|asus|keyboard|z-g61|mouse|mloong|mx301|monitors?|display|screen|desk|workstation|bookshelf|books?|reading\s+shelf|chair|headphone|headset|microphone|mic|webcam|speaker|ram|cpu|gpu|processor|macbook)\b/i.test(
+      lower
+    )
+  ) {
+    const gearLines = WORKSPACE_GEAR.map(
+      (g) => `- ${g.name} (${g.subtitle}) — ${g.specDetail}`
+    ).join("\n");
+    const deskSpecLines = WORKSPACE_DESK_SPECS.map(
+      (s) => `- ${s.label}: ${s.value} (${s.sub})`
+    ).join("\n");
+    const essentialsLine = WORKSPACE_DESK_ESSENTIALS.map(
+      (e) => `${e.name} (${e.desc})`
+    ).join(", ");
+    const artifactsLine = WORKSPACE_DESK_ARTIFACTS.map(
+      (a) => `${a.name} (${a.desc})`
+    ).join(", ");
+    const bookLines = WORKSPACE_BOOKSHELF.map(
+      (b) => `- "${b.title}" by ${b.author} (${b.publisher}): ${b.lesson}`
+    ).join("\n");
+
+    groundingSnippets.push(`[AUTHORITATIVE WORKSPACE, GEAR & DESK SETUP]
+Daily Driver Hardware (About -> Workspace & Gear #about-gear):
+${gearLines}
+
+3D Desk Workstation Specs:
+${deskSpecLines}
+- Left-Side Desk Essentials: ${essentialsLine}
+- Desk Artifacts: ${artifactsLine}
+- AI & Dev Tools: ${WORKSPACE_AI_DEV_TOOLS.join(", ")}
+
+Reading Shelf / Bookshelf:
+${bookLines}
+
+CRITICAL BOUNDARY: Only mention the exact equipment, devices, tools, or accessories listed above. Never invent unlisted hardware, brands, chairs, headphones, microphones, webcams, or internal PC specs (RAM/CPU/GPU) that are not listed. If the user asks about an unlisted item, explicitly state that it is not listed in the portfolio.`);
+  }
+
+  if (/\b(philosophy|how\s+(i|he)\s+builds?|principles)\b/i.test(lower)) {
+    const philLines = ABOUT_PHILOSOPHY.map(
+      (p) => `- ${p.badge} ${p.title}: ${p.description}`
+    ).join("\n");
+    groundingSnippets.push(`[ENGINEERING PHILOSOPHY (HOW I BUILD)]\n${philLines}`);
   }
 
   // 7. General Fallback: If no specific project was identified, include featured projects

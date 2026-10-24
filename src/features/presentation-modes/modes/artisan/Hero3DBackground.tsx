@@ -23,6 +23,7 @@ const RoomObjectModal = dynamic(
 
 interface Hero3DBackgroundProps {
   isDark: boolean;
+  activeTab?: string;
   isHomeActive?: boolean;
   onNavigate?: (tab: string) => void;
 }
@@ -51,6 +52,7 @@ function formatCallDuration(totalSeconds: number): string {
 
 export function Hero3DBackground({
   isDark,
+  activeTab = "home",
   isHomeActive = true,
   onNavigate,
 }: Hero3DBackgroundProps) {
@@ -96,6 +98,8 @@ export function Hero3DBackground({
   } = useNaphBotVoice({
     micMuted,
     speakerMuted,
+    activeTab,
+    activeHotspot,
     onNavigateTab: onNavigate,
     onOpenHotspot: (id) => setActiveHotspot(id),
     onToggleTheme: handleVoiceThemeToggle,

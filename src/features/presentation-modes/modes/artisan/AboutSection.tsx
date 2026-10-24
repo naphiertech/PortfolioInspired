@@ -26,6 +26,7 @@ import {
   ArtisanGalleryItem,
   ABOUT_PHILOSOPHY_ROW_1,
   ABOUT_PHILOSOPHY_ROW_2,
+  WORKSPACE_GEAR,
 } from "./data";
 import { EDUCATION, RESUME_PATH, AVAILABILITY } from "@/lib/siteConfig";
 
@@ -396,71 +397,39 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 sm:gap-4 pt-1">
-            {/* 1. ASUS Vivobook 16 */}
-            <div className="group space-y-2">
-              <div className="relative aspect-[4/3] rounded-2xl border border-black/6 dark:border-white/[0.04] bg-black/[0.02] dark:bg-white/[0.02] hover:border-black/15 dark:hover:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.03] flex items-center justify-center p-3.5 sm:p-4 transition-all duration-300">
-                <Image
-                  src="/gear/asus-vivobook-16.webp"
-                  alt="ASUS Vivobook 16"
-                  width={240}
-                  height={153}
-                  className="object-contain max-h-24 sm:max-h-28 drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-105"
-                  priority
-                />
+            {WORKSPACE_GEAR.map((item, idx) => (
+              <div
+                key={item.id}
+                className={`group space-y-2 ${
+                  idx === 2 ? "col-span-2 sm:col-span-1" : ""
+                }`}
+              >
+                <div className="relative aspect-[4/3] rounded-2xl border border-black/6 dark:border-white/[0.04] bg-black/[0.02] dark:bg-white/[0.02] hover:border-black/15 dark:hover:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.03] flex items-center justify-center p-3.5 sm:p-4 transition-all duration-300">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={item.width}
+                    height={item.height}
+                    className={`object-contain ${
+                      idx === 0
+                        ? "max-h-24 sm:max-h-28"
+                        : idx === 1
+                        ? "max-h-20 sm:max-h-24"
+                        : "max-h-22 sm:max-h-26"
+                    } drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-105`}
+                    priority
+                  />
+                </div>
+                <div className="space-y-0.5 px-0.5">
+                  <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
+                    {item.name}
+                  </h4>
+                  <p className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                    {item.subtitle}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-0.5 px-0.5">
-                <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
-                  ASUS Vivobook 16
-                </h4>
-                <p className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  16-inch · Laptop
-                </p>
-              </div>
-            </div>
-
-            {/* 2. Mloong MX301 */}
-            <div className="group space-y-2">
-              <div className="relative aspect-[4/3] rounded-2xl border border-black/6 dark:border-white/[0.04] bg-black/[0.02] dark:bg-white/[0.02] hover:border-black/15 dark:hover:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.03] flex items-center justify-center p-3.5 sm:p-4 transition-all duration-300">
-                <Image
-                  src="/gear/mloong-mouse.webp"
-                  alt="Mloong MX301"
-                  width={140}
-                  height={240}
-                  className="object-contain max-h-20 sm:max-h-24 drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-105"
-                  priority
-                />
-              </div>
-              <div className="space-y-0.5 px-0.5">
-                <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
-                  Mloong MX301
-                </h4>
-                <p className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  Tri-Mode · Wireless mouse
-                </p>
-              </div>
-            </div>
-
-            {/* 3. Z-G61 Mechanical Keyboard */}
-            <div className="group space-y-2 col-span-2 sm:col-span-1">
-              <div className="relative aspect-[4/3] rounded-2xl border border-black/6 dark:border-white/[0.04] bg-black/[0.02] dark:bg-white/[0.02] hover:border-black/15 dark:hover:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.03] flex items-center justify-center p-3.5 sm:p-4 transition-all duration-300">
-                <Image
-                  src="/gear/zg61-keyboard.webp"
-                  alt="Z-G61 Mechanical Keyboard"
-                  width={280}
-                  height={162}
-                  className="object-contain max-h-22 sm:max-h-26 drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-105"
-                  priority
-                />
-              </div>
-              <div className="space-y-0.5 px-0.5">
-                <h4 className="font-mono text-base sm:text-lg font-semibold tracking-tight text-foreground leading-snug">
-                  Z-G61 Mechanical
-                </h4>
-                <p className="font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  60% · Blue switches
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 

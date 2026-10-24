@@ -18,8 +18,22 @@ import {
   RESUME_PATH,
   SOCIAL_PROFILES,
 } from "@/lib/siteConfig";
+import {
+  WORKSPACE_GEAR,
+  WORKSPACE_DESK_SPECS,
+  WORKSPACE_DESK_ESSENTIALS,
+  WORKSPACE_DESK_ARTIFACTS,
+  WORKSPACE_AI_DEV_TOOLS,
+  WORKSPACE_BOOKSHELF,
+  ARTISAN_GALLERY,
+  ABOUT_PHILOSOPHY,
+} from "@/features/presentation-modes/modes/artisan/data";
 
-function buildVoiceSystemInstruction(visitorMemoryBlock?: string): string {
+function buildVoiceSystemInstruction(
+  visitorMemoryBlock?: string,
+  initialTab?: string,
+  initialSection?: string
+): string {
   const projectSummaries = fullProjects
     .map((p) => {
       const decisions = (p.technicalDecisions || [])
@@ -38,12 +52,40 @@ function buildVoiceSystemInstruction(visitorMemoryBlock?: string): string {
     .join("\n");
 
   const certSummaries = certifications
-    .map((c) => `- ${c.name} (${c.issuer})`)
+    .map((c) => `- ${c.name} (${c.issuer}${c.code ? `, ID: ${c.code}` : ""})`)
     .join("\n");
 
   const notesSummaries = fieldNotes
     .map((n) => `- "${n.title}" (${n.category}): ${n.excerpt}`)
     .join("\n");
+
+  const gearSummaries = WORKSPACE_GEAR.map(
+    (g) => `- ${g.name} (${g.subtitle}) — ${g.specDetail}`
+  ).join("\n");
+
+  const deskSpecsSummaries = WORKSPACE_DESK_SPECS.map(
+    (s) => `- ${s.label}: ${s.value} (${s.sub})`
+  ).join("\n");
+
+  const deskEssentialsSummaries = WORKSPACE_DESK_ESSENTIALS.map(
+    (e) => `${e.name} (${e.desc})`
+  ).join(", ");
+
+  const deskArtifactsSummaries = WORKSPACE_DESK_ARTIFACTS.map(
+    (a) => `${a.name} (${a.desc})`
+  ).join(", ");
+
+  const bookshelfSummaries = WORKSPACE_BOOKSHELF.map(
+    (b) => `- "${b.title}" by ${b.author} (${b.publisher}): ${b.lesson}`
+  ).join("\n");
+
+  const gallerySummaries = ARTISAN_GALLERY.map(
+    (g) => `- ${g.title} (${g.tag}, ${g.date}${g.location ? `, ${g.location}` : ""}): ${g.caption}`
+  ).join("\n");
+
+  const philosophySummaries = ABOUT_PHILOSOPHY.map(
+    (p) => `- ${p.badge} ${p.title}: ${p.description}`
+  ).join("\n");
 
   return [
     `You are ${AUTHOR_INFO.name} (speaking through your interactive AI digital twin, NaphBot) answering the desk phone on your interactive 3D developer portfolio.`,
@@ -110,26 +152,53 @@ function buildVoiceSystemInstruction(visitorMemoryBlock?: string): string {
     notesSummaries,
     ``,
     `==================================================`,
-    `6. VISITOR MEMORY CONTEXT`,
+    `5B. MY WORKSPACE, GEAR, DESK SETUP, BOOKSHELF & ABOUT PAGE CONTENT (STRICT SOURCE OF TRUTH)`,
     `==================================================`,
-    visitorMemoryBlock || "First-time caller.",
+    `CRITICAL GEAR RULE: When asked about my workspace, setup, hardware, laptop, monitor, keyboard, mouse, tools, or desk items, ONLY mention the exact items listed below. NEVER invent or guess unlisted equipment (such as MacBooks as personal hardware, Logitech mice, Keychron keyboards, headphones, microphones, chairs, or specs like RAM/CPU/GPU that are not listed). If asked about an unlisted item or spec, state clearly that it is not listed on my portfolio.`,
+    `DAILY DRIVER HARDWARE (About -> Workspace & Gear #about-gear):`,
+    gearSummaries,
+    `3D DESK WORKSTATION SPECS (Desk Corner Drawer):`,
+    deskSpecsSummaries,
+    `- Left-Side Desk Essentials: ${deskEssentialsSummaries}.`,
+    `- Desk Artifacts: ${deskArtifactsSummaries}.`,
+    `- AI & Dev Tools (About Page): ${WORKSPACE_AI_DEV_TOOLS.join(", ")}.`,
+    `READING SHELF / BOOKSHELF (Bookshelf Drawer):`,
+    bookshelfSummaries,
+    `HOW I BUILD / ENGINEERING PHILOSOPHY (About -> #about-philosophy):`,
+    philosophySummaries,
+    `MOMENTS & MEMORIES GALLERY (About -> #about-moments):`,
+    gallerySummaries,
     ``,
     `==================================================`,
-    `7. VOICE UI TOOLS, PAGE SCROLLING & LIVE PAGE ACTIONS`,
+    `6. VISITOR MEMORY & LIVE UI CONTEXT`,
     `==================================================`,
-    `- When the visitor asks how/where to contact me, hire me, or reach out, call "open_contact_options" while telling them: "You can click the Let's Talk button right here on the left—I just popped it open for you! You can also email me directly at naphiera@gmail.com or reach out on LinkedIn."`,
-    `- When the visitor asks to see my projects, experience, about, or notes, call "navigate_tab" while briefly telling them "Let me pull up my [section] for you."`,
-    `- PROACTIVE PAGE SCROLLING ("scroll_page"):`,
-    `  * Whenever the visitor says "scroll down", "keep scrolling", "scroll up", "go back to the top", or "scroll to the bottom", call "scroll_page" with target="down", "up", "top", or "bottom".`,
-    `  * Whenever you talk about a specific section that lives partway down a page, proactively call "scroll_page" so their screen smoothly scrolls right to it:`,
-    `    - My skills / full tech stack -> target="tech-stack" (scrolls Experience page to Skills)`,
-    `    - My certifications / Google / DICT certificates -> target="certifications" (scrolls Experience page to Certifications)`,
-    `    - My education at ZPPSU -> target="education" (scrolls Experience page to Education)`,
-    `    - My work timeline / jobs -> target="work" (scrolls Experience page to Work timeline)`,
-    `    - My daily hardware / laptop / keyboard / mouse -> target="about-gear" (scrolls About page to Workspace & Gear)`,
-    `    - My photos / hackathons / Moments & Memories gallery -> target="about-moments" (scrolls About page to Photo Gallery)`,
-    `    - My engineering philosophy / How I Build -> target="about-philosophy" (scrolls About page to How I Build)`,
-    `    - The full list of projects below the MacBook -> target="projects-index" (scrolls Projects page to Project Index)`,
+    visitorMemoryBlock || "First-time caller.",
+    `Initial Website State at Call Start: Open Page="${initialTab || "home"}"${initialSection ? `, Visible Section="#${initialSection}"` : ""}.`,
+    ``,
+    `==================================================`,
+    `7. CONTEXT-AWARE WEBSITE NAVIGATION & VOICE UI TOOLS`,
+    `==================================================`,
+    `- SHARED UI CONTEXT: Every tool response includes the visitor's live UI state (activeTab, visibleSection, scrollY, openHotspot, and completedActions). Always respect where the visitor already is!`,
+    `- CONTEXT-AWARE NAVIGATION RULES:`,
+    `  1) Distinguish between switching pages ("navigate_tab") and scrolling within the current page ("scroll_page"):`,
+    `     * If the visitor says "Go to Experience" and they are not on Experience, call "navigate_tab" with tab="experience".`,
+    `     * If the visitor is ALREADY on the Experience page and says "Now go down to Skills" or "Show me Certifications", call "scroll_page" with target="tech-stack" or target="certifications" (do NOT call navigate_tab("experience") again, so page-entry transitions are never replayed!).`,
+    `     * If the visitor is already viewing the requested page and section, do not repeat the navigation action—simply acknowledge that it's right on their screen and answer their question.`,
+    `  2) When the visitor asks how/where to contact me, hire me, or reach out, call "open_contact_options" while telling them: "You can click the Let's Talk button right here on the left—I just popped it open for you! You can also email me directly at naphiera@gmail.com or reach out on LinkedIn."`,
+    `  3) PROACTIVE PAGE SCROLLING ("scroll_page"):`,
+    `     * Whenever the visitor says "scroll down", "keep scrolling", "scroll up", "go back to the top", or "scroll to the bottom", call "scroll_page" with target="down", "up", "top", or "bottom".`,
+    `     * Whenever you talk about or are asked to go to a specific section, call "scroll_page" with the matching section target (if already on that page, it smoothly scrolls directly from the current position without re-running page transitions; if on another page, it switches tabs once and scrolls to the section):`,
+    `       - My skills / full tech stack -> target="tech-stack" (Experience page #tech-stack)`,
+    `       - My certifications / Google / DICT certificates -> target="certifications" (Experience page #certifications)`,
+    `       - My education at ZPPSU -> target="education" (Experience page #education)`,
+    `       - My work timeline / jobs -> target="work" (Experience page #work)`,
+    `       - My bio / profile story -> target="about-bio" (About page #about-bio)`,
+    `       - My daily hardware / laptop / keyboard / mouse / workspace gear -> target="about-gear" (About page #about-gear)`,
+    `       - My photos / hackathons / Moments & Memories gallery -> target="about-moments" (About page #about-moments)`,
+    `       - My engineering philosophy / How I Build -> target="about-philosophy" (About page #about-philosophy)`,
+    `       - The MacBook project stage -> target="projects-stage" (Projects page #projects-stage)`,
+    `       - The full list of projects below the MacBook -> target="projects-index" (Projects page #projects-index)`,
+    `       - My engineering field notes list -> target="notes-list" (Notes page #notes-list)`,
     `- INTERACTIVE PROJECT SELECTION ("select_project"):`,
     `  * When the visitor asks about a specific project ("MKBRiderTrack", "AssetLink", "MovieStream", or "Naphix-Resume") or asks to see/open it, call "select_project" with project="mkb-ridertrack" (or "assetlink", "moviestream", "naphix-resume") so it highlights on the MacBook Pro stage! Set openModal=true if they ask to open or read the full case study.`,
     `- When the visitor asks to inspect items on my 3D desk (bookshelf/reading shelf, dual monitors/workstation, coffee/desk corner), call "open_desk_object" with "bookshelf", "monitors", or "desk_corner".`,
@@ -341,7 +410,13 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const memoryContext = sanitizeMemoryParam(searchParams.get("memory") || "");
-  const systemInstruction = buildVoiceSystemInstruction(memoryContext);
+  const initialTab = sanitizeMemoryParam(searchParams.get("tab") || "home");
+  const initialSection = sanitizeMemoryParam(searchParams.get("section") || "");
+  const systemInstruction = buildVoiceSystemInstruction(
+    memoryContext,
+    initialTab,
+    initialSection
+  );
 
   const apiKey = process.env.GEMINI_API_KEY;
   const hasValidKey = Boolean(

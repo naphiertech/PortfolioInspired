@@ -13,7 +13,12 @@ import {
 } from "react-icons/lu";
 import { PhoneCall, PhoneOff } from "lucide-react";
 import { HotspotId, HOTSPOTS } from "./RoomHotspots";
-import { HERO_DATA } from "./data";
+import {
+  HERO_DATA,
+  WORKSPACE_DESK_SPECS,
+  WORKSPACE_DESK_ESSENTIALS,
+  WORKSPACE_DESK_ARTIFACTS,
+} from "./data";
 import { techSections, fullProjects } from "@/lib/data";
 
 interface RoomObjectModalProps {
@@ -468,12 +473,7 @@ function DeskCornerContent() {
 
   const current = fanSpeeds[fanMode];
 
-  const specs = [
-    { label: "Laptop", value: "ASUS Vivobook 16", sub: "Aluminum Riser Stand" },
-    { label: "External Display", value: "27\" IPS Monitor", sub: "Borderless + Cyan LED" },
-    { label: "Keyboard", value: "Z-G61 60% Mech", sub: "White Compact Layout" },
-    { label: "Mouse", value: "Mloong MX301", sub: "Wireless Ergonomic" },
-  ];
+  const specs = WORKSPACE_DESK_SPECS;
 
   return (
     <div className="space-y-5">
@@ -503,11 +503,7 @@ function DeskCornerContent() {
           Left-Side Desk Essentials
         </h4>
         <div className="grid grid-cols-3 gap-2 text-center">
-          {[
-            { name: "Monstera Plant", desc: "Ceramic planter" },
-            { name: "Hot Coffee", desc: "Cork coaster mug" },
-            { name: "Leather Journal", desc: "Architecture notes" },
-          ].map((item) => (
+          {WORKSPACE_DESK_ESSENTIALS.map((item) => (
             <div
               key={item.name}
               className="p-2.5 rounded-xl border border-black/10 dark:border-white/10 bg-background"
@@ -798,11 +794,7 @@ function BookshelfContent() {
           Desk Artifacts
         </h5>
         <div className="grid grid-cols-3 gap-2 text-center">
-          {[
-            { name: "Flip Clock", desc: "Pomodoro focus" },
-            { name: "Desk Plants", desc: "Visual calm" },
-            { name: "Notebook", desc: "System sketches" },
-          ].map((item) => (
+          {WORKSPACE_DESK_ARTIFACTS.map((item) => (
             <div
               key={item.name}
               className="p-2.5 rounded-xl border border-black/10 dark:border-white/10 bg-background"

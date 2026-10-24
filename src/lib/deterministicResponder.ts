@@ -5,6 +5,15 @@ import { NormalizedQuery } from "./queryNormalizer";
 import { ChatMessage } from "./chatIntentGate";
 import { inspectGeneratedOutput } from "./chatOutputGuard";
 import { PortfolioPageContext } from "./portfolioContext";
+import {
+  WORKSPACE_GEAR,
+  WORKSPACE_DESK_SPECS,
+  WORKSPACE_DESK_ESSENTIALS,
+  WORKSPACE_DESK_ARTIFACTS,
+  WORKSPACE_AI_DEV_TOOLS,
+  WORKSPACE_BOOKSHELF,
+  ABOUT_PHILOSOPHY,
+} from "@/features/presentation-modes/modes/artisan/data";
 
 export interface DeterministicResult {
   answered: boolean;
@@ -360,6 +369,80 @@ ${certList}`;
 ${expList}`;
 
     return finalize(rawReply, "deterministic-experience");
+  }
+
+  // -------------------------------------------------------------
+  // 8B. WORKSPACE, SETUP, GEAR, HARDWARE & BOOKSHELF INQUIRIES
+  // Strictly grounded in WORKSPACE_GEAR, WORKSPACE_DESK_SPECS, and WORKSPACE_BOOKSHELF
+  // -------------------------------------------------------------
+  if (
+    /\b(bookshelf|reading\s+shelf|what\s+books|favorite\s+books|books\s+on\s+(his|your|my)\s+(shelf|desk))\b/i.test(
+      normText
+    )
+  ) {
+    const booksList = WORKSPACE_BOOKSHELF.map(
+      (b) => `- **${b.title}** by *${b.author}* (${b.publisher}) — ${b.lesson}`
+    ).join("\n");
+    const rawReply = `Here are the books featured on Naphier’s reading shelf:\n${booksList}`;
+    return finalize(rawReply, "deterministic-bookshelf");
+  }
+
+  if (
+    /\b(workspace|setup|gear|hardware|peripherals?|equipment|devices?|accessor(y|ies)|laptop|vivobook|keyboard|z-g61|mouse|mloong|mx301|monitors?|workstation|desk\s+setup|what\s+is\s+on\s+(his|your|my)\s+desk|chair|headphone|headset|microphone|webcam|macbook|cpu|gpu|ram)\b/i.test(
+      normText
+    )
+  ) {
+    // Check if the user is specifically asking about an unlisted item
+    const unlistedMatch = normText.match(
+      /\b(chair|headphone|headphones|headset|earbuds|airpods|microphone|mic|webcam|camera|speaker|speakers|macbook|ipad|tablet|cpu|gpu|ram|processor|graphics\s+card|storage|ssd)\b/i
+    );
+    const gearBullets = WORKSPACE_GEAR.map(
+      (g) => `- **${g.name}** (${g.subtitle}) — ${g.specDetail}`
+    ).join("\n");
+    const deskBullets = WORKSPACE_DESK_SPECS.map(
+      (s) => `- **${s.label}**: ${s.value} (${s.sub})`
+    ).join("\n");
+    const essentialsText = WORKSPACE_DESK_ESSENTIALS.map(
+      (e) => `${e.name} (${e.desc})`
+    ).join(", ");
+    const artifactsText = WORKSPACE_DESK_ARTIFACTS.map(
+      (a) => `${a.name} (${a.desc})`
+    ).join(", ");
+
+    if (unlistedMatch) {
+      const requestedItem = unlistedMatch[1];
+      const rawReply = `Information about a specific **${requestedItem}** is not listed in Naphier’s portfolio.
+
+Here is the exact workspace gear and desk setup that is listed:
+**Daily Driver Gear:**
+${gearBullets}
+
+**Workstation & Desk Items:**
+${deskBullets}
+- **Desk Essentials & Artifacts**: ${essentialsText}, ${artifactsText}`;
+      return finalize(rawReply, "deterministic-workspace-unlisted-boundary");
+    }
+
+    const rawReply = `Here is Naphier’s listed workspace and daily driver gear:
+
+**Daily Hardware (About → Workspace & Gear):**
+${gearBullets}
+
+**3D Workstation & Desk Setup:**
+${deskBullets}
+- **Desk Essentials**: ${essentialsText}
+- **Desk Artifacts**: ${artifactsText}
+- **AI & Dev Tools**: ${WORKSPACE_AI_DEV_TOOLS.join(", ")}`;
+
+    return finalize(rawReply, "deterministic-workspace-gear");
+  }
+
+  if (/\b(philosophy|how\s+(does\s+he|do\s+you|i)\s+build)\b/i.test(normText)) {
+    const philBullets = ABOUT_PHILOSOPHY.map(
+      (p) => `- **${p.badge} · ${p.title}**: ${p.description}`
+    ).join("\n");
+    const rawReply = `Here is Naphier’s engineering philosophy (**How I Build**):\n${philBullets}`;
+    return finalize(rawReply, "deterministic-philosophy");
   }
 
   // -------------------------------------------------------------

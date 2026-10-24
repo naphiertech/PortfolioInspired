@@ -35,6 +35,7 @@ import { Hero3DBackground } from "./Hero3DBackground";
 
 interface HeroSectionProps {
   isDark: boolean;
+  activeTab?: string;
   isHomeActive?: boolean;
   onNavigate?: (tab: string) => void;
 }
@@ -52,7 +53,7 @@ const HERO_SKILLS = [
   { name: "Docker", icon: FaDocker },
 ];
 
-export function HeroSection({ isDark, isHomeActive = true, onNavigate }: HeroSectionProps) {
+export function HeroSection({ isDark, activeTab = "home", isHomeActive = true, onNavigate }: HeroSectionProps) {
   const [isTalkOpen, setIsTalkOpen] = useState(false);
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null);
   const talkRef = useRef<HTMLDivElement>(null);
@@ -192,6 +193,7 @@ export function HeroSection({ isDark, isHomeActive = true, onNavigate }: HeroSec
         >
           <Hero3DBackground
             isDark={isDark}
+            activeTab={activeTab}
             isHomeActive={isHomeActive}
             onNavigate={onNavigate}
           />

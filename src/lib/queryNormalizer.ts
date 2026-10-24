@@ -164,6 +164,13 @@ export function buildPortfolioVocabulary(): VocabularyItem[] {
   add("linkedin", "topic", ["linkedin"], "CONTACT_QUERY");
   add("resume", "topic", ["resume", "cv"], "CONTACT_QUERY");
   add("about", "topic", ["about", "bio", "background", "who"], "PORTFOLIO_FACT");
+  add("workspace", "topic", ["workspace", "setup", "gear", "hardware", "equipment", "devices", "accessories", "peripherals", "workstation", "desk"], "PORTFOLIO_FACT");
+  add("laptop", "topic", ["laptop", "computer", "vivobook", "asus"], "PORTFOLIO_FACT");
+  add("keyboard", "topic", ["keyboard", "mechanical", "zg61"], "PORTFOLIO_FACT");
+  add("mouse", "topic", ["mouse", "mloong", "mx301"], "PORTFOLIO_FACT");
+  add("monitor", "topic", ["monitor", "monitors", "screen", "display"], "PORTFOLIO_FACT");
+  add("bookshelf", "topic", ["bookshelf", "books", "book", "reading", "shelf"], "PORTFOLIO_FACT");
+  add("philosophy", "topic", ["philosophy", "principles", "moments", "gallery", "notes"], "PORTFOLIO_FACT");
 
   // 5. Common Navigation Words
   add("see", "intent", ["see", "view", "open", "check", "visit", "link", "demo"], "NAVIGATION");
@@ -708,9 +715,9 @@ export function normalizeUserQuery(raw: string): NormalizedQuery {
     if (["more", "detail", "elaborate", "why", "how", "other", "next"].includes(token)) {
       addScore("followUp", 0.35);
     }
-    // General About
-    if (["about", "who", "bio", "background"].includes(token)) {
-      addScore("generalAbout", 0.4);
+    // General About & Workspace / Gear / Bookshelf
+    if (["about", "who", "bio", "background", "workspace", "setup", "gear", "hardware", "equipment", "device", "accessory", "peripheral", "laptop", "computer", "vivobook", "asus", "keyboard", "mouse", "mloong", "monitor", "display", "desk", "workstation", "bookshelf", "book", "shelf", "philosophy", "moment", "gallery", "note"].includes(token)) {
+      addScore("generalAbout", 0.5);
     }
   }
 

@@ -20,10 +20,68 @@ export type VoiceAgentStatus =
 interface UseNaphBotVoiceOptions {
   micMuted: boolean;
   speakerMuted: boolean;
+  activeTab?: string;
+  activeHotspot?: HotspotId | null;
   onNavigateTab?: (tab: string) => void;
   onOpenHotspot?: (id: HotspotId) => void;
   onToggleTheme?: (mode?: "dark" | "light" | "toggle") => void;
 }
+
+interface SectionDestination {
+  tab: "home" | "about" | "experience" | "projects" | "notes";
+  sectionId: string;
+  label: string;
+}
+
+const SECTION_DESTINATIONS: Record<string, SectionDestination> = {
+  work: { tab: "experience", sectionId: "work", label: "Work Experience timeline" },
+  timeline: { tab: "experience", sectionId: "work", label: "Work Experience timeline" },
+  jobs: { tab: "experience", sectionId: "work", label: "Work Experience timeline" },
+  "tech-stack": { tab: "experience", sectionId: "tech-stack", label: "Skills & Tech Stack" },
+  skills: { tab: "experience", sectionId: "tech-stack", label: "Skills & Tech Stack" },
+  stack: { tab: "experience", sectionId: "tech-stack", label: "Skills & Tech Stack" },
+  technologies: { tab: "experience", sectionId: "tech-stack", label: "Skills & Tech Stack" },
+  certifications: { tab: "experience", sectionId: "certifications", label: "Certifications" },
+  certificates: { tab: "experience", sectionId: "certifications", label: "Certifications" },
+  credentials: { tab: "experience", sectionId: "certifications", label: "Certifications" },
+  education: { tab: "experience", sectionId: "education", label: "Education" },
+  school: { tab: "experience", sectionId: "education", label: "Education" },
+  "about-bio": { tab: "about", sectionId: "about-bio", label: "About Bio" },
+  bio: { tab: "about", sectionId: "about-bio", label: "About Bio" },
+  story: { tab: "about", sectionId: "about-bio", label: "About Bio" },
+  "about-gear": { tab: "about", sectionId: "about-gear", label: "Workspace & Gear" },
+  gear: { tab: "about", sectionId: "about-gear", label: "Workspace & Gear" },
+  setup: { tab: "about", sectionId: "about-gear", label: "Workspace & Gear" },
+  workspace: { tab: "about", sectionId: "about-gear", label: "Workspace & Gear" },
+  hardware: { tab: "about", sectionId: "about-gear", label: "Workspace & Gear" },
+  "about-moments": { tab: "about", sectionId: "about-moments", label: "Moments & Memories Gallery" },
+  moments: { tab: "about", sectionId: "about-moments", label: "Moments & Memories Gallery" },
+  memories: { tab: "about", sectionId: "about-moments", label: "Moments & Memories Gallery" },
+  gallery: { tab: "about", sectionId: "about-moments", label: "Moments & Memories Gallery" },
+  photos: { tab: "about", sectionId: "about-moments", label: "Moments & Memories Gallery" },
+  "about-philosophy": { tab: "about", sectionId: "about-philosophy", label: "How I Build Philosophy" },
+  philosophy: { tab: "about", sectionId: "about-philosophy", label: "How I Build Philosophy" },
+  principles: { tab: "about", sectionId: "about-philosophy", label: "How I Build Philosophy" },
+  "projects-stage": { tab: "projects", sectionId: "projects-stage", label: "Projects MacBook Stage" },
+  "projects-index": { tab: "projects", sectionId: "projects-index", label: "Projects Index" },
+  "notes-list": { tab: "notes", sectionId: "notes-list", label: "Field Notes Archive" },
+};
+
+const TAB_SECTIONS: Record<string, string[]> = {
+  experience: ["work", "tech-stack", "certifications", "education"],
+  about: ["about-bio", "about-gear", "about-moments", "about-philosophy"],
+  projects: ["projects-stage", "projects-index"],
+  notes: ["notes-list"],
+  home: [],
+};
+
+const TAB_CONTENT_SUMMARY: Record<string, string> = {
+  home: "Interactive 3D developer workspace, bio intro, Let's Talk contact menu, Core Stack pills, and Certifications preview.",
+  about: "Sections: #about-bio (Profile & bio), #about-gear (Workspace & Gear: ASUS Vivobook 16, Mloong MX301, Z-G61 Mechanical, AI/Dev tools), #about-moments (Moments & Memories photo gallery), #about-philosophy (How I Build principles).",
+  experience: "Sections: #work (Work Experience timeline), #tech-stack (Categorized Skills & Tech Stack), #certifications (Verified Google & DICT Certifications), #education (BSIT at ZPPSU).",
+  projects: "Sections: #projects-stage (Interactive MacBook Pro preview stage), #projects-index (Full project archive: MKBRiderTrack, AssetLink, MovieStream, Naphix Resume).",
+  notes: "Sections: #notes-list (Engineering Field Notes & Journal essays).",
+};
 
 interface SpeechRecognitionAlternativeLike {
   transcript: string;
@@ -145,6 +203,8 @@ function base64PCM24kToFloat32(base64: string): Float32Array {
 export function useNaphBotVoice({
   micMuted,
   speakerMuted,
+  activeTab = "home",
+  activeHotspot = null,
   onNavigateTab,
   onOpenHotspot,
   onToggleTheme,
@@ -161,6 +221,9 @@ export function useNaphBotVoice({
   const isActiveRef = useRef(false);
   const micMutedRef = useRef(micMuted);
   const speakerMutedRef = useRef(speakerMuted);
+  const activeTabRef = useRef(activeTab);
+  const activeHotspotRef = useRef<HotspotId | null>(activeHotspot);
+  const completedActionsRef = useRef<string[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -182,6 +245,65 @@ export function useNaphBotVoice({
 
   micMutedRef.current = micMuted;
   speakerMutedRef.current = speakerMuted;
+  activeTabRef.current = activeTab;
+  activeHotspotRef.current = activeHotspot;
+
+  const recordCompletedAction = useCallback((action: string) => {
+    const prev = completedActionsRef.current;
+    if (prev[prev.length - 1] !== action) {
+      completedActionsRef.current = [...prev.slice(-11), action];
+    }
+  }, []);
+
+  /**
+   * Inspects the live DOM and shared application state to determine the open page,
+   * currently visible section, scroll position, page content, and completed actions.
+   */
+  const getLiveWebsiteContext = useCallback(() => {
+    const currentTab = activeTabRef.current || "home";
+    let visibleSection: string | null = null;
+    let scrollY = 0;
+    let maxScroll = 0;
+
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
+      scrollY = Math.round(window.scrollY || 0);
+      maxScroll = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight
+      );
+      const candidateIds = TAB_SECTIONS[currentTab] || [];
+      const viewportAnchor = window.innerHeight * 0.35;
+      let bestDistance = Number.POSITIVE_INFINITY;
+
+      for (const id of candidateIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        const isVisibleInViewport =
+          rect.bottom > 60 && rect.top < window.innerHeight - 60;
+        if (isVisibleInViewport) {
+          const dist = Math.abs(rect.top - viewportAnchor);
+          if (dist < bestDistance) {
+            bestDistance = dist;
+            visibleSection = id;
+          }
+        }
+      }
+      if (!visibleSection && candidateIds.length > 0) {
+        visibleSection = candidateIds[0];
+      }
+    }
+
+    return {
+      activeTab: currentTab,
+      visibleSection,
+      scrollY,
+      maxScroll,
+      openHotspot: activeHotspotRef.current,
+      pageContent: TAB_CONTENT_SUMMARY[currentTab] || TAB_CONTENT_SUMMARY.home,
+      completedActions: completedActionsRef.current,
+    };
+  }, []);
 
   const stopQueuedAudio = useCallback(() => {
     for (const src of activeSourcesRef.current) {
@@ -215,78 +337,191 @@ export function useNaphBotVoice({
     }
   }, [micMuted]);
 
+  /**
+   * Context-aware navigation & scrolling helper:
+   * - Distinguishes between page navigation, section scrolling, and relative scroll commands.
+   * - If already on the target page, performs only a direct smooth scroll to the section
+   *   without re-triggering page-entry animations or resetting scroll to top.
+   * - Prevents redundant navigation or scrolling when the target is already open/visible.
+   */
+  const navigateOrScrollContextAware = useCallback(
+    (rawDestination: string): { result: string; didChangeTab: boolean } => {
+      const clean = rawDestination.toLowerCase().trim();
+      const uiCtx = getLiveWebsiteContext();
+
+      // 1. Check if rawDestination is formatted as "tab#section" or matches a known section key
+      let sectionDest: SectionDestination | undefined;
+      if (clean.includes("#")) {
+        const [tabPart, hashPart] = clean.split("#");
+        if (SECTION_DESTINATIONS[hashPart]) {
+          sectionDest = SECTION_DESTINATIONS[hashPart];
+        } else if (
+          ["home", "about", "experience", "projects", "notes"].includes(tabPart) &&
+          hashPart
+        ) {
+          sectionDest = {
+            tab: tabPart as SectionDestination["tab"],
+            sectionId: hashPart,
+            label: hashPart,
+          };
+        }
+      } else if (SECTION_DESTINATIONS[clean]) {
+        sectionDest = SECTION_DESTINATIONS[clean];
+      }
+
+      if (sectionDest) {
+        const { tab, sectionId, label } = sectionDest;
+        if (uiCtx.activeTab === tab) {
+          // User is ALREADY on the target page! Perform direct scroll without re-triggering tab transition
+          if (typeof document !== "undefined" && typeof window !== "undefined") {
+            const el = document.getElementById(sectionId);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              const isAlreadyAtSection =
+                rect.top >= -32 &&
+                rect.top <= Math.min(220, window.innerHeight * 0.35);
+              if (isAlreadyAtSection) {
+                return {
+                  result: `Visitor is already on the ${tab} page viewing ${label} (#${sectionId}). Kept current position without redundant scrolling or animations.`,
+                  didChangeTab: false,
+                };
+              }
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+              recordCompletedAction(`scroll:${tab}#${sectionId}`);
+              return {
+                result: `Smoothly scrolled directly to ${label} (#${sectionId}) from current scroll position on the ${tab} page without replaying page transitions.`,
+                didChangeTab: false,
+              };
+            }
+          }
+          onNavigateTab?.(`${tab}#${sectionId}`);
+          recordCompletedAction(`scroll:${tab}#${sectionId}`);
+          return {
+            result: `Scrolled to ${label} (#${sectionId}) on the ${tab} page.`,
+            didChangeTab: false,
+          };
+        }
+
+        // User is on a different page -> switch to tab and scroll to section
+        activeTabRef.current = tab;
+        onNavigateTab?.(`${tab}#${sectionId}`);
+        recordCompletedAction(`navigate:${tab}#${sectionId}`);
+        return {
+          result: `Navigated from ${uiCtx.activeTab} to ${tab} and scrolled to ${label} (#${sectionId}).`,
+          didChangeTab: true,
+        };
+      }
+
+      // 2. Check if rawDestination is a top-level page ("home", "about", "experience", "projects", "notes")
+      if (["home", "about", "experience", "projects", "notes"].includes(clean)) {
+        if (uiCtx.activeTab === clean) {
+          return {
+            result: `Visitor is already on the ${clean} page (visible section: #${uiCtx.visibleSection || clean}, scrollY: ${uiCtx.scrollY}px). Skipped redundant page transition and preserved scroll position.`,
+            didChangeTab: false,
+          };
+        }
+        activeTabRef.current = clean;
+        onNavigateTab?.(clean);
+        recordCompletedAction(`navigate:${clean}`);
+        return {
+          result: `Navigated visitor from ${uiCtx.activeTab} to the ${clean} page.`,
+          didChangeTab: true,
+        };
+      }
+
+      // 3. Relative scroll directions ("down", "up", "top", "bottom")
+      if (typeof window !== "undefined" && typeof document !== "undefined") {
+        const step = Math.round(window.innerHeight * 0.65);
+        if (clean === "top") {
+          if (uiCtx.scrollY <= 8) {
+            return {
+              result: `Already at the top of the ${uiCtx.activeTab} page.`,
+              didChangeTab: false,
+            };
+          }
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          recordCompletedAction(`scroll:top(${uiCtx.activeTab})`);
+          return {
+            result: `Scrolled to the top of the ${uiCtx.activeTab} page.`,
+            didChangeTab: false,
+          };
+        }
+        if (clean === "bottom") {
+          if (uiCtx.maxScroll > 0 && uiCtx.scrollY >= uiCtx.maxScroll - 12) {
+            return {
+              result: `Already at the bottom of the ${uiCtx.activeTab} page.`,
+              didChangeTab: false,
+            };
+          }
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+          });
+          recordCompletedAction(`scroll:bottom(${uiCtx.activeTab})`);
+          return {
+            result: `Scrolled to the bottom of the ${uiCtx.activeTab} page.`,
+            didChangeTab: false,
+          };
+        }
+        if (clean === "up") {
+          if (uiCtx.scrollY <= 8) {
+            return {
+              result: `Already at the top of the ${uiCtx.activeTab} page.`,
+              didChangeTab: false,
+            };
+          }
+          window.scrollBy({ top: -step, behavior: "smooth" });
+          recordCompletedAction(`scroll:up(${uiCtx.activeTab})`);
+          return {
+            result: `Scrolled up on the ${uiCtx.activeTab} page.`,
+            didChangeTab: false,
+          };
+        }
+        window.scrollBy({ top: step, behavior: "smooth" });
+        recordCompletedAction(`scroll:down(${uiCtx.activeTab})`);
+        return {
+          result: `Scrolled down on the ${uiCtx.activeTab} page.`,
+          didChangeTab: false,
+        };
+      }
+
+      return { result: "Navigation completed.", didChangeTab: false };
+    },
+    [getLiveWebsiteContext, onNavigateTab, recordCompletedAction]
+  );
+
   const executeVoiceToolIntent = useCallback(
     (name: string, args: Record<string, unknown>): string => {
       if (name === "navigate_tab") {
         const rawTab = String(args.tab || "projects").toLowerCase().trim();
-        const baseTab = rawTab.split("#")[0];
-        if (
-          ["home", "about", "experience", "projects", "notes"].includes(baseTab)
-        ) {
-          onNavigateTab?.(rawTab);
-          return `Navigated visitor to ${rawTab}.`;
-        }
+        return navigateOrScrollContextAware(rawTab).result;
       } else if (name === "scroll_page") {
         const rawTarget = String(
           args.target || args.direction || "down"
         )
           .toLowerCase()
           .trim();
-
-        const sectionMap: Record<string, string> = {
-          work: "experience#work",
-          "tech-stack": "experience#tech-stack",
-          skills: "experience#tech-stack",
-          stack: "experience#tech-stack",
-          certifications: "experience#certifications",
-          certificates: "experience#certifications",
-          education: "experience#education",
-          "about-bio": "about#about-bio",
-          bio: "about#about-bio",
-          "about-gear": "about#about-gear",
-          gear: "about#about-gear",
-          "about-moments": "about#about-moments",
-          moments: "about#about-moments",
-          gallery: "about#about-moments",
-          photos: "about#about-moments",
-          "about-philosophy": "about#about-philosophy",
-          philosophy: "about#about-philosophy",
-          "projects-stage": "projects#projects-stage",
-          "projects-index": "projects#projects-index",
-          "notes-list": "notes#notes-list",
-        };
-
-        if (sectionMap[rawTarget]) {
-          onNavigateTab?.(sectionMap[rawTarget]);
-          return `Navigated and scrolled to ${sectionMap[rawTarget]}.`;
-        }
-
-        if (typeof window !== "undefined") {
-          const step = Math.round(window.innerHeight * 0.65);
-          if (rawTarget === "top") {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            return "Scrolled to the top of the page.";
-          }
-          if (rawTarget === "bottom") {
-            window.scrollTo({
-              top: document.documentElement.scrollHeight,
-              behavior: "smooth",
-            });
-            return "Scrolled to the bottom of the page.";
-          }
-          if (rawTarget === "up") {
-            window.scrollBy({ top: -step, behavior: "smooth" });
-            return "Scrolled up the page.";
-          }
-          window.scrollBy({ top: step, behavior: "smooth" });
-          return "Scrolled down the page.";
-        }
+        return navigateOrScrollContextAware(rawTarget).result;
       } else if (name === "select_project") {
         const rawProj = String(args.project || "mkb-ridertrack")
           .toLowerCase()
           .trim();
         const openModal = Boolean(args.openModal);
-        onNavigateTab?.("projects#projects-stage");
+        const uiCtx = getLiveWebsiteContext();
+        if (uiCtx.activeTab !== "projects") {
+          activeTabRef.current = "projects";
+          onNavigateTab?.("projects#projects-stage");
+        } else if (typeof document !== "undefined") {
+          const stageEl = document.getElementById("projects-stage");
+          const rect = stageEl?.getBoundingClientRect();
+          if (
+            stageEl &&
+            rect &&
+            (rect.top < -40 || rect.top > window.innerHeight * 0.45)
+          ) {
+            stageEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
         if (typeof window !== "undefined") {
           const dispatchSelect = () => {
             window.dispatchEvent(
@@ -298,6 +533,9 @@ export function useNaphBotVoice({
           dispatchSelect();
           setTimeout(dispatchSelect, 450);
         }
+        recordCompletedAction(
+          `select_project:${rawProj}${openModal ? "(modal)" : ""}`
+        );
         return `Selected project ${rawProj} on the Projects MacBook stage${openModal ? " and opened its Case Study modal" : ""}.`;
       } else if (name === "open_desk_object") {
         const raw = String(args.objectId || "bookshelf").toLowerCase();
@@ -307,18 +545,30 @@ export function useNaphBotVoice({
             : raw.includes("coffee") || raw.includes("corner") || raw.includes("mug")
             ? "desk_corner"
             : "bookshelf";
-        onNavigateTab?.("home");
-        onOpenHotspot?.(objectId);
+        if (activeTabRef.current !== "home") {
+          activeTabRef.current = "home";
+          onNavigateTab?.("home");
+        }
+        if (activeHotspotRef.current !== objectId) {
+          activeHotspotRef.current = objectId;
+          onOpenHotspot?.(objectId);
+        }
+        recordCompletedAction(`open_desk_object:${objectId}`);
         return `Opened ${objectId} drawer on desk.`;
       } else if (name === "open_contact_options") {
-        onNavigateTab?.("home");
+        if (activeTabRef.current !== "home") {
+          activeTabRef.current = "home";
+          onNavigateTab?.("home");
+        }
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("artisan-open-lets-talk"));
         }
+        recordCompletedAction("open_contact_options");
         return "Opened the Let's Talk contact menu on the left side of the Home screen (Email: naphiera@gmail.com, LinkedIn, X/Twitter).";
       } else if (name === "toggle_theme") {
         const mode = (args.mode as "dark" | "light" | "toggle") || "toggle";
         onToggleTheme?.(mode);
+        recordCompletedAction(`toggle_theme:${mode}`);
         return `Switched theme (${mode}).`;
       } else if (name === "save_visitor_memory") {
         saveVisitorMemory({
@@ -337,37 +587,107 @@ export function useNaphBotVoice({
       }
       return "Action completed.";
     },
-    [onNavigateTab, onOpenHotspot, onToggleTheme]
+    [
+      getLiveWebsiteContext,
+      navigateOrScrollContextAware,
+      onNavigateTab,
+      onOpenHotspot,
+      onToggleTheme,
+      recordCompletedAction,
+    ]
   );
 
   /**
    * Detect natural voice UI commands in Web Speech fallback mode
+   * using live website context so we never replay transitions when already on the target page.
    */
   const tryExecuteLocalVoiceCommand = useCallback(
     (utterance: string): string | null => {
       const lower = utterance.toLowerCase();
+      const uiCtx = getLiveWebsiteContext();
+
+      // Check specific section targets BEFORE generic "scroll down" so "now go down to skills" scrolls to #tech-stack!
+      if (
+        /\b(go|scroll|move|jump|head|take me|show|open|view)\b.*\b(skills|tech stack|stack)\b/.test(
+          lower
+        )
+      ) {
+        const wasOnExp = uiCtx.activeTab === "experience";
+        navigateOrScrollContextAware("tech-stack");
+        return wasOnExp
+          ? "Scrolling right down to my Skills section."
+          : "Opening my Experience page and scrolling to my full tech stack and skills.";
+      }
+      if (
+        /\b(go|scroll|move|jump|head|take me|show|open|view)\b.*\b(certificate|certificates|certification|certifications)\b/.test(
+          lower
+        )
+      ) {
+        const wasOnExp = uiCtx.activeTab === "experience";
+        navigateOrScrollContextAware("certifications");
+        return wasOnExp
+          ? "Scrolling directly to my verified certifications."
+          : "Opening my Experience page and scrolling to my verified certifications.";
+      }
+      if (
+        /\b(go|scroll|move|jump|head|take me|show|open|view)\b.*\b(education|school|university|zppsu)\b/.test(
+          lower
+        )
+      ) {
+        const wasOnExp = uiCtx.activeTab === "experience";
+        navigateOrScrollContextAware("education");
+        return wasOnExp
+          ? "Scrolling down to my Education section."
+          : "Opening my Experience page and scrolling to my Education section.";
+      }
+      if (
+        /\b(go|scroll|move|jump|head|take me|show|open|view)\b.*\b(gear|workspace|setup|hardware)\b/.test(
+          lower
+        )
+      ) {
+        const wasOnAbout = uiCtx.activeTab === "about";
+        navigateOrScrollContextAware("about-gear");
+        return wasOnAbout
+          ? "Scrolling right to my Workspace and Gear section—I use an ASUS Vivobook 16, an Mloong MX301 wireless mouse, and a Z-G61 60% mechanical keyboard."
+          : "Opening my About page and scrolling to my Workspace and Gear—I use an ASUS Vivobook 16, an Mloong MX301 wireless mouse, and a Z-G61 60% mechanical keyboard.";
+      }
+      if (
+        /\b(go|scroll|move|jump|head|take me|show|open|view)\b.*\b(moments|memories|gallery|photos|pictures)\b/.test(
+          lower
+        )
+      ) {
+        const wasOnAbout = uiCtx.activeTab === "about";
+        navigateOrScrollContextAware("about-moments");
+        return wasOnAbout
+          ? "Scrolling directly to my Moments and Memories photo gallery."
+          : "Opening my About page and scrolling to my Moments and Memories photo gallery.";
+      }
+      if (
+        /\b(go|scroll|move|jump|head|take me|show|open|view)\b.*\b(philosophy|how i build|principles)\b/.test(
+          lower
+        )
+      ) {
+        const wasOnAbout = uiCtx.activeTab === "about";
+        navigateOrScrollContextAware("about-philosophy");
+        return wasOnAbout
+          ? "Scrolling down to my How I Build engineering philosophy."
+          : "Opening my About page and scrolling to my How I Build engineering philosophy.";
+      }
+
       if (/\b(scroll down|go down|move down|further down|keep scrolling)\b/.test(lower)) {
-        if (typeof window !== "undefined") {
-          window.scrollBy({ top: Math.round(window.innerHeight * 0.65), behavior: "smooth" });
-        }
+        navigateOrScrollContextAware("down");
         return "Scrolling down for you.";
       }
       if (/\b(scroll up|go back up|move up)\b/.test(lower)) {
-        if (typeof window !== "undefined") {
-          window.scrollBy({ top: -Math.round(window.innerHeight * 0.65), behavior: "smooth" });
-        }
+        navigateOrScrollContextAware("up");
         return "Scrolling back up.";
       }
       if (/\b(scroll to top|back to top|top of the page)\b/.test(lower)) {
-        if (typeof window !== "undefined") {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        navigateOrScrollContextAware("top");
         return "Back at the top of the page.";
       }
       if (/\b(scroll to bottom|bottom of the page)\b/.test(lower)) {
-        if (typeof window !== "undefined") {
-          window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
-        }
+        navigateOrScrollContextAware("bottom");
         return "Scrolled down to the bottom.";
       }
       if (
@@ -375,90 +695,95 @@ export function useNaphBotVoice({
           lower
         )
       ) {
-        onNavigateTab?.("home");
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("artisan-open-lets-talk"));
-        }
+        executeVoiceToolIntent("open_contact_options", {});
         return "You can click the Let's Talk button right here on the left—I just popped it open for you! You can also email me at naphiera@gmail.com or connect with me on LinkedIn.";
       }
-      if (/\b(certificate|certificates|certification|certifications)\b/.test(lower)) {
-        onNavigateTab?.("experience#certifications");
-        return "Let me scroll right down to my verified certifications on the Experience page.";
-      }
-      if (/\b(gear|laptop|keyboard|mouse|vivobook|hardware)\b/.test(lower)) {
-        onNavigateTab?.("about#about-gear");
-        return "Here is my daily workspace gear—I use an ASUS Vivobook 16, a 60% mechanical keyboard, and a wireless mouse.";
-      }
-      if (/\b(moments|memories|gallery|photos|pictures)\b/.test(lower)) {
-        onNavigateTab?.("about#about-moments");
-        return "Scrolling to my Moments and Memories photo gallery on the About page.";
-      }
       if (
-        /\b(show|open|go to|take me to|view)\b.*\b(project|projects|work)\b/.test(
+        /\b(show|open|go to|take me to|view|navigate to)\b.*\b(project|projects)\b/.test(
           lower
         )
       ) {
-        onNavigateTab?.("projects");
-        return "Pulling up my projects for you right now.";
+        const wasOnProjects = uiCtx.activeTab === "projects";
+        navigateOrScrollContextAware("projects");
+        return wasOnProjects
+          ? "We're already right here on my Projects page."
+          : "Pulling up my Projects page for you right now.";
       }
       if (
-        /\b(show|open|go to|take me to|view)\b.*\b(stack|skills|tech stack)\b/.test(
+        /\b(show|open|go to|take me to|view|navigate to)\b.*\b(experience|resume|career|background)\b/.test(
           lower
         )
       ) {
-        onNavigateTab?.("experience#tech-stack");
-        return "Scrolling right to my full tech stack and skills.";
+        const wasOnExp = uiCtx.activeTab === "experience";
+        navigateOrScrollContextAware("experience");
+        return wasOnExp
+          ? "We're already on my Experience page."
+          : "Opening my Experience page.";
       }
       if (
-        /\b(show|open|go to|take me to|view)\b.*\b(experience|resume|career|background)\b/.test(
+        /\b(show|open|go to|take me to|view|navigate to)\b.*\b(about|bio)\b/.test(
           lower
         )
       ) {
-        onNavigateTab?.("experience");
-        return "Opening my experience and tech stack.";
+        const wasOnAbout = uiCtx.activeTab === "about";
+        navigateOrScrollContextAware("about");
+        return wasOnAbout
+          ? "We're already right here on my About page."
+          : "Opening my About page.";
       }
       if (
-        /\b(show|open|go to|take me to|view)\b.*\b(about|bio)\b/.test(
+        /\b(show|open|go to|take me to|view|navigate to)\b.*\b(notes|field notes|articles|blog|writing)\b/.test(
           lower
         )
       ) {
-        onNavigateTab?.("about");
-        return "Opening my About page.";
+        const wasOnNotes = uiCtx.activeTab === "notes";
+        navigateOrScrollContextAware("notes");
+        return wasOnNotes
+          ? "We're already on my Field Notes page."
+          : "Opening my engineering Field Notes.";
       }
       if (
-        /\b(show|open|go to|take me to|view)\b.*\b(notes|field notes|articles|blog|writing)\b/.test(
+        /\b(show|open|go to|take me to|view|navigate to|back to)\b.*\b(home|desk|main page)\b/.test(
           lower
         )
       ) {
-        onNavigateTab?.("notes");
-        return "Opening my engineering notes.";
+        const wasOnHome = uiCtx.activeTab === "home";
+        navigateOrScrollContextAware("home");
+        return wasOnHome
+          ? "We're already on the Home workspace."
+          : "Taking you back to my 3D Home workspace.";
       }
-      if (/\b(reading shelf|bookshelf|books)\b/.test(lower)) {
-        onNavigateTab?.("home");
-        onOpenHotspot?.("bookshelf");
-        return "Opening my reading shelf.";
+      if (/\b(reading shelf|bookshelf)\b/.test(lower)) {
+        executeVoiceToolIntent("open_desk_object", { objectId: "bookshelf" });
+        return "Opening my reading shelf—it features Designing Data-Intensive Applications, Refactoring UI, Clean Code, and The Pragmatic Programmer.";
       }
-      if (/\b(monitor|monitors|screen|setup|workstation)\b/.test(lower)) {
-        onNavigateTab?.("home");
-        onOpenHotspot?.("monitors");
+      if (
+        /\b(show|open|inspect|view)\b.*\b(monitor|monitors|screen|workstation)\b/.test(
+          lower
+        )
+      ) {
+        executeVoiceToolIntent("open_desk_object", { objectId: "monitors" });
         return "Opening my dual-monitor workstation details.";
       }
       if (/\b(coffee|mug|latte|desk corner)\b/.test(lower)) {
-        onNavigateTab?.("home");
-        onOpenHotspot?.("desk_corner");
+        executeVoiceToolIntent("open_desk_object", { objectId: "desk_corner" });
         return "Showing you my desk corner.";
       }
       if (/\b(dark mode|night mode)\b/.test(lower)) {
-        onToggleTheme?.("dark");
+        executeVoiceToolIntent("toggle_theme", { mode: "dark" });
         return "Switched to dark mode for you.";
       }
       if (/\b(light mode|day mode)\b/.test(lower)) {
-        onToggleTheme?.("light");
+        executeVoiceToolIntent("toggle_theme", { mode: "light" });
         return "Switched to light mode for you.";
       }
       return null;
     },
-    [onNavigateTab, onOpenHotspot, onToggleTheme]
+    [
+      executeVoiceToolIntent,
+      getLiveWebsiteContext,
+      navigateOrScrollContextAware,
+    ]
   );
 
   const schedulePCM24kPlayback = useCallback((base64Audio: string) => {
@@ -672,16 +997,24 @@ export function useNaphBotVoice({
         // 2. Query /api/chat for grounded portfolio response (instructed to reply in first-person)
         setStatus("thinking");
         try {
+          const uiCtx = getLiveWebsiteContext();
           const recentMessages = [
             {
               role: "user" as const,
-              content:
-                "[Voice Call Instruction: Answer in first-person ('I', 'my', 'me') as Naphier speaking directly on the phone in 1-2 short sentences.]",
+              content: `[Voice Call Instruction: Answer in first-person ('I', 'my', 'me') as Naphier speaking directly on the phone in 1-2 short sentences. Current Page: "${uiCtx.activeTab}"${uiCtx.visibleSection ? `, Visible Section: "#${uiCtx.visibleSection}"` : ""}.]`,
             },
             ...transcriptRef.current
               .slice(-6)
               .map((t) => ({ role: t.role, content: t.text })),
           ];
+
+          const pageTypeMap: Record<string, string> = {
+            home: "home",
+            about: "about",
+            experience: "experience",
+            projects: "projects",
+            notes: "notes",
+          };
 
           const res = await fetch("/api/chat", {
             method: "POST",
@@ -689,9 +1022,11 @@ export function useNaphBotVoice({
             body: JSON.stringify({
               messages: recentMessages,
               pageContext: {
-                pathname: "/",
-                pageType: "home",
-                title: "Artisan 3D Workspace",
+                pathname: uiCtx.activeTab === "home" ? "/" : `/${uiCtx.activeTab}`,
+                pageType: pageTypeMap[uiCtx.activeTab] || "home",
+                title: `Artisan Portfolio - ${uiCtx.activeTab}`,
+                activeTab: uiCtx.activeTab,
+                visibleSection: uiCtx.visibleSection || undefined,
               },
             }),
             signal: abortController.signal,
@@ -748,7 +1083,12 @@ export function useNaphBotVoice({
         // Ignore start error if already started
       }
     },
-    [speakFallbackText, stopQueuedAudio, tryExecuteLocalVoiceCommand]
+    [
+      getLiveWebsiteContext,
+      speakFallbackText,
+      stopQueuedAudio,
+      tryExecuteLocalVoiceCommand,
+    ]
   );
 
   const notifyPhonePickedUp = useCallback(() => {
@@ -857,8 +1197,13 @@ export function useNaphBotVoice({
         setAudioLevel(0);
       }, 35);
 
+      const initialUiCtx = getLiveWebsiteContext();
       const memParam = encodeURIComponent(formatMemoryForPrompt(currentMemory));
-      const sessionRes = await fetch(`/api/voice-session?memory=${memParam}`);
+      const tabParam = encodeURIComponent(initialUiCtx.activeTab);
+      const secParam = encodeURIComponent(initialUiCtx.visibleSection || "");
+      const sessionRes = await fetch(
+        `/api/voice-session?memory=${memParam}&tab=${tabParam}&section=${secParam}`
+      );
       const sessionData = await sessionRes.json();
 
       if (!isActiveRef.current) return;
@@ -1129,10 +1474,14 @@ export function useNaphBotVoice({
                 args?: Record<string, unknown>;
               }) => {
                 const result = executeVoiceToolIntent(fc.name, fc.args || {});
+                const liveContext = getLiveWebsiteContext();
                 return {
                   id: fc.id,
                   name: fc.name,
-                  response: { output: result },
+                  response: {
+                    output: result,
+                    uiContext: liveContext,
+                  },
                 };
               }
             );
@@ -1166,6 +1515,7 @@ export function useNaphBotVoice({
     }
   }, [
     memory,
+    getLiveWebsiteContext,
     startWebSpeechFallback,
     stopQueuedAudio,
     schedulePCM24kPlayback,

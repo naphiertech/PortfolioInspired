@@ -15,11 +15,22 @@ import {
 } from "./data";
 import { AUTHOR_INFO, AVAILABILITY, EDUCATION, GITHUB_USERNAME, SOCIAL_PROFILES } from "./siteConfig";
 import { retrieveGroundedContext } from "./portfolioKnowledge";
+import {
+  WORKSPACE_GEAR,
+  WORKSPACE_DESK_SPECS,
+  WORKSPACE_DESK_ESSENTIALS,
+  WORKSPACE_DESK_ARTIFACTS,
+  WORKSPACE_AI_DEV_TOOLS,
+  WORKSPACE_BOOKSHELF,
+  ABOUT_PHILOSOPHY,
+  ARTISAN_GALLERY,
+} from "@/features/presentation-modes/modes/artisan/data";
 
 export interface PortfolioPageContext {
   pathname: string;
   pageType:
     | "home"
+    | "about"
     | "experience"
     | "work"
     | "projects"
@@ -30,6 +41,8 @@ export interface PortfolioPageContext {
     | "note_detail"
     | "other";
   title: string;
+  activeTab?: string;
+  visibleSection?: string;
   projectSlug?: string;
   noteSlug?: string;
   selectedTech?: string;
@@ -429,6 +442,29 @@ ${learningsList}`;
     .map((e) => `  * ${e.year}: ${e.role} at ${e.company} - ${e.description}`)
     .join("\n");
 
+  // Format workspace & gear (single source of truth)
+  const gearSummary = WORKSPACE_GEAR.map(
+    (g) => `  * ${g.name} (${g.subtitle}) — ${g.specDetail}`
+  ).join("\n");
+  const deskSpecsSummary = WORKSPACE_DESK_SPECS.map(
+    (s) => `  * ${s.label}: ${s.value} (${s.sub})`
+  ).join("\n");
+  const deskEssentialsSummary = WORKSPACE_DESK_ESSENTIALS.map(
+    (e) => `${e.name} (${e.desc})`
+  ).join(", ");
+  const deskArtifactsSummary = WORKSPACE_DESK_ARTIFACTS.map(
+    (a) => `${a.name} (${a.desc})`
+  ).join(", ");
+  const bookshelfSummary = WORKSPACE_BOOKSHELF.map(
+    (b) => `  * "${b.title}" by ${b.author} (${b.publisher}): ${b.lesson}`
+  ).join("\n");
+  const philosophySummary = ABOUT_PHILOSOPHY.map(
+    (p) => `  * ${p.badge} ${p.title}: ${p.description}`
+  ).join("\n");
+  const gallerySummary = ARTISAN_GALLERY.map(
+    (g) => `  * ${g.title} (${g.tag}, ${g.date}${g.location ? `, ${g.location}` : ""}): ${g.caption}`
+  ).join("\n");
+
   const featuredProjectNames = fullProjects
     .filter((project) => project.featured !== false)
     .map((project) => project.title)
@@ -471,9 +507,15 @@ The visitor is on the Certifications page (/certifications). Answer questions re
     } else if (pageContext.pageType === "projects") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (PROJECTS OVERVIEW):
 The visitor is browsing the Projects Index (/projects). Highlight featured work (${featuredProjectNames}).`;
+    } else if (pageContext.pageType === "about") {
+      activeFocusInstructions = `ACTIVE PAGE CONTEXT (ABOUT & WORKSPACE GEAR):
+The visitor is viewing the About page${pageContext.visibleSection ? ` (currently visible section: #${pageContext.visibleSection})` : ""}. Answer questions about ${AUTHOR_INFO.shortName}'s bio, daily workspace gear, Moments & Memories gallery, and engineering philosophy.`;
     } else if (pageContext.pageType === "home") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (HOMEPAGE):
 The visitor is on the homepage. Current in-progress build focus is: ${currentBuild.title} (${currentBuild.description}).`;
+    }
+    if (pageContext.activeTab || pageContext.visibleSection) {
+      activeFocusInstructions += `\nLive UI State: Active Page="${pageContext.activeTab || pageContext.pageType}"${pageContext.visibleSection ? `, Visible Section="#${pageContext.visibleSection}"` : ""}.`;
     }
   }
 
@@ -513,6 +555,24 @@ ${techSummary}
 CERTIFICATIONS & CREDENTIALS
 ==================================================
 ${certsSummary}
+
+==================================================
+WORKSPACE, GEAR, DESK SETUP, BOOKSHELF & ABOUT PAGE CONTENT (STRICT SOURCE OF TRUTH)
+==================================================
+CRITICAL HARDWARE & GEAR RULE: When asked about ${AUTHOR_INFO.shortName}'s workspace, setup, gear, laptop, keyboard, mouse, monitor, tools, or desk accessories, ONLY mention the exact items listed below. NEVER invent unlisted equipment (such as MacBooks as personal hardware, Logitech mice, Keychron keyboards, headphones, microphones, chairs, webcams, or internal CPU/GPU/RAM specs). If asked about an unlisted item or specification, clearly state that it is not listed in the portfolio.
+Daily Driver Hardware (About -> Workspace & Gear #about-gear):
+${gearSummary}
+3D Desk Workstation Specs:
+${deskSpecsSummary}
+  * Left-Side Desk Essentials: ${deskEssentialsSummary}
+  * Desk Artifacts: ${deskArtifactsSummary}
+  * AI & Dev Tools: ${WORKSPACE_AI_DEV_TOOLS.join(", ")}
+Reading Shelf / Bookshelf:
+${bookshelfSummary}
+Engineering Philosophy (How I Build):
+${philosophySummary}
+Moments & Memories Gallery:
+${gallerySummary}
 
 ==================================================
 AUTHORITATIVE PROJECTS (SINGLE SOURCE OF TRUTH)

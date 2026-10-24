@@ -159,21 +159,26 @@ export function ArtisanPortfolioLayout({
       const target = hashStr || null;
       setTargetHash(target);
 
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("artisan-tab-switch"));
-      }
       if (tab === activeTab) {
-        if (target) {
+        if (target && typeof document !== "undefined") {
           const el = document.getElementById(target);
           if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
+            const rect = el.getBoundingClientRect();
+            const isAlreadyAtTarget =
+              rect.top >= -32 &&
+              rect.top <= Math.min(220, window.innerHeight * 0.35);
+            if (!isAlreadyAtTarget) {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
           }
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
         }
         return;
       }
       if (isTransitioning) return;
+
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("artisan-tab-switch"));
+      }
 
       const startTransitionNow = () => {
         setPendingTab(tab);
@@ -252,6 +257,7 @@ export function ArtisanPortfolioLayout({
         <div className={activeTab === "home" ? "block w-full h-full" : "hidden"}>
           <HeroSection
             isDark={isDark}
+            activeTab={activeTab}
             isHomeActive={activeTab === "home"}
             onNavigate={(tab) => handleSelectTab(tab)}
           />

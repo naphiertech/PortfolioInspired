@@ -210,3 +210,135 @@ export const ABOUT_PHILOSOPHY: AboutPhilosophyItem[] = [
   ...ABOUT_PHILOSOPHY_ROW_2,
 ];
 
+export interface WorkspaceGearItem {
+  id: string;
+  name: string;
+  subtitle: string;
+  category: string;
+  image: string;
+  width: number;
+  height: number;
+  specLabel: string;
+  specDetail: string;
+}
+
+export const WORKSPACE_GEAR: WorkspaceGearItem[] = [
+  {
+    id: "asus-vivobook-16",
+    name: "ASUS Vivobook 16",
+    subtitle: "16-inch · Laptop",
+    category: "Laptop",
+    image: "/gear/asus-vivobook-16.webp",
+    width: 240,
+    height: 153,
+    specLabel: "Laptop",
+    specDetail: "Aluminum Riser Stand",
+  },
+  {
+    id: "mloong-mx301",
+    name: "Mloong MX301",
+    subtitle: "Tri-Mode · Wireless mouse",
+    category: "Mouse",
+    image: "/gear/mloong-mouse.webp",
+    width: 140,
+    height: 240,
+    specLabel: "Mouse",
+    specDetail: "Wireless Ergonomic",
+  },
+  {
+    id: "zg61-keyboard",
+    name: "Z-G61 Mechanical",
+    subtitle: "60% · Blue switches",
+    category: "Keyboard",
+    image: "/gear/zg61-keyboard.webp",
+    width: 280,
+    height: 162,
+    specLabel: "Keyboard",
+    specDetail: "White Compact Layout (60% · Blue switches)",
+  },
+];
+
+export const WORKSPACE_DESK_SPECS = [
+  { label: "Laptop", value: "ASUS Vivobook 16", sub: "Aluminum Riser Stand" },
+  { label: "External Display", value: '27" IPS Monitor', sub: "Borderless + Cyan LED" },
+  { label: "Keyboard", value: "Z-G61 60% Mech", sub: "White Compact Layout" },
+  { label: "Mouse", value: "Mloong MX301", sub: "Wireless Ergonomic" },
+] as const;
+
+export const WORKSPACE_DESK_ESSENTIALS = [
+  { name: "Monstera Plant", desc: "Ceramic planter" },
+  { name: "Hot Coffee", desc: "Cork coaster mug" },
+  { name: "Leather Journal", desc: "Architecture notes" },
+] as const;
+
+export const WORKSPACE_DESK_ARTIFACTS = [
+  { name: "Flip Clock", desc: "Pomodoro focus" },
+  { name: "Desk Plants", desc: "Visual calm" },
+  { name: "Notebook", desc: "System sketches" },
+] as const;
+
+export const WORKSPACE_AI_DEV_TOOLS = [
+  "Claude",
+  "Codex",
+  "Gemini",
+  "Cursor",
+  "Antigravity",
+  "OpenCode",
+  "VS Code",
+  "Supabase",
+] as const;
+
+export interface WorkspaceBookItem {
+  id: string;
+  title: string;
+  author: string;
+  publisher: string;
+  domain: string;
+  url: string;
+  lesson: string;
+}
+
+export const WORKSPACE_BOOKSHELF: WorkspaceBookItem[] = [
+  {
+    id: "ddia",
+    title: "Designing Data-Intensive Applications",
+    author: "Martin Kleppmann",
+    publisher: "O'Reilly Media",
+    domain: "dataintensive.net",
+    url: "https://dataintensive.net/",
+    lesson:
+      "Reliability, scalability, and maintainability are the foundational pillars of lasting data systems.",
+  },
+  {
+    id: "pragprog",
+    title: "The Pragmatic Programmer",
+    author: "David Thomas & Andrew Hunt",
+    publisher: "20th Anniversary Ed.",
+    domain: "pragprog.com",
+    url: "https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/",
+    lesson:
+      "Care about your craft, think critically about your work, and build adaptable software.",
+  },
+  {
+    id: "refactoring-ui",
+    title: "Refactoring UI",
+    author: "Adam Wathan & Steve Schoger",
+    publisher: "Tailwind Labs",
+    domain: "refactoringui.com",
+    url: "https://www.refactoringui.com/",
+    lesson:
+      "Design with clear visual hierarchy, deliberate spacing, and restrained typography.",
+  },
+  {
+    id: "clean-arch",
+    title: "Clean Architecture",
+    author: "Robert C. Martin",
+    publisher: "Prentice Hall",
+    domain: "oreilly.com",
+    url: "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
+    lesson:
+      "Keep core domain logic independent of frameworks, user interfaces, and external databases.",
+  },
+];
+
+

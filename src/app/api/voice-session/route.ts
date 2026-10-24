@@ -396,10 +396,9 @@ export async function GET(req: Request) {
             realtimeInputConfig: {
               automaticActivityDetection: {
                 disabled: false,
-                startOfSpeechSensitivity: "START_SENSITIVITY_LOW",
                 endOfSpeechSensitivity: "END_SENSITIVITY_LOW",
-                prefixPaddingMs: 300,
-                silenceDurationMs: 650,
+                prefixPaddingMs: 250,
+                silenceDurationMs: 1150,
               },
             },
             systemInstruction: {

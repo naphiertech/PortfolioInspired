@@ -3,7 +3,7 @@ import { ExperiencePresentationRoot } from "@/features/presentation-modes/compon
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: "Experience & Background | Naphier Awalie",
+  title: "Experience & Background",
   description:
     `Explore ${SITE_NAME}'s engineering experience, work history, technical disciplines, and verified credentials in full-stack web and mobile development.`,
   alternates: {

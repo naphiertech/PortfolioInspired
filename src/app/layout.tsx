@@ -55,6 +55,7 @@ import {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
   title: {
     default: SITE_DEFAULT_TITLE,
     template: SITE_TITLE_TEMPLATE,
@@ -77,7 +78,7 @@ export const metadata: Metadata = {
     "Tailwind CSS",
   ],
   alternates: {
-    canonical: "./",
+    canonical: SITE_URL,
   },
   robots: {
     index: true,

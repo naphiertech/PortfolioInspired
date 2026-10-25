@@ -29,7 +29,7 @@ import {
 } from "./ArtisanIcons";
 import { HERO_DATA } from "./data";
 import { certifications, CertificationItem } from "@/lib/data";
-import { EDUCATION, AUTHOR_INFO, RESUME_PATH } from "@/lib/siteConfig";
+import { EDUCATION, AUTHOR_INFO, RESUME_PATH, SITE_NAME } from "@/lib/siteConfig";
 
 import { Hero3DBackground } from "./Hero3DBackground";
 
@@ -100,6 +100,7 @@ export function HeroSection({ isDark, activeTab = "home", isHomeActive = true, o
         <div className="order-1 relative z-10 pt-10 sm:pt-12 md:pt-14 lg:pt-14 px-5 sm:px-8 md:px-12 lg:px-14 xl:px-16 space-y-3 max-w-xl">
           <div data-guide="artisan-intro" className="space-y-3">
             <h1 className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
+              <span className="sr-only">{SITE_NAME} — </span>
               {HERO_DATA.title}
             </h1>
 

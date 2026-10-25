@@ -9,8 +9,13 @@ export default function Home() {
       {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
-        url: `${SITE_URL}/`,
+        url: SITE_URL,
         name: SITE_NAME,
+        alternateName: [
+          AUTHOR_INFO.shortName,
+          "naphierawalie.tech",
+          "www.naphierawalie.tech",
+        ],
         description: SITE_DEFAULT_DESCRIPTION,
         publisher: {
           "@id": `${SITE_URL}/#person`,
@@ -21,7 +26,7 @@ export default function Home() {
         "@type": "Person",
         "@id": `${SITE_URL}/#person`,
         name: AUTHOR_INFO.name,
-        url: `${SITE_URL}/`,
+        url: SITE_URL,
         jobTitle: AUTHOR_INFO.jobTitle,
         alumniOf: {
           "@type": "EducationalOrganization",

@@ -151,6 +151,62 @@ export const projectStatusConfig: Record<
 // Single Source of Truth: All Featured & Side Projects
 export const fullProjects: FullProjectItem[] = [
   {
+    slug: "audit-web",
+    title: "AUDIT/WEB",
+    category: "Developer Tools",
+    year: "2026",
+    image: "/projects/audit-web.png",
+    role: "Fullstack Developer & Creator",
+    client: "Personal Project",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Playwright", "axe-core"],
+    overview:
+      "AUDIT/WEB is an evidence-based interface inspection workbench that measures accessibility, user experience, visual design, typography, colour, and metadata from rendered web pages.",
+    fullDescription:
+      "AUDIT/WEB turns website inspection into a readable ledger of measured findings. It evaluates rendered DOM geometry, computed styles, and accessibility signals across six inspection categories, then connects issues to visual markers, affected selectors, evidence, and recommended corrections. A Swiss editorial interface brings together a live specimen, category scores, and detailed findings, with report and coding-agent export formats for taking the next step.",
+    gallery: ["/projects/audit-web-1.png", "/projects/audit-web-2.png"],
+    designScreens: [
+      "/projects/audit-web.png",
+      "/projects/audit-web-1.png",
+      "/projects/audit-web-2.png",
+    ],
+    techStack: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Tailwind CSS 4.0",
+      "Playwright",
+      "axe-core",
+      "Lucide React",
+    ],
+    features: [
+      "Six inspection categories covering accessibility, UX, visual design, typography, colour, and metadata",
+      "36 implemented checks based on rendered page measurements",
+      "Visual inspection markers linked to measured findings and affected elements",
+      "Finding details with severity, CSS selectors, evidence, and recommended corrections",
+      "HTML and JSON reports alongside coding-agent export formats",
+      "Built-in specimens for exploring the inspection workflow without an account",
+    ],
+    technicalDecisions: [
+      {
+        title: "Measure the rendered interface",
+        description:
+          "DOM geometry and computed styles provide concrete evidence about layout, typography, and contrast that raw HTML alone cannot describe. The repository includes Playwright and axe-core for browser-based inspection.",
+      },
+      {
+        title: "Keep findings traceable to their source",
+        description:
+          "Visual markers, CSS selectors, measured values, and recommended corrections connect each finding to the element being inspected, making the report actionable during implementation.",
+      },
+    ],
+    live: "https://audit-web-eta.vercel.app/",
+    github: "https://github.com/naphiertech/Audit-Web",
+    status: "live",
+    featured: true,
+    focusHighlight: "Every interface leaves evidence.",
+    focusDescription:
+      "Inspect rendered websites across six categories and turn measured findings into actionable reports.",
+  },
+  {
     slug: "naphix-resume",
     title: "Naphix Resume",
     category: "Web Application",

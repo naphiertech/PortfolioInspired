@@ -9,7 +9,7 @@ import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 export function FocusSelectedWork() {
   // Key projects to highlight in Focus Mode
-  const selectedSlugs = ["mkb-ridertrack", "naphix-resume", "assetlink", "moviestream"];
+  const selectedSlugs = ["audit-web", "mkb-ridertrack", "naphix-resume", "assetlink", "moviestream"];
   const projects: FullProjectItem[] = selectedSlugs
     .map((slug) => fullProjects.find((p) => p.slug === slug))
     .filter((p): p is FullProjectItem => Boolean(p));

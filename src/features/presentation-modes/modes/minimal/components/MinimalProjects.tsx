@@ -16,8 +16,8 @@ import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
  * - No heavy cards, screenshots, or internal route links
  */
 export function MinimalProjects() {
-  // Select top 3 projects: MKBRiderTrack, Naphix Resume, AssetLink
-  const targetSlugs = ["mkb-ridertrack", "naphix-resume", "assetlink"];
+  // Selected projects for the minimal homepage
+  const targetSlugs = ["audit-web", "mkb-ridertrack", "naphix-resume", "assetlink"];
   const projects = targetSlugs
     .map((slug) => fullProjects.find((p) => p.slug === slug))
     .filter(Boolean);

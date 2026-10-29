@@ -26,7 +26,8 @@
 
 .quoteBlock {
   position: absolute;
-  top: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   left: 0;
   right: 0;
   z-index: 2;
@@ -120,7 +121,6 @@
   .metadata { flex-direction: column; gap: 6px; padding-bottom: 6px; }
   .scenicWrapper { margin-top: 12px; }
   .quoteBlock {
-    top: 8px;
     padding: 0 16px;
   }
   .quoteIcon {

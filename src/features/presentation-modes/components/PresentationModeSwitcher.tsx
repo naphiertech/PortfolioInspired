@@ -40,6 +40,11 @@ export function PresentationModeSwitcher({
   const { hasDismissedHint, dismissHint } = useViewHint();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [triggerFrame, setTriggerFrame] = useState({ top: 0, left: 0, width: 0, height: 0 });
+  const captureTriggerFrame = () => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) setTriggerFrame({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+  };
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const [mounted, setMounted] = useState(false);
   const [popoverPos, setPopoverPos] = useState<{
@@ -53,6 +58,14 @@ export function PresentationModeSwitcher({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const restoreTriggerFocus = useRef(false);
+
+  useEffect(() => {
+    if (!isOpen && restoreTriggerFocus.current) {
+      triggerRef.current?.focus({ preventScroll: true });
+      restoreTriggerFocus.current = false;
+    }
+  }, [isOpen]);
 
   // Normalize variant to match mode or explicit setting
   const resolvedVariant: "dock" | "focus-nav" | "minimal" | "agent" =
@@ -81,8 +94,7 @@ export function PresentationModeSwitcher({
   const closePopover = useCallback(() => {
     setIsOpen(false);
     setFocusedIndex(-1);
-    // Return focus to trigger upon closing
-    triggerRef.current?.focus();
+    restoreTriggerFocus.current = true;
   }, []);
 
   // Compute fixed position for the portaled popover relative to the trigger button
@@ -189,6 +201,7 @@ export function PresentationModeSwitcher({
       if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         dismissHint();
+        captureTriggerFrame();
         setIsOpen(true);
         setFocusedIndex(
           availableModes.findIndex((item) => item.id === mode)
@@ -246,15 +259,15 @@ export function PresentationModeSwitcher({
     playClick();
     dismissHint();
     if (!isOpen) {
+      captureTriggerFrame();
       preloadAllModeLayouts();
       setFocusedIndex(availableModes.findIndex((item) => item.id === mode));
     }
+    if (isOpen) restoreTriggerFocus.current = true;
     setIsOpen((prev) => !prev);
   };
 
-  return (
-    <>
-      {/* Switcher Trigger in Page Flow / Dock */}
+  const trigger = (
       <div
         ref={containerRef}
         onKeyDown={handleKeyDown}
@@ -402,6 +415,22 @@ export function PresentationModeSwitcher({
           </button>
         )}
       </div>
+  );
+
+  return (
+    <>
+      {mounted && isOpen ? (
+        <>
+          <div style={{ width: triggerFrame.width, height: triggerFrame.height }} aria-hidden="true" />
+          {createPortal(
+            <div style={{ position: "fixed", ...triggerFrame }} className="z-[140]">
+              {trigger}
+            </div>,
+            document.body
+          )}
+        </>
+      ) : trigger}
+
 
       {/* ========================================================================= */}
       {/* PORTALED FULL-SCREEN BACKDROP & POPOVER (At root level: z-[60] & z-[70])   */}
@@ -413,7 +442,7 @@ export function PresentationModeSwitcher({
             {/* 1. Full-Screen Blurred Backdrop (z-[60]) */}
             <div
               onClick={closePopover}
-              className="fixed inset-0 z-[60] bg-black/15 dark:bg-black/50 backdrop-blur-[6px] pointer-events-auto cursor-default select-none animate-in fade-in duration-150"
+              className="fixed inset-0 z-[130] bg-black/15 dark:bg-black/50 backdrop-blur-[6px] pointer-events-auto cursor-default select-none animate-in fade-in duration-150"
               aria-hidden="true"
             />
 
@@ -434,7 +463,7 @@ export function PresentationModeSwitcher({
                     ? "bottom left"
                     : "top right",
               }}
-              className={`fixed outline-none z-[70] pointer-events-auto animate-in fade-in zoom-in-95 duration-150 ${
+              className={`fixed outline-none z-[150] pointer-events-auto animate-in fade-in zoom-in-95 duration-150 ${
                 resolvedVariant === "agent"
                   ? "artisan-mode w-[calc(100vw-32px)] sm:w-80 max-w-[336px] p-1.5 rounded-2xl bg-white/95 dark:bg-[#0a0a0a]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-[0_12px_36px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.55)] font-sans text-foreground"
                   : resolvedVariant === "dock"

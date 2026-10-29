@@ -37,3 +37,10 @@
     border-radius: 22px;
   }
 }
+
+.panel.focusPanel {
+  border-radius: 4px;
+  border-color: var(--border-hairline);
+  background: var(--bg-page);
+  box-shadow: none;
+}

@@ -41,7 +41,7 @@ export function DefaultModeLayout() {
       </SnapSectionWrapper>
 
       {/* 5. Tech Stack (Curated High-Signal Preview) */}
-      <SnapSectionWrapper id="tech-stack" className="content-auto">
+      <SnapSectionWrapper id="tech-stack">
         <EditorialDivider className="my-3 sm:my-4" />
         <TechStack />
       </SnapSectionWrapper>

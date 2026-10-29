@@ -70,3 +70,18 @@
 @media (prefers-reduced-motion: reduce) {
   .tab, .action, .chevron { transition: none; }
 }
+
+/* Focus uses the page's flat surfaces and straight editorial rules. */
+.panel.focusPanel {
+  --resource-bg: var(--bg-page);
+  --resource-text: var(--text-ink);
+  --resource-muted: var(--text-muted);
+  --resource-line: var(--border-hairline);
+  --resource-hover: var(--bg-surface);
+  --resource-active: var(--text-ink);
+  --resource-active-text: var(--bg-page);
+  border-color: var(--border-hairline);
+  border-radius: 4px;
+  box-shadow: none;
+}
+.focusPanel .tabs, .focusPanel .tab { border-radius: 2px; }

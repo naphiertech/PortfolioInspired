@@ -269,7 +269,7 @@ export function FocusExperiencePage() {
               Experience & Background
             </h1>
             <p className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400 mt-1">
-              Work history, technical stack, verified credentials, and hiring availability.
+              My work, skills, certificates, and the roles I’m looking for.
             </p>
           </div>
         </div>
@@ -277,14 +277,13 @@ export function FocusExperiencePage() {
 
       <EditorialDivider className="mb-6" />
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-5 sm:items-start">
-        <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground/60">Profile // 01</span>
+      <div>
         {/* Concise introduction */}
         <p className="max-w-2xl font-sans text-[15px] leading-[26px] text-muted-foreground">
           I build thoughtful web applications with a focus on{" "}
-          <span className="font-medium text-ink">frontend architecture, UI/UX, and full-stack development</span>.
+          <span className="font-medium text-ink">web development and easy-to-use interfaces</span>.
           I&apos;m looking for my first professional opportunity and am open to junior roles,
-          internships, freelance work, and collaboration.
+          internships, freelance work, and team projects.
         </p>
       </div>
 
@@ -433,17 +432,17 @@ export function FocusExperiencePage() {
 
       <EditorialDivider className="my-8 sm:my-10" />
 
-      {/* 02 // TECHNICAL DISCIPLINES & TOOLING */}
-      <section id="tech-stack" aria-label="Technical disciplines and tooling" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
+      {/* 02 // SKILLS & TOOLS */}
+      <section id="tech-stack" aria-label="Skills and tools" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
         <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 uppercase tracking-wider">
-          <span>02 // TECHNICAL DISCIPLINES & TOOLING</span>
+          <span>02 // SKILLS & TOOLS</span>
           <span className="text-[10px] sm:text-[11px] text-muted-foreground/40 font-mono">
             {techSections.reduce((acc, cat) => acc + cat.items.length, 0)} SKILLS
           </span>
         </div>
 
         <p className="max-w-2xl font-sans text-sm leading-relaxed text-muted-foreground">
-          Tools I use to build across frontend, backend, mobile, and beyond. Select a tool to see related projects.
+          Tools I use to build websites and apps. Choose a tool to see projects that use it.
         </p>
 
         {/* Domain-Grouped Technology Ledger */}
@@ -492,7 +491,7 @@ export function FocusExperiencePage() {
           aria-controls="experience-skills-list"
           className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-muted-foreground hover:text-ink transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
         >
-          {showAllSkills ? "Show fewer disciplines" : `View all ${techSections.length} disciplines`}
+          {showAllSkills ? "Show fewer groups" : `View all ${techSections.length} groups`}
           <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showAllSkills ? "rotate-180" : ""}`} aria-hidden="true" />
         </button>
 
@@ -559,7 +558,7 @@ export function FocusExperiencePage() {
               </div>
             ) : (
               <p className="text-xs font-mono text-muted-foreground italic pt-1">
-                No flagship projects currently tagged with {selectedTech}.
+                No projects listed for {selectedTech} yet.
               </p>
             )}
           </div>
@@ -568,12 +567,12 @@ export function FocusExperiencePage() {
 
       <EditorialDivider className="my-8 sm:my-10" />
 
-      {/* 03 // VERIFIED CREDENTIALS */}
-      <section id="certifications" aria-label="Verified certifications and credentials" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
+      {/* 03 // CERTIFICATES */}
+      <section id="certifications" aria-label="Certificates" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
         <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 uppercase tracking-wider">
-          <span>03 // VERIFIED CREDENTIALS</span>
+          <span>03 // CERTIFICATES</span>
           <span className="text-[10px] sm:text-[11px] text-muted-foreground/40 font-mono">
-            {certifications.length} CREDENTIALS
+            {certifications.length} CERTIFICATES
           </span>
         </div>
 

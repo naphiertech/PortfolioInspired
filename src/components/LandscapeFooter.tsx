@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { fullProjects } from "@/lib/data";
+import { getFieldNoteBySlug } from "@/lib/fieldNotes";
 import { useTheme } from "@/components/ThemeProvider";
 import { EditorialDivider } from "@/components/EditorialDivider";
 import { SITE_NAME } from "@/lib/siteConfig";
@@ -29,12 +32,28 @@ const FOOTER_QUOTES = {
   },
 } as const;
 
+const PAGE_QUOTES: Record<string, { quote: string; author: string }> = {
+  "/experience": { quote: "Details are not the details. They make the design.", author: "Charles Eames" },
+  "/projects": { quote: "Make it work, make it right, make it fast.", author: "Kent Beck" },
+  "/notes": { quote: "Programs must be written for people to read, and only incidentally for machines to execute.", author: "Harold Abelson" },
+};
+
 export function LandscapeFooter({ mode }: { mode: keyof typeof FOOTER_ART }) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const quoteData = FOOTER_QUOTES[mode];
+  const pathname = usePathname();
+  const project = pathname.startsWith("/projects/")
+    ? fullProjects.find(item => item.slug === pathname.split("/")[2])
+    : undefined;
+  const note = pathname.startsWith("/notes/")
+    ? getFieldNoteBySlug(pathname.split("/")[2])
+    : undefined;
+  const quoteData = mode === "minimal" ? FOOTER_QUOTES.minimal
+    : project?.focusHighlight ? { quote: project.focusHighlight, author: project.title }
+    : note ? { quote: note.excerpt.split(/(?<=[.!?])\s/)[0], author: SITE_NAME }
+    : PAGE_QUOTES[pathname] ?? FOOTER_QUOTES[mode];
 
   return (
     <footer className={styles.footer} data-footer-mode={mode}>

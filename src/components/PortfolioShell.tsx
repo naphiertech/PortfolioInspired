@@ -103,8 +103,6 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const isMinimal = mode === "minimal";
   const isAgent = mode === "agent" || pathname === "/artisan";
   const isAgentHome = (mode === "agent" && pathname === "/") || pathname === "/artisan";
-  // Omit the scenic footer when reading an individual chosen field note (/notes/:slug)
-  const isReadingNote = pathname.startsWith("/notes/") && pathname !== "/notes";
   const { state: creative, active: creativeActive, effectiveMotion } = useCreativeMode();
   const mapping = supportsCreativeMode(mode) ? CREATIVE_MAPPINGS[mode] : null;
   const radii = mapping?.radii[creative.corners];
@@ -115,6 +113,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const activeGridStyle = creativeActive ? creative.gridStyle : "blueprint";
 
   return (
+    <SideDrawerProvider key={mode}>
     <div
       data-grid-style={activeGridStyle}
       style={{
@@ -134,11 +133,15 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
     >
       {/* Keep one player and resources toolbox across Default routes; leaving Default unmounts them. */}
       {mode === "default" && pathname !== "/artisan" && (
-        <SideDrawerProvider>
+        <>
           <MusicEdgeDrawer />
           <ResourcesEdgeDrawer />
-        </SideDrawerProvider>
+        </>
       )}
+      {isFocus && <>
+        <MusicEdgeDrawer variant="focus" />
+        <ResourcesEdgeDrawer variant="focus" />
+      </>}
       {!isAgent && <CreativeModeHost />}
 
       {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal, omitted in Agent) */}
@@ -188,7 +191,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
       {!isAgent && <CreativeNotes key={`${mode}:${pathname}`} contentRef={contentRef} />}
 
       {/* Scenic ending for supported modes; Agent keeps its own layout */}
-      {!isReadingNote && !isAgent && (
+      {!isAgent && (
         <div
           className="transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none opacity-100"
         >
@@ -196,6 +199,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         </div>
       )}
     </div>
+    </SideDrawerProvider>
   );
 }
 

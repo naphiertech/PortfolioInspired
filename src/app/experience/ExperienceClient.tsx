@@ -248,9 +248,9 @@ export function ExperienceClient() {
   );
 
   return (
-    <div className="space-y-12 sm:space-y-14 animate-in fade-in duration-300">
+    <div className="animate-in fade-in duration-300">
       {/* Top Header & Context Row */}
-      <div className="space-y-4">
+      <div className="mb-8 space-y-4">
         <Link
           href="/"
           onMouseEnter={playHover}
@@ -267,7 +267,7 @@ export function ExperienceClient() {
               Experience & Background
             </h1>
             <p className="font-mono text-xs text-muted-foreground mt-1">
-              {"// work history, complete technical stack & verified credentials"}
+              {"// work history, skills & certificates"}
             </p>
           </div>
 
@@ -280,38 +280,28 @@ export function ExperienceClient() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(15rem,0.85fr)] md:items-start md:gap-10">
-        {/* Concise introduction */}
+      <div className="space-y-6">
         <p className="max-w-2xl font-sans text-[15px] leading-[26px] text-muted-foreground">
           I build thoughtful web applications with a focus on{" "}
-          <span className="font-medium text-ink">frontend architecture, UI/UX, and full-stack development</span>.
+          <span className="font-medium text-ink">web development and easy-to-use interfaces</span>.
           I&apos;m looking for my first professional opportunity and am open to junior roles,
-          internships, freelance work, and collaboration.
+          internships, freelance work, and team projects.
         </p>
 
-        {/* Compact Status Block */}
-        <div className="p-4 sm:p-5 rounded-lg bg-surface/30 border border-border-hairline">
-          <div className="grid grid-cols-1 gap-3 font-mono text-xs">
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground/60">Status:</span>
-              <span className="text-emerald-500 dark:text-emerald-400 font-medium">
-                {AVAILABILITY.status}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground/60">Looking for:</span>
-              <span className="text-ink">{AVAILABILITY.lookingFor}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground/60">Location:</span>
-              <span className="text-ink">{AUTHOR_INFO.location}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground/60">Work preference:</span>
-              <span className="text-ink">{AVAILABILITY.workPreference}</span>
-            </div>
+        <dl className="grid grid-cols-1 gap-5 border-y border-border-hairline py-5 sm:grid-cols-3 sm:gap-6">
+          <div className="min-w-0 space-y-2">
+            <dt className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Location</dt>
+            <dd className="font-sans text-sm leading-relaxed text-ink">{AUTHOR_INFO.location}</dd>
           </div>
-        </div>
+          <div className="min-w-0 space-y-2">
+            <dt className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Looking for</dt>
+            <dd className="font-sans text-sm leading-relaxed text-ink">{AVAILABILITY.lookingFor}</dd>
+          </div>
+          <div className="min-w-0 space-y-2">
+            <dt className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Work preference</dt>
+            <dd className="font-sans text-sm leading-relaxed text-ink">{AVAILABILITY.workPreference}</dd>
+          </div>
+        </dl>
       </div>
 
       {/* Divider before Act 1 */}
@@ -324,7 +314,7 @@ export function ExperienceClient() {
             &lt;work-history/&gt;
           </span>
           <span className="font-mono text-xs text-muted-foreground">
-            {experiences.length} milestones
+            {experiences.length} steps
           </span>
         </div>
 
@@ -442,7 +432,7 @@ export function ExperienceClient() {
         {/* Academic Foundation Card */}
         <div className="pt-2">
           <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block mb-3">
-            &lt;academic-foundation/&gt;
+            &lt;education/&gt;
           </span>
           <div className="p-4 sm:p-5 rounded-lg bg-surface/30 border border-border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3 min-w-0">
@@ -488,15 +478,15 @@ export function ExperienceClient() {
       <section id="tech-stack" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
         <div className="flex items-center justify-between">
           <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-            &lt;technical-stack/&gt;
+            &lt;skills-and-tools/&gt;
           </span>
           <span className="font-mono text-xs text-muted-foreground">
-            {totalSkills} tools across 6 disciplines
+            {totalSkills} tools in {techSections.length} groups
           </span>
         </div>
 
         <p className="max-w-2xl font-sans text-sm leading-relaxed text-muted-foreground">
-          Tools I use to build across frontend, backend, mobile, and beyond. Select a tool to see related projects.
+          Tools I use to build websites and apps. Choose a tool to see projects that use it.
         </p>
 
         {/* Catalog Rows */}
@@ -577,7 +567,7 @@ export function ExperienceClient() {
           aria-controls="experience-skills-list"
           className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-muted-foreground hover:text-ink transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
         >
-          {showAllSkills ? "Show fewer disciplines" : `View all ${techSections.length} disciplines`}
+          {showAllSkills ? "Show fewer groups" : `View all ${techSections.length} groups`}
           <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showAllSkills ? "rotate-180" : ""}`} aria-hidden="true" />
         </button>
 
@@ -651,7 +641,7 @@ export function ExperienceClient() {
               </div>
             ) : (
               <p className="text-xs font-mono text-muted-foreground italic py-1">
-                No flagship projects currently tagged with {selectedTech}.
+                No projects listed for {selectedTech} yet.
               </p>
             )}
           </section>
@@ -665,10 +655,10 @@ export function ExperienceClient() {
       <section id="certifications" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
         <div className="flex items-center justify-between">
           <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
-            &lt;verified-certifications/&gt;
+            &lt;certificates/&gt;
           </span>
           <span className="font-mono text-xs text-muted-foreground">
-            {certifications.length} credentials
+            {certifications.length} certificates
           </span>
         </div>
 

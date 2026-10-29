@@ -8,6 +8,7 @@ import { PresentationModeSwitcher } from "../../../components/PresentationModeSw
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CreativeModeToggle } from "@/features/creative-mode/components/CreativeModeToggle";
 import { useUISound } from "@/context/SoundContext";
+import { useSideDrawers } from "@/features/side-drawers/SideDrawerProvider";
 import { NAV_CURSOR_LABELS } from "@/lib/cursorConfig";
 
 export interface FocusNavItem {
@@ -32,6 +33,7 @@ export const focusNavItems: FocusNavItem[] = [
  */
 export function FocusNavigation() {
   const pathname = usePathname();
+  const { openDrawer } = useSideDrawers();
   const { playHover, playClick } = useUISound();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -134,6 +136,7 @@ export function FocusNavigation() {
               }}
               onMouseEnter={playHover}
               className="w-8 h-8 rounded-md bg-surface border border-border-hairline flex items-center justify-center text-ink hover:bg-surface-hover active:scale-95 transition-all cursor-pointer shadow-2xs"
+              data-side-drawer-return-focus
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
@@ -185,6 +188,12 @@ export function FocusNavigation() {
                     </Link>
                   );
                 })}
+                <button type="button" role="menuitem" aria-controls="music-drawer-panel" onClick={() => { setMobileMenuOpen(false); openDrawer("music"); }} className="flex items-center justify-between px-3 py-2 text-xs font-mono text-ink hover:bg-surface-hover">
+                  Music <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                </button>
+                <button type="button" role="menuitem" aria-controls="resources-drawer-panel" onClick={() => { setMobileMenuOpen(false); openDrawer("resources"); }} className="flex items-center justify-between px-3 py-2 text-xs font-mono text-ink hover:bg-surface-hover">
+                  Resources <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                </button>
                 <div className="min-[420px]:hidden px-3 py-2 border-t border-border-hairline/40 flex items-center justify-between">
                   <span className="text-[10px] font-mono text-muted-foreground">Creative Mode</span>
                   <CreativeModeToggle />

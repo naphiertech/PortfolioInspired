@@ -36,6 +36,7 @@ export function MusicDrawer({
   tracks,
   currentTrack,
   onSelectTrack,
+  className = "",
 }: MusicDrawerProps) {
   const reducedMotion = useReducedMotion();
   const { isMobile } = useSideDrawers();
@@ -53,7 +54,7 @@ export function MusicDrawer({
           animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
           exit={isMobile ? { y: reducedMotion ? 0 : "100%", opacity: 0, pointerEvents: "none", transition: { duration: reducedMotion ? 0 : 0.16 } } : { x: reducedMotion ? 0 : -24, opacity: 0, scale: reducedMotion ? 1 : 0.98, pointerEvents: "none", transition: { duration: reducedMotion ? 0 : 0.16 } }}
           transition={{ duration: reducedMotion ? 0 : 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className={`${shellStyles.panel} bg-[#fafaf8] dark:bg-[#141619] text-zinc-900 dark:text-[#eceeed]`}
+          className={`${shellStyles.panel} ${className} bg-[#fafaf8] dark:bg-[#141619] text-zinc-900 dark:text-[#eceeed]`}
         >
           {/* Header Row: <MUSIC/> + what i'm listening to & Close Button */}
           <div className="flex items-start justify-between pb-2.5 border-b border-zinc-200/70 dark:border-[#22252a] flex-shrink-0">

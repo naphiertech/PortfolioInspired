@@ -46,7 +46,9 @@ export function SideDrawerProvider({ children }: { children: ReactNode }) {
   }, [overlayVisible]);
 
   const rememberTrigger = useCallback((drawer: DrawerId) => {
-    triggerRef.current = document.querySelector<HTMLButtonElement>(`[aria-controls="${drawer}-drawer-panel"]`);
+    const trigger = Array.from(document.querySelectorAll<HTMLButtonElement>(`[aria-controls="${drawer}-drawer-panel"]`))
+      .find(button => button.getClientRects().length > 0) ?? null;
+    triggerRef.current = trigger?.closest("nav")?.querySelector<HTMLButtonElement>("[data-side-drawer-return-focus]") ?? trigger;
   }, []);
 
   const openDrawer = useCallback((drawer: DrawerId) => {

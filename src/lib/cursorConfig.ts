@@ -18,7 +18,7 @@ export const NAV_CURSOR_LABELS: Record<string, string> = {
 export const PROJECT_CURSOR_LABELS: Record<string, string> = {
   "audit-web": "Evidence-based website inspection and actionable findings.",
   "mkb-ridertrack": "Fleet logistics and offline-first mobile app.",
-  "naphix-resume": "AI resume builder and ATS optimization suite.",
+  "naphix-résumé": "AI résumé builder and ATS optimization suite.",
   "assetlink": "Enterprise RFID and QR asset tracking system.",
   "moviestream": "Streaming platform and recommendation engine.",
 };

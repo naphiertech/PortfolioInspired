@@ -204,7 +204,7 @@ export function FooterGrid() {
               rel="noopener noreferrer"
               className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-surface/50 text-muted-foreground hover:text-ink transition-colors"
             >
-              <span>Resume PDF</span>
+              <span>Résumé PDF</span>
               <span className="text-muted-foreground/75 text-xs">download</span>
             </a>
           </div>

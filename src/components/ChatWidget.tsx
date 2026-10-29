@@ -12,7 +12,7 @@ import { usePresentationMode } from "@/features/presentation-modes/context/Prese
 import { SITE_URL } from "@/lib/siteConfig";
 
 const PORTFOLIO_URL = SITE_URL;
-const AI_PORTFOLIO_PROMPT = `Analyze the portfolio at ${PORTFOLIO_URL}. Give me an overview of Naphier Awalie, his background as a full-stack developer, core tech stack, and key projects (like MKBRiderTrack, Naphix Resume, and AssetLink).`;
+const AI_PORTFOLIO_PROMPT = `Analyze the portfolio at ${PORTFOLIO_URL}. Give me an overview of Naphier Awalie, his background as a full-stack developer, core tech stack, and key projects (like MKBRiderTrack, Naphix Résumé, and AssetLink).`;
 
 interface AIService {
   name: string;

@@ -126,7 +126,7 @@ export async function POST(req: Request) {
         const projs = grounded.techToProjectsMap[tech] || [];
         fallbackText = `I am currently operating in local portfolio mode. Naphier uses **${tech}**${projs.length > 0 ? ` across projects including ${projs.join(", ")}` : ""}.`;
       } else {
-        fallbackText = `I am currently operating in local portfolio mode without an active external AI connection. You can ask me directly about Naphier's featured projects ([MKBRiderTrack](/projects/mkb-ridertrack), [AssetLink](/projects/assetlink), [MovieStream](/projects/moviestream), [Naphix-Resume](/projects/naphix-resume)), tech stack, experience, or contact information!`;
+        fallbackText = `I am currently operating in local portfolio mode without an active external AI connection. You can ask me directly about Naphier's featured projects ([MKBRiderTrack](/projects/mkb-ridertrack), [AssetLink](/projects/assetlink), [MovieStream](/projects/moviestream), [Naphix-Résumé](/projects/naphix-resume)), tech stack, experience, or contact information!`;
       }
 
       const guardResult = inspectGeneratedOutput(fallbackText);
@@ -208,7 +208,7 @@ export async function POST(req: Request) {
         const p = grounded.matchedProjects[0];
         fallbackText = `Regarding **[${p.title}](/projects/${p.slug})**: ${p.overview}\n\n**Core Tech:** ${p.techStack.join(", ")}.`;
       } else {
-        fallbackText = `I am temporarily operating in local fallback mode. You can ask me directly about Naphier's projects (MKBRiderTrack, AssetLink, MovieStream, Naphix-Resume), his tech stack, AI models, experience, or contact details!`;
+        fallbackText = `I am temporarily operating in local fallback mode. You can ask me directly about Naphier's projects (MKBRiderTrack, AssetLink, MovieStream, Naphix-Résumé), his tech stack, AI models, experience, or contact details!`;
       }
 
       const guardResult = inspectGeneratedOutput(fallbackText);
@@ -223,7 +223,7 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({
       reply:
-        "I am currently operating in local mode. Feel free to ask about Naphier's projects (MKBRiderTrack, AssetLink, MovieStream, Naphix-Resume), technical skills, or experience!",
+        "I am currently operating in local mode. Feel free to ask about Naphier's projects (MKBRiderTrack, AssetLink, MovieStream, Naphix-Résumé), technical skills, or experience!",
     });
   }
 }

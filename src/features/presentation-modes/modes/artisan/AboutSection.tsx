@@ -352,7 +352,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-black/12 dark:border-white/12 bg-background hover:bg-foreground/[0.04] text-foreground font-sans text-xs font-medium transition-colors"
                 >
-                  <span>Resume</span>
+                  <span>Résumé</span>
                   <LuArrowUpRight className="size-3 opacity-70" aria-hidden="true" />
                 </a>
               </div>

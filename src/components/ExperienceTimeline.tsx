@@ -30,7 +30,7 @@ const disclosureHighlights: Record<string, string[]> = {
   PRESENT: [
     "Full-stack apps with Next.js, React, TypeScript, and Supabase.",
     "MKBRiderTrack: attendance, logistics, and biometric verification.",
-    "Naphix Resume: live A4 previews and dual export.",
+    "Naphix Résumé: live A4 previews and dual export.",
     "Responsive interfaces, role-based access, and REST/Edge APIs.",
   ],
   "2025": [

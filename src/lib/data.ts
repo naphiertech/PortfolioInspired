@@ -208,7 +208,7 @@ export const fullProjects: FullProjectItem[] = [
   },
   {
     slug: "naphix-resume",
-    title: "Naphix Resume",
+    title: "Naphix Résumé",
     category: "Web Application",
     year: "2026",
     image: "/projects/resumebuilder.png",
@@ -217,9 +217,9 @@ export const fullProjects: FullProjectItem[] = [
     client: "Personal Project",
     tags: ["React 18", "TypeScript", "Tailwind CSS", "Vite", "Zustand"],
     overview:
-      "Naphix Resume is a privacy-first resume builder with a real-time split-screen editor and live A4 preview, drag-and-drop customization, and native PDF and Word export.",
+      "Naphix Résumé is a privacy-first résumé builder with a real-time split-screen editor and live A4 preview, drag-and-drop customization, and native PDF and Word export.",
     fullDescription:
-      "Naphix Resume is a modern, client-side resume workspace created to eliminate the frustrations of clunky, template-restricted builders. Designed around a live split-screen interface, every edit updates an ISO 216 A4 preview in real time without lag. It features dynamic custom section schemas, smooth drag-and-drop reordering, and native dual export: selectable ATS-compliant vector PDF and fully editable Word .docx files. Everything runs 100% locally in the browser with zero server data collection.",
+      "Naphix Résumé is a modern, client-side résumé workspace created to eliminate the frustrations of clunky, template-restricted builders. Designed around a live split-screen interface, every edit updates an ISO 216 A4 preview in real time without lag. It features dynamic custom section schemas, smooth drag-and-drop reordering, and native dual export: selectable ATS-compliant vector PDF and fully editable Word .docx files. Everything runs 100% locally in the browser with zero server data collection.",
     gallery: [
       "/projects/resumebuilder-1.png",
       "/projects/resumebuilder-2.png",
@@ -256,7 +256,7 @@ export const fullProjects: FullProjectItem[] = [
       {
         title: "Why 100% client-side local storage?",
         description:
-          "Resume content stays entirely within the user's browser local storage. This preserves personal identity privacy by default and eliminates remote server accounts, login friction, and database latency.",
+          "Résumé content stays entirely within the user's browser local storage. This preserves personal identity privacy by default and eliminates remote server accounts, login friction, and database latency.",
       },
       {
         title: "Why Zustand for centralized workspace state?",
@@ -287,7 +287,7 @@ export const fullProjects: FullProjectItem[] = [
     featured: true,
     focusHighlight: "Your data stays in your browser.",
     focusDescription:
-      "Privacy-first resume builder with real-time preview, drag-and-drop customization, and PDF export.",
+      "Privacy-first résumé builder with real-time preview, drag-and-drop customization, and PDF export.",
   },
   {
     slug: "assetlink",
@@ -748,13 +748,13 @@ export const experiences: ExperienceItem[] = [
     details: [
       "Engineering full-stack architectures combining Next.js, React, and TypeScript with Supabase backends.",
       "Developing MKBRiderTrack (workforce attendance & logistics platform with biometric verification).",
-      "Building Naphix Resume (split-screen resume workspace with real-time ISO A4 preview & dual export).",
+      "Building Naphix Résumé (split-screen résumé workspace with real-time ISO A4 preview & dual export).",
       "Implementing responsive UI systems, role-based access control, and scalable REST/Edge API pipelines.",
     ],
     technologies: ["Next.js", "React 18", "TypeScript", "Supabase", "PostgreSQL", "Tailwind CSS"],
     projects: [
       { title: "MKBRiderTrack", href: "/projects/mkbridertrack" },
-      { title: "Naphix Resume", href: "/projects/naphix-resume" },
+      { title: "Naphix Résumé", href: "/projects/naphix-resume" },
     ],
   },
   {

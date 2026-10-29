@@ -111,10 +111,10 @@ const SOCIAL_ACTIONS = [
     external: false,
   },
   {
-    label: "Resume",
+    label: "Résumé",
     href: RESUME_PATH,
-    ariaLabel: "View Resume",
-    cursorLabel: "View my resume.",
+    ariaLabel: "View Résumé",
+    cursorLabel: "View my résumé.",
     icon: (
       <svg className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

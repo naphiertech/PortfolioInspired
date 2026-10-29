@@ -32,7 +32,7 @@ A minimalist, high-craft developer portfolio and engineering showcase designed w
 
 ## 🚀 Featured Projects
 
-1. **[Naphix Resume](https://naphix-resume.netlify.app/)** (2026) — Privacy-first resume builder featuring a real-time split-screen workspace, 1:1 ISO 216 A4 live preview mirror, drag-and-drop customization with `@dnd-kit`, and native vector PDF and Word `.docx` exports.
+1. **[Naphix Résumé](https://naphix-resume.netlify.app/)** (2026) — Privacy-first résumé builder featuring a real-time split-screen workspace, 1:1 ISO 216 A4 live preview mirror, drag-and-drop customization with `@dnd-kit`, and native vector PDF and Word `.docx` exports.
 2. **[AssetLink](https://assetlink-supabase-landing.vercel.app/)** (2026) — Decentralized school asset and repair tracking system utilizing QR code verification and role-based maintenance workflows.
 3. **[MovieStream](https://movie-stream-pi.vercel.app/)** (2026) — High-fidelity cinematic movie discovery platform with live TMDB integration, fluid animations, and custom genre hubs.
 4. **BudgetBuddy** (2025) — Smart personal finance companion app with intuitive category-based expense visualization built with Flutter & Dart.

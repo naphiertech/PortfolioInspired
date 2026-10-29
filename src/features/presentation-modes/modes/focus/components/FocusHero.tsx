@@ -43,7 +43,7 @@ export function FocusHero() {
               <Mail size={15} aria-hidden="true" />Send Email<ArrowUpRight size={13} aria-hidden="true" />
             </a>
             <a href="/resume/naphier_awalie_resume.pdf" target="_blank" rel="noopener noreferrer" className={styles.secondary}>
-              <FileText size={15} aria-hidden="true" />Resume PDF<ArrowUpRight size={13} aria-hidden="true" />
+              <FileText size={15} aria-hidden="true" />Résumé PDF<ArrowUpRight size={13} aria-hidden="true" />
             </a>
           </div>
           <div className={styles.lowerIdentity}>

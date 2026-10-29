@@ -23,7 +23,6 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   experiences,
   techSections,
-  techStackIntro,
   certifications,
   CertificationItem,
   workCapabilities,
@@ -93,6 +92,7 @@ export function ExperienceClient() {
   const { playHover, playClick } = useUISound();
   const shouldReduceMotion = useReducedMotion();
   const [selectedTech, setSelectedTech] = useState<string | null>(null);
+  const [showAllSkills, setShowAllSkills] = useState(false);
   const [previewCert, setPreviewCert] = useState<CertificationItem | null>(null);
   const [mounted, setMounted] = useState(false);
   const [expandedExperiences, setExpandedExperiences] = useState<Set<number>>(new Set());
@@ -108,6 +108,7 @@ export function ExperienceClient() {
       const urlTech = new URLSearchParams(window.location.search).get("tech");
       if (urlTech) {
         setSelectedTech(urlTech);
+        setShowAllSkills(true);
       }
     }
 
@@ -241,29 +242,6 @@ export function ExperienceClient() {
     );
   };
 
-  const InlineTechBadge = ({ name }: { name: string }) => {
-    const isSelected =
-      selectedTech !== null &&
-      normalizeTechName(selectedTech) === normalizeTechName(name);
-
-    return (
-      <button
-        type="button"
-        onClick={() => handleTechClick(name)}
-        onMouseEnter={playHover}
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] border text-[11px] sm:text-xs font-sans align-middle transition-colors cursor-pointer my-0.5 ${
-          isSelected
-            ? "border-emerald-500/50 dark:border-emerald-500/40 bg-emerald-500/[0.08] text-ink font-medium"
-            : "border-black/[0.08] dark:border-white/[0.08] bg-transparent text-body hover:border-black/20 dark:hover:border-white/20 hover:text-ink"
-        }`}
-        title={`Filter projects built with ${name}`}
-      >
-        <TechIcon name={name} className="w-3 h-3 flex-shrink-0" />
-        <span>{name}</span>
-      </button>
-    );
-  };
-
   const totalSkills = techSections.reduce(
     (acc, cat) => acc + cat.items.length,
     0
@@ -302,52 +280,38 @@ export function ExperienceClient() {
         </div>
       </div>
 
-      {/* Compact Status Block */}
-      <div className="p-4 sm:p-5 rounded-lg bg-surface/30 border border-border-hairline">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground/60">Status:</span>
-            <span className="text-emerald-500 dark:text-emerald-400 font-medium">
-              {AVAILABILITY.status}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground/60">Looking for:</span>
-            <span className="text-ink">{AVAILABILITY.lookingFor}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground/60">Location:</span>
-            <span className="text-ink">{AUTHOR_INFO.location}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground/60">Work preference:</span>
-            <span className="text-ink">{AVAILABILITY.workPreference}</span>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(15rem,0.85fr)] md:items-start md:gap-10">
+        {/* Concise introduction */}
+        <p className="max-w-2xl font-sans text-[15px] leading-[26px] text-muted-foreground">
+          I build thoughtful web applications with a focus on{" "}
+          <span className="font-medium text-ink">frontend architecture, UI/UX, and full-stack development</span>.
+          I&apos;m looking for my first professional opportunity and am open to junior roles,
+          internships, freelance work, and collaboration.
+        </p>
+
+        {/* Compact Status Block */}
+        <div className="p-4 sm:p-5 rounded-lg bg-surface/30 border border-border-hairline">
+          <div className="grid grid-cols-1 gap-3 font-mono text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground/60">Status:</span>
+              <span className="text-emerald-500 dark:text-emerald-400 font-medium">
+                {AVAILABILITY.status}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground/60">Looking for:</span>
+              <span className="text-ink">{AVAILABILITY.lookingFor}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground/60">Location:</span>
+              <span className="text-ink">{AUTHOR_INFO.location}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground/60">Work preference:</span>
+              <span className="text-ink">{AVAILABILITY.workPreference}</span>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Main Narrative Copy */}
-      <div className="font-sans text-[15px] text-muted-foreground leading-[26px] space-y-4">
-        <p>
-          I&apos;m currently looking for my first professional opportunity in tech.
-        </p>
-        <p>
-          I&apos;ve spent significant time{" "}
-          <span className="text-ink font-medium">building real projects</span>,
-          experimenting with modern tools, and learning how to turn complex ideas
-          into polished, high-performance applications. I specialize in{" "}
-          <span className="text-ink font-medium">frontend architecture</span>,{" "}
-          <span className="text-ink font-medium">UI/UX craft</span>, and{" "}
-          <span className="text-ink font-medium">full-stack web development</span>.
-        </p>
-        <p>
-          I&apos;m open to{" "}
-          <span className="text-ink font-medium">junior roles</span>,{" "}
-          <span className="text-ink font-medium">internships</span>,{" "}
-          <span className="text-ink font-medium">freelance work</span>,{" "}
-          <span className="text-ink font-medium">project-based collaborations</span>,
-          and opportunities where I can learn while contributing to something useful.
-        </p>
       </div>
 
       {/* Divider before Act 1 */}
@@ -531,26 +495,13 @@ export function ExperienceClient() {
           </span>
         </div>
 
-        {/* Natural Editorial Intro */}
-        <div className="space-y-2.5 font-sans text-xs sm:text-[13px] leading-relaxed">
-          <p className="text-body">{techStackIntro.headline}</p>
-          <p className="leading-loose text-body">
-            Depending on the project, I work with{" "}
-            {techStackIntro.highlightedTools.map((tool, idx) => (
-              <React.Fragment key={tool}>
-                <InlineTechBadge name={tool} />
-                {idx < techStackIntro.highlightedTools.length - 1
-                  ? ", "
-                  : ", and other tools shown below."}
-              </React.Fragment>
-            ))}
-          </p>
-          <p className="text-muted-foreground/75">{techStackIntro.footer}</p>
-        </div>
+        <p className="max-w-2xl font-sans text-sm leading-relaxed text-muted-foreground">
+          Tools I use to build across frontend, backend, mobile, and beyond. Select a tool to see related projects.
+        </p>
 
         {/* Catalog Rows */}
-        <div className="divide-y divide-black/[0.05] dark:divide-white/[0.05] border-y border-black/[0.06] dark:border-white/[0.06]">
-          {techSections.map((category, index) => {
+        <div id="experience-skills-list" className="divide-y divide-black/[0.05] dark:divide-white/[0.05] border-y border-black/[0.06] dark:border-white/[0.06]">
+          {techSections.slice(0, showAllSkills ? undefined : 3).map((category, index) => {
             const categoryNumber = String(index + 1).padStart(2, "0");
             const syntaxTag =
               categorySyntaxMap[category.title] ||
@@ -617,6 +568,18 @@ export function ExperienceClient() {
             );
           })}
         </div>
+
+        <button
+          type="button"
+          onClick={() => { playClick(); setShowAllSkills((shown) => !shown); }}
+          onMouseEnter={playHover}
+          aria-expanded={showAllSkills}
+          aria-controls="experience-skills-list"
+          className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-muted-foreground hover:text-ink transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+        >
+          {showAllSkills ? "Show fewer disciplines" : `View all ${techSections.length} disciplines`}
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showAllSkills ? "rotate-180" : ""}`} aria-hidden="true" />
+        </button>
 
         {/* Dedicated <USED-IN-PROJECTS/> Connection Section */}
         {selectedTech && (
@@ -850,7 +813,7 @@ export function ExperienceClient() {
             className="tactile-btn gap-2 h-9 px-4 rounded-md"
           >
             <FileText className="w-3.5 h-3.5 opacity-70" />
-            <span>Download Resume</span>
+            <span>Download Résumé</span>
           </a>
         </div>
       </section>

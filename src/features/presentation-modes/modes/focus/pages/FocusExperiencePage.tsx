@@ -23,12 +23,10 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   experiences,
   techSections,
-  techStackIntro,
   certifications,
   CertificationItem,
   getProjectsUsingTech,
   getCanonicalTechName,
-  normalizeTechName,
 } from "@/lib/data";
 import {
   AUTHOR_INFO,
@@ -135,6 +133,7 @@ export function FocusExperiencePage() {
 
   // Tech stack filter state
   const [selectedTech, setSelectedTech] = useState<string | null>(null);
+  const [showAllSkills, setShowAllSkills] = useState(false);
 
   // Certificate lightbox state
   const [previewCert, setPreviewCert] = useState<CertificationItem | null>(null);
@@ -151,6 +150,7 @@ export function FocusExperiencePage() {
       const urlTech = new URLSearchParams(window.location.search).get("tech");
       if (urlTech) {
         setSelectedTech(urlTech);
+        setShowAllSkills(true);
       }
     }
 
@@ -237,29 +237,6 @@ export function FocusExperiencePage() {
     return <Award className="w-4 h-4 text-muted-foreground" />;
   };
 
-  const InlineTechBadge = ({ name }: { name: string }) => {
-    const isSelected =
-      selectedTech !== null &&
-      normalizeTechName(selectedTech) === normalizeTechName(name);
-
-    return (
-      <button
-        type="button"
-        onClick={() => handleTechClick(name)}
-        onMouseEnter={playHover}
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] border text-[11px] sm:text-xs font-sans align-middle transition-colors cursor-pointer my-0.5 ${
-          isSelected
-            ? "border-emerald-500/50 dark:border-emerald-500/40 bg-emerald-500/[0.08] text-ink font-medium"
-            : "border-black/[0.08] dark:border-white/[0.08] bg-transparent text-body hover:border-black/20 dark:hover:border-white/20 hover:text-ink"
-        }`}
-        title={`Filter projects built with ${name}`}
-      >
-        <TechIcon name={name} className="w-3 h-3 flex-shrink-0" />
-        <span>{name}</span>
-      </button>
-    );
-  };
-
   return (
     <div className="w-full select-none animate-in fade-in duration-200">
       {/* Focus Top Navigation */}
@@ -300,26 +277,14 @@ export function FocusExperiencePage() {
 
       <EditorialDivider className="mb-6" />
 
-      {/* Main Narrative Copy */}
-      <div className="font-sans text-[15px] text-muted-foreground leading-[26px] space-y-4 mb-6">
-        <p>
-          I&apos;m currently looking for my first professional opportunity in tech.
-        </p>
-        <p>
-          I&apos;ve spent significant time{" "}
-          <span className="text-ink font-medium">building real projects</span>,
-          experimenting with modern tools, and learning how to turn complex ideas
-          into polished, high-performance applications. I specialize in{" "}
-          <span className="text-ink font-medium">frontend architecture</span>,{" "}
-          <span className="text-ink font-medium">UI/UX craft</span>, and{" "}
-          <span className="text-ink font-medium">full-stack web development</span>.
-        </p>
-        <p>
-          I&apos;m open to{" "}
-          <span className="text-ink font-medium">junior engineering roles</span>,{" "}
-          <span className="text-ink font-medium">internships</span>,{" "}
-          <span className="text-ink font-medium">freelance engagements</span>, and{" "}
-          <span className="text-ink font-medium">collaborative projects</span>.
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-5 sm:items-start">
+        <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground/60">Profile // 01</span>
+        {/* Concise introduction */}
+        <p className="max-w-2xl font-sans text-[15px] leading-[26px] text-muted-foreground">
+          I build thoughtful web applications with a focus on{" "}
+          <span className="font-medium text-ink">frontend architecture, UI/UX, and full-stack development</span>.
+          I&apos;m looking for my first professional opportunity and am open to junior roles,
+          internships, freelance work, and collaboration.
         </p>
       </div>
 
@@ -477,26 +442,13 @@ export function FocusExperiencePage() {
           </span>
         </div>
 
-        {/* Editorial Narrative Intro */}
-        <div className="space-y-2.5 font-sans text-xs sm:text-[13px] leading-relaxed">
-          <p className="text-body">{techStackIntro.headline}</p>
-          <p className="leading-loose text-body">
-            Depending on the project, I work with{" "}
-            {techStackIntro.highlightedTools.map((tool, idx) => (
-              <React.Fragment key={tool}>
-                <InlineTechBadge name={tool} />
-                {idx < techStackIntro.highlightedTools.length - 1
-                  ? ", "
-                  : ", and other tools shown below."}
-              </React.Fragment>
-            ))}
-          </p>
-          <p className="text-muted-foreground/75">{techStackIntro.footer}</p>
-        </div>
+        <p className="max-w-2xl font-sans text-sm leading-relaxed text-muted-foreground">
+          Tools I use to build across frontend, backend, mobile, and beyond. Select a tool to see related projects.
+        </p>
 
         {/* Domain-Grouped Technology Ledger */}
-        <div className="divide-y divide-border-divider">
-          {techSections.map((section) => {
+        <div id="experience-skills-list" className="divide-y divide-border-divider">
+          {techSections.slice(0, showAllSkills ? undefined : 3).map((section) => {
             const syntaxTag =
               categorySyntaxMap[section.title] || `<${section.title.toUpperCase()}/>`;
 
@@ -531,6 +483,18 @@ export function FocusExperiencePage() {
             );
           })}
         </div>
+
+        <button
+          type="button"
+          onClick={() => { playClick(); setShowAllSkills((shown) => !shown); }}
+          onMouseEnter={playHover}
+          aria-expanded={showAllSkills}
+          aria-controls="experience-skills-list"
+          className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-muted-foreground hover:text-ink transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+        >
+          {showAllSkills ? "Show fewer disciplines" : `View all ${techSections.length} disciplines`}
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showAllSkills ? "rotate-180" : ""}`} aria-hidden="true" />
+        </button>
 
         {/* Selected Technology Cross-Reference Panel */}
         {selectedTech && (
@@ -745,7 +709,7 @@ export function FocusExperiencePage() {
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-surface/50 border border-border-hairline text-ink font-medium font-sans text-xs hover:bg-surface hover:border-border transition-colors"
             >
               <FileText className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
-              <span>Resume PDF</span>
+              <span>Résumé PDF</span>
               <ArrowUpRight className="w-3 h-3 text-muted-foreground/60" aria-hidden="true" />
             </a>
           </div>

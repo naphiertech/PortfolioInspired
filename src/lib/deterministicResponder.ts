@@ -84,7 +84,7 @@ export function tryDeterministicAnswer(
     const rawReply = `Hello! I'm Naphier's portfolio agent.
 
 You can ask me anything about his work:
-- **Featured Projects**: [MKBRiderTrack](/projects/mkb-ridertrack), [AssetLink](/projects/assetlink), [MovieStream](/projects/moviestream), and [Naphix Resume](/projects/naphix-resume)
+- **Featured Projects**: [MKBRiderTrack](/projects/mkb-ridertrack), [AssetLink](/projects/assetlink), [MovieStream](/projects/moviestream), and [Naphix Résumé](/projects/naphix-resume)
 - **Tech Stack**: Next.js, Supabase, React 19, TypeScript, Tailwind CSS, Python, Node.js
 - **AI Architecture**: Google Gemini 2.5 Flash, Biometric Facial Verification, GDG AI Credentials
 - **Experience & Education**: BSIT at ZPPSU, GDG Build with AI 2026, DICT certifications
@@ -541,8 +541,8 @@ Both systems employ custom Row Level Security (RLS) policies to prevent unauthor
    Modern video streaming web application with TMDB API integration, dynamic search, watchlist persistence, and responsive media streaming.
    [Open Project](/projects/moviestream) · [Live Demo](https://phierplay.pages.dev/)
 
-4. **[Naphix Resume Builder](/projects/naphix-resume)** (2026, Active)
-   Modular real-time resume creator with drag-and-drop section reordering (@dnd-kit) and instant client-side PDF and Word export.
+4. **[Naphix Résumé Builder](/projects/naphix-resume)** (2026, Active)
+   Modular real-time résumé creator with drag-and-drop section reordering (@dnd-kit) and instant client-side PDF and Word export.
    [Open Project](/projects/naphix-resume) · [Live Demo](https://naphix-resume.vercel.app)
 
 You can ask me for architectural details, tech stack info, or live demos for any of these!`;

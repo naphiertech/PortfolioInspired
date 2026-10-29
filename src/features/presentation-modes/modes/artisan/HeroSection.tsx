@@ -181,7 +181,7 @@ export function HeroSection({ isDark, activeTab = "home", isHomeActive = true, o
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-black/12 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20 bg-background/75 backdrop-blur-sm text-xs font-sans font-medium text-foreground/85 hover:text-foreground transition-colors"
             >
               <LuFileText className="size-3.5" aria-hidden="true" />
-              <span>Resume</span>
+              <span>Résumé</span>
               <LuArrowUpRight className="size-3 opacity-70" aria-hidden="true" />
             </a>
           </div>

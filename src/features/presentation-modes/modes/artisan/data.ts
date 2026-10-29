@@ -48,7 +48,7 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
     timeline: "2025 - Present",
     company: "Personal & Open Source Projects",
     description:
-      "Engineering full-stack architectures combining Next.js, React, and TypeScript with Supabase PostgreSQL backends. Building production-grade apps including MKBRiderTrack (logistics with biometric attendance) and Naphix Resume (split-screen ISO A4 builder).",
+      "Engineering full-stack architectures combining Next.js, React, and TypeScript with Supabase PostgreSQL backends. Building production-grade apps including MKBRiderTrack (logistics with biometric attendance) and Naphix Résumé (split-screen ISO A4 builder).",
     hasProjectLink: true,
   },
   {

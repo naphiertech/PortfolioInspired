@@ -83,7 +83,7 @@ export function MinimalConnect() {
           rel="noopener noreferrer"
           className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
         >
-          Resume PDF ↗
+          Résumé PDF ↗
         </a>
       </div>
 

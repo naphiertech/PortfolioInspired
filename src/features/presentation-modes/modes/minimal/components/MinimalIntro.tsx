@@ -86,7 +86,7 @@ export function MinimalIntro() {
           rel="noopener noreferrer"
           className="whitespace-nowrap text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
-          Resume PDF ↗
+          Résumé PDF ↗
         </a>
         <span className="text-zinc-300 dark:text-white/[0.12] select-none hidden sm:inline flex-shrink-0" aria-hidden="true">
           /

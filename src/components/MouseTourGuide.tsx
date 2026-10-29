@@ -137,7 +137,7 @@ export function MouseTourGuide() {
             ? within("artisan-actions", "button, a")
             : hooks("artisan-actions"),
         at: "below",
-        text: "Quick access: start a conversation, explore my GitHub, or grab my resume.",
+        text: "Quick access: start a conversation, explore my GitHub, or grab my résumé.",
       },
       {
         els: () => hooks("artisan-stack"),
@@ -189,7 +189,7 @@ export function MouseTourGuide() {
       {
         els: () => (within("socials", "a, button").length ? within("socials", "a, button") : hooks("socials")),
         at: "below",
-        text: "Code, resume, and socials. Feel free to drop a line anytime.",
+        text: "Code, résumé, and socials. Feel free to drop a line anytime.",
       },
       {
         els: () => (within("nav", "a").length ? within("nav", "a") : hooks("nav")),

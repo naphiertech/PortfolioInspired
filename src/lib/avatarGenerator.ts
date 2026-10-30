@@ -73,6 +73,25 @@ export function getDiceBearAvatar(platform: PlatformType, variant = 0): string {
   return `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(seed)}`;
 }
 
+/** Treat presence data as untrusted; never use a visitor-supplied image URL. */
+export function normalizeVisitorPresence(data: unknown): VisitorPresenceData | null {
+  if (!data || typeof data !== "object") return null;
+  const value = data as Record<string, unknown>;
+  const name = value.name;
+  if (name !== "Windows" && name !== "Mac" && name !== "Mobile" && name !== "Linux") {
+    return null;
+  }
+  const variantIndex = typeof value.variantIndex === "number" &&
+    Number.isInteger(value.variantIndex) && value.variantIndex >= 0 && value.variantIndex < 8
+    ? value.variantIndex : 0;
+  return {
+    name,
+    variantIndex,
+    src: getDiceBearAvatar(name, variantIndex),
+    fallback: name.slice(0, 2).toUpperCase(),
+  };
+}
+
 /**
  * Retrieve or initialize this visitor's stable anonymous identity in localStorage
  */

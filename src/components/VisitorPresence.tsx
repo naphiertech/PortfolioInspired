@@ -29,6 +29,7 @@ import {
   VisitorPresenceData,
   getOrCreateVisitor,
   getDiceBearAvatar,
+  normalizeVisitorPresence,
 } from "@/lib/avatarGenerator";
 import { getAblyRealtimeClient } from "@/lib/ablyClient";
 import { Users, RefreshCw, Eye } from "lucide-react";
@@ -75,10 +76,11 @@ function VisitorPresenceContent({
     const map = new Map<string, ActiveMember>();
 
     for (const item of presenceData) {
-      if (item.clientId && item.data) {
+      const safeData = normalizeVisitorPresence(item.data);
+      if (item.clientId && safeData) {
         map.set(item.clientId, {
           clientId: item.clientId,
-          data: item.data as VisitorPresenceData,
+          data: safeData,
         });
       }
     }

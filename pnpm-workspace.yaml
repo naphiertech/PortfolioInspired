@@ -3,3 +3,7 @@ allowBuilds:
   unrs-resolver: true
 onlyBuiltDependencies:
   - unrs-resolver
+overrides:
+  "next>sharp": "0.35.5"
+  "next>postcss": "8.5.32"
+  "source-map-js": "1.2.2"

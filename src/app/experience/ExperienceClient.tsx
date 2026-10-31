@@ -250,7 +250,7 @@ export function ExperienceClient() {
   return (
     <div className="animate-in fade-in duration-300">
       {/* Top Header & Context Row */}
-      <div className="mb-8 space-y-4">
+      <div className="mb-8 space-y-4 pt-4 sm:pt-5">
         <Link
           href="/"
           onMouseEnter={playHover}

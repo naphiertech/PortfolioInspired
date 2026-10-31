@@ -17,7 +17,7 @@ export function ProjectsPageClient() {
   return (
     <div className="w-full select-none">
       {/* Page Header */}
-      <div className="mb-10 space-y-2">
+      <div className="mb-10 space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           onMouseEnter={playHover}
@@ -94,12 +94,12 @@ export function ProjectsPageClient() {
 
               {/* Title & Metadata */}
               <div className="space-y-2 px-1">
-                <div className="flex items-center justify-between gap-2">
-                  <h2 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors duration-150">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
+                  <h2 className="min-w-0 break-words font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors duration-150">
                     {project.title}
                   </h2>
-                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground flex-shrink-0">
-                    <span>{project.category}</span>
+                  <div className="flex max-w-full items-baseline gap-1.5 font-mono text-[11px] text-muted-foreground">
+                    <span className="min-w-0 break-words">{project.category}</span>
                     <span>•</span>
                     <span>{project.year}</span>
                   </div>

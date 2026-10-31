@@ -35,7 +35,7 @@ export function FocusNoteDetailPage({
       {/* Focus Top Navigation */}
       <FocusNavigation />
 
-      <article className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8 py-2 sm:py-4 pb-12 sm:pb-16">
+      <article className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-12 sm:pb-16">
         {/* Top Header & Breadcrumb */}
         <header className="space-y-3">
           <div className="flex items-center justify-between">

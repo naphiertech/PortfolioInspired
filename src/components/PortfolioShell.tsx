@@ -173,6 +173,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         data-creative-font={isCustomFont ? creative.fontPairing : undefined}
         data-creative-corners={creativeActive ? creative.corners : undefined}
         data-creative-spacing={creativeActive ? creative.spacing : undefined}
+        data-creative-type-scale={creativeActive ? creative.typeScale : undefined}
         data-creative-motion={creativeActive ? effectiveMotion : undefined}
         style={creativeActive && mapping && radii && motion ? {
           "--creative-type-scale": mapping.type[creative.typeScale],

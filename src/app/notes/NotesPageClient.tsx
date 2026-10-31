@@ -4,33 +4,39 @@ import React from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { fieldNotes } from "@/lib/fieldNotes";
-import { SectionHeader } from "@/components/SectionHeader";
+import { EditorialDivider } from "@/components/EditorialDivider";
 import { useUISound } from "@/context/SoundContext";
 
 export function NotesPageClient() {
   const { playHover, playClick } = useUISound();
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-300 py-2 sm:py-4">
+    <div className="w-full max-w-4xl mx-auto animate-in fade-in duration-300">
       {/* Breadcrumb */}
-      <div>
+      <div className="mb-10 space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           onMouseEnter={playHover}
           onClick={playClick}
-          className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 group cursor-pointer"
+          className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-150 group-hover:-translate-x-1" />
           <span>cd .. / home</span>
         </Link>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink tracking-tight">Field Notes</h1>
+            <p className="font-mono text-xs text-muted-foreground mt-1">
+              {"// Things I've been thinking about while building."}
+            </p>
+          </div>
+          <span className="font-mono text-xs text-muted-foreground bg-muted-subtle px-2.5 py-1 rounded border border-border-hairline flex-shrink-0">
+            {fieldNotes.length} notes
+          </span>
+        </div>
       </div>
 
-      {/* Header */}
-      <SectionHeader
-        label="FIELD-NOTES"
-        description="Things I've been thinking about while building. Reflections on UI/UX, software architecture, AI development, and craft."
-        className="mb-4 pb-2 border-b border-border-divider"
-      />
+      <EditorialDivider className="mb-10 sm:mb-12" />
 
       {/* List-Based Editorial Index */}
       <div className="w-full border-t border-b border-border-divider divide-y divide-border-divider">

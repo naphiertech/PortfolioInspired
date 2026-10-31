@@ -74,7 +74,7 @@ export function FocusNavigation() {
     <nav
       data-creative-font-exempt
       aria-label="Focus mode navigation"
-      className="w-full relative pb-3.5 mb-5 sm:mb-8 border-b border-border-divider select-none z-[70]"
+      className="w-full relative pt-3 sm:pt-4 pb-3.5 mb-5 sm:mb-8 border-b border-border-divider select-none z-[70]"
     >
       <div className="w-full flex items-center justify-between gap-2">
         {/* --- DESKTOP ROUTE LINKS (≥ sm) --- */}

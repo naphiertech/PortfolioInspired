@@ -30,7 +30,7 @@ export function ProjectDetailClient({
   return (
     <div className="space-y-12 sm:space-y-14 animate-in fade-in duration-300">
       {/* Top Header & Breadcrumb */}
-      <div className="space-y-4">
+      <div className="space-y-4 pt-4 sm:pt-5">
         <Link
           href="/projects"
           onMouseEnter={playHover}

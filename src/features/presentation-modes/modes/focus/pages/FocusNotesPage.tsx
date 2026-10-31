@@ -23,7 +23,7 @@ export function FocusNotesPage() {
       {/* Focus Top Navigation */}
       <FocusNavigation />
 
-      <div className="space-y-6 sm:space-y-8 py-2 sm:py-4">
+      <div className="space-y-6 sm:space-y-8 pb-2 sm:pb-4">
         {/* Top Header & Breadcrumb */}
         <div className="space-y-3">
           <Link
@@ -46,11 +46,11 @@ export function FocusNotesPage() {
           </div>
 
           <div className="space-y-1.5 pt-1">
-            <h1 className="font-sans text-3xl sm:text-4xl font-extrabold text-ink tracking-tight uppercase">
-              FIELD NOTES ARCHIVE
+            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-ink tracking-tight">
+              Field Notes
             </h1>
-            <p className="font-sans text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
-              Observations on interface ergonomics, system resilience, AI-assisted development velocity, and software craftsmanship.
+            <p className="font-mono text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400 mt-1">
+              Things I&apos;ve been thinking about while building.
             </p>
           </div>
         </div>

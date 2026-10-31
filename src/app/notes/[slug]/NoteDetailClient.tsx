@@ -23,7 +23,7 @@ export function NoteDetailClient({
   const { playHover, playClick } = useUISound();
 
   return (
-    <article className="w-full max-w-3xl mx-auto space-y-8 sm:space-y-10 animate-in fade-in duration-300 py-2 sm:py-4 pb-12 sm:pb-16">
+    <article className="w-full max-w-3xl mx-auto space-y-8 sm:space-y-10 animate-in fade-in duration-300 pt-4 sm:pt-5 pb-12 sm:pb-16">
       {/* Top Header & Breadcrumb */}
       <header className="space-y-5">
         <div className="flex items-center justify-between">

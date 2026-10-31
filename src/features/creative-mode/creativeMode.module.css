@@ -196,19 +196,20 @@
   .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:p-5"]) { padding: calc(1.25rem * var(--creative-spacing)); }
   .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:p-6"]) { padding: calc(1.5rem * var(--creative-spacing)); }
   .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:space-y-14"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(3.5rem * var(--creative-spacing)); }
-  .scope[data-creative-mode="on"] :where([class~="sm:text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
+  .scope[data-creative-mode="on"]:not([data-creative-presentation="focus"][data-creative-type-scale="standard"]) :where([class~="sm:text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
 }
 .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="space-y-6"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(1.5rem * var(--creative-spacing)); }
 .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="my-6"]) { margin-block: calc(1.5rem * var(--creative-spacing)); }
 .scope[data-creative-mode="on"][data-creative-presentation="minimal"]:not([data-creative-spacing="balanced"]) :where(section[class~="py-10"]) { padding-block: calc(2.5rem * var(--creative-spacing)); }
 .scope[data-creative-mode="on"][data-creative-presentation="minimal"]:not([data-creative-spacing="balanced"]) :where(section[class~="pb-10"]) { padding-bottom: calc(2.5rem * var(--creative-spacing)); }
 .scope[data-creative-mode="on"][data-creative-presentation="minimal"]:not([data-creative-spacing="balanced"]) :where([class~="space-y-4"]) > :not([hidden]) ~ :not([hidden]) { margin-top: calc(1rem * var(--creative-spacing)); }
-.scope[data-creative-mode="on"] :where([class~="text-[14px]"]) { font-size: calc(14px * var(--creative-type-scale)); }
-.scope[data-creative-mode="on"] :where([class~="text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
-.scope[data-creative-mode="on"][data-creative-presentation="focus"] [class~="font-mono"][class~="text-xs"] { font-size: calc(12px * var(--creative-type-scale)); }
+.scope[data-creative-mode="on"]:not([data-creative-presentation="focus"][data-creative-type-scale="standard"]) :where([class~="text-[14px]"]) { font-size: calc(14px * var(--creative-type-scale)); }
+.scope[data-creative-mode="on"]:not([data-creative-presentation="focus"][data-creative-type-scale="standard"]) :where([class~="text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
+.scope[data-creative-mode="on"]:not([data-creative-presentation="focus"][data-creative-type-scale="standard"])[data-creative-presentation="focus"] [class~="font-mono"][class~="text-xs"]:not([data-creative-font-exempt] *) { font-size: calc(12px * var(--creative-type-scale)); }
 @media (min-width: 640px) {
-  .scope[data-creative-mode="on"] :where([class~="sm:text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
-  .scope[data-creative-mode="on"] :where([class~="sm:text-[16px]"]) { font-size: calc(16px * var(--creative-type-scale)); }
+  .scope[data-creative-mode="on"][data-creative-presentation="focus"]:not([data-creative-type-scale="standard"]) [class~="font-mono"][class~="text-xs"][class~="sm:text-[13px]"]:not([data-creative-font-exempt] *) { font-size: calc(13px * var(--creative-type-scale)); }
+  .scope[data-creative-mode="on"]:not([data-creative-presentation="focus"][data-creative-type-scale="standard"]) :where([class~="sm:text-[15px]"]) { font-size: calc(15px * var(--creative-type-scale)); }
+  .scope[data-creative-mode="on"]:not([data-creative-presentation="focus"][data-creative-type-scale="standard"]) :where([class~="sm:text-[16px]"]) { font-size: calc(16px * var(--creative-type-scale)); }
   .scope[data-creative-mode="on"]:not([data-creative-spacing="balanced"]) :where([class~="sm:my-7"]) { margin-block: calc(1.75rem * var(--creative-spacing)); }
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import {
   FaXTwitter,
@@ -29,7 +30,13 @@ import {
 } from "./ArtisanIcons";
 import { HERO_DATA } from "./data";
 import { certifications, CertificationItem } from "@/lib/data";
-import { EDUCATION, AUTHOR_INFO, RESUME_PATH, SITE_NAME } from "@/lib/siteConfig";
+import {
+  EDUCATION,
+  AUTHOR_INFO,
+  RESUME_PATH,
+  SITE_NAME,
+  SOCIAL_PROFILES,
+} from "@/lib/siteConfig";
 
 import { Hero3DBackground } from "./Hero3DBackground";
 
@@ -160,18 +167,27 @@ export function HeroSection({ isDark, activeTab = "home", isHomeActive = true, o
               )}
             </div>
 
-            {/* GitHub Link */}
+            {/* GitHub & LinkedIn Links */}
             {HERO_DATA.socials.find((s) => s.type === "github") && (
               <a
                 href={HERO_DATA.socials.find((s) => s.type === "github")!.url}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="me noopener noreferrer"
                 aria-label="GitHub Profile"
                 className="text-foreground tracking-wider cursor-pointer transition-transform duration-200 hover:scale-110 active:scale-100 text-3xl p-0.5"
               >
                 <FaGithub aria-hidden="true" />
               </a>
             )}
+            <a
+              href={SOCIAL_PROFILES.linkedin}
+              target="_blank"
+              rel="me noopener noreferrer"
+              aria-label="LinkedIn Profile"
+              className="text-foreground tracking-wider cursor-pointer transition-transform duration-200 hover:scale-110 active:scale-100 text-2xl p-0.5"
+            >
+              <FaLinkedinIn aria-hidden="true" />
+            </a>
 
             {/* Resume Quick Pill */}
             <a
@@ -210,16 +226,26 @@ export function HeroSection({ isDark, activeTab = "home", isHomeActive = true, o
                   <LuCode className="size-3.5 text-muted-foreground" aria-hidden="true" />
                   <span>Core Stack</span>
                 </span>
-                {onNavigate && (
-                  <button
-                    type="button"
-                    onClick={() => onNavigate("experience#tech-stack")}
-                    className="font-sans text-xs font-medium text-muted-foreground hover:text-foreground hover:underline cursor-pointer inline-flex items-center gap-0.5 transition-colors"
-                  >
-                    <span>All skills</span>
-                    <LuArrowUpRight className="size-3" aria-hidden="true" />
-                  </button>
-                )}
+                <Link
+                  href="/tech-stack"
+                  onClick={(e) => {
+                    if (
+                      onNavigate &&
+                      !e.metaKey &&
+                      !e.ctrlKey &&
+                      !e.shiftKey &&
+                      !e.altKey &&
+                      e.button === 0
+                    ) {
+                      e.preventDefault();
+                      onNavigate("experience#tech-stack");
+                    }
+                  }}
+                  className="font-sans text-xs font-medium text-muted-foreground hover:text-foreground hover:underline cursor-pointer inline-flex items-center gap-0.5 transition-colors"
+                >
+                  <span>All skills</span>
+                  <LuArrowUpRight className="size-3" aria-hidden="true" />
+                </Link>
               </div>
 
               <div className="flex flex-wrap gap-1.5">
@@ -245,20 +271,26 @@ export function HeroSection({ isDark, activeTab = "home", isHomeActive = true, o
                   <LuAward className="size-3.5 text-muted-foreground" aria-hidden="true" />
                   <span>Certificates</span>
                 </span>
-                {onNavigate ? (
-                  <button
-                    type="button"
-                    onClick={() => onNavigate("experience#certifications")}
-                    className="font-sans text-xs font-medium text-muted-foreground hover:text-foreground hover:underline cursor-pointer inline-flex items-center gap-0.5 transition-colors"
-                  >
-                    <span>{certifications.length} Verified</span>
-                    <LuArrowUpRight className="size-3" aria-hidden="true" />
-                  </button>
-                ) : (
-                  <span className="font-sans text-xs text-muted-foreground">
-                    {certifications.length} Verified
-                  </span>
-                )}
+                <Link
+                  href="/certifications"
+                  onClick={(e) => {
+                    if (
+                      onNavigate &&
+                      !e.metaKey &&
+                      !e.ctrlKey &&
+                      !e.shiftKey &&
+                      !e.altKey &&
+                      e.button === 0
+                    ) {
+                      e.preventDefault();
+                      onNavigate("experience#certifications");
+                    }
+                  }}
+                  className="font-sans text-xs font-medium text-muted-foreground hover:text-foreground hover:underline cursor-pointer inline-flex items-center gap-0.5 transition-colors"
+                >
+                  <span>{certifications.length} Verified</span>
+                  <LuArrowUpRight className="size-3" aria-hidden="true" />
+                </Link>
               </div>
 
               <div className="space-y-1.5">
@@ -318,20 +350,26 @@ export function HeroSection({ isDark, activeTab = "home", isHomeActive = true, o
                   <LuSparkles className="size-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
                   <span>Building</span>
                 </span>
-                {onNavigate ? (
-                  <button
-                    type="button"
-                    onClick={() => onNavigate("projects")}
-                    className="font-medium text-foreground hover:underline cursor-pointer inline-flex items-center gap-1 truncate"
-                  >
-                    <span>MKBRiderTrack &amp; Naphix</span>
-                    <LuArrowUpRight className="size-3" aria-hidden="true" />
-                  </button>
-                ) : (
-                  <span className="font-medium text-foreground truncate">
-                    MKBRiderTrack &amp; Naphix
-                  </span>
-                )}
+                <Link
+                  href="/projects"
+                  onClick={(e) => {
+                    if (
+                      onNavigate &&
+                      !e.metaKey &&
+                      !e.ctrlKey &&
+                      !e.shiftKey &&
+                      !e.altKey &&
+                      e.button === 0
+                    ) {
+                      e.preventDefault();
+                      onNavigate("projects");
+                    }
+                  }}
+                  className="font-medium text-foreground hover:underline cursor-pointer inline-flex items-center gap-1 truncate"
+                >
+                  <span>MKBRiderTrack &amp; Naphix</span>
+                  <LuArrowUpRight className="size-3" aria-hidden="true" />
+                </Link>
               </div>
 
               <div className="flex items-center justify-between gap-2">

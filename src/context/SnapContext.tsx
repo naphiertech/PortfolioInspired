@@ -208,7 +208,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
       const dockId = getSnappedDockIdForPathname(pathname);
       if (!dockId) return "normal";
 
-      if (!isSessionInitialized) return "unknown";
+      if (!isSessionInitialized) return "normal";
 
       if (isSnapped && !isRestoring && snappedDockItems.includes(dockId)) {
         return "snapped";

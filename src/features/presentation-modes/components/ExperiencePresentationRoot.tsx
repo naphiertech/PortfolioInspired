@@ -3,18 +3,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
+import { ExperienceClient } from "@/app/experience/ExperienceClient";
 import dynamic from "next/dynamic";
-
-const ExperienceClient = dynamic(
-  () => import("@/app/experience/ExperienceClient").then((mod) => mod.ExperienceClient),
-  {
-    loading: () => (
-      <div className="w-full min-h-[60vh] flex items-center justify-center font-mono text-xs text-muted-foreground animate-pulse">
-        Loading experience...
-      </div>
-    ),
-  }
-);
 
 const FocusExperiencePage = dynamic(
   () => import("../modes/focus/pages/FocusExperiencePage").then((mod) => mod.FocusExperiencePage),
@@ -43,10 +33,10 @@ export function ExperiencePresentationRoot() {
     if (typeof window === "undefined") return;
     if (mode === "minimal") {
       router.replace("/");
-    } else if (mode === "agent") {
+    } else if (mode === "agent" && previousMode !== null && previousMode !== mode) {
       router.replace("/?tab=experience");
     }
-  }, [mode, router]);
+  }, [mode, previousMode, router]);
 
   return (
     <div

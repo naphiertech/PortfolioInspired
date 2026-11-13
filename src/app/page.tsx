@@ -1,6 +1,12 @@
 import React from "react";
 import { PresentationModeRoot } from "@/features/presentation-modes/components/PresentationModeRoot";
-import { SITE_URL, SITE_NAME, SITE_DEFAULT_DESCRIPTION, AUTHOR_INFO } from "@/lib/siteConfig";
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_DEFAULT_DESCRIPTION,
+  AUTHOR_INFO,
+  SOCIAL_PROFILES,
+} from "@/lib/siteConfig";
 
 export default function Home() {
   const jsonLd = {
@@ -27,7 +33,12 @@ export default function Home() {
           "@type": "EducationalOrganization",
           name: AUTHOR_INFO.affiliation,
         },
-        sameAs: AUTHOR_INFO.socials,
+        sameAs: [
+          SOCIAL_PROFILES.github,
+          SOCIAL_PROFILES.linkedin,
+          SOCIAL_PROFILES.twitter,
+          SOCIAL_PROFILES.instagram,
+        ],
         knowsAbout: [
           "Web Development",
           "Full-Stack Engineering",

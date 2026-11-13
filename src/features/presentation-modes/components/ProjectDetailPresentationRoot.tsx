@@ -36,10 +36,10 @@ export function ProjectDetailPresentationRoot({
     if (typeof window === "undefined") return;
     if (mode === "minimal") {
       router.replace("/");
-    } else if (mode === "agent") {
+    } else if (mode === "agent" && previousMode !== null && previousMode !== mode) {
       router.replace("/?tab=projects");
     }
-  }, [mode, router]);
+  }, [mode, previousMode, router]);
 
   return (
     <div

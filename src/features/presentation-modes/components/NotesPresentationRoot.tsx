@@ -34,10 +34,10 @@ export function NotesPresentationRoot() {
   const isSwitch = previousMode !== null && previousMode !== mode;
 
   React.useEffect(() => {
-    if (mode === "agent" && typeof window !== "undefined") {
+    if (mode === "agent" && previousMode !== null && previousMode !== mode && typeof window !== "undefined") {
       router.replace("/?tab=notes");
     }
-  }, [mode, router]);
+  }, [mode, previousMode, router]);
 
   return (
     <div

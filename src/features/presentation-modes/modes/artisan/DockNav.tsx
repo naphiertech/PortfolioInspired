@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   HiOutlineHome,
   PiUserLight,
@@ -31,27 +32,32 @@ export function DockNav({
   const items = [
     {
       id: "home",
+      href: "/",
       label: "Home",
       icon: <HiOutlineHome aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
     },
     { type: "divider" },
     {
       id: "about",
+      href: "/?tab=about",
       label: "About",
       icon: <PiUserLight aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
     },
     {
       id: "experience",
+      href: "/experience",
       label: "Experience",
       icon: <PiChairLight aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
     },
     {
       id: "projects",
+      href: "/projects",
       label: "Projects",
       icon: <BsFolder2 aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
     },
     {
       id: "notes",
+      href: "/notes",
       label: "Notes",
       icon: <PiNotePencilLight aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
     },
@@ -124,9 +130,14 @@ export function DockNav({
                   {item.icon}
                 </button>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => onSelectTab(item.id!)}
+                <Link
+                  href={item.href!}
+                  onClick={(e) => {
+                    if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                      e.preventDefault();
+                      onSelectTab(item.id!);
+                    }
+                  }}
                   aria-label={item.label}
                   className={`flex size-10 hover:size-12 items-center justify-center rounded-full transition-all duration-200 ease-out active:scale-95 cursor-pointer ${
                     isCurrent
@@ -135,7 +146,8 @@ export function DockNav({
                   }`}
                 >
                   {item.icon}
-                </button>
+                  <span className="sr-only">{item.label}</span>
+                </Link>
               )}
             </div>
           );

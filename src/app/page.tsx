@@ -9,13 +9,8 @@ export default function Home() {
       {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
-        url: SITE_URL,
+        url: `${SITE_URL}/`,
         name: SITE_NAME,
-        alternateName: [
-          AUTHOR_INFO.shortName,
-          "naphierawalie.tech",
-          "www.naphierawalie.tech",
-        ],
         description: SITE_DEFAULT_DESCRIPTION,
         publisher: {
           "@id": `${SITE_URL}/#person`,

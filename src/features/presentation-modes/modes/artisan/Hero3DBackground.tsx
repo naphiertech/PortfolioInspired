@@ -790,16 +790,24 @@ export function Hero3DBackground({
             </div>
           )}
 
-          {/* Balanced Evening Studio Shading (Softly tames bright wall glare while keeping all 3D edges, plant, and shelf details crisp) */}
+          {/* Keep the desk and person at their original brightness; shade the walls separately. */}
           <div
             aria-hidden="true"
             style={{
-              background: [
-                "radial-gradient(ellipse 68% 64% at 55% 48%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.03) 52%, rgba(8,11,16,0.24) 82%, rgba(8,11,16,0.40) 100%)",
-                "linear-gradient(180deg, rgba(8,11,16,0.22) 0%, transparent 30%, transparent 82%, rgba(8,11,16,0.26) 100%)",
-              ].join(", "),
+              background: "radial-gradient(ellipse 44% 40% at 18% 24%, rgba(3,15,12,0.82) 0%, rgba(3,15,12,0.58) 48%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 32%, transparent 52%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 32%, transparent 52%)",
             }}
-            className="hidden dark:block absolute inset-0 w-full h-full pointer-events-none z-20 transition-opacity duration-300"
+            className="hidden dark:block absolute inset-0 pointer-events-none z-20"
+          />
+          <div
+            aria-hidden="true"
+            style={{
+              background: "radial-gradient(ellipse 38% 33% at 86% 12%, rgba(3,15,12,0.48) 0%, rgba(3,15,12,0.25) 48%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 28%, transparent 48%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 28%, transparent 48%)",
+            }}
+            className="hidden dark:block absolute inset-0 pointer-events-none z-20"
           />
 
           {/* Subtle Dark-Mode Monitor & Desk Lamp Aura Inside Room */}

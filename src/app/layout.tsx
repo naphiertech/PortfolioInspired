@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     "Tailwind CSS",
   ],
   alternates: {
-    canonical: SITE_URL,
+    canonical: `${SITE_URL}/`,
   },
   robots: {
     index: true,
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: SITE_URL,
+    url: `${SITE_URL}/`,
     siteName: SITE_NAME,
     title: SITE_DEFAULT_TITLE,
     description: SITE_DEFAULT_DESCRIPTION,
@@ -171,7 +171,6 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`dark ${fontDoto.variable} ${fontFigtree.variable} ${fontJetBrainsMono.variable} ${fontCarroisGothic.variable}`}>
       <head>
-        <meta name="description" content={SITE_DEFAULT_DESCRIPTION} />
         <link
           rel="preload"
           href="/fonts/artisan/c41ca59f1c34ba31-s.p.2moef4a_pkre2.woff2"

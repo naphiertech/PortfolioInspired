@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  htmlLimitedBots: /.*/,
   serverExternalPackages: ['ably'],
   outputFileTracingRoot: __dirname,
   experimental: {

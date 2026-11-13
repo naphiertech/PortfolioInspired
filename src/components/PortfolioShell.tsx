@@ -54,10 +54,7 @@ const ResourcesEdgeDrawer = dynamic(
   () => import("@/features/resources-drawer").then((m) => m.ResourcesEdgeDrawer),
   { ssr: false }
 );
-const SideDrawerProvider = dynamic(
-  () => import("@/features/side-drawers/SideDrawerProvider").then((m) => m.SideDrawerProvider),
-  { ssr: false }
-);
+import { SideDrawerProvider } from "@/features/side-drawers/SideDrawerProvider";
 import styles from "./ContentSurfaces.module.css";
 const CreativeModeHost = dynamic(
   () => import("@/features/creative-mode/components/CreativeModeHost").then((m) => m.CreativeModeHost),

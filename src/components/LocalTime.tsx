@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { getManilaTimeString } from "@/lib/dateUtils";
 
-export function LocalTime() {
+export function LocalTime({ fontClassName = "font-mono" }: { fontClassName?: string }) {
   const [timeDisplay, setTimeDisplay] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function LocalTime() {
 
   return (
     <span
-      className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground select-none"
+      className={`inline-flex items-center gap-1 ${fontClassName} text-xs text-muted-foreground select-none`}
       aria-label={
         timeDisplay
           ? `Local time in Asia/Manila: ${timeDisplay.replace(" · GMT+8", "")}`

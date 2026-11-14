@@ -988,6 +988,12 @@ body:has(.artisan-mode) .bottom-progressive-blur,
   --font-mono: "Instrument Serif", Georgia, Cambria, serif;
   --font-prime: "Courier Prime", monospace;
   --font-caveat: "Caveat", cursive, sans-serif;
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --panel-open-dur: 380ms;
+  --panel-close-dur: 300ms;
+  --panel-translate-y: 14px;
+  --panel-blur: 2px;
   --background: #ffffff;
   --foreground: #0a0a0a;
   --muted-foreground: #737373;
@@ -1021,6 +1027,12 @@ body:has(.artisan-mode) .bottom-progressive-blur,
 
 .artisan-mode .font-prime {
   font-family: var(--font-prime) !important;
+}
+
+.font-code,
+.artisan-mode .font-code {
+  font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-variant-numeric: tabular-nums;
 }
 
 .artisan-mode .font-caveat {

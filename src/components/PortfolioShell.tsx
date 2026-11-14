@@ -99,7 +99,10 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const isFocus = mode === "focus";
   const isMinimal = mode === "minimal";
   const isAgent = mode === "agent" || pathname === "/artisan";
-  const isAgentHome = (mode === "agent" && pathname === "/") || pathname === "/artisan";
+  const isAgentHome =
+    (mode === "agent" &&
+      (pathname === "/" || pathname === "/music" || pathname === "/resources")) ||
+    pathname === "/artisan";
   const { state: creative, active: creativeActive, effectiveMotion } = useCreativeMode();
   const mapping = supportsCreativeMode(mode) ? CREATIVE_MAPPINGS[mode] : null;
   const radii = mapping?.radii[creative.corners];
@@ -139,6 +142,12 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         <MusicEdgeDrawer variant="focus" />
         <ResourcesEdgeDrawer variant="focus" />
       </>}
+      {isAgent && (
+        <>
+          <MusicEdgeDrawer hideEdgeTab />
+          <ResourcesEdgeDrawer hideEdgeTab />
+        </>
+      )}
       {!isAgent && <CreativeModeHost />}
 
       {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal, omitted in Agent) */}

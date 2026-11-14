@@ -75,6 +75,27 @@ export function LuSun(props: IconBaseProps) {
 export function LuMoon(props: IconBaseProps) {
   return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"path","attr":{"d":"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"},"child":[]}]})({ "aria-hidden": true, ...props });
 }
+export function LuPanelLeft(props: IconBaseProps) {
+  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"rect","attr":{"width":"18","height":"18","x":"3","y":"3","rx":"2"},"child":[]},{"tag":"path","attr":{"d":"M9 3v18"},"child":[]}]})({ "aria-hidden": true, ...props });
+}
+export function LuPanelLeftClose(props: IconBaseProps) {
+  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"rect","attr":{"width":"18","height":"18","x":"3","y":"3","rx":"2"},"child":[]},{"tag":"path","attr":{"d":"M9 3v18"},"child":[]},{"tag":"path","attr":{"d":"m16 15-3-3 3-3"},"child":[]}]})({ "aria-hidden": true, ...props });
+}
+export function LuHeadphones(props: IconBaseProps) {
+  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"path","attr":{"d":"M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"},"child":[]}]})({ "aria-hidden": true, ...props });
+}
+export function LuLibrary(props: IconBaseProps) {
+  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"path","attr":{"d":"m16 6 4 14"},"child":[]},{"tag":"path","attr":{"d":"M12 6v14"},"child":[]},{"tag":"path","attr":{"d":"M8 8v12"},"child":[]},{"tag":"path","attr":{"d":"M4 4v16"},"child":[]}]})({ "aria-hidden": true, ...props });
+}
+export function LuVolume2(props: IconBaseProps) {
+  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"path","attr":{"d":"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"},"child":[]},{"tag":"path","attr":{"d":"M16 9a5 5 0 0 1 0 6"},"child":[]},{"tag":"path","attr":{"d":"M19.364 18.364a9 9 0 0 0 0-12.728"},"child":[]}]})({ "aria-hidden": true, ...props });
+}
+export function LuVolumeX(props: IconBaseProps) {
+  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"path","attr":{"d":"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"},"child":[]},{"tag":"line","attr":{"x1":"22","x2":"16","y1":"9","y2":"15"},"child":[]},{"tag":"line","attr":{"x1":"16","x2":"22","y1":"9","y2":"15"},"child":[]}]})({ "aria-hidden": true, ...props });
+}
+export function LuMic(props: IconBaseProps) {
+  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":"2","strokeLinecap":"round","strokeLinejoin":"round"},"child":[{"tag":"path","attr":{"d":"M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"},"child":[]},{"tag":"path","attr":{"d":"M19 10v2a7 7 0 0 1-14 0v-2"},"child":[]},{"tag":"line","attr":{"x1":"12","x2":"12","y1":"19","y2":"22"},"child":[]}]})({ "aria-hidden": true, ...props });
+}
 export function HiOutlineHome(props: IconBaseProps) {
   return GenIcon({"tag":"svg","attr":{"fill":"none","viewBox":"0 0 24 24","strokeWidth":"1.5","stroke":"currentColor","aria-hidden":"true"},"child":[{"tag":"path","attr":{"strokeLinecap":"round","strokeLinejoin":"round","d":"m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"},"child":[]}]})({ "aria-hidden": true, ...props });
 }

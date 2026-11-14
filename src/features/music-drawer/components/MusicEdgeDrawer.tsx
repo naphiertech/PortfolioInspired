@@ -13,6 +13,7 @@ import { useSideDrawers } from "@/features/side-drawers/SideDrawerProvider";
 interface MusicEdgeDrawerProps {
   variant?: "standard" | "focus";
   initialOpen?: boolean;
+  hideEdgeTab?: boolean;
   className?: string;
 }
 
@@ -28,6 +29,7 @@ interface MusicEdgeDrawerProps {
 export function MusicEdgeDrawer({
   variant = "standard",
   initialOpen = false,
+  hideEdgeTab = false,
   className = "",
 }: MusicEdgeDrawerProps) {
   const [mounted, setMounted] = useState<boolean>(false);
@@ -51,8 +53,10 @@ export function MusicEdgeDrawer({
   return createPortal(
     <div className={`music-edge-drawer-container ${className}`}>
       {/* 1. Closed State Protruding Folder Tab (Fixed to Left Viewport Edge) */}
-      {variant === "focus" ? <FocusDrawerTab drawer="music" isOpen={isOpen} onToggle={() => toggleDrawer("music")} /> : (
-        <MusicEdgeTab isOpen={isOpen} onToggle={() => toggleDrawer("music")} />
+      {!hideEdgeTab && (
+        variant === "focus" ? <FocusDrawerTab drawer="music" isOpen={isOpen} onToggle={() => toggleDrawer("music")} /> : (
+          <MusicEdgeTab isOpen={isOpen} onToggle={() => toggleDrawer("music")} />
+        )
       )}
 
       {/* Keep the animation owner mounted so closing can finish and open a pending drawer. */}

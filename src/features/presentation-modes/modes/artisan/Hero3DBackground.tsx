@@ -26,6 +26,7 @@ interface Hero3DBackgroundProps {
   activeTab?: string;
   isHomeActive?: boolean;
   onNavigate?: (tab: string) => void;
+  expanded?: boolean;
 }
 
 export type DeskClipState =
@@ -55,6 +56,7 @@ export function Hero3DBackground({
   activeTab = "home",
   isHomeActive = true,
   onNavigate,
+  expanded = false,
 }: Hero3DBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const slotARef = useRef<HTMLVideoElement>(null);
@@ -405,6 +407,15 @@ export function Hero3DBackground({
     transitionToClip,
   ]);
 
+  // Allow external Artisan triggers (e.g., WorkspaceSidebar) to toggle NaphBot voice call
+  useEffect(() => {
+    const onToggleNaphBot = () => handleToggleCall();
+    window.addEventListener("artisan-toggle-naphbot-call", onToggleNaphBot);
+    return () => {
+      window.removeEventListener("artisan-toggle-naphbot-call", onToggleNaphBot);
+    };
+  }, [handleToggleCall]);
+
   // 5-minute safety auto-hangup cap (matching RyBot's 300s call duration guard)
   useEffect(() => {
     if (isCallActive && callSeconds >= 300 && clipStateRef.current === "talking") {
@@ -690,9 +701,11 @@ export function Hero3DBackground({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full flex flex-col justify-center items-center pointer-events-auto select-none perspective-[1000px] lg:-mt-4"
+      className={`relative w-full flex flex-col justify-center items-center pointer-events-auto select-none perspective-[1000px] ${
+        expanded ? "" : "lg:-mt-4"
+      }`}
     >
-      {/* Centered Constrained Isometric Room Container (~13% smaller for balanced breathing room) */}
+      {/* Centered Constrained Isometric Room Container */}
       <div
         style={{
           transform:
@@ -705,7 +718,11 @@ export function Hero3DBackground({
             ? "transform 0.12s ease-out"
             : "transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
         }}
-        className="relative w-[76vw] max-w-[340px] sm:max-w-[380px] md:max-w-[400px] lg:max-w-[410px] xl:max-w-[430px] 2xl:max-w-[450px] aspect-[988/1038] flex items-center justify-center group"
+        className={`relative aspect-[988/1038] flex items-center justify-center group transition-[max-width,width] duration-[360ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
+          expanded
+            ? "w-[82vw] max-w-[380px] sm:max-w-[440px] md:max-w-[470px] lg:max-w-[min(490px,56dvh)] xl:max-w-[min(520px,58dvh)] 2xl:max-w-[min(550px,60dvh)]"
+            : "w-[76vw] max-w-[340px] sm:max-w-[380px] md:max-w-[400px] lg:max-w-[410px] xl:max-w-[430px] 2xl:max-w-[450px]"
+        }`}
       >
         {/* 1. GPU-Composited Ambient Floor Shadow & Monitor Backlight Glow */}
         <div

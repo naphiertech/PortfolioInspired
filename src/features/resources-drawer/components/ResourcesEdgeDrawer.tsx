@@ -11,6 +11,7 @@ import { useSideDrawers } from "@/features/side-drawers/SideDrawerProvider";
 interface ResourcesEdgeDrawerProps {
   variant?: "standard" | "focus";
   initialOpen?: boolean;
+  hideEdgeTab?: boolean;
   className?: string;
 }
 
@@ -28,6 +29,7 @@ interface ResourcesEdgeDrawerProps {
 export function ResourcesEdgeDrawer({
   variant = "standard",
   initialOpen = false,
+  hideEdgeTab = false,
   className = "",
 }: ResourcesEdgeDrawerProps) {
   const [mounted, setMounted] = useState<boolean>(false);
@@ -46,9 +48,11 @@ export function ResourcesEdgeDrawer({
   return createPortal(
     <div className={`resources-edge-drawer-container ${className}`}>
       {/* 1. Left-edge launcher stacked below Music */}
-      {variant === "focus" ? (
-        <FocusDrawerTab drawer="resources" isOpen={isOpen} onToggle={() => toggleDrawer("resources")} />
-      ) : <ResourcesEdgeTab isOpen={isOpen} onToggle={() => toggleDrawer("resources")} />}
+      {!hideEdgeTab && (
+        variant === "focus" ? (
+          <FocusDrawerTab drawer="resources" isOpen={isOpen} onToggle={() => toggleDrawer("resources")} />
+        ) : <ResourcesEdgeTab isOpen={isOpen} onToggle={() => toggleDrawer("resources")} />
+      )}
 
       {/* Keep the animation owner mounted so closing can finish and preserve the selected tab. */}
       <ResourcesDrawer className={variant === "focus" ? styles.focusPanel : undefined} isOpen={isOpen} onClose={closeDrawer} onExitComplete={() => finishClose("resources")} />

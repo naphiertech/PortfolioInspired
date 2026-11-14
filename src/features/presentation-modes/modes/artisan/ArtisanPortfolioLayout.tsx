@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
+import { MotionConfig } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
 import { HeroSection } from "./HeroSection";
+import { WorkspaceSidebar } from "./WorkspaceSidebar";
 import { DockNav } from "./DockNav";
 import { PageTransitionSpiral } from "./PageTransitionSpiral";
 import { PresentationModeSwitcher } from "@/features/presentation-modes/components/PresentationModeSwitcher";
@@ -19,14 +21,39 @@ const ProjectsSection = dynamic(() =>
 const NotesSection = dynamic(() =>
   import("./NotesSection").then((m) => m.NotesSection)
 );
+const MusicSection = dynamic(() =>
+  import("./MusicSection").then((m) => m.MusicSection)
+);
+const ResourcesSection = dynamic(() =>
+  import("./ResourcesSection").then((m) => m.ResourcesSection)
+);
 
-type TabType = "home" | "about" | "experience" | "projects" | "notes";
+type TabType =
+  | "home"
+  | "about"
+  | "experience"
+  | "projects"
+  | "notes"
+  | "music"
+  | "resources";
+
+const VALID_TABS: readonly TabType[] = [
+  "home",
+  "about",
+  "experience",
+  "projects",
+  "notes",
+  "music",
+  "resources",
+];
 
 const RESOLVED_TABS: {
   about?: React.ComponentType<{ onNavigateTab?: (tab: TabType) => void }>;
   experience?: React.ComponentType<{ isDark: boolean; onNavigateProjects?: () => void }>;
   projects?: React.ComponentType;
   notes?: React.ComponentType;
+  music?: React.ComponentType;
+  resources?: React.ComponentType;
 } = {};
 
 async function preloadArtisanTab(tab: TabType): Promise<void> {
@@ -43,6 +70,12 @@ async function preloadArtisanTab(tab: TabType): Promise<void> {
     } else if (tab === "notes" && !RESOLVED_TABS.notes) {
       const mod = await import("./NotesSection");
       RESOLVED_TABS.notes = mod.NotesSection;
+    } else if (tab === "music" && !RESOLVED_TABS.music) {
+      const mod = await import("./MusicSection");
+      RESOLVED_TABS.music = mod.MusicSection;
+    } else if (tab === "resources" && !RESOLVED_TABS.resources) {
+      const mod = await import("./ResourcesSection");
+      RESOLVED_TABS.resources = mod.ResourcesSection;
     }
   } catch {
     // Ignore preload errors
@@ -66,6 +99,14 @@ const ARTISAN_TAB_QUOTES: Record<Exclude<TabType, "home">, { quote: string; auth
     quote: "Programs must be written for people to read, and only incidentally for machines to execute.",
     author: "Harold Abelson",
   },
+  music: {
+    quote: "Without music, life would be a mistake.",
+    author: "Friedrich Nietzsche",
+  },
+  resources: {
+    quote: "A craftsman is only as sharp as the instruments he keeps clean.",
+    author: "Studio Ledger",
+  },
 };
 
 interface ArtisanPortfolioLayoutProps {
@@ -79,19 +120,23 @@ export function ArtisanPortfolioLayout({
 
   const syncTabUrl = useCallback((tab: TabType) => {
     if (typeof window === "undefined") return;
-    const url = new URL(window.location.href);
-    if (tab === "home") {
-      url.searchParams.delete("tab");
-    } else {
-      url.searchParams.set("tab", tab);
-    }
-    window.history.replaceState({}, "", url.toString());
+    const isArtisanStandalone = window.location.pathname === "/artisan";
+    const baseRoot = isArtisanStandalone ? "/artisan" : "/";
+    const nextPath =
+      tab === "music"
+        ? "/music"
+        : tab === "resources"
+        ? "/resources"
+        : tab === "home"
+        ? baseRoot
+        : `${baseRoot}?tab=${tab}`;
+    window.history.replaceState({}, "", nextPath);
   }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const queryTab = params.get("tab") as TabType | null;
-    if (queryTab && ["home", "about", "experience", "projects", "notes"].includes(queryTab)) {
+    if (queryTab && VALID_TABS.includes(queryTab)) {
       void preloadArtisanTab(queryTab);
       setActiveTab(queryTab);
     }
@@ -105,15 +150,39 @@ export function ArtisanPortfolioLayout({
       void preloadArtisanTab("experience");
       void preloadArtisanTab("projects");
       void preloadArtisanTab("notes");
+      void preloadArtisanTab("music");
+      void preloadArtisanTab("resources");
     }, 3800);
     return () => clearTimeout(timer);
   }, []);
 
-  // Lock scrolling strictly on desktop when on the Home single-screen hero; allow vertical scroll on mobile
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [pendingTab, setPendingTab] = useState<TabType | null>(null);
+  const [targetHash, setTargetHash] = useState<string | null>(null);
+  const [activeSubTarget, setActiveSubTarget] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const pendingSidebarActionRef = useRef<"lets-talk" | "naphbot" | null>(null);
+
+  const handleCloseSidebar = useCallback(() => {
+    if (activeTab === "home" && typeof window !== "undefined" && window.scrollY > 0) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+    setIsSidebarOpen(false);
+  }, [activeTab]);
+
+  const handleToggleSidebar = useCallback(() => {
+    if (isSidebarOpen && activeTab === "home" && typeof window !== "undefined" && window.scrollY > 0) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+    setIsSidebarOpen((prev) => !prev);
+  }, [isSidebarOpen, activeTab]);
+
+  // Lock desktop Home to a single screen when sidebar is closed (Image 1 split);
+  // unlock vertical scrolling when sidebar opens (compressed stacked Image 2 flow) or on mobile/sub-tabs.
   useEffect(() => {
     const updateScrollLock = () => {
       const isDesktop = window.innerWidth >= 1024;
-      if (activeTab === "home" && isDesktop) {
+      if (activeTab === "home" && !isSidebarOpen && isDesktop) {
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
         window.scrollTo({ top: 0, behavior: "instant" });
@@ -130,11 +199,7 @@ export function ArtisanPortfolioLayout({
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     };
-  }, [activeTab]);
-
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [pendingTab, setPendingTab] = useState<TabType | null>(null);
-  const [targetHash, setTargetHash] = useState<string | null>(null);
+  }, [activeTab, isSidebarOpen]);
 
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -147,7 +212,14 @@ export function ArtisanPortfolioLayout({
   );
 
   const handleHoverTab = useCallback((tab: string) => {
-    if (tab === "about" || tab === "experience" || tab === "projects" || tab === "notes") {
+    if (
+      tab === "about" ||
+      tab === "experience" ||
+      tab === "projects" ||
+      tab === "notes" ||
+      tab === "music" ||
+      tab === "resources"
+    ) {
       void preloadArtisanTab(tab as TabType);
     }
   }, []);
@@ -158,6 +230,7 @@ export function ArtisanPortfolioLayout({
       const tab = tabStr as TabType;
       const target = hashStr || null;
       setTargetHash(target);
+      setActiveSubTarget(target);
 
       if (tab === activeTab) {
         if (target && typeof document !== "undefined") {
@@ -224,16 +297,87 @@ export function ArtisanPortfolioLayout({
     }
   }, [targetHash]);
 
+  const dispatchSidebarAction = useCallback((action: "lets-talk" | "naphbot") => {
+    window.dispatchEvent(
+      new CustomEvent(
+        action === "lets-talk" ? "artisan-open-lets-talk" : "artisan-toggle-naphbot-call"
+      )
+    );
+  }, []);
+
+  const handleTriggerLetsTalk = useCallback(() => {
+    if (activeTab === "home" && !isTransitioning) {
+      dispatchSidebarAction("lets-talk");
+      return;
+    }
+    pendingSidebarActionRef.current = "lets-talk";
+    handleSelectTab("home");
+  }, [activeTab, isTransitioning, dispatchSidebarAction, handleSelectTab]);
+
+  const handleTriggerNaphBot = useCallback(() => {
+    if (activeTab === "home" && !isTransitioning) {
+      dispatchSidebarAction("naphbot");
+      return;
+    }
+    pendingSidebarActionRef.current = "naphbot";
+    handleSelectTab("home");
+  }, [activeTab, isTransitioning, dispatchSidebarAction, handleSelectTab]);
+
+  useEffect(() => {
+    if (activeTab === "home" && !isTransitioning && pendingSidebarActionRef.current) {
+      const action = pendingSidebarActionRef.current;
+      pendingSidebarActionRef.current = null;
+      const timer = setTimeout(() => dispatchSidebarAction(action), 80);
+      return () => clearTimeout(timer);
+    }
+  }, [activeTab, isTransitioning, dispatchSidebarAction]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isEditable =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable);
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "b") {
+        if (isEditable) return;
+        event.preventDefault();
+        handleToggleSidebar();
+        return;
+      }
+
+      if (
+        event.key === "Escape" &&
+        isSidebarOpen &&
+        document.body.dataset.sideDrawerOpen !== "true" &&
+        !document.querySelector('[role="dialog"][aria-modal="true"]')
+      ) {
+        event.preventDefault();
+        handleCloseSidebar();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isSidebarOpen, handleToggleSidebar, handleCloseSidebar]);
+
   const activeQuote = activeTab !== "home" ? ARTISAN_TAB_QUOTES[activeTab] : null;
+  const isHomeLockedSplit = activeTab === "home" && !isSidebarOpen;
   const ResolvedAbout = RESOLVED_TABS.about || AboutSection;
   const ResolvedExperience = RESOLVED_TABS.experience || ExperienceSection;
   const ResolvedProjects = RESOLVED_TABS.projects || ProjectsSection;
   const ResolvedNotes = RESOLVED_TABS.notes || NotesSection;
+  const ResolvedMusic = RESOLVED_TABS.music || MusicSection;
+  const ResolvedResources = RESOLVED_TABS.resources || ResourcesSection;
 
   return (
+    <MotionConfig reducedMotion="user">
     <div
       className={`artisan-mode w-full bg-background text-foreground selection:bg-foreground selection:text-background relative overflow-x-hidden font-sans ${
-        activeTab === "home"
+        isHomeLockedSplit
           ? "min-h-dvh lg:h-dvh lg:max-h-dvh lg:overflow-hidden"
           : "min-h-screen"
       }`}
@@ -246,20 +390,47 @@ export function ArtisanPortfolioLayout({
         <PresentationModeSwitcher variant="agent" />
       </div>
 
+      {/* 1.5 Collapsible Floating Workspace Sidebar */}
+      <WorkspaceSidebar
+        isOpen={isSidebarOpen}
+        activeTab={activeTab}
+        activeSubTarget={activeSubTarget}
+        onClose={handleCloseSidebar}
+        onSelectTab={handleSelectTab}
+        onTriggerLetsTalk={handleTriggerLetsTalk}
+        onTriggerNaphBot={handleTriggerNaphBot}
+        isDark={isDark}
+        onToggleTheme={handleToggleTheme}
+      />
+
       {/* 2. Main Tab View Dispatcher */}
       <div
-        className={`w-full relative ${
-          activeTab === "home"
+        className={`w-full relative transition-[padding] duration-[340ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
+          isSidebarOpen ? "xl:pl-[276px]" : ""
+        } ${
+          isHomeLockedSplit
             ? "min-h-dvh lg:h-dvh lg:max-h-dvh lg:overflow-hidden p-0 m-0"
+            : activeTab === "home"
+            ? "min-h-screen flex flex-col justify-between pb-16 sm:pb-20"
             : "min-h-screen flex flex-col justify-between pb-24 sm:pb-28"
         }`}
       >
-        <div className={activeTab === "home" ? "block w-full h-full" : "hidden"}>
+        <div
+          className={
+            activeTab === "home"
+              ? isHomeLockedSplit
+                ? "block w-full h-full"
+                : "block w-full"
+              : "hidden"
+          }
+        >
           <HeroSection
             isDark={isDark}
             activeTab={activeTab}
             isHomeActive={activeTab === "home"}
             onNavigate={(tab) => handleSelectTab(tab)}
+            isSidebarOpen={isSidebarOpen}
+            onToggleSidebar={handleToggleSidebar}
           />
         </div>
         {activeTab === "about" && (
@@ -273,6 +444,8 @@ export function ArtisanPortfolioLayout({
         )}
         {activeTab === "projects" && <ResolvedProjects />}
         {activeTab === "notes" && <ResolvedNotes />}
+        {activeTab === "music" && <ResolvedMusic />}
+        {activeTab === "resources" && <ResolvedResources />}
 
         {activeQuote && (
           <footer
@@ -306,6 +479,7 @@ export function ArtisanPortfolioLayout({
         onHoverTab={handleHoverTab}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
+        hidden={isSidebarOpen}
       />
 
       {/* 4. Architectural Shutter Screen Transition */}
@@ -316,6 +490,7 @@ export function ArtisanPortfolioLayout({
         onComplete={handleTransitionComplete}
       />
     </div>
+    </MotionConfig>
   );
 }
 

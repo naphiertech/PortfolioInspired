@@ -178,7 +178,7 @@ const ICON_REGISTRY: Record<string, IconConfig> = {
   angular: { component: SiAngular, color: "#DD0031" },
   angularjs: { component: SiAngular, color: "#DD0031" },
   astro: { component: SiAstro, color: "#BC52EE" },
-  flutter: { component: SiFlutter, color: "#02569B" },
+  flutter: { component: SiFlutter, color: "#29B6F6" },
   reactnative: { component: SiReact, color: "#61DAFB" },
   capacitor: { component: SiCapacitor, color: "#119EFF" },
   electron: { component: SiElectron, color: "#47848F" },
@@ -229,16 +229,16 @@ const ICON_REGISTRY: Record<string, IconConfig> = {
   apollo: { component: SiApollographql, color: "#311C87" },
 
   // Databases & Cloud BaaS
-  postgres: { component: SiPostgresql, color: "#4169E1" },
-  postgresql: { component: SiPostgresql, color: "#4169E1" },
-  mysql: { component: SiMysql, color: "#4479A1" },
+  postgres: { component: SiPostgresql, color: "#5C85F6" },
+  postgresql: { component: SiPostgresql, color: "#5C85F6" },
+  mysql: { component: SiMysql, color: "#5897C4" },
   mongodb: { component: SiMongodb, color: "#47A248" },
   mongo: { component: SiMongodb, color: "#47A248" },
   sqlite: { component: SiSqlite, color: "#003B57" },
   redis: { component: SiRedis, color: "#FF4438" },
   supabase: { component: SiSupabase, color: "#3ECF8E" },
   firebase: { component: SiFirebase, color: "#FFCA28" },
-  prisma: { component: SiPrisma, color: "#2D3748" },
+  prisma: { component: SiPrisma, isThemeAware: true },
   mariadb: { component: SiMariadb, color: "#003545" },
 
   // AI & ML (Core + LLMs & AI Tools)
@@ -285,7 +285,10 @@ const ICON_REGISTRY: Record<string, IconConfig> = {
   figma: { component: SiFigma, color: "#F24E1E" },
 };
 
-export function TechIcon({ name, className = "w-3.5 h-3.5 flex-shrink-0" }: TechIconProps) {
+export function TechIcon({
+  name,
+  className = "w-3.5 h-3.5 flex-shrink-0",
+}: TechIconProps) {
   const normalized = name
     .toLowerCase()
     .trim()
@@ -296,7 +299,13 @@ export function TechIcon({ name, className = "w-3.5 h-3.5 flex-shrink-0" }: Tech
 
   // VS Code special handling (from react-icons/vsc)
   if (normalized.includes("vscode") || normalized.includes("visualstudio") || (normalized === "code" && !name.includes(" "))) {
-    return <VscVscode className={className} style={{ color: "#007ACC" }} aria-hidden={true} />;
+    return (
+      <VscVscode
+        className={className}
+        style={{ color: "#007ACC" }}
+        aria-hidden={true}
+      />
+    );
   }
 
   // 1. Direct registry lookup

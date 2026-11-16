@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { FullProjectItem } from "@/lib/data";
 import { ProjectDetailClient } from "@/app/projects/[slug]/ProjectDetailClient";
+import { ArtisanPortfolioLayout } from "../modes/artisan/ArtisanPortfolioLayout";
+import { ProjectsSection } from "../modes/artisan/ProjectsSection";
 import dynamic from "next/dynamic";
 
 const FocusProjectDetailPage = dynamic(
@@ -21,7 +23,7 @@ interface ProjectDetailPresentationRootProps {
  * ProjectDetailPresentationRoot
  *
  * Presentation-aware dispatcher for /projects/[slug].
- * Dispatches between Default case study and Focus engineering case file.
+ * Dispatches synchronously for SSR between Artisan studio view, Focus engineering case file, and Default case study.
  */
 export function ProjectDetailPresentationRoot({
   project,
@@ -36,10 +38,28 @@ export function ProjectDetailPresentationRoot({
     if (typeof window === "undefined") return;
     if (mode === "minimal") {
       router.replace("/");
-    } else if (mode === "agent" && previousMode !== null && previousMode !== mode) {
-      router.replace("/?tab=projects");
     }
-  }, [mode, previousMode, router]);
+  }, [mode, router]);
+
+  if (mode === "agent") {
+    return (
+      <ArtisanPortfolioLayout
+        defaultTab="projects"
+        initialProjectSlug={project.slug}
+        initialSectionNode={
+          <ProjectsSection
+            standalone
+            initialProjectSlug={project.slug}
+            onClearInitialProject={() => {
+              if (typeof window !== "undefined") {
+                window.history.replaceState({}, "", "/projects");
+              }
+            }}
+          />
+        }
+      />
+    );
+  }
 
   return (
     <div

@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { EditorialDivider } from "@/components/EditorialDivider";
 import { TechStackSection } from "@/app/experience/ExperienceSections";
-import { techSections } from "@/lib/data";
+import { getProjectsUsingTech, techSections, techStackIntro } from "@/lib/data";
+import { buildCollectionPageJsonLd } from "@/lib/seoSchemas";
 import { SITE_NAME, SITE_URL } from "@/lib/siteConfig";
 
 const TECH_STACK_DESCRIPTION =
@@ -31,9 +32,24 @@ export const metadata: Metadata = {
 
 export default function TechStackPage() {
   const totalTools = techSections.reduce((acc, section) => acc + section.items.length, 0);
+  const jsonLd = buildCollectionPageJsonLd({
+    path: "/tech-stack",
+    name: "Tech Stack",
+    description: TECH_STACK_DESCRIPTION,
+    breadcrumbName: "Tech Stack",
+    items: techSections.map((section) => ({
+      name: section.title,
+      url: `${SITE_URL}/tech-stack`,
+      description: section.items.join(", "),
+    })),
+  });
 
   return (
     <div className="w-full select-none pb-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mb-10 space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
@@ -61,6 +77,73 @@ export default function TechStackPage() {
       <EditorialDivider className="mb-10 sm:mb-12" />
 
       <TechStackSection defaultShowAll />
+
+      <section
+        aria-label="Technology index and project mapping"
+        className="mt-12 space-y-5"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            &lt;stack-index/&gt;
+          </h2>
+          <span className="font-mono text-[11px] text-muted-foreground">
+            {techSections.length} categories
+          </span>
+        </div>
+
+        <p className="font-sans text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
+          {techStackIntro.headline} {techStackIntro.footer}
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {techSections.map((section) => {
+            const linkedProjectsMap = new Map<string, string>();
+            for (const tool of section.items) {
+              for (const proj of getProjectsUsingTech(tool)) {
+                if (!linkedProjectsMap.has(proj.slug)) {
+                  linkedProjectsMap.set(proj.slug, proj.title);
+                }
+              }
+            }
+            const linkedProjects = Array.from(linkedProjectsMap.entries());
+
+            return (
+              <div
+                key={section.title}
+                className="p-4 rounded-xl bg-surface/30 border border-border-hairline space-y-2.5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-sans text-xs font-semibold uppercase tracking-wide text-ink">
+                    {section.title}
+                  </h3>
+                  <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                    {section.items.length} tools
+                  </span>
+                </div>
+                <p className="font-mono text-xs text-muted-foreground leading-relaxed">
+                  {section.items.join(" · ")}
+                </p>
+                {linkedProjects.length > 0 && (
+                  <div className="pt-2 border-t border-border-hairline/40 flex flex-wrap items-center gap-1.5">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 mr-1">
+                      Used in:
+                    </span>
+                    {linkedProjects.map(([slug, title]) => (
+                      <Link
+                        key={slug}
+                        href={`/projects/${slug}`}
+                        className="font-mono text-[11px] text-ink/80 hover:text-brand underline underline-offset-4 transition-colors"
+                      >
+                        {title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       <div className="mt-14 pt-6 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-wrap items-center justify-between gap-4">
         <Link

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LuExternalLink,
@@ -15,12 +16,52 @@ import { FaGithub } from "react-icons/fa6";
 import { fullProjects, FullProjectItem } from "@/lib/data";
 import { MacbookPro } from "@/components/ui/macbook-pro";
 
-export function ProjectsSection() {
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [selectedProject, setSelectedProject] = useState<FullProjectItem | null>(null);
-  const [activeImage, setActiveImage] = useState<string>("");
+const EASE_SMOOTH_OUT = [0.22, 1, 0.36, 1] as const;
+
+interface ProjectsSectionProps {
+  initialProjectSlug?: string | null;
+  onClearInitialProject?: () => void;
+  standalone?: boolean;
+}
+
+export function ProjectsSection({
+  initialProjectSlug = null,
+  onClearInitialProject,
+  standalone = false,
+}: ProjectsSectionProps = {}) {
+  const matchedInitialIndex = initialProjectSlug
+    ? fullProjects.findIndex((p) => p.slug === initialProjectSlug)
+    : -1;
+  const initialProject =
+    matchedInitialIndex !== -1 ? fullProjects[matchedInitialIndex] : null;
+
+  const [activeIndex, setActiveIndex] = useState<number>(
+    matchedInitialIndex !== -1 ? matchedInitialIndex : 0
+  );
+  const [selectedProject, setSelectedProject] = useState<FullProjectItem | null>(
+    initialProject
+  );
+  const [activeImage, setActiveImage] = useState<string>(
+    initialProject ? initialProject.image : ""
+  );
 
   const activeProject = fullProjects[activeIndex] || fullProjects[0];
+
+  const closeProjectModal = useCallback(() => {
+    setSelectedProject(null);
+    onClearInitialProject?.();
+  }, [onClearInitialProject]);
+
+  useEffect(() => {
+    if (!initialProjectSlug) return;
+    const idx = fullProjects.findIndex((p) => p.slug === initialProjectSlug);
+    if (idx !== -1) {
+      setActiveIndex(idx);
+      const proj = fullProjects[idx];
+      setSelectedProject(proj);
+      setActiveImage(proj.image);
+    }
+  }, [initialProjectSlug]);
 
   // Lock body scroll and listen for Escape key when project modal is open
   useEffect(() => {
@@ -28,7 +69,7 @@ export function ProjectsSection() {
       document.body.style.overflow = "hidden";
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") {
-          setSelectedProject(null);
+          closeProjectModal();
         }
       };
       window.addEventListener("keydown", handleKeyDown);
@@ -39,7 +80,7 @@ export function ProjectsSection() {
     } else {
       document.body.style.overflow = "";
     }
-  }, [selectedProject]);
+  }, [selectedProject, closeProjectModal]);
 
   const openProjectModal = (proj: FullProjectItem) => {
     setSelectedProject(proj);
@@ -84,9 +125,15 @@ export function ProjectsSection() {
     <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
       <div className="space-y-3 text-center max-w-xl px-4 pb-6">
-        <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
-          Selected Projects
-        </h2>
+        {standalone && !initialProjectSlug ? (
+          <h1 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+            Selected Projects
+          </h1>
+        ) : (
+          <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+            Selected Projects
+          </h2>
+        )}
         <p className="font-sans font-medium text-sm md:text-base text-foreground/80 leading-relaxed">
           Production systems, client platforms, and privacy-first digital tools engineered with modern TypeScript and React.
         </p>
@@ -109,7 +156,7 @@ export function ProjectsSection() {
         >
           <MacbookPro
             src={activeProject.image}
-            className="w-full h-auto text-neutral-950 drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_24px_45px_rgba(0,0,0,0.6)] transition-transform duration-300 ease-out group-hover:scale-[1.015]"
+            className="w-full h-auto text-neutral-950 drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_24px_45px_rgba(0,0,0,0.6)] transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none group-hover:scale-[1.015]"
           />
         </div>
 
@@ -232,17 +279,20 @@ export function ProjectsSection() {
                   <span className="font-sans text-xs text-muted-foreground/70 tabular-nums">
                     {project.year}
                   </span>
-                  <button
-                    type="button"
+                  <Link
+                    href={`/projects/${project.slug}`}
                     onClick={(e) => {
-                      e.stopPropagation();
-                      openProjectModal(project);
+                      if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openProjectModal(project);
+                      }
                     }}
                     className="inline-flex items-center gap-1 font-sans text-xs font-medium text-foreground/70 hover:text-foreground pl-1 cursor-pointer"
                     aria-label={`Open ${project.title} case study`}
                   >
                     <LuArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             );
@@ -250,25 +300,84 @@ export function ProjectsSection() {
         </div>
       </section>
 
+      {standalone && !initialProjectSlug && (
+        <section
+          aria-label="Architectural summaries"
+          className="w-full max-w-2xl px-2 pt-8 space-y-4"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-mono text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              &lt;case-study-summaries/&gt;
+            </h2>
+            <div className="flex items-center gap-3 font-mono text-xs text-muted-foreground">
+              <Link href="/tech-stack" className="hover:text-foreground transition-colors">
+                Tech Stack
+              </Link>
+              <Link href="/experience" className="hover:text-foreground transition-colors">
+                Experience
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3">
+            {fullProjects.map((project) => (
+              <article
+                key={`${project.slug}-summary`}
+                className="p-4 rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.02] space-y-2"
+              >
+                <div className="flex items-baseline justify-between gap-3 flex-wrap">
+                  <h3 className="font-mono text-sm font-semibold text-foreground">
+                    <Link
+                      href={`/projects/${project.slug}`}
+                      className="hover:underline underline-offset-4"
+                    >
+                      {project.title}
+                    </Link>
+                  </h3>
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    {project.category} · {project.year}
+                  </span>
+                </div>
+                <p className="font-sans text-xs sm:text-sm text-foreground/80 leading-relaxed">
+                  {project.overview}
+                </p>
+                <p className="font-mono text-[11px] text-muted-foreground">
+                  Stack: {project.tags.join(" · ")}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* 4. Full Case Study Modal */}
-      <AnimatePresence>
+      <AnimatePresence initial={!initialProjectSlug}>
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
             {/* Backdrop */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedProject(null)}
+              initial={initialProjectSlug ? false : { opacity: 0 }}
+              animate={{ opacity: 1, transition: { duration: 0.25, ease: EASE_SMOOTH_OUT } }}
+              exit={{ opacity: 0, transition: { duration: 0.15, ease: EASE_SMOOTH_OUT } }}
+              onClick={closeProjectModal}
               className="fixed inset-0 bg-background/80 backdrop-blur-md"
             />
 
             {/* Modal Card */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 12 }}
-              transition={{ duration: 0.2 }}
+              initial={initialProjectSlug ? false : { opacity: 0, scale: 0.96, y: 12 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                transition: { duration: 0.25, ease: EASE_SMOOTH_OUT },
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.97,
+                y: 6,
+                transition: { duration: 0.15, ease: EASE_SMOOTH_OUT },
+              }}
               className="relative w-full max-w-3xl max-h-[90vh] bg-background border border-black/10 dark:border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl overflow-y-auto z-10 flex flex-col"
             >
               {/* Sticky Top Bar */}
@@ -284,7 +393,7 @@ export function ProjectsSection() {
 
                 <button
                   type="button"
-                  onClick={() => setSelectedProject(null)}
+                  onClick={closeProjectModal}
                   className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors cursor-pointer"
                   aria-label="Close modal"
                 >
@@ -296,9 +405,15 @@ export function ProjectsSection() {
               <div className="p-5 sm:p-8 space-y-8">
                 {/* Header Title & Subtext */}
                 <div className="space-y-2">
-                  <h3 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
-                    {selectedProject.title}
-                  </h3>
+                  {initialProjectSlug ? (
+                    <h1 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+                      {selectedProject.title}
+                    </h1>
+                  ) : (
+                    <h3 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+                      {selectedProject.title}
+                    </h3>
+                  )}
                   {selectedProject.role && (
                     <p className="font-sans font-medium text-sm sm:text-base text-foreground/90">
                       {selectedProject.role}
@@ -328,7 +443,7 @@ export function ProjectsSection() {
                       <button
                         type="button"
                         onClick={() => setActiveImage(selectedProject.image)}
-                        className={`relative w-24 h-16 rounded-lg overflow-hidden border-2 shrink-0 cursor-pointer transition-all ${
+                        className={`relative w-24 h-16 rounded-lg overflow-hidden border-2 shrink-0 cursor-pointer transition-[opacity,border-color] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                           activeImage === selectedProject.image
                             ? "border-foreground"
                             : "border-black/10 dark:border-white/10 opacity-70 hover:opacity-100"
@@ -347,7 +462,7 @@ export function ProjectsSection() {
                           key={i}
                           type="button"
                           onClick={() => setActiveImage(img)}
-                          className={`relative w-24 h-16 rounded-lg overflow-hidden border-2 shrink-0 cursor-pointer transition-all ${
+                          className={`relative w-24 h-16 rounded-lg overflow-hidden border-2 shrink-0 cursor-pointer transition-[opacity,border-color] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                             activeImage === img
                               ? "border-foreground"
                               : "border-black/10 dark:border-white/10 opacity-70 hover:opacity-100"
@@ -467,13 +582,27 @@ export function ProjectsSection() {
                     )}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setSelectedProject(null)}
-                    className="font-sans text-xs text-muted-foreground hover:text-foreground cursor-pointer"
-                  >
-                    Close Window [Esc]
-                  </button>
+                  <div className="flex items-center gap-4">
+                    <Link
+                      href="/projects"
+                      onClick={(e) => {
+                        if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                          e.preventDefault();
+                          closeProjectModal();
+                        }
+                      }}
+                      className="font-sans text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      All Projects
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={closeProjectModal}
+                      className="font-sans text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                    >
+                      Close Window [Esc]
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useEffect } from "react";
+import React, { useMemo, useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -60,6 +60,9 @@ interface WorkspaceSidebarProps {
 
 const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;
 
+const GROUP_LABEL_CLASS =
+  "px-2.5 pb-1 font-sans font-medium text-[11.5px] text-muted-foreground/75";
+
 export function WorkspaceSidebar({
   isOpen,
   activeTab,
@@ -74,6 +77,7 @@ export function WorkspaceSidebar({
   const prefersReducedMotion = useReducedMotion();
   const { isSoundEnabled, toggleSound, playClick, playHover } = useUISound();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [isCallActive, setIsCallActive] = useState(false);
 
   const totalTools = useMemo(
     () => techSections.reduce((sum, section) => sum + section.items.length, 0),
@@ -88,6 +92,18 @@ export function WorkspaceSidebar({
       ),
     []
   );
+
+  useEffect(() => {
+    const handleCallState = (e: Event) => {
+      const detail = (e as CustomEvent<{ active?: boolean }>).detail;
+      if (detail && typeof detail.active === "boolean") {
+        setIsCallActive(detail.active);
+      }
+    };
+    window.addEventListener("artisan-naphbot-call-state", handleCallState);
+    return () =>
+      window.removeEventListener("artisan-naphbot-call-state", handleCallState);
+  }, []);
 
   // Move keyboard focus into the sidebar header control on open for clear accessibility
   useEffect(() => {
@@ -166,6 +182,23 @@ export function WorkspaceSidebar({
     },
   ];
 
+  const studioItems = [
+    {
+      id: "music",
+      href: "/music",
+      label: "Music",
+      count: FAVORITE_TRACKS.length,
+      icon: LuHeadphones,
+    },
+    {
+      id: "resources",
+      href: "/resources",
+      label: "Resources",
+      count: totalResources,
+      icon: LuLibrary,
+    },
+  ];
+
   const blockVariants = {
     hidden: prefersReducedMotion
       ? { opacity: 0 }
@@ -193,6 +226,13 @@ export function WorkspaceSidebar({
     }
     return activeTab === itemId;
   };
+
+  const navLinkClass = (active: boolean) =>
+    `flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg font-sans text-[13px] transition-colors ${
+      active
+        ? "bg-black/[0.06] dark:bg-white/[0.09] text-foreground font-medium"
+        : "text-foreground/75 hover:text-foreground hover:bg-black/[0.035] dark:hover:bg-white/[0.05]"
+    }`;
 
   return (
     <AnimatePresence>
@@ -272,7 +312,7 @@ export function WorkspaceSidebar({
                   <p className="font-sans text-[13px] font-semibold tracking-tight text-foreground truncate">
                     {AUTHOR_INFO.name}
                   </p>
-                  <p className="flex items-center gap-1.5 font-code text-[10px] text-muted-foreground truncate">
+                  <p className="flex items-center gap-1.5 font-sans text-[11px] text-muted-foreground truncate">
                     <span
                       className="size-1.5 rounded-full bg-emerald-500 shrink-0"
                       aria-hidden="true"
@@ -290,26 +330,26 @@ export function WorkspaceSidebar({
                   onClose();
                 }}
                 onMouseEnter={playHover}
-                aria-label="Close workspace sidebar"
-                title="Collapse sidebar (Esc)"
+                aria-label="Close studio sidebar"
+                title="Collapse sidebar (Ctrl+B)"
                 className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-colors cursor-pointer shrink-0"
               >
                 <LuPanelLeftClose className="size-4" aria-hidden="true" />
               </button>
             </motion.div>
 
-            {/* Scrollable Body: Primary CTA + Overview + Portfolio + Tools */}
+            {/* Scrollable Body: Contact CTA + Overview + Portfolio + Studio */}
             <div
               data-lenis-prevent
-              className="flex-1 overflow-y-auto scrollbar-hide px-2.5 py-3 space-y-4"
+              className="flex-1 min-h-0 overflow-y-auto scrollbar-hide px-2.5 py-3 space-y-4"
             >
-              {/* Block 1: Contact Pill + Overview */}
+              {/* Block 1: Contact Trigger + Overview */}
               <motion.div
                 custom={1}
                 initial="hidden"
                 animate="visible"
                 variants={blockVariants}
-                className="space-y-3"
+                className="space-y-3.5"
               >
                 <button
                   type="button"
@@ -321,16 +361,14 @@ export function WorkspaceSidebar({
                     }
                   }}
                   onMouseEnter={playHover}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-black/12 dark:border-white/12 bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] font-sans text-xs font-medium text-foreground transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.025] dark:bg-white/[0.04] hover:bg-black/[0.055] dark:hover:bg-white/[0.08] font-sans text-[12.5px] font-medium text-foreground transition-colors cursor-pointer"
                 >
                   <FaEnvelope className="size-3.5 text-muted-foreground" />
                   <span>Let&apos;s Talk</span>
                 </button>
 
-                <div className="space-y-0.5">
-                  <p className="px-2 pb-1 font-sans font-medium text-[10px] uppercase tracking-[0.14em] text-muted-foreground/75">
-                    Overview
-                  </p>
+                <nav aria-label="Overview" className="space-y-0.5">
+                  <p className={GROUP_LABEL_CLASS}>Overview</p>
                   {overviewItems.map((item) => {
                     const Icon = item.icon;
                     const active = isNavItemActive(item.id);
@@ -341,11 +379,7 @@ export function WorkspaceSidebar({
                         onClick={(e) => handleNavClick(e, item.id)}
                         onMouseEnter={playHover}
                         aria-current={active ? "page" : undefined}
-                        className={`flex items-center justify-between gap-2.5 px-2.5 py-1.5 rounded-lg font-sans text-[13px] transition-colors ${
-                          active
-                            ? "bg-black/[0.06] dark:bg-white/[0.09] text-foreground font-medium"
-                            : "text-foreground/75 hover:text-foreground hover:bg-black/[0.035] dark:hover:bg-white/[0.05]"
-                        }`}
+                        className={navLinkClass(active)}
                       >
                         <span className="inline-flex items-center gap-2.5 min-w-0">
                           <Icon className="size-4 shrink-0 opacity-80" />
@@ -354,20 +388,19 @@ export function WorkspaceSidebar({
                       </Link>
                     );
                   })}
-                </div>
+                </nav>
               </motion.div>
 
-              {/* Block 2: Portfolio Routes with Real Counts */}
-              <motion.div
+              {/* Block 2: Portfolio Routes & Résumé */}
+              <motion.nav
+                aria-label="Portfolio"
                 custom={2}
                 initial="hidden"
                 animate="visible"
                 variants={blockVariants}
                 className="space-y-0.5"
               >
-                <p className="px-2 pb-1 font-sans font-medium text-[10px] uppercase tracking-[0.14em] text-muted-foreground/75">
-                  Portfolio
-                </p>
+                <p className={GROUP_LABEL_CLASS}>Portfolio</p>
                 {portfolioItems.map((item) => {
                   const Icon = item.icon;
                   const active = isNavItemActive(item.id);
@@ -378,103 +411,25 @@ export function WorkspaceSidebar({
                       onClick={(e) => handleNavClick(e, item.target)}
                       onMouseEnter={playHover}
                       aria-current={active ? "page" : undefined}
-                      className={`flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg font-sans text-[13px] transition-colors ${
-                        active
-                          ? "bg-black/[0.06] dark:bg-white/[0.09] text-foreground font-medium"
-                          : "text-foreground/75 hover:text-foreground hover:bg-black/[0.035] dark:hover:bg-white/[0.05]"
-                      }`}
+                      className={navLinkClass(active)}
                     >
                       <span className="inline-flex items-center gap-2.5 min-w-0">
                         <Icon className="size-4 shrink-0 opacity-80" />
                         <span className="truncate">{item.label}</span>
                       </span>
-                      <span className="font-code text-[11px] tabular-nums text-muted-foreground/80 shrink-0">
+                      <span className="font-sans text-[11px] tabular-nums text-muted-foreground/65 shrink-0">
                         {item.count}
                       </span>
                     </Link>
                   );
                 })}
-              </motion.div>
-
-              {/* Block 3: Workspace Dedicated Pages & Shortcuts */}
-              <motion.div
-                custom={3}
-                initial="hidden"
-                animate="visible"
-                variants={blockVariants}
-                className="space-y-0.5 pt-2 border-t border-black/[0.06] dark:border-white/[0.07]"
-              >
-                <p className="px-2 pb-1 font-sans font-medium text-[10px] uppercase tracking-[0.14em] text-muted-foreground/75">
-                  Workspace
-                </p>
-
-                <Link
-                  href="/music"
-                  onClick={(e) => handleNavClick(e, "music")}
-                  onMouseEnter={playHover}
-                  aria-current={activeTab === "music" ? "page" : undefined}
-                  className={`flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg font-sans text-[13px] transition-colors ${
-                    activeTab === "music"
-                      ? "bg-black/[0.06] dark:bg-white/[0.09] text-foreground font-medium"
-                      : "text-foreground/75 hover:text-foreground hover:bg-black/[0.035] dark:hover:bg-white/[0.05]"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2.5 min-w-0">
-                    <LuHeadphones className="size-4 shrink-0 opacity-80" />
-                    <span className="truncate">Music</span>
-                  </span>
-                  <span className="font-code text-[11px] tabular-nums text-muted-foreground/80 shrink-0">
-                    {FAVORITE_TRACKS.length}
-                  </span>
-                </Link>
-
-                <Link
-                  href="/resources"
-                  onClick={(e) => handleNavClick(e, "resources")}
-                  onMouseEnter={playHover}
-                  aria-current={activeTab === "resources" ? "page" : undefined}
-                  className={`flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg font-sans text-[13px] transition-colors ${
-                    activeTab === "resources"
-                      ? "bg-black/[0.06] dark:bg-white/[0.09] text-foreground font-medium"
-                      : "text-foreground/75 hover:text-foreground hover:bg-black/[0.035] dark:hover:bg-white/[0.05]"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2.5 min-w-0">
-                    <LuLibrary className="size-4 shrink-0 opacity-80" />
-                    <span className="truncate">Resources</span>
-                  </span>
-                  <span className="font-code text-[11px] tabular-nums text-muted-foreground/80 shrink-0">
-                    {totalResources}
-                  </span>
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    playClick();
-                    onTriggerNaphBot();
-                    if (typeof window !== "undefined" && window.innerWidth < 1280) {
-                      onClose();
-                    }
-                  }}
-                  onMouseEnter={playHover}
-                  className="w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg font-sans text-[13px] text-left text-foreground/75 hover:text-foreground hover:bg-black/[0.035] dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
-                >
-                  <span className="inline-flex items-center gap-2.5 min-w-0">
-                    <LuMic className="size-4 shrink-0 opacity-80" />
-                    <span className="truncate">Chat with NaphBot</span>
-                  </span>
-                  <span className="font-code text-[10px] text-muted-foreground/75 shrink-0">
-                    Voice
-                  </span>
-                </button>
 
                 <a
                   href={RESUME_PATH}
                   target="_blank"
                   rel="noopener noreferrer"
                   onMouseEnter={playHover}
-                  className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg font-sans text-[13px] text-foreground/75 hover:text-foreground hover:bg-black/[0.035] dark:hover:bg-white/[0.05] transition-colors"
+                  className={navLinkClass(false)}
                 >
                   <span className="inline-flex items-center gap-2.5 min-w-0">
                     <LuFileText className="size-4 shrink-0 opacity-80" />
@@ -482,24 +437,129 @@ export function WorkspaceSidebar({
                   </span>
                   <LuArrowUpRight className="size-3.5 text-muted-foreground/60 shrink-0" />
                 </a>
-              </motion.div>
+              </motion.nav>
+
+              {/* Block 3: Studio Curations */}
+              <motion.nav
+                aria-label="Studio"
+                custom={3}
+                initial="hidden"
+                animate="visible"
+                variants={blockVariants}
+                className="space-y-0.5 pt-2.5 border-t border-black/[0.06] dark:border-white/[0.07]"
+              >
+                <p className={GROUP_LABEL_CLASS}>Studio</p>
+                {studioItems.map((item) => {
+                  const Icon = item.icon;
+                  const active = activeTab === item.id;
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.id)}
+                      onMouseEnter={playHover}
+                      aria-current={active ? "page" : undefined}
+                      className={navLinkClass(active)}
+                    >
+                      <span className="inline-flex items-center gap-2.5 min-w-0">
+                        <Icon className="size-4 shrink-0 opacity-80" />
+                        <span className="truncate">{item.label}</span>
+                      </span>
+                      <span className="font-sans text-[11px] tabular-nums text-muted-foreground/65 shrink-0">
+                        {item.count}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </motion.nav>
             </div>
 
-            {/* Block 4: Telemetry & Quick Controls Footer */}
+            {/* Block 4: Pinned Voice Assistant Dock */}
             <motion.div
               custom={4}
               initial="hidden"
               animate="visible"
               variants={blockVariants}
-              className="px-3 py-2.5 border-t border-black/[0.07] dark:border-white/[0.08] space-y-2.5 shrink-0 bg-black/[0.015] dark:bg-white/[0.015]"
+              className="px-2.5 pt-2 pb-2.5 border-t border-black/[0.06] dark:border-white/[0.07] shrink-0"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  playClick();
+                  onTriggerNaphBot();
+                  if (typeof window !== "undefined" && window.innerWidth < 1280) {
+                    onClose();
+                  }
+                }}
+                onMouseEnter={playHover}
+                aria-pressed={isCallActive}
+                className={`group w-full flex items-center justify-between gap-2.5 px-2.5 py-2 rounded-xl border transition-colors cursor-pointer text-left ${
+                  isCallActive
+                    ? "border-rose-500/35 bg-rose-500/[0.06] hover:bg-rose-500/[0.1]"
+                    : "border-black/10 dark:border-white/10 bg-black/[0.025] dark:bg-white/[0.035] hover:bg-black/[0.055] dark:hover:bg-white/[0.075] hover:border-black/15 dark:hover:border-white/15"
+                }`}
+              >
+                <span className="flex items-center gap-2.5 min-w-0">
+                  <span
+                    className={`relative size-7 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+                      isCallActive
+                        ? "bg-rose-600 text-white"
+                        : "bg-foreground text-background"
+                    }`}
+                  >
+                    <LuMic className="size-3.5" aria-hidden="true" />
+                    <span
+                      className={`absolute -top-0.5 -right-0.5 size-2 rounded-full ring-2 ring-white dark:ring-[#0d0f10] ${
+                        isCallActive
+                          ? "bg-rose-400 animate-pulse"
+                          : "bg-emerald-500"
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <span className="min-w-0 flex flex-col">
+                    <span className="font-sans text-[12.5px] font-medium text-foreground leading-tight truncate">
+                      Chat with NaphBot
+                    </span>
+                    <span className="font-sans text-[10.5px] text-muted-foreground leading-tight truncate">
+                      {isCallActive ? "Live voice active" : "Voice AI assistant"}
+                    </span>
+                  </span>
+                </span>
+
+                <span
+                  className={`font-sans text-[10.5px] font-medium px-2 py-0.5 rounded-full shrink-0 transition-colors ${
+                    isCallActive
+                      ? "bg-rose-500/15 text-rose-600 dark:text-rose-400"
+                      : "bg-black/[0.05] dark:bg-white/[0.08] text-muted-foreground group-hover:text-foreground"
+                  }`}
+                >
+                  {isCallActive ? "End" : "Talk"}
+                </span>
+              </button>
+            </motion.div>
+
+            {/* Block 5: Telemetry & Controls Footer */}
+            <motion.div
+              custom={5}
+              initial="hidden"
+              animate="visible"
+              variants={blockVariants}
+              className="px-3 py-2.5 border-t border-black/[0.07] dark:border-white/[0.08] space-y-2 shrink-0 bg-black/[0.015] dark:bg-white/[0.015]"
             >
               <div className="flex items-center justify-between gap-2 min-h-[26px]">
-                <LocalTime fontClassName="font-code tabular-nums" />
-                <VisitorPresence />
+                <LocalTime fontClassName="font-sans text-[11px] tabular-nums" />
+                <div className="flex items-center justify-end shrink-0">
+                  <VisitorPresence />
+                </div>
               </div>
 
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center justify-between gap-2 pt-0.5">
+                <div
+                  role="group"
+                  aria-label="Studio preferences"
+                  className="inline-flex items-center p-0.5 rounded-lg border border-black/10 dark:border-white/10 bg-black/[0.025] dark:bg-white/[0.03]"
+                >
                   <button
                     type="button"
                     onClick={(e) => {
@@ -507,9 +567,11 @@ export function WorkspaceSidebar({
                       onToggleTheme(e);
                     }}
                     onMouseEnter={playHover}
-                    aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+                    aria-label={
+                      isDark ? "Switch to light theme" : "Switch to dark theme"
+                    }
                     title={isDark ? "Light mode" : "Dark mode"}
-                    className="p-1.5 rounded-lg border border-black/10 dark:border-white/10 text-muted-foreground hover:text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
+                    className="size-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
                   >
                     {isDark ? (
                       <LuSun className="size-3.5" aria-hidden="true" />
@@ -522,9 +584,11 @@ export function WorkspaceSidebar({
                     type="button"
                     onClick={toggleSound}
                     onMouseEnter={playHover}
-                    aria-label={isSoundEnabled ? "Mute UI sounds" : "Enable UI sounds"}
+                    aria-label={
+                      isSoundEnabled ? "Mute UI sounds" : "Enable UI sounds"
+                    }
                     title={isSoundEnabled ? "Sound: On" : "Sound: Off"}
-                    className="p-1.5 rounded-lg border border-black/10 dark:border-white/10 text-muted-foreground hover:text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
+                    className="size-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
                   >
                     {isSoundEnabled ? (
                       <LuVolume2 className="size-3.5" aria-hidden="true" />
@@ -534,14 +598,19 @@ export function WorkspaceSidebar({
                   </button>
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                <div
+                  role="group"
+                  aria-label="Social links"
+                  className="flex items-center gap-0.5"
+                >
                   <a
                     href={SOCIAL_PROFILES.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="GitHub"
+                    title="GitHub"
                     onMouseEnter={playHover}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors"
+                    className="size-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-colors"
                   >
                     <FaGithub className="size-3.5" aria-hidden="true" />
                   </a>
@@ -550,16 +619,18 @@ export function WorkspaceSidebar({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="LinkedIn"
+                    title="LinkedIn"
                     onMouseEnter={playHover}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors"
+                    className="size-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-colors"
                   >
                     <FaLinkedinIn className="size-3.5" aria-hidden="true" />
                   </a>
                   <a
                     href={`mailto:${SOCIAL_PROFILES.email}`}
                     aria-label="Email Naphier"
+                    title="Email"
                     onMouseEnter={playHover}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors"
+                    className="size-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-colors"
                   >
                     <FaEnvelope className="size-3.5" aria-hidden="true" />
                   </a>

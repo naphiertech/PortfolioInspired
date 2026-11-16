@@ -1,4 +1,4 @@
-import { fullProjects, experiences, certifications } from "./data";
+import { fullProjects, experiences, getCertificationGroups } from "./data";
 import { AUTHOR_INFO, EDUCATION, SOCIAL_PROFILES } from "./siteConfig";
 import { CONFIGURED_AI_MODELS } from "./portfolioKnowledge";
 import { NormalizedQuery } from "./queryNormalizer";
@@ -87,7 +87,7 @@ You can ask me anything about his work:
 - **Featured Projects**: [MKBRiderTrack](/projects/mkb-ridertrack), [AssetLink](/projects/assetlink), [MovieStream](/projects/moviestream), and [Naphix Résumé](/projects/naphix-resume)
 - **Tech Stack**: Next.js, Supabase, React 19, TypeScript, Tailwind CSS, Python, Node.js
 - **AI Architecture**: Google Gemini 2.5 Flash, Biometric Facial Verification, GDG AI Credentials
-- **Experience & Education**: BSIT at ZPPSU, GDG Build with AI 2026, DICT certifications
+- **Experience & Education**: BSIT at ZPPSU, Cisco Networking Academy, GDG Build with AI 2026 & DICT certifications
 
 What would you like to explore?`;
 
@@ -327,16 +327,28 @@ In **[MKBRiderTrack](/projects/mkb-ridertrack)**, it secures rider telemetry and
   // Discriminate between Certifications and Degree
   // -------------------------------------------------------------
   if (
-    /\b(certifications?|certs?|credentials?|hackathon)\b/i.test(normText) ||
+    /\b(certifications?|certs?|credentials?|hackathon|cisco|netacad|credly|cybersecurity)\b/i.test(normText) ||
     normText === "certifications?" ||
     normText === "certs?"
   ) {
-    const certList = certifications
-      .map((c) => `- **${c.issuer}**: *${c.name}*${c.code ? ` (ID: \`${c.code}\`)` : ""}`)
-      .join("\n");
+    const certGroupsText = getCertificationGroups()
+      .map((group) => {
+        const itemsText = group.items
+          .map((c) => {
+            const meta = c.code
+              ? ` (ID: \`${c.code}\`)`
+              : c.issuedAt
+              ? ` (Issued ${c.issuedAt})`
+              : "";
+            const verify = c.verifyUrl ? ` — [Verify on Credly](${c.verifyUrl})` : "";
+            return `- **${c.issuer}**: *${c.name}*${meta}${verify}`;
+          })
+          .join("\n");
+        return `**${group.label}**\n${itemsText}`;
+      })
+      .join("\n\n");
 
-    const rawReply = `Here are Naphier’s verified certifications:
-${certList}`;
+    const rawReply = `Here are Naphier’s verified certifications:\n\n${certGroupsText}`;
 
     return finalize(rawReply, "deterministic-certifications");
   }
@@ -559,7 +571,7 @@ You can ask me for architectural details, tech stack info, or live demos for any
     query.conceptScores.navigation >= 0.5 ||
     /\b(can\s+i\s+see|where\s+can\s+i\s+see|open|view|visit|link\s+to|demo)\b/i.test(normText)
   ) {
-    const rawReply = `You can explore all featured projects in the [Projects section](/projects), review his [Experience](/work), or inspect the [Tech Stack](/tech-stack).`;
+    const rawReply = `You can explore all featured projects in the [Projects section](/projects), review his [Experience](/experience), or inspect the [Tech Stack](/tech-stack).`;
     return finalize(rawReply, "deterministic-nav-general");
   }
 

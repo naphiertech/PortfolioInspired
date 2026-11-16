@@ -1,19 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { techSections } from "@/lib/data";
-import { TechIcon } from "./TechIcon";
 import { SectionHeader } from "./SectionHeader";
 import { useUISound } from "@/context/SoundContext";
 import { CircuitPlatform } from "./CircuitPlatform";
 import circuitStyles from "./CircuitPlatform.module.css";
+import { TechIconTile, getTileTiltAngle } from "./TechIconTile";
 import {
   sectionContainerVariants,
   staggeredGridVariants,
   gridItemVariants,
-  sectionLineVariants,
 } from "@/lib/motion";
 
 // Map section titles to code-syntax category tags
@@ -74,61 +72,64 @@ export function TechStack() {
         className="mb-2 pb-2 border-b border-border-hairline/40"
       />
 
-      {/* Core Categories with Code-Syntax Headings and Vector-Icon Pills */}
+      {/* Core Categories with Minimal Side Tags and Full-Color Tilted Icon Tiles */}
       <motion.div
         variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-        className={`space-y-3.5 ${circuitStyles.environment}`}
+        className={`space-y-4 sm:space-y-5 ${circuitStyles.environment}`}
       >
-        {displayedSections.map((section) => {
+        {displayedSections.map((section, catIdx) => {
           const syntaxTag =
             categorySyntaxMap[section.title] ||
             `<${section.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}/>`;
+          const isCategoryConnected = section.items.some((tech) =>
+            connected(section.title, tech),
+          );
 
           return (
             <motion.div
               key={section.title}
               variants={shouldReduceMotion ? undefined : gridItemVariants}
-              className={`space-y-2.5 ${circuitStyles.category}`}
-              data-connected={section.items.some(tech => connected(section.title, tech))}
+              className={`grid grid-cols-1 md:grid-cols-[148px_minmax(0,1fr)] gap-1.5 md:gap-4 items-start ${circuitStyles.category}`}
+              data-branch={catIdx}
+              data-connected={isCategoryConnected}
               onPointerEnter={() => setHovered({ category: section.title })}
               onPointerLeave={() => setHovered(null)}
             >
-              {/* Category Code Header with Drawing Rule */}
-              <div className="flex items-center gap-2">
-                <h3 className="font-mono text-xs text-muted-foreground lowercase">
-                  {syntaxTag}
-                </h3>
-                <motion.div
-                  variants={shouldReduceMotion ? undefined : sectionLineVariants}
-                  className="h-[1px] flex-1 bg-border-hairline/30 origin-left"
+              {/* Minimal Side Rail Node & Code Tag */}
+              <div className="flex items-center gap-2 md:my-1.5 md:h-12">
+                <span
+                  aria-hidden="true"
+                  className={`w-1.5 h-1.5 rounded-[1.5px] flex-shrink-0 ${circuitStyles.branchDot}`}
                 />
+                <h3
+                  className={`text-xs lowercase transition-colors duration-150 ${
+                    isCategoryConnected ? "text-ink" : "text-ink/70"
+                  }`}
+                >
+                  <code className="font-mono whitespace-nowrap">{syntaxTag}</code>
+                </h3>
               </div>
 
-              {/* Vector Icon Tech Stack Pills */}
-              <div className="flex flex-wrap gap-2">
-                {section.items.map((tech) => (
-                  <Link
-                    key={tech}
-                    href={`/experience?tech=${encodeURIComponent(tech.toLowerCase())}#tech-stack`}
-                    prefetch={false}
-                    onMouseEnter={playHover}
-                    onPointerEnter={() => setHovered({ category: section.title, tech })}
-                    onPointerLeave={() => setHovered({ category: section.title })}
-                    onFocus={() => setFocused({ category: section.title, tech })}
-                    onBlur={() => setFocused(null)}
-                    onClick={playClick}
-                    data-connected={connected(section.title, tech)}
-                    data-muted={!!selection && !connected(section.title, tech)}
-                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-surface/50 border border-border-hairline hover:border-border-hairline hover:bg-surface text-ink text-xs font-sans transition-colors cursor-pointer shadow-2xs group ${circuitStyles.chip}`}
-                    title={`View projects built with ${tech}`}
-                  >
-                    <TechIcon
+              {/* Spaced Full-Color Tilted Icon-Only Tiles */}
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-3.5 py-1.5">
+                  {section.items.map((tech, idx) => (
+                    <TechIconTile
+                      key={tech}
                       name={tech}
-                      className="w-3.5 h-3.5 text-muted-foreground group-hover:text-ink transition-colors flex-shrink-0"
+                      tiltAngle={getTileTiltAngle(idx, catIdx)}
+                      href={`/experience?tech=${encodeURIComponent(tech.toLowerCase())}#tech-stack`}
+                      dataConnected={connected(section.title, tech)}
+                      dataMuted={!!selection && !connected(section.title, tech)}
+                      onMouseEnter={playHover}
+                      onPointerEnter={() => setHovered({ category: section.title, tech })}
+                      onPointerLeave={() => setHovered({ category: section.title })}
+                      onFocus={() => setFocused({ category: section.title, tech })}
+                      onBlur={() => setFocused(null)}
+                      onClick={playClick}
                     />
-                    <span>{tech}</span>
-                  </Link>
-                ))}
+                  ))}
+                </div>
               </div>
             </motion.div>
           );

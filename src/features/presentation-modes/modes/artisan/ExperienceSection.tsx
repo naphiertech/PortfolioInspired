@@ -58,7 +58,12 @@ import {
 import { FaReact, FaDocker } from "react-icons/fa6";
 import { RiSupabaseFill, RiOpenaiFill } from "react-icons/ri";
 import { VscVscode } from "react-icons/vsc";
-import { techSections, certifications, CertificationItem } from "@/lib/data";
+import {
+  techSections,
+  certifications,
+  CertificationItem,
+  getCertificationGroups,
+} from "@/lib/data";
 import { EXPERIENCE_DATA, EDUCATION_DATA } from "./data";
 
 interface ExperienceSectionProps {
@@ -291,7 +296,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
           </div>
 
           {/* Certifications Section */}
-          <div id="certifications" className="space-y-5 pt-4 border-t border-black/10 dark:border-white/10 scroll-mt-20">
+          <div id="certifications" className="space-y-6 pt-4 border-t border-black/10 dark:border-white/10 scroll-mt-20">
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-mono text-xl font-semibold tracking-wider text-foreground">
                 Certifications
@@ -301,13 +306,28 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-              {certifications.map((cert) => (
-                <CertificationBadgeCard
-                  key={cert.name}
-                  cert={cert}
-                  onSelect={setSelectedCert}
-                />
+            <div className="space-y-6">
+              {getCertificationGroups().map((group) => (
+                <div key={group.id} className="space-y-3">
+                  <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-black/[0.06] dark:border-white/[0.06]">
+                    <h4 className="font-sans text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                      {group.label}
+                    </h4>
+                    <span className="font-mono text-[11px] text-muted-foreground/80 tabular-nums">
+                      {String(group.items.length).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                    {group.items.map((cert) => (
+                      <CertificationBadgeCard
+                        key={cert.name}
+                        cert={cert}
+                        onSelect={setSelectedCert}
+                      />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>

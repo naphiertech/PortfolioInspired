@@ -93,6 +93,37 @@ export function NotesPageClient() {
           </Link>
         ))}
       </div>
+      {/* Topic Index & Cross-Links */}
+      <section
+        aria-label="Topics and related work"
+        className="mt-10 pt-6 border-t border-border-divider flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
+        <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed max-w-xl">
+          Essays cover{" "}
+          {Array.from(new Set(fieldNotes.flatMap((n) => n.tags))).join(", ")}{" "}
+          — distilled from shipping production applications and design systems.
+        </p>
+        <div className="flex items-center gap-4 shrink-0 font-mono text-xs">
+          <Link
+            href="/projects"
+            onMouseEnter={playHover}
+            onClick={playClick}
+            className="text-muted-foreground hover:text-ink transition-colors inline-flex items-center gap-1"
+          >
+            <span>Projects</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+          <Link
+            href="/experience"
+            onMouseEnter={playHover}
+            onClick={playClick}
+            className="text-muted-foreground hover:text-ink transition-colors inline-flex items-center gap-1"
+          >
+            <span>Experience</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

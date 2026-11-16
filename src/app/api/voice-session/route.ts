@@ -3,7 +3,7 @@ import {
   fullProjects,
   techSections,
   experiences,
-  certifications,
+  getCertificationGroups,
   currentBuild,
   coreTechStack,
   workCapabilities,
@@ -51,8 +51,17 @@ function buildVoiceSystemInstruction(
     .map((e) => `- ${e.role} at ${e.company} (${e.year}): ${e.description || ""}`)
     .join("\n");
 
-  const certSummaries = certifications
-    .map((c) => `- ${c.name} (${c.issuer}${c.code ? `, ID: ${c.code}` : ""})`)
+  const certSummaries = getCertificationGroups()
+    .map(
+      (g) =>
+        `[${g.label}]\n` +
+        g.items
+          .map(
+            (c) =>
+              `- ${c.name} (${c.issuer}${c.issuedAt ? `, Issued ${c.issuedAt}` : ""}${c.code ? `, ID: ${c.code}` : ""})`
+          )
+          .join("\n")
+    )
     .join("\n");
 
   const notesSummaries = fieldNotes
@@ -189,7 +198,7 @@ function buildVoiceSystemInstruction(
     `     * Whenever the visitor says "scroll down", "keep scrolling", "scroll up", "go back to the top", or "scroll to the bottom", call "scroll_page" with target="down", "up", "top", or "bottom".`,
     `     * Whenever you talk about or are asked to go to a specific section, call "scroll_page" with the matching section target (if already on that page, it smoothly scrolls directly from the current position without re-running page transitions; if on another page, it switches tabs once and scrolls to the section):`,
     `       - My skills / full tech stack -> target="tech-stack" (Experience page #tech-stack)`,
-    `       - My certifications / Google / DICT certificates -> target="certifications" (Experience page #certifications)`,
+    `       - My certifications / Cisco / Google / DICT certificates -> target="certifications" (Experience page #certifications)`,
     `       - My education at ZPPSU -> target="education" (Experience page #education)`,
     `       - My work timeline / jobs -> target="work" (Experience page #work)`,
     `       - My bio / profile story -> target="about-bio" (About page #about-bio)`,

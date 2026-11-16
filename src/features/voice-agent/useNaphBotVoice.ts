@@ -78,7 +78,7 @@ const TAB_SECTIONS: Record<string, string[]> = {
 const TAB_CONTENT_SUMMARY: Record<string, string> = {
   home: "Interactive 3D developer workspace, bio intro, Let's Talk contact menu, Core Stack pills, and Certifications preview.",
   about: "Sections: #about-bio (Profile & bio), #about-gear (Workspace & Gear: ASUS Vivobook 16, Mloong MX301, Z-G61 Mechanical, AI/Dev tools), #about-moments (Moments & Memories photo gallery), #about-philosophy (How I Build principles).",
-  experience: "Sections: #work (Work Experience timeline), #tech-stack (Categorized Skills & Tech Stack), #certifications (Verified Google & DICT Certifications), #education (BSIT at ZPPSU).",
+  experience: "Sections: #work (Work Experience timeline), #tech-stack (Categorized Skills & Tech Stack), #certifications (Verified Cisco, Google & DICT Certifications), #education (BSIT at ZPPSU).",
   projects: "Sections: #projects-stage (Interactive MacBook Pro preview stage), #projects-index (Full project archive: MKBRiderTrack, AssetLink, MovieStream, Naphix Résumé).",
   notes: "Sections: #notes-list (Engineering Field Notes & Journal essays).",
 };

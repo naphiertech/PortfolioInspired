@@ -1,48 +1,18 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { LuArrowUpRight, LuAward, LuX } from "react-icons/lu";
-import type { CertificationItem } from "@/lib/data";
-
-function GoogleLogo({ className = "size-5" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-        fill="#4285F4"
-      />
-      <path
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-        fill="#34A853"
-      />
-      <path
-        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-        fill="#FBBC05"
-      />
-      <path
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-        fill="#EA4335"
-      />
-    </svg>
-  );
-}
-
-function DICTLogo({ className = "size-5" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <circle cx="24" cy="24" r="22" className="fill-slate-900 stroke-blue-500/40" strokeWidth="1.5" />
-      <circle cx="24" cy="24" r="17" stroke="#38BDF8" strokeWidth="1.2" strokeDasharray="3 2" opacity="0.8" />
-      <circle cx="24" cy="24" r="8.5" fill="#1E3A8A" />
-      <path d="M24 16 L31 24 L24 32 Z" fill="#DC2626" opacity="0.9" />
-      <path d="M24 16 L17 24 L24 32 Z" fill="#2563EB" opacity="0.9" />
-      <circle cx="24" cy="24" r="3.2" fill="#FBBF24" />
-      <path d="M14 18 A14 14 0 0 1 34 18" stroke="#FBBF24" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M17 20 A10 10 0 0 1 31 20" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
+import { LuArrowUpRight, LuX } from "react-icons/lu";
+import {
+  CertificationItem,
+  hasPreviewableDocument,
+  isPdfCertificate,
+} from "@/lib/data";
+import {
+  IssuerLogo,
+  CertificationDocumentPreview,
+  getCertificationMetaText,
+} from "@/components/CertificationShared";
 
 function LaurelBranch({ flip = false }: { flip?: boolean }) {
   return (
@@ -69,20 +39,6 @@ function LaurelBranch({ flip = false }: { flip?: boolean }) {
   );
 }
 
-function getCertIcon(cert: CertificationItem) {
-  if (cert.tag === "GOOGLE" || cert.issuer.includes("Google")) {
-    return <GoogleLogo className="size-5" />;
-  }
-  if (
-    cert.tag === "DICT" ||
-    cert.issuer.includes("DICT") ||
-    cert.issuer.includes("Information and Communications")
-  ) {
-    return <DICTLogo className="size-5" />;
-  }
-  return <LuAward className="size-5 text-foreground/80" aria-hidden="true" />;
-}
-
 interface CertificationBadgeCardProps {
   cert: CertificationItem;
   onSelect: (cert: CertificationItem) => void;
@@ -90,7 +46,7 @@ interface CertificationBadgeCardProps {
 
 /** Framed credential badge reusing the editorial double-border and laurel motif. */
 export function CertificationBadgeCard({ cert, onSelect }: CertificationBadgeCardProps) {
-  const hasPreview = Boolean(cert.href && cert.href !== "#");
+  const hasPreview = hasPreviewableDocument(cert);
 
   return (
     <button
@@ -106,7 +62,7 @@ export function CertificationBadgeCard({ cert, onSelect }: CertificationBadgeCar
     >
       <div className="h-full rounded-xl border border-black/10 dark:border-white/10 bg-background px-4 py-5 flex flex-col items-center justify-between gap-4 transition-colors group-hover:border-black/20 dark:group-hover:border-white/20">
         <div className="size-11 rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.03] flex items-center justify-center shadow-2xs shrink-0">
-          {getCertIcon(cert)}
+          <IssuerLogo cert={cert} className="size-5" />
         </div>
 
         <div className="space-y-1.5">
@@ -115,13 +71,14 @@ export function CertificationBadgeCard({ cert, onSelect }: CertificationBadgeCar
           </h4>
           <span className="block font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {cert.tag || "VERIFIED"}
+            {cert.issuedAt ? ` · ${cert.issuedAt}` : ""}
           </span>
         </div>
 
         <div className="inline-flex items-center gap-1.5 pt-0.5">
           <LaurelBranch />
           <span className="font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground group-hover:text-foreground transition-colors">
-            {hasPreview ? "Verify" : "Verified"}
+            {hasPreview ? "Inspect" : "Verified"}
           </span>
           <LaurelBranch flip />
         </div>
@@ -135,7 +92,7 @@ interface CertificationPreviewModalProps {
   onClose: () => void;
 }
 
-/** Shared certificate lightbox with Escape dismissal and full-image action. */
+/** Shared certificate lightbox with Escape dismissal, PDF support, and Credly/document links. */
 export function CertificationPreviewModal({
   selectedCert,
   onClose,
@@ -152,6 +109,8 @@ export function CertificationPreviewModal({
     window.addEventListener("keydown", handleKeyDown, true);
     return () => window.removeEventListener("keydown", handleKeyDown, true);
   }, [selectedCert, onClose]);
+
+  const metaText = selectedCert ? getCertificationMetaText(selectedCert) : null;
 
   return (
     <AnimatePresence>
@@ -187,9 +146,9 @@ export function CertificationPreviewModal({
                       {selectedCert.tag}
                     </span>
                   )}
-                  {selectedCert.code && (
+                  {metaText && (
                     <span className="text-[11px] font-sans text-muted-foreground truncate">
-                      ID: {selectedCert.code}
+                      {metaText}
                     </span>
                   )}
                 </div>
@@ -211,29 +170,38 @@ export function CertificationPreviewModal({
               </button>
             </div>
 
-            <div className="relative w-full aspect-[4/3] bg-muted/30">
-              <Image
-                src={selectedCert.href}
-                alt={selectedCert.name}
-                fill
-                sizes="(max-width: 768px) 95vw, 672px"
-                className="object-contain p-3 sm:p-5"
-              />
+            <div className="bg-muted/30">
+              <CertificationDocumentPreview cert={selectedCert} />
             </div>
 
-            <div className="px-4 py-3 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-2 bg-muted/10">
+            <div className="px-4 py-3 border-t border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 bg-muted/10">
               <span className="text-xs font-sans text-muted-foreground">
                 Verified Credential
               </span>
-              <a
-                href={selectedCert.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-foreground hover:underline"
-              >
-                <span>Open Full Image</span>
-                <LuArrowUpRight className="size-3.5" aria-hidden="true" />
-              </a>
+              <div className="flex items-center gap-4">
+                {selectedCert.verifyUrl && (
+                  <a
+                    href={selectedCert.verifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-foreground hover:underline"
+                  >
+                    <span>Verify on Credly</span>
+                    <LuArrowUpRight className="size-3.5" aria-hidden="true" />
+                  </a>
+                )}
+                <a
+                  href={selectedCert.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-foreground hover:underline"
+                >
+                  <span>
+                    {isPdfCertificate(selectedCert) ? "Open PDF" : "Open Full Image"}
+                  </span>
+                  <LuArrowUpRight className="size-3.5" aria-hidden="true" />
+                </a>
+              </div>
             </div>
           </motion.div>
         </motion.div>

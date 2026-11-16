@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { NotesPresentationRoot } from "@/features/presentation-modes/components/NotesPresentationRoot";
+import { fieldNotes } from "@/lib/fieldNotes";
+import { buildCollectionPageJsonLd } from "@/lib/seoSchemas";
 import { SITE_URL, SITE_NAME } from "@/lib/siteConfig";
+
+const NOTES_DESCRIPTION =
+  "Personal engineering notes index on software, UI/UX, architecture, AI-assisted development, performance, and engineering.";
 
 export const metadata: Metadata = {
   title: "Field Notes — Engineering & Design Journal",
-  description:
-    "Personal engineering notes index on software, UI/UX, architecture, AI-assisted development, performance, and engineering.",
+  description: NOTES_DESCRIPTION,
   alternates: {
     canonical: `${SITE_URL}/notes`,
   },
@@ -26,5 +30,25 @@ export const metadata: Metadata = {
 };
 
 export default function NotesIndexPage() {
-  return <NotesPresentationRoot />;
+  const jsonLd = buildCollectionPageJsonLd({
+    path: "/notes",
+    name: "Field Notes — Engineering & Design Journal",
+    description: NOTES_DESCRIPTION,
+    breadcrumbName: "Field Notes",
+    items: fieldNotes.map((note) => ({
+      name: note.title,
+      url: `/notes/${note.slug}`,
+      description: note.excerpt,
+    })),
+  });
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <NotesPresentationRoot />
+    </>
+  );
 }

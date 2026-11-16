@@ -3,11 +3,9 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowRight,
   ExternalLink,
-  Award,
   X,
   Eye,
   CheckCircle2,
@@ -17,11 +15,21 @@ import {
   techSections,
   certifications,
   CertificationItem,
+  getCertificationGroups,
+  hasPreviewableDocument,
+  isPdfCertificate,
+  getVerifyHref,
   getProjectsUsingTech,
   getCanonicalTechName,
   normalizeTechName,
 } from "@/lib/data";
-import { TechIcon } from "@/components/TechIcon";
+import {
+  IssuerLogo,
+  CertificationTagBadge,
+  getCertificationMetaText,
+  CertificationDocumentPreview,
+} from "@/components/CertificationShared";
+import { TechIconTile, getTileTiltAngle } from "@/components/TechIconTile";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 
@@ -33,84 +41,6 @@ const categorySyntaxMap: Record<string, string> = {
   "Animation & Design": "<DESIGN-ANIMATION/>",
   "DevOps & Tools": "<DEVOPS-TOOLS/>",
 };
-
-function GoogleLogo({ className = "w-5 h-5" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-        fill="#4285F4"
-      />
-      <path
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-        fill="#34A853"
-      />
-      <path
-        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-        fill="#FBBC05"
-      />
-      <path
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-        fill="#EA4335"
-      />
-    </svg>
-  );
-}
-
-function DICTLogo({ className = "w-5 h-5" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <circle cx="24" cy="24" r="22" className="fill-slate-900 stroke-blue-500/40" strokeWidth="1.5" />
-      <circle cx="24" cy="24" r="17" stroke="#38BDF8" strokeWidth="1.2" strokeDasharray="3 2" opacity="0.8" />
-      <circle cx="24" cy="24" r="8.5" fill="#1E3A8A" />
-      <path d="M24 16 L31 24 L24 32 Z" fill="#DC2626" opacity="0.9" />
-      <path d="M24 16 L17 24 L24 32 Z" fill="#2563EB" opacity="0.9" />
-      <circle cx="24" cy="24" r="3.2" fill="#FBBF24" />
-      <path d="M14 18 A14 14 0 0 1 34 18" stroke="#FBBF24" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M17 20 A10 10 0 0 1 31 20" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function getIssuerLogo(cert: CertificationItem) {
-  if (cert.tag === "GOOGLE" || cert.issuer.includes("Google")) {
-    return <GoogleLogo />;
-  }
-  if (
-    cert.tag === "DICT" ||
-    cert.issuer.includes("DICT") ||
-    cert.issuer.includes("Information and Communications")
-  ) {
-    return <DICTLogo />;
-  }
-  return <Award className="w-5 h-5 text-muted-foreground" />;
-}
-
-function getTagBadge(cert: CertificationItem) {
-  if (cert.tag === "GOOGLE" || cert.issuer.includes("Google")) {
-    return (
-      <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-        GOOGLE
-      </span>
-    );
-  }
-  if (
-    cert.tag === "DICT" ||
-    cert.issuer.includes("DICT") ||
-    cert.issuer.includes("Information and Communications")
-  ) {
-    return (
-      <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-        DICT
-      </span>
-    );
-  }
-  return (
-    <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 rounded bg-muted-subtle text-muted-foreground border border-border-hairline">
-      CREDENTIAL
-    </span>
-  );
-}
 
 /**
  * Shared interactive Technical Stack & Tools section used by /experience and /tech-stack.
@@ -188,9 +118,9 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
           return (
             <div
               key={category.title}
-              className="py-5 sm:py-6 flex flex-col md:flex-row md:items-start gap-3 md:gap-8"
+              className="relative py-5 sm:py-6 flex flex-col md:flex-row md:items-start gap-3 md:gap-6 hover:z-10 focus-within:z-10"
             >
-              <div className="md:w-44 lg:w-48 flex-shrink-0 flex md:flex-col justify-between md:justify-start items-baseline md:items-start gap-1 pb-1 md:pb-0 border-b md:border-b-0 border-black/[0.04] dark:border-white/[0.04]">
+              <div className="md:w-40 lg:w-44 flex-shrink-0 flex md:flex-col justify-between md:justify-start items-baseline md:items-start gap-1 pb-1 md:pb-0 border-b md:border-b-0 border-black/[0.04] dark:border-white/[0.04]">
                 <div className="flex items-baseline gap-2">
                   <span className="font-mono text-xs font-semibold text-emerald-500/70 dark:text-emerald-400/70 select-none">
                     {categoryNumber}
@@ -205,37 +135,22 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
               </div>
 
               <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap gap-2 sm:gap-2.5">
-                  {category.items.map((item) => {
+                <div className="flex flex-wrap items-center gap-3 sm:gap-3.5 py-1.5">
+                  {category.items.map((item, itemIdx) => {
                     const isSelected =
                       selectedTech !== null &&
                       normalizeTechName(selectedTech) === normalizeTechName(item);
 
                     return (
-                      <button
+                      <TechIconTile
                         key={item}
-                        type="button"
+                        name={item}
+                        tiltAngle={getTileTiltAngle(itemIdx, index)}
+                        ariaPressed={isSelected}
+                        isSelected={isSelected}
                         onClick={() => handleTechClick(item)}
                         onMouseEnter={playHover}
-                        aria-pressed={isSelected}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[5px] text-xs font-sans transition-all duration-150 cursor-pointer ${
-                          isSelected
-                            ? "border border-emerald-500/50 dark:border-emerald-500/40 bg-emerald-500/[0.08] text-ink font-semibold"
-                            : "border border-black/[0.08] dark:border-white/[0.08] bg-transparent text-body hover:border-black/20 dark:hover:border-white/20 hover:text-ink hover:bg-black/[0.02] dark:hover:bg-white/[0.02]"
-                        }`}
-                        title={`Filter projects using ${item}`}
-                      >
-                        {isSelected && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 dark:bg-emerald-400/80 animate-pulse flex-shrink-0" />
-                        )}
-                        <TechIcon
-                          name={item}
-                          className={`w-3.5 h-3.5 ${
-                            isSelected ? "text-ink" : "text-muted-foreground"
-                          }`}
-                        />
-                        <span>{item}</span>
-                      </button>
+                      />
                     );
                   })}
                 </div>
@@ -344,6 +259,7 @@ export function CertificationsSection() {
   const { playHover, playClick } = useUISound();
   const [previewCert, setPreviewCert] = useState<CertificationItem | null>(null);
   const [mounted, setMounted] = useState(false);
+  const certGroups = useMemo(() => getCertificationGroups(), []);
 
   useEffect(() => {
     setMounted(true);
@@ -373,81 +289,100 @@ export function CertificationsSection() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {certifications.map((cert) => {
-            const hasPreviewImage =
-              cert.href &&
-              (cert.href.endsWith(".png") ||
-                cert.href.endsWith(".jpg") ||
-                cert.href.endsWith(".webp"));
-
-            return (
-              <div
-                key={cert.name}
-                className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 transition-all duration-200 flex flex-col justify-between group shadow-2xs relative overflow-hidden"
-              >
-                <div className="space-y-3.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs">
-                      {getIssuerLogo(cert)}
-                    </div>
-                    {getTagBadge(cert)}
-                  </div>
-
-                  <div className="space-y-1">
-                    <h3 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors line-clamp-2 leading-snug">
-                      {cert.name}
-                    </h3>
-                    <p className="font-sans text-xs text-muted-foreground line-clamp-2">
-                      Issued by <span className="text-body font-medium">{cert.issuer}</span>
-                    </p>
-                  </div>
+        <div className="space-y-8">
+          {certGroups.map((group) => (
+            <div key={group.id} className="space-y-3.5">
+              <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-border-hairline/50">
+                <div className="flex items-center gap-2 min-w-0">
+                  <h3 className="font-sans text-xs font-semibold text-ink tracking-wide uppercase">
+                    {group.label}
+                  </h3>
+                  <span className="font-mono text-[10px] text-muted-foreground/70 hidden sm:inline">
+                    {group.syntaxLabel}
+                  </span>
                 </div>
-
-                <div className="pt-3 mt-3 border-t border-border-hairline/40 flex items-center justify-between gap-2">
-                  {cert.code ? (
-                    <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline truncate max-w-[170px]">
-                      ID: {cert.code}
-                    </span>
-                  ) : (
-                    <span className="font-mono text-[10px] text-muted-foreground/60 italic">
-                      Verified
-                    </span>
-                  )}
-
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    {hasPreviewImage && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          playClick();
-                          setPreviewCert(cert);
-                        }}
-                        onMouseEnter={playHover}
-                        className="tactile-btn gap-1 text-xs px-2.5 py-1"
-                        title={`Inspect certificate for ${cert.name}`}
-                      >
-                        <Eye className="w-3 h-3 opacity-70" />
-                        <span>Inspect</span>
-                      </button>
-                    )}
-
-                    {cert.href && cert.href !== "#" && (
-                      <a
-                        href={cert.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="tactile-btn gap-1 text-xs px-2.5 py-1"
-                      >
-                        <ExternalLink className="w-3 h-3 opacity-70" />
-                        <span>Verify</span>
-                      </a>
-                    )}
-                  </div>
-                </div>
+                <span className="font-mono text-[11px] text-muted-foreground tabular-nums shrink-0">
+                  {String(group.items.length).padStart(2, "0")}
+                </span>
               </div>
-            );
-          })}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {group.items.map((cert) => {
+                  const hasPreview = hasPreviewableDocument(cert);
+                  const verifyHref = getVerifyHref(cert);
+                  const metaText = getCertificationMetaText(cert);
+
+                  return (
+                    <div
+                      key={cert.name}
+                      className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 transition-all duration-200 flex flex-col justify-between group shadow-2xs relative overflow-hidden"
+                    >
+                      <div className="space-y-3.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs">
+                            <IssuerLogo cert={cert} />
+                          </div>
+                          <CertificationTagBadge cert={cert} />
+                        </div>
+
+                        <div className="space-y-1">
+                          <h4 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors line-clamp-2 leading-snug">
+                            {cert.name}
+                          </h4>
+                          <p className="font-sans text-xs text-muted-foreground line-clamp-2">
+                            Issued by <span className="text-body font-medium">{cert.issuer}</span>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="pt-3 mt-3 border-t border-border-hairline/40 flex items-center justify-between gap-2">
+                        {metaText ? (
+                          <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline truncate max-w-[170px]">
+                            {metaText}
+                          </span>
+                        ) : (
+                          <span className="font-mono text-[10px] text-muted-foreground/60 italic">
+                            Verified
+                          </span>
+                        )}
+
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {hasPreview && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                playClick();
+                                setPreviewCert(cert);
+                              }}
+                              onMouseEnter={playHover}
+                              className="tactile-btn gap-1 text-xs px-2.5 py-1"
+                              title={`Inspect certificate for ${cert.name}`}
+                            >
+                              <Eye className="w-3 h-3 opacity-70" />
+                              <span>Inspect</span>
+                            </button>
+                          )}
+
+                          {verifyHref && (
+                            <a
+                              href={verifyHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={cert.verifyUrl ? "Verify badge on Credly" : `Verify ${cert.name}`}
+                              className="tactile-btn gap-1 text-xs px-2.5 py-1"
+                            >
+                              <ExternalLink className="w-3 h-3 opacity-70" />
+                              <span>Verify</span>
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
@@ -477,14 +412,10 @@ export function CertificationsSection() {
             <div className="px-4 py-3 border-b border-border-hairline flex items-center justify-between gap-3 bg-surface/90">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  {previewCert.tag && (
-                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-brand/10 text-brand border border-brand/20">
-                      {previewCert.tag}
-                    </span>
-                  )}
-                  {previewCert.code && (
+                  <CertificationTagBadge cert={previewCert} />
+                  {getCertificationMetaText(previewCert) && (
                     <span className="text-xs font-mono text-muted-foreground truncate">
-                      ID: {previewCert.code}
+                      {getCertificationMetaText(previewCert)}
                     </span>
                   )}
                 </div>
@@ -506,34 +437,37 @@ export function CertificationsSection() {
               </button>
             </div>
 
-            {previewCert.href && (
-              <div className="relative w-full aspect-[4/3] bg-black/40">
-                <Image
-                  src={previewCert.href}
-                  alt={previewCert.name}
-                  fill
-                  sizes="(max-width: 768px) 95vw, 672px"
-                  className="object-contain p-3 sm:p-5"
-                />
-              </div>
-            )}
+            <CertificationDocumentPreview cert={previewCert} />
 
-            <div className="px-4 py-2.5 border-t border-border-hairline flex items-center justify-between gap-2 bg-surface/50 font-mono text-xs">
+            <div className="px-4 py-2.5 border-t border-border-hairline flex flex-wrap items-center justify-between gap-2 bg-surface/50 font-mono text-xs">
               <span className="text-muted-foreground flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                 Verified Credential Document
               </span>
-              {previewCert.href && (
-                <a
-                  href={previewCert.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-ink hover:text-brand font-medium transition-colors"
-                >
-                  <span>Open Full Size</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              )}
+              <div className="flex items-center gap-3">
+                {previewCert.verifyUrl && (
+                  <a
+                    href={previewCert.verifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-brand hover:underline font-medium transition-colors"
+                  >
+                    <span>Verify on Credly</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+                {previewCert.href && previewCert.href !== "#" && (
+                  <a
+                    href={previewCert.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-ink hover:text-brand font-medium transition-colors"
+                  >
+                    <span>{isPdfCertificate(previewCert) ? "Open PDF" : "Open Full Size"}</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>,

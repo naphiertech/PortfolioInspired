@@ -157,7 +157,7 @@ export function buildPortfolioVocabulary(): VocabularyItem[] {
   add("projects", "topic", ["projects", "project", "apps", "app", "work", "builds"], "PROJECT_QUERY");
   add("experience", "topic", ["experience", "work", "job", "career", "history"], "EXPERIENCE_QUERY");
   add("education", "topic", ["education", "school", "university", "degree", "college", "zppsu", "bsit"], "EDUCATION_QUERY");
-  add("certifications", "topic", ["certifications", "certification", "certs", "credentials"], "EDUCATION_QUERY");
+  add("certifications", "topic", ["certifications", "certification", "certs", "credentials", "cisco", "netacad", "credly", "cybersecurity"], "EDUCATION_QUERY");
   add("stack", "topic", ["stack", "techstack", "toolchain", "technologies", "tools"], "TECHNOLOGY_QUERY");
   add("contact", "topic", ["contact", "email", "reach", "hire", "social"], "CONTACT_QUERY");
   add("github", "contact", ["github", "gh", "githb", "repo", "repository"], "CONTACT_QUERY");

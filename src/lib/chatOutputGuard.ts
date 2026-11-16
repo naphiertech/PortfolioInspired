@@ -103,6 +103,8 @@ export function inspectGeneratedOutput(generatedText: string): OutputGuardResult
       "mkbridertrack.vercel.app",
       "naphix-resume.netlify.app",
       "phierplay.pages.dev",
+      "credly.com",
+      "www.credly.com",
       "naphier.tech",
       "naphierawalie.tech",
       "www.naphierawalie.tech",

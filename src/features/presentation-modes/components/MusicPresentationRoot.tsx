@@ -1,25 +1,15 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React from "react";
 import { usePresentationMode } from "../context/PresentationModeContext";
-import dynamic from "next/dynamic";
+import { ArtisanPortfolioLayout } from "../modes/artisan/ArtisanPortfolioLayout";
 import { MusicSection } from "../modes/artisan/MusicSection";
-
-const ArtisanPortfolioLayout = dynamic(
-  () =>
-    import("../modes/artisan/ArtisanPortfolioLayout").then(
-      (mod) => mod.ArtisanPortfolioLayout
-    ),
-  {
-    loading: () => <div className="min-h-screen bg-background" />,
-  }
-);
 
 /**
  * MusicPresentationRoot
  *
  * Presentation-aware dispatcher for /music.
- * Renders full Artisan studio shell in Agent/Artisan mode,
+ * Renders full Artisan studio shell synchronously for SSR in Agent/Artisan mode,
  * or standalone editorial Music listening room in other modes.
  */
 export function MusicPresentationRoot() {
@@ -28,9 +18,10 @@ export function MusicPresentationRoot() {
 
   if (mode === "agent") {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-background" />}>
-        <ArtisanPortfolioLayout defaultTab="music" />
-      </Suspense>
+      <ArtisanPortfolioLayout
+        defaultTab="music"
+        initialSectionNode={<MusicSection />}
+      />
     );
   }
 

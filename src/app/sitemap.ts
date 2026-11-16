@@ -3,56 +3,70 @@ import { fullProjects } from "@/lib/data";
 import { fieldNotes } from "@/lib/fieldNotes";
 import { SITE_URL } from "@/lib/siteConfig";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const currentDate = new Date();
+const SITE_RELEASE_DATE = new Date("2026-11-16T00:00:00.000Z");
 
+function parseNoteLastModified(dotDate: string): Date {
+  const match = /^(\d{4})\.(\d{2})$/.exec(dotDate.trim());
+  if (!match) return SITE_RELEASE_DATE;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  return new Date(Date.UTC(year, Math.max(0, month - 1), 1));
+}
+
+function parseProjectLastModified(yearStr: string): Date {
+  const year = Number(yearStr);
+  if (!Number.isFinite(year) || year < 2020) return SITE_RELEASE_DATE;
+  return year >= 2026 ? SITE_RELEASE_DATE : new Date(Date.UTC(year, 11, 1));
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
   // Static core routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}`,
-      lastModified: currentDate,
+      lastModified: SITE_RELEASE_DATE,
       changeFrequency: "weekly",
       priority: 1.0,
     },
     {
       url: `${SITE_URL}/projects`,
-      lastModified: currentDate,
+      lastModified: SITE_RELEASE_DATE,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/experience`,
-      lastModified: currentDate,
+      lastModified: SITE_RELEASE_DATE,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/notes`,
-      lastModified: currentDate,
+      lastModified: parseNoteLastModified(fieldNotes[0]?.date || ""),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/certifications`,
-      lastModified: currentDate,
+      lastModified: SITE_RELEASE_DATE,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/tech-stack`,
-      lastModified: currentDate,
+      lastModified: SITE_RELEASE_DATE,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/music`,
-      lastModified: currentDate,
+      lastModified: new Date("2026-11-14T00:00:00.000Z"),
       changeFrequency: "monthly",
       priority: 0.75,
     },
     {
       url: `${SITE_URL}/resources`,
-      lastModified: currentDate,
+      lastModified: new Date("2026-11-14T00:00:00.000Z"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
@@ -61,7 +75,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic project detail routes derived from fullProjects
   const projectRoutes: MetadataRoute.Sitemap = fullProjects.map((project) => ({
     url: `${SITE_URL}/projects/${project.slug}`,
-    lastModified: currentDate,
+    lastModified: parseProjectLastModified(project.year),
     changeFrequency: "monthly",
     priority: 0.85,
   }));
@@ -69,7 +83,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic field note detail routes derived from fieldNotes
   const noteRoutes: MetadataRoute.Sitemap = fieldNotes.map((note) => ({
     url: `${SITE_URL}/notes/${note.slug}`,
-    lastModified: currentDate,
+    lastModified: parseNoteLastModified(note.date),
     changeFrequency: "monthly",
     priority: 0.75,
   }));

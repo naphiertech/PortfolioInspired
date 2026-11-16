@@ -3,6 +3,7 @@ import {
   techSections,
   experiences,
   certifications,
+  getCertificationGroups,
   currentBuild,
   coreTechStack,
   workCapabilities,
@@ -280,7 +281,7 @@ export function validatePortfolioLink(href: string): { isValid: boolean; normali
 
   // 1. Internal static routes
   if (["/", "/experience", "/work", "/projects", "/tech-stack", "/certifications", "/notes"].includes(trimmed)) {
-    return { isValid: true, normalizedHref: trimmed === "/work" || trimmed === "/tech-stack" || trimmed === "/certifications" ? "/experience" : trimmed, isExternal: false };
+    return { isValid: true, normalizedHref: trimmed === "/work" ? "/experience" : trimmed, isExternal: false };
   }
 
   // 2. Project detail route: /projects/:slug
@@ -320,10 +321,11 @@ export function validatePortfolioLink(href: string): { isValid: boolean; normali
     `mailto:${SOCIAL_PROFILES.email}`,
   ];
 
-  // Also allow verified live demo URLs from fullProjects
+  // Also allow verified live demo URLs from fullProjects and public credential verification URLs
   const liveUrls = fullProjects.map((p) => p.live).filter(Boolean) as string[];
+  const verifyUrls = certifications.map((c) => c.verifyUrl).filter(Boolean) as string[];
 
-  for (const trusted of [...trustedPrefixes, ...liveUrls]) {
+  for (const trusted of [...trustedPrefixes, ...liveUrls, ...verifyUrls]) {
     if (trimmed === trusted || trimmed.startsWith(trusted + "/")) {
       return { isValid: true, normalizedHref: trimmed, isExternal: true };
     }
@@ -432,9 +434,18 @@ ${learningsList}`;
     .map((s) => `  * ${s.title}: ${s.items.join(", ")}`)
     .join("\n");
 
-  // Format certifications
-  const certsSummary = certifications
-    .map((c) => `  * ${c.name} (${c.issuer}, Code: ${c.code || "N/A"}, Tag: ${c.tag || "Certification"})`)
+  // Format certifications grouped by tier
+  const certsSummary = getCertificationGroups()
+    .map(
+      (g) =>
+        `  [${g.label}]\n` +
+        g.items
+          .map(
+            (c) =>
+              `  * ${c.name} (${c.issuer}${c.issuedAt ? `, Issued: ${c.issuedAt}` : ""}, Code: ${c.code || "N/A"}, Tag: ${c.tag || "Certification"}${c.verifyUrl ? `, Verify: ${c.verifyUrl}` : ""})`
+          )
+          .join("\n")
+    )
     .join("\n");
 
   // Format experience timeline
@@ -500,7 +511,7 @@ The visitor is browsing the Tech Stack overview page (/tech-stack). Answer quest
       }
     } else if (pageContext.pageType === "work") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (WORK & AVAILABILITY):
-The visitor is viewing the Work & Experience page (/work). Highlight ${AUTHOR_INFO.shortName}'s experience timeline, student status at ${EDUCATION.abbreviation}, availability (${AVAILABILITY.label}; ${AVAILABILITY.lookingFor}), and contact options (email: ${SOCIAL_PROFILES.email}).`;
+The visitor is viewing the Experience & Background page (/experience). Highlight ${AUTHOR_INFO.shortName}'s experience timeline, student status at ${EDUCATION.abbreviation}, availability (${AVAILABILITY.label}; ${AVAILABILITY.lookingFor}), and contact options (email: ${SOCIAL_PROFILES.email}).`;
     } else if (pageContext.pageType === "certifications") {
       activeFocusInstructions = `ACTIVE PAGE CONTEXT (CERTIFICATIONS):
 The visitor is on the Certifications page (/certifications). Answer questions regarding ${AUTHOR_INFO.shortName}'s certifications based strictly on the provided certificate list.`;
@@ -613,7 +624,7 @@ GUIDELINES FOR RESPONSES (STRICT PORTFOLIO SCOPE)
    - When referencing or recommending projects, technologies, or sections, use standard markdown links with valid portfolio paths so visitors can navigate easily:
      * Project pages: [Project Title](/projects/<slug>) (e.g. ${projectLinks})
      * Filtered Tech: [Explore <Tech>](/tech-stack?tech=<canonical-tech-slug>) (e.g. [Explore Supabase](/tech-stack?tech=supabase), [Explore TypeScript](/tech-stack?tech=typescript))
-     * Sections: [View Projects](/projects), [View Tech Stack](/tech-stack), [View Certifications](/certifications), [View Work](/work)
+     * Sections: [View Projects](/projects), [View Tech Stack](/tech-stack), [View Certifications](/certifications), [View Experience](/experience)
      * Trusted external: [GitHub](${SOCIAL_PROFILES.github}), [LinkedIn](${SOCIAL_PROFILES.linkedin}), [Email ${AUTHOR_INFO.shortName}](mailto:${SOCIAL_PROFILES.email})
    - Do NOT output random, unverified, or third-party web links.`;
 }

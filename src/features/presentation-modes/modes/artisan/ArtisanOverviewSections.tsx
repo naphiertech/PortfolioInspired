@@ -6,12 +6,15 @@ import Image from "next/image";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { LuArrowUpRight } from "./ArtisanIcons";
 import { CertificationBadgeCard } from "./CertificationCard";
+import { ArtisanGithubContributions } from "./ArtisanGithubContributions";
 import {
   certifications,
   CertificationItem,
   fullProjects,
+  getFeaturedCertifications,
 } from "@/lib/data";
 import { fieldNotes } from "@/lib/fieldNotes";
+import { AUTHOR_INFO, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import { EXPERIENCE_DATA, EDUCATION_DATA } from "./data";
 
 export interface ArtisanSkillBadge {
@@ -43,11 +46,7 @@ export function ArtisanOverviewSections({
   const [activeIdx, setActiveIdx] = useState(deckProjects.length >= 2 ? 1 : 0);
 
   const featuredNotes = fieldNotes.slice(0, 3);
-  const featuredCerts = [
-    certifications[0],
-    certifications[2],
-    certifications[3],
-  ].filter((c): c is CertificationItem => Boolean(c));
+  const featuredCerts = getFeaturedCertifications(3);
 
   const handlePrevProject = () => {
     if (deckProjects.length === 0) return;
@@ -116,7 +115,19 @@ export function ArtisanOverviewSections({
       </section>
 
       {/* 02 — Projects */}
-      <section aria-labelledby="overview-projects-heading" className="space-y-4">
+      <section
+        aria-labelledby="overview-projects-heading"
+        className="space-y-4"
+        onKeyDown={(e) => {
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            handlePrevProject();
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            handleNextProject();
+          }
+        }}
+      >
         <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-black/10 dark:border-white/10">
           <h2 id="overview-projects-heading" className={SECTION_HEADING_CLASS}>
             <span className={SECTION_INDEX_CLASS}>02</span>
@@ -140,90 +151,85 @@ export function ArtisanOverviewSections({
             const slotPositionClass = isFront
               ? "z-20 opacity-100 translate-x-0 translate-y-0 rotate-0 scale-100"
               : slot === -1
-                ? "z-10 opacity-85 hover:opacity-100 -translate-x-11 sm:-translate-x-28 md:-translate-x-36 translate-y-4 -rotate-3 sm:-rotate-6 scale-[0.9] sm:scale-[0.92]"
-                : "z-10 opacity-85 hover:opacity-100 translate-x-11 sm:translate-x-28 md:translate-x-36 translate-y-4 rotate-3 sm:rotate-6 scale-[0.9] sm:scale-[0.92]";
+                ? "z-10 opacity-[0.86] hover:opacity-100 -translate-x-12 sm:-translate-x-28 md:-translate-x-36 translate-y-4 -rotate-3 sm:-rotate-6 scale-[0.9] sm:scale-[0.92]"
+                : "z-10 opacity-[0.86] hover:opacity-100 translate-x-12 sm:translate-x-28 md:translate-x-36 translate-y-4 rotate-3 sm:rotate-6 scale-[0.9] sm:scale-[0.92]";
 
-            const cardFrameClass =
-              "w-full rounded-2xl border border-black/12 dark:border-white/10 bg-background overflow-hidden text-left shadow-[0_14px_34px_-12px_rgba(0,0,0,0.14)] dark:shadow-[0_20px_45px_-14px_rgba(0,0,0,0.75)] transition-colors hover:border-black/20 dark:hover:border-white/20";
-
-            const cardInner = (
-              <>
-                <div className="relative h-36 sm:h-44 w-full bg-black/[0.03] dark:bg-white/[0.03] border-b border-black/10 dark:border-white/10 overflow-hidden">
-                  <Image
-                    src={project.image}
-                    alt={`${project.title} preview`}
-                    fill
-                    sizes="(max-width: 640px) 265px, 330px"
-                    className="object-cover object-top"
-                  />
-                </div>
-                <div className="p-4 pb-3 space-y-2">
-                  <div className="flex items-center justify-between gap-2 font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                    <span className="truncate">{project.category}</span>
-                    <span className="tabular-nums shrink-0">{project.year}</span>
-                  </div>
-                  <h3 className="font-mono text-xl font-semibold tracking-tight leading-tight text-foreground truncate">
-                    {project.title}
-                  </h3>
-                  <p className="font-sans font-normal text-xs leading-relaxed text-foreground/80 line-clamp-2 min-h-[2.45rem]">
-                    {project.overview}
-                  </p>
-                </div>
-              </>
-            );
-
-            if (!isFront) {
-              return (
-                <button
-                  key={project.slug}
-                  type="button"
-                  onClick={() => setActiveIdx(idx)}
-                  aria-label={`Focus project ${project.title}`}
-                  className={`absolute w-[258px] sm:w-[325px] cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 rounded-2xl ${slotPositionClass}`}
-                >
-                  <div className={cardFrameClass}>
-                    {cardInner}
-                    <div className="px-4 pb-3.5 pt-2 flex items-center justify-between border-t border-black/10 dark:border-white/10 font-sans text-xs text-muted-foreground">
-                      <span>{project.techStack[0] ?? "Web App"}</span>
-                      <span>Focus card</span>
-                    </div>
-                  </div>
-                </button>
-              );
-            }
+            const cardFrameClass = isFront
+              ? "w-full rounded-2xl border border-black/15 dark:border-white/15 bg-background overflow-hidden text-left shadow-[0_18px_40px_-12px_rgba(0,0,0,0.18)] dark:shadow-[0_24px_50px_-14px_rgba(0,0,0,0.8)] transition-[border-color,box-shadow] duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+              : "w-full rounded-2xl border border-black/10 dark:border-white/10 bg-background overflow-hidden text-left shadow-[0_10px_24px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_14px_32px_-14px_rgba(0,0,0,0.65)] transition-[border-color,box-shadow] duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-black/20 dark:hover:border-white/20";
 
             return (
               <div
                 key={project.slug}
-                data-guide="overview-active-project"
-                className={`absolute w-[258px] sm:w-[325px] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${slotPositionClass}`}
+                data-guide={isFront ? "overview-active-project" : undefined}
+                className={`absolute w-[258px] sm:w-[325px] will-change-transform transition-[transform,opacity] duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${slotPositionClass}`}
               >
-                <div className={cardFrameClass}>
-                  {cardInner}
+                <div className={`relative ${cardFrameClass}`}>
+                  {!isFront && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveIdx(idx)}
+                      aria-label={`Focus project ${project.title}`}
+                      className="absolute inset-0 z-10 rounded-2xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 dark:focus-visible:ring-white/30"
+                    />
+                  )}
+
+                  <div className="relative h-36 sm:h-44 w-full bg-black/[0.03] dark:bg-white/[0.03] border-b border-black/10 dark:border-white/10 overflow-hidden">
+                    <Image
+                      src={project.image}
+                      alt={`${project.title} preview`}
+                      fill
+                      sizes="(max-width: 640px) 265px, 330px"
+                      className="object-cover object-top"
+                    />
+                  </div>
+
+                  <div className="p-4 pb-3 space-y-2">
+                    <div className="flex items-center justify-between gap-2 font-sans text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                      <span className="truncate">{project.category}</span>
+                      <span className="tabular-nums shrink-0">{project.year}</span>
+                    </div>
+                    <h3 className="font-mono text-xl font-semibold tracking-tight leading-tight text-foreground truncate">
+                      {project.title}
+                    </h3>
+                    <p className="font-sans font-normal text-xs leading-relaxed text-foreground/80 line-clamp-2 min-h-[2.45rem]">
+                      {project.overview}
+                    </p>
+                  </div>
+
                   <div className="px-4 pb-3.5 pt-2 flex items-center justify-between gap-2 border-t border-black/10 dark:border-white/10">
                     <span className="font-sans text-xs text-muted-foreground truncate">
                       {project.techStack[0] ?? "Next.js"}
                     </span>
-                    <div className="flex items-center gap-3 shrink-0 font-sans text-xs font-medium">
-                      {project.live && project.live !== "#" && (
-                        <a
-                          href={project.live}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-0.5 text-foreground/80 hover:text-foreground transition-colors"
+                    {isFront ? (
+                      <div className="flex items-center gap-3 shrink-0 font-sans text-xs font-medium">
+                        {project.live && project.live !== "#" && (
+                          <a
+                            href={project.live}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-0.5 text-foreground/80 hover:text-foreground transition-colors"
+                          >
+                            Live
+                            <LuArrowUpRight className="size-3" aria-hidden={true} />
+                          </a>
+                        )}
+                        <Link
+                          href={`/projects/${project.slug}`}
+                          onClick={(e) =>
+                            onTabLinkClick(e, `projects?project=${project.slug}`)
+                          }
+                          className="inline-flex items-center gap-0.5 text-foreground hover:underline underline-offset-4"
                         >
-                          Live
+                          Read
                           <LuArrowUpRight className="size-3" aria-hidden={true} />
-                        </a>
-                      )}
-                      <Link
-                        href={`/projects/${project.slug}`}
-                        className="inline-flex items-center gap-0.5 text-foreground hover:underline underline-offset-4"
-                      >
-                        Read
-                        <LuArrowUpRight className="size-3" aria-hidden={true} />
-                      </Link>
-                    </div>
+                        </Link>
+                      </div>
+                    ) : (
+                      <span className="font-sans text-xs text-muted-foreground">
+                        Focus card
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -237,13 +243,13 @@ export function ArtisanOverviewSections({
             type="button"
             onClick={handlePrevProject}
             aria-label="Previous project card"
-            className="size-7 rounded-full border border-black/12 dark:border-white/10 bg-background flex items-center justify-center text-foreground/80 hover:text-foreground hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors cursor-pointer"
+            className="size-8 rounded-full border border-black/15 dark:border-white/15 bg-background flex items-center justify-center text-foreground/80 hover:text-foreground hover:border-black/30 dark:hover:border-white/30 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] active:scale-[0.94] transition-[transform,colors] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none cursor-pointer"
           >
             <LuChevronLeft className="size-3.5" aria-hidden={true} />
           </button>
 
           <div
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1"
             role="tablist"
             aria-label="Featured project selector"
           >
@@ -255,14 +261,18 @@ export function ArtisanOverviewSections({
                   type="button"
                   role="tab"
                   aria-selected={selected}
-                  aria-label={`Select ${project.title}`}
+                  aria-label={`Select ${project.title} (${idx + 1} of ${deckProjects.length})`}
                   onClick={() => setActiveIdx(idx)}
-                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    selected
-                      ? "w-5 bg-foreground"
-                      : "w-1.5 bg-foreground/20 hover:bg-foreground/45"
-                  }`}
-                />
+                  className="group/dot py-2 px-1 flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 dark:focus-visible:ring-white/30 rounded-full"
+                >
+                  <span
+                    className={`block h-1.5 rounded-full transition-[width,background-color,transform] duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                      selected
+                        ? "w-6 bg-black dark:bg-white scale-100"
+                        : "w-2 bg-black/25 group-hover/dot:bg-black/50 dark:bg-white/30 dark:group-hover/dot:bg-white/60 group-active/dot:scale-90"
+                    }`}
+                  />
+                </button>
               );
             })}
           </div>
@@ -271,10 +281,14 @@ export function ArtisanOverviewSections({
             type="button"
             onClick={handleNextProject}
             aria-label="Next project card"
-            className="size-7 rounded-full border border-black/12 dark:border-white/10 bg-background flex items-center justify-center text-foreground/80 hover:text-foreground hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors cursor-pointer"
+            className="size-8 rounded-full border border-black/15 dark:border-white/15 bg-background flex items-center justify-center text-foreground/80 hover:text-foreground hover:border-black/30 dark:hover:border-white/30 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] active:scale-[0.94] transition-[transform,colors] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none cursor-pointer"
           >
             <LuChevronRight className="size-3.5" aria-hidden={true} />
           </button>
+
+          <span className="font-sans text-[11px] font-medium tabular-nums text-muted-foreground pl-1 select-none">
+            {activeIdx + 1} / {deckProjects.length}
+          </span>
         </div>
       </section>
 
@@ -399,6 +413,27 @@ export function ArtisanOverviewSections({
             />
           ))}
         </div>
+      </section>
+
+      {/* 05 — GitHub Activity */}
+      <section aria-labelledby="overview-github-heading" className="space-y-4">
+        <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-black/10 dark:border-white/10">
+          <h2 id="overview-github-heading" className={SECTION_HEADING_CLASS}>
+            <span className={SECTION_INDEX_CLASS}>05</span>
+            <span>GitHub Activity</span>
+          </h2>
+          <a
+            href={SOCIAL_PROFILES.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={SECTION_LINK_CLASS}
+          >
+            {AUTHOR_INFO.handle}
+            <LuArrowUpRight className="size-3" aria-hidden={true} />
+          </a>
+        </div>
+
+        <ArtisanGithubContributions variant="editorial" />
       </section>
     </div>
   );

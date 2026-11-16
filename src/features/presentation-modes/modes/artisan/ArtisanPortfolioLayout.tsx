@@ -50,7 +50,7 @@ const VALID_TABS: readonly TabType[] = [
 const RESOLVED_TABS: {
   about?: React.ComponentType<{ onNavigateTab?: (tab: TabType) => void }>;
   experience?: React.ComponentType<{ isDark: boolean; onNavigateProjects?: () => void }>;
-  projects?: React.ComponentType;
+  projects?: React.ComponentType<{ initialProjectSlug?: string | null; onClearInitialProject?: () => void }>;
   notes?: React.ComponentType;
   music?: React.ComponentType;
   resources?: React.ComponentType;
@@ -111,14 +111,30 @@ const ARTISAN_TAB_QUOTES: Record<Exclude<TabType, "home">, { quote: string; auth
 
 interface ArtisanPortfolioLayoutProps {
   defaultTab?: TabType;
+  initialProjectSlug?: string;
+  initialSectionNode?: React.ReactNode;
 }
 
 export function ArtisanPortfolioLayout({
   defaultTab = "home",
+  initialProjectSlug,
+  initialSectionNode,
 }: ArtisanPortfolioLayoutProps) {
   const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
+  const [hasMountedHome, setHasMountedHome] = useState<boolean>(defaultTab === "home");
+  const [hasSwitchedTab, setHasSwitchedTab] = useState<boolean>(false);
+  const [selectedProjectSlug, setSelectedProjectSlug] = useState<string | null>(
+    initialProjectSlug ?? null
+  );
+  const pendingProjectSlugRef = useRef<string | null>(initialProjectSlug ?? null);
 
-  const syncTabUrl = useCallback((tab: TabType) => {
+  useEffect(() => {
+    if (activeTab === "home") {
+      setHasMountedHome(true);
+    }
+  }, [activeTab]);
+
+  const syncTabUrl = useCallback((tab: TabType, projectSlug?: string | null) => {
     if (typeof window === "undefined") return;
     const isArtisanStandalone = window.location.pathname === "/artisan";
     const baseRoot = isArtisanStandalone ? "/artisan" : "/";
@@ -129,6 +145,10 @@ export function ArtisanPortfolioLayout({
         ? "/resources"
         : tab === "home"
         ? baseRoot
+        : tab === "projects" && !projectSlug && window.location.pathname.startsWith("/projects")
+        ? "/projects"
+        : tab === "projects" && projectSlug
+        ? `${baseRoot}?tab=projects&project=${encodeURIComponent(projectSlug)}`
         : `${baseRoot}?tab=${tab}`;
     window.history.replaceState({}, "", nextPath);
   }, []);
@@ -136,6 +156,11 @@ export function ArtisanPortfolioLayout({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const queryTab = params.get("tab") as TabType | null;
+    const queryProject = params.get("project");
+    if (queryProject) {
+      pendingProjectSlugRef.current = queryProject;
+      setSelectedProjectSlug(queryProject);
+    }
     if (queryTab && VALID_TABS.includes(queryTab)) {
       void preloadArtisanTab(queryTab);
       setActiveTab(queryTab);
@@ -226,13 +251,24 @@ export function ArtisanPortfolioLayout({
 
   const handleSelectTab = useCallback(
     (newTab: string) => {
-      const [tabStr, hashStr] = newTab.split("#");
+      const [pathPart, hashStr] = newTab.split("#");
+      const [tabStr, queryStr] = pathPart.split("?");
       const tab = tabStr as TabType;
       const target = hashStr || null;
+      const projectParam = queryStr
+        ? new URLSearchParams(queryStr).get("project")
+        : null;
       setTargetHash(target);
       setActiveSubTarget(target);
 
+      const nextProjectSlug = tab === "projects" ? projectParam : null;
+      pendingProjectSlugRef.current = nextProjectSlug;
+      setSelectedProjectSlug(nextProjectSlug);
+
       if (tab === activeTab) {
+        if (tab === "projects" && nextProjectSlug) {
+          syncTabUrl("projects", nextProjectSlug);
+        }
         if (target && typeof document !== "undefined") {
           const el = document.getElementById(target);
           if (el) {
@@ -264,16 +300,25 @@ export function ArtisanPortfolioLayout({
         void preloadArtisanTab(tab).then(startTransitionNow);
       }
     },
-    [activeTab, isTransitioning]
+    [activeTab, isTransitioning, syncTabUrl]
   );
 
   const handleTransitionMidpoint = useCallback(() => {
     if (pendingTab) {
+      setHasSwitchedTab(true);
       setActiveTab(pendingTab);
-      syncTabUrl(pendingTab);
+      syncTabUrl(pendingTab, pendingProjectSlugRef.current);
       window.scrollTo({ top: 0, behavior: "instant" });
     }
   }, [pendingTab, syncTabUrl]);
+
+  const handleClearInitialProject = useCallback(() => {
+    pendingProjectSlugRef.current = null;
+    setSelectedProjectSlug(null);
+    if (activeTab === "projects") {
+      syncTabUrl("projects", null);
+    }
+  }, [activeTab, syncTabUrl]);
 
   const handleTransitionComplete = useCallback(() => {
     setIsTransitioning(false);
@@ -415,37 +460,50 @@ export function ArtisanPortfolioLayout({
             : "min-h-screen flex flex-col justify-between pb-24 sm:pb-28"
         }`}
       >
-        <div
-          className={
-            activeTab === "home"
-              ? isHomeLockedSplit
-                ? "block w-full h-full"
-                : "block w-full"
-              : "hidden"
-          }
-        >
-          <HeroSection
-            isDark={isDark}
-            activeTab={activeTab}
-            isHomeActive={activeTab === "home"}
-            onNavigate={(tab) => handleSelectTab(tab)}
-            isSidebarOpen={isSidebarOpen}
-            onToggleSidebar={handleToggleSidebar}
-          />
-        </div>
-        {activeTab === "about" && (
-          <ResolvedAbout onNavigateTab={(tab) => handleSelectTab(tab)} />
+        {hasMountedHome && (
+          <div
+            className={
+              activeTab === "home"
+                ? isHomeLockedSplit
+                  ? "block w-full h-full"
+                  : "block w-full"
+                : "hidden"
+            }
+          >
+            <HeroSection
+              isDark={isDark}
+              activeTab={activeTab}
+              isHomeActive={activeTab === "home"}
+              onNavigate={(tab) => handleSelectTab(tab)}
+              isSidebarOpen={isSidebarOpen}
+              onToggleSidebar={handleToggleSidebar}
+            />
+          </div>
         )}
-        {activeTab === "experience" && (
-          <ResolvedExperience
-            isDark={isDark}
-            onNavigateProjects={() => handleSelectTab("projects")}
-          />
+        {initialSectionNode !== undefined && !hasSwitchedTab && activeTab === defaultTab ? (
+          initialSectionNode
+        ) : (
+          <>
+            {activeTab === "about" && (
+              <ResolvedAbout onNavigateTab={(tab) => handleSelectTab(tab)} />
+            )}
+            {activeTab === "experience" && (
+              <ResolvedExperience
+                isDark={isDark}
+                onNavigateProjects={() => handleSelectTab("projects")}
+              />
+            )}
+            {activeTab === "projects" && (
+              <ResolvedProjects
+                initialProjectSlug={selectedProjectSlug}
+                onClearInitialProject={handleClearInitialProject}
+              />
+            )}
+            {activeTab === "notes" && <ResolvedNotes />}
+            {activeTab === "music" && <ResolvedMusic />}
+            {activeTab === "resources" && <ResolvedResources />}
+          </>
         )}
-        {activeTab === "projects" && <ResolvedProjects />}
-        {activeTab === "notes" && <ResolvedNotes />}
-        {activeTab === "music" && <ResolvedMusic />}
-        {activeTab === "resources" && <ResolvedResources />}
 
         {activeQuote && (
           <footer

@@ -118,6 +118,14 @@ export function Hero3DBackground({
   clipStateRef.current = clipState;
   activeSlotRef.current = activeSlot;
   voiceStatusRef.current = voiceStatus;
+
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("artisan-naphbot-call-state", {
+        detail: { active: isCallActive, status: voiceStatus },
+      })
+    );
+  }, [isCallActive, voiceStatus]);
   speakerMutedRef.current = speakerMuted;
 
   // Mount videos after critical LCP settle or on first user interaction (unless prefers-reduced-motion)

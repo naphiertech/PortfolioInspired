@@ -4,6 +4,7 @@ import { MinimalHeader } from "./components/MinimalHeader";
 import { MinimalIntro } from "./components/MinimalIntro";
 import { MinimalProjects } from "./components/MinimalProjects";
 import { MinimalFieldNotes } from "./components/MinimalFieldNotes";
+import { MinimalCertifications } from "./components/MinimalCertifications";
 import { MinimalStack } from "./components/MinimalStack";
 import { MinimalCurrent } from "./components/MinimalCurrent";
 import { MinimalContributions } from "./components/MinimalContributions";
@@ -39,7 +40,10 @@ export function MinimalModeLayout() {
         {/* 4. Field Notes */}
         <MinimalFieldNotes />
 
-        {/* 5. What I Work With */}
+        {/* 5. Certifications */}
+        <MinimalCertifications />
+
+        {/* 6. What I Work With */}
         <MinimalStack />
 
         {/* 6. Currently */}

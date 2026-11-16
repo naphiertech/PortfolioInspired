@@ -640,7 +640,7 @@ export function detectDetailedIntent(
 
   // Education & Certifications
   if (
-    /\b(education|school|university|degree|zppsu|college|certifications?|certs?|credentials?|hackathon)\b/i.test(
+    /\b(education|school|university|degree|zppsu|college|certifications?|certs?|credentials?|hackathon|cisco|netacad|credly|cybersecurity)\b/i.test(
       lower
     )
   ) {

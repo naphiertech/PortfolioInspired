@@ -4,6 +4,8 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { ProjectsPageClient } from "@/app/projects/ProjectsPageClient";
+import { ArtisanPortfolioLayout } from "../modes/artisan/ArtisanPortfolioLayout";
+import { ProjectsSection } from "../modes/artisan/ProjectsSection";
 import dynamic from "next/dynamic";
 
 const FocusProjectsPage = dynamic(
@@ -14,7 +16,7 @@ const FocusProjectsPage = dynamic(
  * ProjectsPresentationRoot
  *
  * Presentation-aware dispatcher for /projects.
- * Dispatches between Default CAD project gallery and Focus engineering index.
+ * Dispatches synchronously for SSR between Artisan studio view, Focus engineering index, and Default CAD gallery.
  */
 export function ProjectsPresentationRoot() {
   const router = useRouter();
@@ -25,10 +27,17 @@ export function ProjectsPresentationRoot() {
     if (typeof window === "undefined") return;
     if (mode === "minimal") {
       router.replace("/");
-    } else if (mode === "agent" && previousMode !== null && previousMode !== mode) {
-      router.replace("/?tab=projects");
     }
-  }, [mode, previousMode, router]);
+  }, [mode, router]);
+
+  if (mode === "agent") {
+    return (
+      <ArtisanPortfolioLayout
+        defaultTab="projects"
+        initialSectionNode={<ProjectsSection standalone />}
+      />
+    );
+  }
 
   return (
     <div

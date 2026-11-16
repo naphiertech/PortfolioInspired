@@ -22,12 +22,18 @@ export interface ProjectItem {
   href: string;
 }
 
+export type CertificationCategory = "professional" | "course" | "workshop";
+
 export interface CertificationItem {
   name: string;
   issuer: string;
   href: string;
+  category: CertificationCategory;
+  verifyUrl?: string;
+  issuedAt?: string;
   code?: string;
   tag?: string;
+  featured?: boolean;
 }
 
 export interface ExperienceItem {
@@ -699,31 +705,80 @@ export const workCapabilities = [
   "AI-assisted development & UI animation",
 ];
 
+export const CERTIFICATION_CATEGORIES: {
+  id: CertificationCategory;
+  label: string;
+  syntaxLabel: string;
+}[] = [
+  {
+    id: "professional",
+    label: "Professional Certifications",
+    syntaxLabel: "<professional/>",
+  },
+  {
+    id: "course",
+    label: "Technical Courses",
+    syntaxLabel: "<technical-courses/>",
+  },
+  {
+    id: "workshop",
+    label: "Workshops & Events",
+    syntaxLabel: "<workshops-events/>",
+  },
+];
+
 export const certifications: CertificationItem[] = [
+  {
+    name: "Introduction to Cybersecurity",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/I2CSUpdate20261115-21.pdf",
+    verifyUrl: "https://www.credly.com/badges/14ec44af-fcc0-4c26-8269-a84d8c29667b",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    featured: true,
+  },
+  {
+    name: "Networking Basics",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/NetworkingBasicsUpdate20261115-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/a3dfb8b0-4f1a-45a2-8ba1-b1fb8a804674",
+    category: "course",
+    issuedAt: "Apr 2026",
+    tag: "CISCO",
+    featured: true,
+  },
   {
     name: "Build with AI 2026",
     issuer: "Google Developer Groups Zamboanga",
     href: "/certificates/BuildWithAI_2026.png",
+    category: "workshop",
     code: "440727A3",
     tag: "GOOGLE",
-  },
-  {
-    name: "Build with AI Hackathon 2026",
-    issuer: "Google Developers Group Zamboanga",
-    href: "#",
-    tag: "GOOGLE",
+    featured: true,
   },
   {
     name: "Artificial Intelligence for Education: Unlocking the Power of NotebookLM",
     issuer: "Department of Information and Communications Technology (DICT)",
     href: "/certificates/DICT-NotebookLM.png",
+    category: "workshop",
     code: "AAR-TOD-2026-ZAM-010-193",
     tag: "DICT",
+    featured: true,
+  },
+  {
+    name: "Build with AI Hackathon 2026",
+    issuer: "Google Developers Group Zamboanga",
+    href: "#",
+    category: "workshop",
+    issuedAt: "2026",
+    tag: "HACKATHON",
   },
   {
     name: "Google I/O Extended Zamboanga Peninsula",
     issuer: "Google Developer Groups Zamboanga",
     href: "/certificates/GoogleIOExtended.jpg",
+    category: "workshop",
     code: "BD9B3110",
     tag: "GOOGLE",
   },
@@ -731,10 +786,50 @@ export const certifications: CertificationItem[] = [
     name: "Build with AI | Zamboanga Peninsula",
     issuer: "Google Developer Groups Zamboanga",
     href: "/certificates/BuildWithAIZampen.jpg",
+    category: "workshop",
     code: "6D72DF79",
     tag: "GOOGLE",
   },
 ];
+
+/** Returns non-empty certification groups ordered from highest-tier credentials to workshops. */
+export function getCertificationGroups(items: CertificationItem[] = certifications) {
+  return CERTIFICATION_CATEGORIES.map((meta) => ({
+    ...meta,
+    items: items.filter((cert) => cert.category === meta.id),
+  })).filter((group) => group.items.length > 0);
+}
+
+/** Returns prioritized featured certifications up to `limit`, falling back cleanly to remaining entries. */
+export function getFeaturedCertifications(limit = 3): CertificationItem[] {
+  const featured = certifications.filter((c) => c.featured);
+  if (featured.length >= limit) return featured.slice(0, limit);
+  const rest = certifications.filter((c) => !c.featured);
+  return [...featured, ...rest].slice(0, limit);
+}
+
+export function isPdfCertificate(cert: CertificationItem): boolean {
+  return Boolean(cert.href && cert.href.toLowerCase().endsWith(".pdf"));
+}
+
+export function hasPreviewableDocument(cert: CertificationItem): boolean {
+  if (!cert.href || cert.href === "#") return false;
+  const lower = cert.href.toLowerCase();
+  return (
+    lower.endsWith(".png") ||
+    lower.endsWith(".jpg") ||
+    lower.endsWith(".jpeg") ||
+    lower.endsWith(".webp") ||
+    lower.endsWith(".pdf")
+  );
+}
+
+/** Prefers live online verification (e.g., Credly) when present, falling back to the local certificate file. */
+export function getVerifyHref(cert: CertificationItem): string | null {
+  if (cert.verifyUrl) return cert.verifyUrl;
+  if (cert.href && cert.href !== "#") return cert.href;
+  return null;
+}
 
 export const experiences: ExperienceItem[] = [
   {

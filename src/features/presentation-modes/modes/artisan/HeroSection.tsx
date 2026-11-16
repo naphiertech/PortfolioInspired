@@ -31,8 +31,14 @@ import {
 } from "./ArtisanIcons";
 import { CertificationPreviewModal } from "./CertificationCard";
 import { ArtisanOverviewSections } from "./ArtisanOverviewSections";
+import { ArtisanGithubContributions } from "./ArtisanGithubContributions";
 import { HERO_DATA } from "./data";
-import { certifications, CertificationItem } from "@/lib/data";
+import {
+  certifications,
+  CertificationItem,
+  getFeaturedCertifications,
+  hasPreviewableDocument,
+} from "@/lib/data";
 import {
   EDUCATION,
   AUTHOR_INFO,
@@ -154,10 +160,17 @@ export function HeroSection({
           }
         >
           <div data-guide="artisan-intro" className="space-y-3">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
-              <span className="sr-only">{SITE_NAME} — </span>
-              {HERO_DATA.title}
-            </h1>
+            {isHomeActive ? (
+              <h1 className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
+                <span className="sr-only">{SITE_NAME} — </span>
+                {HERO_DATA.title}
+              </h1>
+            ) : (
+              <p className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
+                <span className="sr-only">{SITE_NAME} — </span>
+                {HERO_DATA.title}
+              </p>
+            )}
 
             <p
               className={
@@ -453,8 +466,8 @@ export function HeroSection({
               </div>
 
               <div className="space-y-1.5">
-                {certifications.slice(0, 4).map((cert) => {
-                  const hasPreview = cert.href && cert.href !== "#";
+                {getFeaturedCertifications(4).map((cert) => {
+                  const hasPreview = hasPreviewableDocument(cert);
                   return (
                     <button
                       key={cert.name}
@@ -495,7 +508,10 @@ export function HeroSection({
               </div>
             </div>
 
-            {/* C. Education, Active Build & Location */}
+            {/* C. GitHub Activity */}
+            <ArtisanGithubContributions variant="compact" />
+
+            {/* D. Education, Active Build & Location */}
             <div className="space-y-1.5 pt-3 border-t border-black/10 dark:border-white/10 font-sans text-xs">
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">

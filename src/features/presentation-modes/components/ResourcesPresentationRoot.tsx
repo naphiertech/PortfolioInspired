@@ -1,25 +1,15 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React from "react";
 import { usePresentationMode } from "../context/PresentationModeContext";
-import dynamic from "next/dynamic";
+import { ArtisanPortfolioLayout } from "../modes/artisan/ArtisanPortfolioLayout";
 import { ResourcesSection } from "../modes/artisan/ResourcesSection";
-
-const ArtisanPortfolioLayout = dynamic(
-  () =>
-    import("../modes/artisan/ArtisanPortfolioLayout").then(
-      (mod) => mod.ArtisanPortfolioLayout
-    ),
-  {
-    loading: () => <div className="min-h-screen bg-background" />,
-  }
-);
 
 /**
  * ResourcesPresentationRoot
  *
  * Presentation-aware dispatcher for /resources.
- * Renders full Artisan studio shell in Agent/Artisan mode,
+ * Renders full Artisan studio shell synchronously for SSR in Agent/Artisan mode,
  * or standalone curated Resources directory in other modes.
  */
 export function ResourcesPresentationRoot() {
@@ -28,9 +18,10 @@ export function ResourcesPresentationRoot() {
 
   if (mode === "agent") {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-background" />}>
-        <ArtisanPortfolioLayout defaultTab="resources" />
-      </Suspense>
+      <ArtisanPortfolioLayout
+        defaultTab="resources"
+        initialSectionNode={<ResourcesSection />}
+      />
     );
   }
 

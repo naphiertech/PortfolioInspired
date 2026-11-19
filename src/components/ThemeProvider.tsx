@@ -13,47 +13,74 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const VALID_THEMES: readonly Theme[] = ["light", "dark", "system"];
+
+function isValidTheme(value: unknown): value is Theme {
+  return typeof value === "string" && VALID_THEMES.includes(value as Theme);
+}
+
+/**
+ * Synchronizes root theme classes and <meta name="color-scheme"> ("light", "dark", or "light dark").
+ */
+function applyDocumentColorScheme(theme: Theme, resolved: "light" | "dark") {
+  const root = document.documentElement;
+  if (resolved === "dark") {
+    root.classList.add("dark");
+    root.classList.remove("light");
+  } else {
+    root.classList.add("light");
+    root.classList.remove("dark");
+  }
+
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]');
+  if (meta) {
+    meta.content = theme === "system" ? "light dark" : resolved;
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
   const activeTransitionRef = React.useRef(0);
 
-  // Initialize theme from localStorage or system preference
+  // Initialize theme from localStorage and stay synced across tabs via storage events
   useEffect(() => {
-    const saved = localStorage.getItem("naphier_theme") as Theme | null;
-    if (saved && (saved === "light" || saved === "dark" || saved === "system")) {
-      setThemeState(saved);
+    try {
+      const saved = localStorage.getItem("naphier_theme");
+      if (isValidTheme(saved)) {
+        setThemeState(saved);
+      }
+    } catch {
+      // Ignore localStorage errors
     }
     setMounted(true);
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== "naphier_theme") return;
+      if (isValidTheme(event.newValue)) {
+        setThemeState(event.newValue);
+      } else if (event.newValue === null) {
+        setThemeState("dark");
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  // Update DOM classes and resolve theme on initial mount and system changes
+  // Update DOM classes, <meta name="color-scheme">, and resolved theme on mount and system changes
   useEffect(() => {
     if (!mounted) return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-      let resolved: "light" | "dark";
-
-      if (theme === "system") {
-        resolved = mediaQuery.matches ? "dark" : "light";
-      } else {
-        resolved = theme;
-      }
+      const resolved: "light" | "dark" =
+        theme === "system" ? (mediaQuery.matches ? "dark" : "light") : theme;
 
       setResolvedTheme(resolved);
-
-      const root = document.documentElement;
-      const isDark = root.classList.contains("dark");
-      if (resolved === "dark" && !isDark) {
-        root.classList.add("dark");
-        root.classList.remove("light");
-      } else if (resolved === "light" && isDark) {
-        root.classList.add("light");
-        root.classList.remove("dark");
-      }
+      applyDocumentColorScheme(theme, resolved);
     };
 
     applyTheme();
@@ -95,14 +122,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       }
 
       setResolvedTheme(targetResolved);
-      const root = document.documentElement;
-      if (targetResolved === "dark") {
-        root.classList.add("dark");
-        root.classList.remove("light");
-      } else {
-        root.classList.add("light");
-        root.classList.remove("dark");
-      }
+      applyDocumentColorScheme(newTheme, targetResolved);
     };
 
     // If visual theme does not change, update state without animating the screen

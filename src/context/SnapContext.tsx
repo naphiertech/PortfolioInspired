@@ -377,7 +377,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
     );
     setTotalSteps(targetSectionCount);
 
-    const shuffledSections = [...availableSections].sort(
+    const shuffledSections = availableSections.toSorted(
       () => Math.random() - 0.5
     );
     const selectedSections = shuffledSections.slice(0, targetSectionCount);
@@ -396,7 +396,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
       availableDock.length,
       Math.random() < 0.5 ? 1 : 2
     );
-    const shuffledDock = [...availableDock].sort(() => Math.random() - 0.5);
+    const shuffledDock = availableDock.toSorted(() => Math.random() - 0.5);
     const selectedDock = shuffledDock.slice(0, targetDockCount);
 
     // Select eligible text fragments that are mounted in the DOM
@@ -415,7 +415,7 @@ export function SnapProvider({ children }: { children: React.ReactNode }) {
       availableText.length,
       Math.floor(Math.random() * 3) + 3
     );
-    const shuffledText = [...availableText].sort(() => Math.random() - 0.5);
+    const shuffledText = availableText.toSorted(() => Math.random() - 0.5);
     const selectedTextIds = shuffledText.slice(0, targetTextCount);
 
     const prefersReduced =

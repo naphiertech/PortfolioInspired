@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: light dark;
   /* Default: Dark-first empirical observed values */
   --bg-page: #0b0d0e;
   --bg-surface: #1a1b1c;
@@ -66,6 +67,14 @@
   --calendar-cell-lvl-2: #666a77;
   --calendar-cell-lvl-3: #9ea3b3;
   --calendar-cell-lvl-4: #f4f5f8;
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  color-scheme: dark;
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) {
+  color-scheme: light;
 }
 
 .light {

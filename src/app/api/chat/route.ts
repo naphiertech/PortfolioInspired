@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
     // 1. Extract latest user query for Pre-Generation Intent Gate
     const lastUserMessage =
-      [...messages].reverse().find((m) => m.role === "user")?.content || "";
+      messages.findLast((m: { role: string; content: string }) => m.role === "user")?.content || "";
 
     // 2. Application-Level Pre-Generation Intent Gate (Layer 1)
     const gateResult = classifyVisitorIntent(lastUserMessage, messages);

@@ -316,7 +316,7 @@ export async function GET(req: Request) {
         ? Array.from(new Set(parsedAccounts))
         : [...GITHUB_ACCOUNTS];
 
-    const combinedCacheKey = `combined:${targetAccounts.slice().sort().join("+")}:${year}`;
+    const combinedCacheKey = `combined:${targetAccounts.toSorted().join("+")}:${year}`;
     const now = Date.now();
     const cachedCombined = memoryCache.get(combinedCacheKey);
 

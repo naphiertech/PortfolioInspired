@@ -192,12 +192,16 @@ export default async function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        {/* Anti-flash theme initialization script */}
+        {/* Color scheme hint + anti-flash theme initialization before paint */}
+        <meta name="color-scheme" content="light dark" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
                 var saved = localStorage.getItem('naphier_theme');
+                var scheme = (saved === 'light' || saved === 'dark') ? saved : (saved === 'system' ? 'light dark' : 'dark');
+                var schemeMeta = document.querySelector('meta[name="color-scheme"]');
+                if (schemeMeta) schemeMeta.setAttribute('content', scheme);
                 var isDark = saved ? (saved === 'dark' || (saved === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) : true;
                 if (isDark) {
                   document.documentElement.classList.add('dark');

@@ -33,10 +33,10 @@ function enqueue(frame: number, essential: boolean) {
     if (job && essential) job.essential = true;
     return existing.promise;
   }
-  let complete!: (image: HTMLImageElement | null) => void;
+  const { promise, resolve: complete } = Promise.withResolvers<HTMLImageElement | null>();
   const entry: FrameEntry = {
     image: null, pending: true,
-    promise: new Promise(resolve => { complete = resolve; }),
+    promise,
   };
   cache.set(frame, entry);
   queue.push({
@@ -89,7 +89,7 @@ export function prepareProfileFrames(frames: readonly number[], essential = fals
 export function getProfileFrame(frame: number) { return cache.get(frame); }
 
 export function preloadProfileFrames(reverse = false) {
-  void prepareProfileFrames(reverse ? [...PROFILE_FRAMES].reverse() : PROFILE_FRAMES);
+  void prepareProfileFrames(reverse ? PROFILE_FRAMES.toReversed() : PROFILE_FRAMES);
 }
 
 /** After load, idle work prepares only a small buffer, never the full sequence. */
@@ -98,7 +98,7 @@ export function scheduleIdleProfilePreload(delayMs = 3500, reverse = false): () 
   let idle: number | undefined;
   let timer: ReturnType<typeof setTimeout> | undefined;
   const warm = () => {
-    const frames = reverse ? [...PROFILE_FRAMES].reverse() : PROFILE_FRAMES;
+    const frames = reverse ? PROFILE_FRAMES.toReversed() : PROFILE_FRAMES;
     void prepareProfileFrames(frames.slice(0, PROFILE_BUFFER_SIZE));
   };
   const schedule = () => {

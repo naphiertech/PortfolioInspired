@@ -271,7 +271,7 @@ export function resolveMultiTurnPortfolioContext(
 
   const targetText = currentQuery
     ? currentQuery
-    : [...messages].reverse().find((m) => m.role === "user")?.content || "";
+    : messages.findLast((m) => m.role === "user")?.content || "";
 
   if (!targetText) {
     return { isContextualFollowUp: false };
@@ -329,14 +329,14 @@ export function resolveMultiTurnPortfolioContext(
     };
   }
 
-  for (const prior of [...priorMessages].reverse()) {
+  for (const prior of priorMessages.toReversed()) {
     if (matchesKnownProject(prior.content)) {
       return { isContextualFollowUp: true, referencedEntity: "project" };
     }
   }
 
   const portfolioKeywords = ["experience", "education", "certifications", "tech stack", "projects", "zppsu", "ai"];
-  for (const prior of [...priorMessages].reverse()) {
+  for (const prior of priorMessages.toReversed()) {
     const priorLower = prior.content.toLowerCase();
     for (const keyword of portfolioKeywords) {
       if (priorLower.includes(keyword)) {

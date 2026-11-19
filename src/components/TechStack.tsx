@@ -7,7 +7,7 @@ import { SectionHeader } from "./SectionHeader";
 import { useUISound } from "@/context/SoundContext";
 import { CircuitPlatform } from "./CircuitPlatform";
 import circuitStyles from "./CircuitPlatform.module.css";
-import { TechIconTile, getTileTiltAngle } from "./TechIconTile";
+import { TechIconTile } from "./TechIconTile";
 import {
   sectionContainerVariants,
   staggeredGridVariants,
@@ -72,10 +72,10 @@ export function TechStack() {
         className="mb-2 pb-2 border-b border-border-hairline/40"
       />
 
-      {/* Core Categories with Minimal Side Tags and Full-Color Tilted Icon Tiles */}
+      {/* Core Categories with Minimal Side Tags and Orthogonal CAD Tech Chips */}
       <motion.div
         variants={shouldReduceMotion ? undefined : staggeredGridVariants}
-        className={`space-y-4 sm:space-y-5 ${circuitStyles.environment}`}
+        className={`space-y-4 ${circuitStyles.environment}`}
       >
         {displayedSections.map((section, catIdx) => {
           const syntaxTag =
@@ -89,14 +89,14 @@ export function TechStack() {
             <motion.div
               key={section.title}
               variants={shouldReduceMotion ? undefined : gridItemVariants}
-              className={`grid grid-cols-1 md:grid-cols-[148px_minmax(0,1fr)] gap-1.5 md:gap-4 items-start ${circuitStyles.category}`}
+              className={`grid grid-cols-1 md:grid-cols-[148px_minmax(0,1fr)] gap-2 md:gap-4 items-start ${circuitStyles.category}`}
               data-branch={catIdx}
               data-connected={isCategoryConnected}
               onPointerEnter={() => setHovered({ category: section.title })}
               onPointerLeave={() => setHovered(null)}
             >
               {/* Minimal Side Rail Node & Code Tag */}
-              <div className="flex items-center gap-2 md:my-1.5 md:h-12">
+              <div className="flex items-center gap-2 md:h-8">
                 <span
                   aria-hidden="true"
                   className={`w-1.5 h-1.5 rounded-[1.5px] flex-shrink-0 ${circuitStyles.branchDot}`}
@@ -110,14 +110,13 @@ export function TechStack() {
                 </h3>
               </div>
 
-              {/* Spaced Full-Color Tilted Icon-Only Tiles */}
+              {/* Orthogonal Hairline Tech Chips */}
               <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-3 sm:gap-3.5 py-1.5">
-                  {section.items.map((tech, idx) => (
+                <div className="flex flex-wrap items-center gap-2">
+                  {section.items.map((tech) => (
                     <TechIconTile
                       key={tech}
                       name={tech}
-                      tiltAngle={getTileTiltAngle(idx, catIdx)}
                       href={`/experience?tech=${encodeURIComponent(tech.toLowerCase())}#tech-stack`}
                       dataConnected={connected(section.title, tech)}
                       dataMuted={!!selection && !connected(section.title, tech)}

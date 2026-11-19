@@ -29,17 +29,17 @@ import {
   getCertificationMetaText,
   CertificationDocumentPreview,
 } from "@/components/CertificationShared";
-import { TechIconTile, getTileTiltAngle } from "@/components/TechIconTile";
+import { TechIconTile } from "@/components/TechIconTile";
 import { ProjectStatusBadge } from "@/components/ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
 
 const categorySyntaxMap: Record<string, string> = {
-  Frontend: "<FRONTEND/>",
-  Backend: "<BACKEND/>",
-  "Databases & Cloud": "<DATABASES-CLOUD/>",
-  "AI & Machine Learning": "<AI-ML/>",
-  "Animation & Design": "<DESIGN-ANIMATION/>",
-  "DevOps & Tools": "<DEVOPS-TOOLS/>",
+  Frontend: "<frontend/>",
+  Backend: "<backend/>",
+  "Databases & Cloud": "<database-cloud/>",
+  "AI & Machine Learning": "<ai-ml/>",
+  "Animation & Design": "<design-animation/>",
+  "DevOps & Tools": "<devops-tools/>",
 };
 
 /**
@@ -113,19 +113,19 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
           const categoryNumber = String(index + 1).padStart(2, "0");
           const syntaxTag =
             categorySyntaxMap[category.title] ||
-            `<${category.title.toUpperCase().replace(/[\s&]+/g, "-")}/>`;
+            `<${category.title.toLowerCase().replace(/[\s&]+/g, "-")}/>`;
 
           return (
             <div
               key={category.title}
-              className="relative py-5 sm:py-6 flex flex-col md:flex-row md:items-start gap-3 md:gap-6 hover:z-10 focus-within:z-10"
+              className="relative py-5 sm:py-6 flex flex-col md:flex-row md:items-start gap-3 md:gap-6"
             >
-              <div className="md:w-40 lg:w-44 flex-shrink-0 flex md:flex-col justify-between md:justify-start items-baseline md:items-start gap-1 pb-1 md:pb-0 border-b md:border-b-0 border-black/[0.04] dark:border-white/[0.04]">
+              <div className="md:w-40 lg:w-44 flex-shrink-0 flex md:flex-col justify-between md:justify-start items-baseline md:items-start gap-1 pb-1 md:pb-0 md:pt-1.5 border-b md:border-b-0 border-black/[0.04] dark:border-white/[0.04]">
                 <div className="flex items-baseline gap-2">
                   <span className="font-mono text-xs font-semibold text-emerald-500/70 dark:text-emerald-400/70 select-none">
                     {categoryNumber}
                   </span>
-                  <span className="font-mono text-xs font-semibold text-ink/85 tracking-tight">
+                  <span className="font-mono text-xs font-medium text-ink/85 tracking-tight lowercase">
                     {syntaxTag}
                   </span>
                 </div>
@@ -135,8 +135,8 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
               </div>
 
               <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-3 sm:gap-3.5 py-1.5">
-                  {category.items.map((item, itemIdx) => {
+                <div className="flex flex-wrap items-center gap-2">
+                  {category.items.map((item) => {
                     const isSelected =
                       selectedTech !== null &&
                       normalizeTechName(selectedTech) === normalizeTechName(item);
@@ -145,7 +145,6 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
                       <TechIconTile
                         key={item}
                         name={item}
-                        tiltAngle={getTileTiltAngle(itemIdx, index)}
                         ariaPressed={isSelected}
                         isSelected={isSelected}
                         onClick={() => handleTechClick(item)}

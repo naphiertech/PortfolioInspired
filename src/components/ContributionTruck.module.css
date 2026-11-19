@@ -148,6 +148,66 @@
   height: auto;
 }
 
+/* Scrolling pixel-art road strip locked 1:1 to rolling wheel circumference */
+.road {
+  grid-column: 1 / -1;
+  position: relative;
+  width: 100%;
+  margin-top: -6px;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+}
+.road > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.roadHorizon {
+  fill: rgba(17, 17, 17, 0.14);
+}
+.roadDash {
+  fill: rgba(17, 17, 17, 0.24);
+}
+.roadGrain {
+  fill: rgba(17, 17, 17, 0.16);
+}
+:global(.dark) .roadHorizon,
+:global(html:not(.light)) .roadHorizon {
+  fill: rgba(255, 255, 255, 0.12);
+}
+:global(.dark) .roadDash,
+:global(html:not(.light)) .roadDash {
+  fill: rgba(255, 255, 255, 0.22);
+}
+:global(.dark) .roadGrain,
+:global(html:not(.light)) .roadGrain {
+  fill: rgba(255, 255, 255, 0.14);
+}
+
+/* Subtle monochrome pixel exhaust wisps behind the cab stack */
+.exhaustPuff {
+  fill: rgba(60, 60, 60, 0.32);
+  opacity: 0;
+}
+:global(.dark) .exhaustPuff,
+:global(html:not(.light)) .exhaustPuff {
+  fill: rgba(180, 188, 204, 0.3);
+}
+
+.wheelSpin {
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.cabChassis {
+  will-change: transform;
+}
+.roadTrack {
+  will-change: transform;
+}
+
 /* Preserved classes for GithubContributions */
 .months { position: relative; height: 16px; margin-bottom: 6px; font-size: 10px; }
 .month { position: absolute; }
@@ -199,7 +259,8 @@
   }
 
   .cab,
-  .undercarriage {
+  .undercarriage,
+  .road {
     display: none !important;
   }
 
@@ -260,13 +321,91 @@
   }
 }
 
+@keyframes wheelSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes roadScroll {
+  from {
+    transform: translateX(-122px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes cabBob {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  28% {
+    transform: translateY(-0.7px);
+  }
+  52% {
+    transform: translateY(0.15px);
+  }
+  76% {
+    transform: translateY(-0.45px);
+  }
+}
+
+@keyframes exhaustDrift {
+  0% {
+    opacity: 0;
+    transform: translate(0px, 0px);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(16px, -11px);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .truck[data-revealed="false"] .container { opacity: 0; }
   .truck[data-revealed="false"] .cab { opacity: 0; transform: translateX(-5px); }
   .truck[data-revealed="false"] .undercarriage { opacity: 0; transform: translateY(-3px); }
+  .truck[data-revealed="false"] .road { opacity: 0; }
   .container { transition: opacity 400ms ease-out; }
   .cab { transition: opacity 350ms 100ms ease-out, transform 350ms 100ms ease-out; }
   .undercarriage { transition: opacity 300ms 200ms ease-out, transform 300ms 200ms ease-out; }
+  .road { transition: opacity 350ms 220ms ease-out; }
+
+  .wheelSpin {
+    animation: wheelSpin 1.05s linear infinite;
+  }
+  .roadTrack {
+    animation: roadScroll 1.05s linear infinite;
+  }
+  .cabChassis {
+    animation: cabBob 1.35s ease-in-out infinite;
+  }
+  .exhaustPuff1 {
+    animation: exhaustDrift 1.85s ease-out infinite;
+  }
+  .exhaustPuff2 {
+    animation: exhaustDrift 1.85s ease-out -0.62s infinite;
+  }
+  .exhaustPuff3 {
+    animation: exhaustDrift 1.85s ease-out -1.24s infinite;
+  }
+
+  .truck:not([data-driving="true"]) .wheelSpin,
+  .truck:not([data-driving="true"]) .roadTrack,
+  .truck:not([data-driving="true"]) .cabChassis,
+  .truck:not([data-driving="true"]) .exhaustPuff {
+    animation-play-state: paused;
+  }
 }
 
 /* ========================================================================= */

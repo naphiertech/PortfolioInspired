@@ -30,71 +30,62 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 44px;
-  height: 24px;
   padding: 0;
-  border: 1px solid var(--border-hairline);
-  border-radius: 999px;
-  background: var(--bg-surface);
-  color: var(--text-body);
-  font: 10px/1 "JetBrains Mono", ui-monospace, monospace;
-  white-space: nowrap;
   cursor: pointer;
+  white-space: nowrap;
 }
-.topToggle:hover { background: var(--bg-surface-hover); color: var(--text-ink); }
 .topToggle:focus-visible { outline: 2px solid var(--text-ink); outline-offset: 2px; }
-/* Reveal below the fixed-size switch so neither toolbar reflow nor neighboring
+.activeDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+/* Reveal below the fixed-size control so neither toolbar reflow nor neighboring
    control occlusion is needed, including in the mobile cover-image toolbar. */
 .toggleLabel {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 7px);
   right: 0;
-  z-index: 1;
+  z-index: 40;
   width: max-content;
-  max-width: 144px;
+  max-width: 152px;
   white-space: nowrap;
-  padding: 7px 10px;
-  border: 1px solid var(--border-dashed);
-  border-radius: 999px;
+  padding: 5px 9px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 5px;
   background: var(--bg-surface);
-  color: var(--text-body);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  color: var(--text-ink);
+  font: 10px/1.2 "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
   opacity: 0;
-  transform: translateY(-3px) scale(0.96);
+  transform: translateY(-3px) scale(0.97);
   pointer-events: none;
-  transition: opacity 150ms ease-out, transform 150ms ease-out;
+  transition: opacity 140ms ease-out, transform 140ms ease-out;
   transition-delay: 0ms;
 }
-.topToggle:focus .toggleLabel,
+.toggleLabelMinimal {
+  font-family: var(--font-eb-garamond), Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  border-radius: 3px;
+  padding: 4px 9px;
+}
+.topToggle:focus-visible .toggleLabel,
 .topToggle:active .toggleLabel { opacity: 1; transform: translateY(0) scale(1); }
 @media (hover: hover) {
   .topToggle:hover .toggleLabel { opacity: 1; transform: translateY(0) scale(1); transition-delay: 80ms; }
 }
-.topToggle:focus .toggleLabel,
+.topToggle:focus-visible .toggleLabel,
 .topToggle:active .toggleLabel { transition-delay: 0ms; }
 .host button { cursor: pointer; }
 .host button:hover { background: var(--bg-surface-hover); color: var(--text-ink); }
 .host button:focus-visible { outline: 2px solid var(--text-ink); outline-offset: -3px; }
-.switchTrack {
-  display: flex;
-  align-items: center;
-  width: 28px;
-  height: 16px;
-  padding: 2px;
-  border: 1px solid var(--border-dashed);
-  border-radius: 999px;
-  background: var(--bg-muted);
-  transition: background-color 200ms ease-out;
-}
-.switchKnob {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--text-faint);
-  transition: transform 200ms ease-out, background-color 200ms ease-out;
-}
-.topToggle[aria-checked="true"] .switchTrack { background: var(--text-ink); }
-.topToggle[aria-checked="true"] .switchKnob { transform: translateX(12px); background: var(--bg-page); }
 .panel {
   width: 296px;
   max-width: calc(100vw - 24px);
@@ -171,8 +162,8 @@
 .scope[data-creative-mode="on"] :where(
   div[class~="border"][class*="rounded"], article[class*="rounded"],
   section[class~="border"][class*="rounded"]
-):not(:has(> img)):not([class~="rounded-full"]) { border-radius: var(--creative-radius-card); }
-.scope[data-creative-mode="on"] :where(a[class*="rounded"], button[class*="rounded"], input[class*="rounded"], textarea[class*="rounded"]):not([class~="rounded-full"]):not(:has(> img)) {
+):not(:has(> img)):not([class~="rounded-full"]):not([data-creative-font-exempt], [data-creative-font-exempt] *) { border-radius: var(--creative-radius-card); }
+.scope[data-creative-mode="on"] :where(a[class*="rounded"], button[class*="rounded"], input[class*="rounded"], textarea[class*="rounded"]):not([class~="rounded-full"]):not(:has(> img)):not([data-creative-font-exempt], [data-creative-font-exempt] *) {
   border-radius: var(--creative-radius-control);
 }
 .scope[data-creative-mode="on"] :global(.cad-project-card) { border-radius: var(--creative-radius-card); }
@@ -260,7 +251,7 @@
   .segments span { min-height: 40px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .switchTrack, .switchKnob, .toggleLabel { transition: none; }
+  .toggleLabel { transition: none; }
   .confetti { display: none; }
   .scope[data-creative-mode="on"] :where(:global(.animate-status-breathe), :global(.animate-status-ring)) { animation: none; }
   .scope[data-creative-mode="on"] :where(:global(.cad-project-card)) { translate: none; transition: none; }

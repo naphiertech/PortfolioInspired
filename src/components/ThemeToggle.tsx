@@ -1,14 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { Sun, Moon, Monitor } from "lucide-react";
 import { useTheme, Theme } from "./ThemeProvider";
 import { useUISound } from "@/context/SoundContext";
 
-export function ThemeToggle() {
+export interface ThemeToggleProps {
+  variant?: "default" | "focus" | "minimal";
+}
+
+export function ThemeToggle({ variant = "default" }: ThemeToggleProps = {}) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { playTheme } = useUISound();
   const shouldReduceMotion = useReducedMotion();
+  const indicatorId = useId();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -16,8 +22,36 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
+    if (variant === "minimal") {
+      return <div className="h-7 w-7 rounded-sm bg-zinc-200/40 dark:bg-white/[0.04] animate-pulse" />;
+    }
+    if (variant === "focus") {
+      return (
+        <div className="h-7 w-[80px] rounded-[5px] bg-surface/60 border border-border-hairline animate-pulse" />
+      );
+    }
+    return <div className="h-[22px] w-[76px] rounded-[4px] bg-muted-subtle/50 animate-pulse" />;
+  }
+
+  if (variant === "minimal") {
+    const isDark = resolvedTheme === "dark";
     return (
-      <div className="h-7 w-[82px] rounded-[6px] bg-surface/60 border border-border-hairline animate-pulse" />
+      <button
+        type="button"
+        onClick={(e) => {
+          playTheme();
+          setTheme(isDark ? "light" : "dark", e);
+        }}
+        className="h-7 w-7 rounded-sm border border-transparent bg-transparent inline-flex items-center justify-center text-zinc-500 dark:text-[#8e897f] hover:text-zinc-950 dark:hover:text-[#f0ede6] hover:bg-zinc-100/70 dark:hover:bg-white/[0.05] transition-colors duration-150 cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:focus-visible:ring-white/30"
+        title={isDark ? "Dark theme — switch to light" : "Light theme — switch to dark"}
+        aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      >
+        {isDark ? (
+          <Moon className="w-3.5 h-3.5" strokeWidth={1.5} aria-hidden="true" />
+        ) : (
+          <Sun className="w-3.5 h-3.5" strokeWidth={1.5} aria-hidden="true" />
+        )}
+      </button>
     );
   }
 
@@ -25,35 +59,29 @@ export function ThemeToggle() {
     {
       key: "light",
       label: "Light theme",
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
+      icon: <Sun className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" />,
     },
     {
       key: "dark",
       label: "Dark theme",
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-      ),
+      icon: <Moon className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" />,
     },
     {
       key: "system",
       label: "System theme",
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
+      icon: <Monitor className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" />,
     },
   ];
 
+  const isFocus = variant === "focus";
+
   return (
     <div
-      className="inline-flex items-center rounded-[6px] bg-surface p-0.5 border border-border-hairline shadow-sm relative gap-0.5"
+      className={
+        isFocus
+          ? "inline-flex items-center h-7 rounded-[5px] bg-surface p-[2px] border border-border-hairline relative gap-0.5"
+          : "inline-flex items-center relative gap-0.5"
+      }
       role="group"
       aria-label="Theme selector"
     >
@@ -62,14 +90,17 @@ export function ThemeToggle() {
         return (
           <button
             key={t.key}
+            type="button"
             onClick={(e) => {
               playTheme();
               setTheme(t.key, e);
             }}
-            className={`relative flex items-center justify-center h-6 w-6 rounded-[4px] cursor-pointer z-10 transition-colors duration-150 ${
+            className={`relative flex items-center justify-center h-[22px] w-[24px] cursor-pointer z-10 transition-colors duration-150 ${
+              isFocus ? "rounded-[3px]" : "rounded-[4px]"
+            } ${
               isActive
                 ? "text-ink"
-                : "text-muted-foreground/60 hover:text-ink hover:bg-surface-hover/40"
+                : "text-muted-foreground/60 hover:text-ink hover:bg-surface-hover/50"
             }`}
             title={`${t.label}${isActive ? ` (Active: ${resolvedTheme})` : ""}`}
             aria-label={t.label}
@@ -77,7 +108,7 @@ export function ThemeToggle() {
           >
             {isActive && (
               <motion.div
-                layoutId="theme-active-indicator"
+                layoutId={`theme-active-${indicatorId}`}
                 transition={
                   shouldReduceMotion
                     ? { duration: 0 }
@@ -87,7 +118,11 @@ export function ThemeToggle() {
                         damping: 32,
                       }
                 }
-                className="absolute inset-0 rounded-[4px] bg-page border border-border-hairline shadow-[0_1px_2px_rgba(0,0,0,0.1)] -z-10"
+                className={`absolute inset-0 bg-page border border-border-hairline -z-10 ${
+                  isFocus
+                    ? "rounded-[3px]"
+                    : "rounded-[4px] shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+                }`}
               />
             )}
             {t.icon}

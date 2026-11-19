@@ -19,12 +19,11 @@ export function MinimalHeader() {
       </span>
 
       {/* Global Utilities */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+      <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
         <PresentationModeSwitcher variant="minimal" />
-        <div className="hidden min-[380px]:block">
-          <CreativeModeToggle />
-        </div>
-        <ThemeToggle />
+        <span className="w-px h-3 bg-zinc-300/80 dark:bg-white/[0.12] mx-1 flex-shrink-0" aria-hidden="true" />
+        <CreativeModeToggle variant="minimal" />
+        <ThemeToggle variant="minimal" />
       </div>
     </header>
   );

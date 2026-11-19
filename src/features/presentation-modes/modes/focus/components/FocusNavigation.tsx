@@ -119,12 +119,13 @@ export function FocusNavigation() {
         </div>
 
         {/* --- UTILITIES: Mode Switcher, Theme Toggle, and Mobile Menu --- */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           <PresentationModeSwitcher variant="focus-nav" />
-          <div className="hidden min-[420px]:block">
-            <CreativeModeToggle />
+          <span className="w-px h-3.5 bg-border-hairline flex-shrink-0" aria-hidden="true" />
+          <div className="hidden min-[420px]:flex items-center">
+            <CreativeModeToggle variant="focus" />
           </div>
-          <ThemeToggle />
+          <ThemeToggle variant="focus" />
 
           {/* Mobile Menu Trigger Button (< sm) */}
           <div className="relative sm:hidden" ref={menuRef}>
@@ -135,15 +136,15 @@ export function FocusNavigation() {
                 setMobileMenuOpen(!mobileMenuOpen);
               }}
               onMouseEnter={playHover}
-              className="w-8 h-8 rounded-md bg-surface border border-border-hairline flex items-center justify-center text-ink hover:bg-surface-hover active:scale-95 transition-all cursor-pointer shadow-2xs"
+              className="w-7 h-7 rounded-[5px] bg-surface border border-border-hairline flex items-center justify-center text-ink hover:bg-surface-hover active:scale-95 transition-all cursor-pointer"
               data-side-drawer-return-focus
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
-                <X className="w-4 h-4 text-ink" />
+                <X className="w-3.5 h-3.5 text-ink" />
               ) : (
-                <Menu className="w-4 h-4 text-ink" />
+                <Menu className="w-3.5 h-3.5 text-ink" />
               )}
             </button>
 
@@ -196,7 +197,7 @@ export function FocusNavigation() {
                 </button>
                 <div className="min-[420px]:hidden px-3 py-2 border-t border-border-hairline/40 flex items-center justify-between">
                   <span className="text-[10px] font-mono text-muted-foreground">Creative Mode</span>
-                  <CreativeModeToggle />
+                  <CreativeModeToggle variant="focus" />
                 </div>
               </div>
             )}

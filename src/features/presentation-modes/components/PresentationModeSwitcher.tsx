@@ -323,15 +323,15 @@ export function PresentationModeSwitcher({
               aria-haspopup="listbox"
               aria-expanded={isOpen}
               aria-label={`Presentation mode: ${currentConfig.shortLabel || currentConfig.label}. Click to switch.`}
-              className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md bg-surface border border-border-hairline text-ink/90 hover:bg-surface-hover hover:border-border hover:text-ink shadow-xs text-xs font-mono tracking-wider transition-colors outline-none focus-visible:ring-1 focus-visible:ring-brand cursor-pointer whitespace-nowrap flex-shrink-0 ${
-                isOpen ? "border-border text-ink bg-surface-hover shadow-sm" : ""
+              className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-[5px] bg-surface border border-border-hairline text-ink/90 hover:bg-surface-hover hover:border-border hover:text-ink text-[11px] font-mono tracking-wider transition-colors outline-none focus-visible:ring-1 focus-visible:ring-brand cursor-pointer whitespace-nowrap flex-shrink-0 ${
+                isOpen ? "border-border text-ink bg-surface-hover" : ""
               }`}
             >
               <LayoutTemplate className="w-3.5 h-3.5 text-muted-foreground/80 flex-shrink-0" />
               <span className="text-emerald-500 text-[9px] flex-shrink-0" aria-hidden="true">
                 ●
               </span>
-              <span className="font-semibold uppercase text-xs whitespace-nowrap">
+              <span className="font-semibold uppercase text-[11px] leading-none whitespace-nowrap">
                 {currentConfig.shortLabel || currentConfig.label}
               </span>
               <ChevronDown
@@ -368,7 +368,7 @@ export function PresentationModeSwitcher({
             aria-haspopup="listbox"
             aria-expanded={isOpen}
             aria-label={`Presentation mode: ${currentConfig.label}. Click to switch.`}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-sm font-serif text-zinc-700 dark:text-[#c4bfb6] hover:text-zinc-950 hover:dark:text-white transition-colors outline-none cursor-pointer border border-transparent hover:border-zinc-200 dark:hover:border-white/[0.08] whitespace-nowrap flex-shrink-0 ${
+            className={`inline-flex items-center gap-1 h-7 px-2 rounded-sm text-sm font-serif text-zinc-700 dark:text-[#c4bfb6] hover:text-zinc-950 hover:dark:text-white hover:bg-zinc-100/70 dark:hover:bg-white/[0.05] transition-colors outline-none cursor-pointer border border-transparent whitespace-nowrap flex-shrink-0 ${
               isOpen
                 ? "border-zinc-300/90 dark:border-white/[0.12] text-zinc-950 dark:text-[#f0ede6] bg-zinc-100/80 dark:bg-[#181816]"
                 : ""

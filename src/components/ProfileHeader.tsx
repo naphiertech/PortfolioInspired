@@ -12,7 +12,7 @@ const CreativeModeToggle = dynamic(
   () => import("@/features/creative-mode/components/CreativeModeToggle").then((m) => m.CreativeModeToggle),
   {
     ssr: false,
-    loading: () => <div className="w-[44px] h-[24px] rounded-full border border-border-hairline bg-surface" aria-hidden="true" />,
+    loading: () => <div className="h-[22px] w-[26px] rounded-[4px] bg-muted-subtle/50 animate-pulse" aria-hidden="true" />,
   }
 );
 import { LocalTime } from "./LocalTime";
@@ -201,11 +201,16 @@ export function ProfileHeader() {
         {/* Subtle Theme-Aware Bottom Vignette for Seamless Portrait Transition */}
         <div className="absolute inset-0 bg-gradient-to-t from-page/80 via-transparent to-transparent z-10 pointer-events-none" />
 
-        {/* Mobile-Only Floating Theme & Sound Controls (Top Right of Cover) */}
-        <div data-creative-font-exempt className="absolute top-2.5 right-2.5 z-20 flex sm:hidden items-center gap-1.5 p-1 rounded-xl bg-page/70 backdrop-blur-md border border-border-hairline shadow-xs">
-          <SoundToggle />
-          <CreativeModeToggle />
-          <ThemeToggle />
+        {/* Mobile-Only Floating Unified Instrument Strip (Top Right of Cover) */}
+        <div
+          data-creative-font-exempt
+          className="absolute top-2.5 right-2.5 z-20 inline-flex sm:hidden items-center h-7 p-[2px] rounded-[6px] bg-white/85 dark:bg-zinc-900/85 backdrop-blur-md border border-black/10 dark:border-white/15 shadow-xs gap-0.5"
+        >
+          <SoundToggle variant="embedded" />
+          <span className="w-px h-3.5 bg-border-hairline mx-0.5 flex-shrink-0" aria-hidden="true" />
+          <CreativeModeToggle variant="default" />
+          <span className="w-px h-3.5 bg-border-hairline mx-0.5 flex-shrink-0" aria-hidden="true" />
+          <ThemeToggle variant="default" />
         </div>
       </div>
 
@@ -238,16 +243,18 @@ export function ProfileHeader() {
           </div>
 
           {/* Desktop-Only Upper-Right Utility & Status Area */}
-          <div data-creative-font-exempt className="hidden sm:flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end pb-0.5">
+          <div data-creative-font-exempt className="hidden sm:flex items-center gap-2 flex-wrap justify-end pb-0.5">
             {/* Live Availability Status Indicator */}
-            <StatusBadge status="available" label={AVAILABILITY.label} size="sm" />
+            <StatusBadge status="available" label={AVAILABILITY.label} size="sm" className="h-7 px-2.5" />
 
-            {/* Sound Selector Toggle */}
-            <SoundToggle />
-            <CreativeModeToggle />
-
-            {/* Theme Selector Toggle */}
-            <ThemeToggle />
+            {/* Unified Technical Instrument Strip */}
+            <div className="inline-flex items-center h-7 p-[2px] rounded-[6px] bg-surface border border-border-hairline gap-0.5">
+              <SoundToggle variant="embedded" />
+              <span className="w-px h-3.5 bg-border-hairline mx-0.5 flex-shrink-0" aria-hidden="true" />
+              <CreativeModeToggle variant="default" />
+              <span className="w-px h-3.5 bg-border-hairline mx-0.5 flex-shrink-0" aria-hidden="true" />
+              <ThemeToggle variant="default" />
+            </div>
           </div>
         </div>
 

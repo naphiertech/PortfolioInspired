@@ -23,7 +23,7 @@ export function FocusNotesPage() {
       {/* Focus Top Navigation */}
       <FocusNavigation />
 
-      <div className="space-y-6 sm:space-y-8 pb-2 sm:pb-4">
+      <div className="flex flex-col pb-2 sm:pb-4">
         {/* Top Header & Breadcrumb */}
         <div className="space-y-3">
           <Link
@@ -55,7 +55,7 @@ export function FocusNotesPage() {
           </div>
         </div>
 
-        <EditorialDivider className="my-5 sm:my-6" />
+        <EditorialDivider className="my-4 sm:my-5" />
 
         {/* Structured Technical Index */}
         <div className="border-t border-b border-border-divider divide-y divide-border-divider">

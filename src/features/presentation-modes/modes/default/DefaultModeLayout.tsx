@@ -30,46 +30,54 @@ export function DefaultModeLayout() {
 
       {/* 3. Field Notes Index (Editorial Engineering Observations) */}
       <SnapSectionWrapper id="field-notes">
-        <EditorialDivider className="my-3 sm:my-4" />
+        <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
         <FieldNotesSection />
       </SnapSectionWrapper>
 
       {/* 4. Selected Projects (Top 3 Strongest) */}
       <SnapSectionWrapper id="recent-projects">
-        <EditorialDivider className="my-3 sm:my-4" />
+        <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
         <RecentProjects />
       </SnapSectionWrapper>
 
       {/* 5. Tech Stack (Curated High-Signal Preview) */}
       <SnapSectionWrapper id="tech-stack">
-        <EditorialDivider className="my-3 sm:my-4" />
+        <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
         <TechStack />
       </SnapSectionWrapper>
 
       {/* 6. Work Experience Timeline (Top 3 Recent Milestones) */}
-      <SnapSectionWrapper id="experience" className="content-auto">
-        <EditorialDivider className="my-3 sm:my-4" />
-        <ExperienceTimeline />
+      <SnapSectionWrapper id="experience">
+        <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
+        <div className="content-auto">
+          <ExperienceTimeline />
+        </div>
       </SnapSectionWrapper>
 
       {/* 8. Recommendations (Rendered only when real approved recommendations exist) */}
       {hasApprovedRecommendations && (
-        <SnapSectionWrapper id="recommendations" className="content-auto">
-          <EditorialDivider className="my-3 sm:my-4" />
-          <Recommendations />
+        <SnapSectionWrapper id="recommendations">
+          <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
+          <div className="content-auto">
+            <Recommendations />
+          </div>
         </SnapSectionWrapper>
       )}
 
       {/* 9. Compact Moments Gallery (4-Moment Preview) */}
-      <SnapSectionWrapper id="gallery" className="content-auto">
-        <EditorialDivider className="my-3 sm:my-4" />
-        <Gallery />
+      <SnapSectionWrapper id="gallery">
+        <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
+        <div className="content-auto">
+          <Gallery />
+        </div>
       </SnapSectionWrapper>
 
       {/* 10. Contact, Social & Memberships Matrix (Permanent - Never snapped) */}
-      <div className="content-auto">
-        <EditorialDivider className="my-3 sm:my-4" />
-        <FooterGrid />
+      <div>
+        <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
+        <div className="content-auto">
+          <FooterGrid />
+        </div>
       </div>
     </div>
   );

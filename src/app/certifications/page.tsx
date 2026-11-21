@@ -56,7 +56,7 @@ export default function CertificationsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mb-10 space-y-2 pt-4 sm:pt-5">
+      <div className="space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
@@ -80,9 +80,9 @@ export default function CertificationsPage() {
         </div>
       </div>
 
-      <EditorialDivider className="mb-10 sm:mb-12" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
-      <CertificationsSection />
+      <CertificationsSection defaultTrackExpanded />
 
       <section
         aria-label="Credential focus and verification"
@@ -93,12 +93,12 @@ export default function CertificationsPage() {
             &lt;verification-notes/&gt;
           </h2>
           <span className="font-mono text-[11px] text-muted-foreground">
-            {groups.length} tracks
+            {groups.length} categories
           </span>
         </div>
         <p className="font-sans text-xs sm:text-sm text-muted-foreground leading-relaxed">
-          Credentials are grouped into {groups.map((g) => `${g.label} (${g.items.length})`).join(" and ")}.
-          Technical course badges from Cisco Networking Academy verify live through Credly covering network communication fundamentals, IPv4/IPv6 addressing, cybersecurity defense, and threat awareness, while Google Developer Groups and DICT certificates include original verification IDs and inspectable source documents.
+          Credentials are organized into {groups.map((g) => `${g.label} (${g.items.length})`).join(" and ")}.
+          Cisco Networking Academy badges verify live through Credly—led by the 4-course Network Technician Career Path covering network fundamentals, Cisco IOS device configuration, IPv4/IPv6 addressing, troubleshooting, and endpoint security alongside Introduction to Cybersecurity—while Google Developer Groups and DICT certificates include verification IDs and inspectable source documents.
         </p>
       </section>
 

@@ -1,0 +1,425 @@
+.root {
+  position: relative;
+  width: 100%;
+  margin-top: 2px;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+
+  /* Dark Theme Palette (Obsidian-gunmetal fortress + moonlit snow peak + luminous emerald ion) */
+  --rm-snow0: #708096;
+  --rm-snow1: #a8b8ce;
+  --rm-snow2: #e4ecf8;
+
+  --rm-stone0: #090b0f;
+  --rm-stone1: #12161d;
+  --rm-stone2: #1e242e;
+  --rm-stone3: #2d3542;
+  --rm-stone4: #404a5a;
+  --rm-stone5: #586476;
+  --rm-stone6: #7c8a9e;
+
+  --rm-moss0: #0e1c14;
+  --rm-moss1: #183021;
+  --rm-moss2: #254830;
+  --rm-moss3: #386844;
+
+  --rm-water0: #2c445c;
+  --rm-water1: #547a9c;
+  --rm-water2: #98c0e0;
+
+  --rm-em0: #10b981;
+  --rm-em1: #6ef2c6;
+  --rm-amber: #fbbf24;
+
+  --rm-core: #f2fff9;
+  --rm-flame-in: #6ee7b7;
+  --rm-flame-mid: #10b981;
+  --rm-flame-edge: #059669;
+  --rm-flame-aura: rgba(16, 185, 129, 0.34);
+  --rm-ring: rgba(52, 211, 153, 0.52);
+  --rm-ring-node: #a7f3d0;
+  --rm-stencil: rgba(236, 255, 247, 0.88);
+  --rm-stencil-shadow: rgba(9, 11, 15, 0.72);
+
+  --rm-cloud-hi: rgba(212, 228, 248, 0.24);
+  --rm-cloud-mid: rgba(146, 168, 196, 0.13);
+  --rm-cloud-low: rgba(84, 102, 128, 0.06);
+  --rm-chassis-shadow: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.58));
+}
+
+:global(.light) .root {
+  /* Light Theme Palette (Editorial titanium armor + granite voxel rock + white snow + emerald ion) */
+  --rm-snow0: #b8c2d0;
+  --rm-snow1: #dae2ec;
+  --rm-snow2: #f6f9fd;
+
+  --rm-stone0: #20252d;
+  --rm-stone1: #363d48;
+  --rm-stone2: #505866;
+  --rm-stone3: #6e7786;
+  --rm-stone4: #8e97a6;
+  --rm-stone5: #b0b9c6;
+  --rm-stone6: #d6dde7;
+
+  --rm-moss0: #243622;
+  --rm-moss1: #3a5230;
+  --rm-moss2: #567242;
+  --rm-moss3: #7a9858;
+
+  --rm-water0: #94aac0;
+  --rm-water1: #c4d6e6;
+  --rm-water2: #ecf5fc;
+
+  --rm-em0: #10b981;
+  --rm-em1: #6ee7b7;
+  --rm-amber: #f5c466;
+
+  --rm-core: #f6fffa;
+  --rm-flame-in: #34d399;
+  --rm-flame-mid: #10b981;
+  --rm-flame-edge: #047857;
+  --rm-flame-aura: rgba(16, 185, 129, 0.24);
+  --rm-ring: rgba(16, 185, 129, 0.42);
+  --rm-ring-node: #059669;
+  --rm-stencil: rgba(255, 255, 255, 0.94);
+  --rm-stencil-shadow: rgba(32, 37, 45, 0.55);
+
+  --rm-cloud-hi: rgba(255, 255, 255, 0.78);
+  --rm-cloud-mid: rgba(196, 206, 220, 0.44);
+  --rm-cloud-low: rgba(158, 170, 188, 0.24);
+  --rm-chassis-shadow: none;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  shape-rendering: crispEdges;
+}
+
+.chassisBody {
+  filter: var(--rm-chassis-shadow);
+}
+
+/* Material palette classes */
+.snow0 { fill: var(--rm-snow0); }
+.snow1 { fill: var(--rm-snow1); }
+.snow2 { fill: var(--rm-snow2); }
+
+.stone0 { fill: var(--rm-stone0); }
+.stone1 { fill: var(--rm-stone1); }
+.stone2 { fill: var(--rm-stone2); }
+.stone3 { fill: var(--rm-stone3); }
+.stone4 { fill: var(--rm-stone4); }
+.stone5 { fill: var(--rm-stone5); }
+.stone6 { fill: var(--rm-stone6); }
+
+.moss0 { fill: var(--rm-moss0); }
+.moss1 { fill: var(--rm-moss1); }
+.moss2 { fill: var(--rm-moss2); }
+.moss3 { fill: var(--rm-moss3); }
+
+.water0 { fill: var(--rm-water0); }
+.water1 { fill: var(--rm-water1); }
+.water2 { fill: var(--rm-water2); }
+
+.em0 { fill: var(--rm-em0); }
+.em1 { fill: var(--rm-em1); }
+.amber { fill: var(--rm-amber); }
+
+.flameCore { fill: var(--rm-core); }
+.flameIn { fill: var(--rm-flame-in); }
+.flameMid { fill: var(--rm-flame-mid); }
+.flameEdge { fill: var(--rm-flame-edge); }
+.flameAura { fill: var(--rm-flame-aura); }
+
+.stencil { fill: var(--rm-stencil); }
+.stencilShadow { fill: var(--rm-stencil-shadow); }
+
+.cloudHi { fill: var(--rm-cloud-hi); }
+.cloudMid { fill: var(--rm-cloud-mid); }
+.cloudLow { fill: var(--rm-cloud-low); }
+
+.ringBase {
+  fill: none;
+  stroke: var(--rm-ring);
+  stroke-width: 1;
+  shape-rendering: geometricPrecision;
+}
+
+.ringFlow {
+  fill: none;
+  stroke: var(--rm-ring-node);
+  stroke-width: 1.1;
+  stroke-dasharray: 5 18 2 14;
+  shape-rendering: geometricPrecision;
+}
+
+.ringNode {
+  fill: var(--rm-ring-node);
+}
+
+/* ========================================================================= */
+/* LIVING THRUSTER & ATMOSPHERE ANIMATIONS (Chassis & Notes stay 100% still) */
+/* ========================================================================= */
+
+@keyframes jetPulseMain {
+  0%, 100% {
+    transform: scaleY(0.95) scaleX(0.98);
+    opacity: 0.94;
+  }
+  25% {
+    transform: scaleY(1.07) scaleX(1.02);
+    opacity: 1;
+  }
+  52% {
+    transform: scaleY(0.91) scaleX(0.97);
+    opacity: 0.88;
+  }
+  78% {
+    transform: scaleY(1.05) scaleX(1.01);
+    opacity: 0.98;
+  }
+}
+
+@keyframes jetPulseSide {
+  0%, 100% {
+    transform: scaleY(0.92);
+    opacity: 0.88;
+  }
+  38% {
+    transform: scaleY(1.09);
+    opacity: 1;
+  }
+  70% {
+    transform: scaleY(0.96);
+    opacity: 0.92;
+  }
+}
+
+@keyframes coreFlicker {
+  0%, 100% {
+    transform: scaleY(0.9);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scaleY(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes sparkDropMain {
+  0% {
+    transform: translateY(0px);
+    opacity: 0.95;
+  }
+  70% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkDropSide {
+  0% {
+    transform: translateY(0px);
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+}
+
+@keyframes ringOrbit {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -156;
+  }
+}
+
+@keyframes ringBreath {
+  0%, 100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes waterfallFall {
+  0% {
+    transform: translateY(0px);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.88;
+  }
+  80% {
+    opacity: 0.72;
+  }
+  100% {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+}
+
+@keyframes telemetryBreath {
+  0%, 100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes flagFlutter {
+  0%, 100% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes cloudDrift320 {
+  from {
+    transform: translateX(-320px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+.jetAnchor {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  will-change: transform, opacity;
+}
+
+.cloudBackTrack,
+.cloudForeTrack {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .jetMain {
+    animation: jetPulseMain 0.48s ease-in-out infinite;
+  }
+  .jetMidL {
+    animation: jetPulseSide 0.56s ease-in-out -0.14s infinite;
+  }
+  .jetMidR {
+    animation: jetPulseSide 0.62s ease-in-out -0.32s infinite;
+  }
+  .jetOutL {
+    animation: jetPulseSide 0.52s ease-in-out -0.22s infinite;
+  }
+  .jetOutR {
+    animation: jetPulseSide 0.58s ease-in-out -0.41s infinite;
+  }
+  .jetPodL {
+    animation: jetPulseSide 0.68s ease-in-out -0.18s infinite;
+  }
+  .jetPodR {
+    animation: jetPulseSide 0.64s ease-in-out -0.48s infinite;
+  }
+
+  .coreMain {
+    animation: coreFlicker 0.3s ease-in-out infinite;
+  }
+  .coreSideA {
+    animation: coreFlicker 0.34s ease-in-out -0.11s infinite;
+  }
+  .coreSideB {
+    animation: coreFlicker 0.38s ease-in-out -0.21s infinite;
+  }
+
+  .sparkMainA {
+    animation: sparkDropMain 0.85s linear infinite;
+  }
+  .sparkMainB {
+    animation: sparkDropMain 0.95s linear -0.42s infinite;
+  }
+  .sparkSideA {
+    animation: sparkDropSide 0.78s linear -0.15s infinite;
+  }
+  .sparkSideB {
+    animation: sparkDropSide 0.86s linear -0.52s infinite;
+  }
+
+  .ringFlowAnim {
+    animation: ringOrbit 5.6s linear infinite;
+  }
+  .ringBreathAnim {
+    animation: ringBreath 2.6s ease-in-out infinite;
+  }
+
+  .wfDropA {
+    animation: waterfallFall 1.55s linear infinite;
+  }
+  .wfDropB {
+    animation: waterfallFall 1.85s linear -0.78s infinite;
+  }
+  .wfDropC {
+    animation: waterfallFall 1.4s linear -0.45s infinite;
+  }
+
+  .telemetryAnim {
+    animation: telemetryBreath 2.4s ease-in-out infinite;
+  }
+  .beaconAnim {
+    animation: telemetryBreath 1.7s ease-in-out -0.6s infinite;
+  }
+  .flagAnimA {
+    animation: flagFlutter 1.1s steps(2, end) infinite;
+  }
+  .flagAnimB {
+    animation: flagFlutter 1.3s steps(2, end) -0.5s infinite;
+  }
+
+  .cloudBackTrack {
+    animation: cloudDrift320 44s linear infinite;
+  }
+  .cloudForeTrack {
+    animation: cloudDrift320 26s linear -9s infinite;
+  }
+
+  /* Auto-pause all animations when scrolled out of viewport */
+  .root:not([data-active="true"]) .jetMain,
+  .root:not([data-active="true"]) .jetMidL,
+  .root:not([data-active="true"]) .jetMidR,
+  .root:not([data-active="true"]) .jetOutL,
+  .root:not([data-active="true"]) .jetOutR,
+  .root:not([data-active="true"]) .jetPodL,
+  .root:not([data-active="true"]) .jetPodR,
+  .root:not([data-active="true"]) .coreMain,
+  .root:not([data-active="true"]) .coreSideA,
+  .root:not([data-active="true"]) .coreSideB,
+  .root:not([data-active="true"]) .sparkMainA,
+  .root:not([data-active="true"]) .sparkMainB,
+  .root:not([data-active="true"]) .sparkSideA,
+  .root:not([data-active="true"]) .sparkSideB,
+  .root:not([data-active="true"]) .ringFlowAnim,
+  .root:not([data-active="true"]) .ringBreathAnim,
+  .root:not([data-active="true"]) .wfDropA,
+  .root:not([data-active="true"]) .wfDropB,
+  .root:not([data-active="true"]) .wfDropC,
+  .root:not([data-active="true"]) .telemetryAnim,
+  .root:not([data-active="true"]) .beaconAnim,
+  .root:not([data-active="true"]) .flagAnimA,
+  .root:not([data-active="true"]) .flagAnimB,
+  .root:not([data-active="true"]) .cloudBackTrack,
+  .root:not([data-active="true"]) .cloudForeTrack {
+    animation-play-state: paused;
+  }
+}

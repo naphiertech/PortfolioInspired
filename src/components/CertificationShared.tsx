@@ -127,6 +127,23 @@ export function CertificationTagBadge({ cert }: { cert: CertificationItem }) {
   );
 }
 
+/** Subtle capstone indicator for multi-course career path credentials. */
+export function CareerPathBadge({
+  label = "CAREER PATH",
+  className = "",
+}: {
+  label?: string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center font-mono text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 ${className}`}
+    >
+      {label}
+    </span>
+  );
+}
+
 /** Formats certificate code or issued date consistently across cards and modals. */
 export function getCertificationMetaText(cert: CertificationItem): string | null {
   if (cert.code) return `ID: ${cert.code}`;

@@ -35,7 +35,7 @@ export function FocusNoteDetailPage({
       {/* Focus Top Navigation */}
       <FocusNavigation />
 
-      <article className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-12 sm:pb-16">
+      <article className="w-full max-w-3xl mx-auto flex flex-col pb-4 sm:pb-6">
         {/* Top Header & Breadcrumb */}
         <header className="space-y-3">
           <div className="flex items-center justify-between">
@@ -88,7 +88,7 @@ export function FocusNoteDetailPage({
           </div>
         </header>
 
-        <EditorialDivider className="my-5 sm:my-6" />
+        <EditorialDivider className="my-4 sm:my-5" />
 
         {/* Structured Document Content */}
         <div className="space-y-7 sm:space-y-9">
@@ -154,7 +154,7 @@ export function FocusNoteDetailPage({
           )}
         </div>
 
-        <EditorialDivider className="my-6 sm:my-8" />
+        <EditorialDivider className="my-4 sm:my-5" />
 
         {/* Bottom Navigation */}
         <footer className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 font-mono text-xs">

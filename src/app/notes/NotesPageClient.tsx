@@ -13,7 +13,7 @@ export function NotesPageClient() {
   return (
     <div className="w-full max-w-4xl mx-auto animate-in fade-in duration-300">
       {/* Breadcrumb */}
-      <div className="mb-10 space-y-2 pt-4 sm:pt-5">
+      <div className="space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           onMouseEnter={playHover}
@@ -36,7 +36,7 @@ export function NotesPageClient() {
         </div>
       </div>
 
-      <EditorialDivider className="mb-10 sm:mb-12" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* List-Based Editorial Index */}
       <div className="w-full border-t border-b border-border-divider divide-y divide-border-divider">

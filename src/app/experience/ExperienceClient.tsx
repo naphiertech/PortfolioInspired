@@ -134,7 +134,7 @@ export function ExperienceClient() {
       </div>
 
       {/* Divider before Act 1 */}
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* ACT 1: <WORK-HISTORY/> */}
       <section id="work" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
@@ -301,19 +301,19 @@ export function ExperienceClient() {
       </section>
 
       {/* Divider before Act 2 */}
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* ACT 2: <TECHNICAL-STACK/> */}
       <TechStackSection />
 
       {/* Divider before Act 3 */}
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* ACT 3: <VERIFIED-CERTIFICATIONS/> */}
       <CertificationsSection />
 
       {/* Divider before Act 4 */}
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* ACT 4: <LET'S-WORK-TOGETHER/> */}
       <section id="contact" className="scroll-mt-20 sm:scroll-mt-24 space-y-5">

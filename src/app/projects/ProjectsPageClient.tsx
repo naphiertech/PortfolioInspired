@@ -17,7 +17,7 @@ export function ProjectsPageClient() {
   return (
     <div className="w-full select-none">
       {/* Page Header */}
-      <div className="mb-10 space-y-2 pt-4 sm:pt-5">
+      <div className="space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           onMouseEnter={playHover}
@@ -44,7 +44,7 @@ export function ProjectsPageClient() {
       </div>
 
       {/* Horizontal Structural Rail */}
-      <EditorialDivider className="mb-10 sm:mb-12" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* 2-Column Responsive CAD Project Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

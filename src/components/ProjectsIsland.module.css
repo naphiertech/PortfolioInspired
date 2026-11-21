@@ -1,0 +1,201 @@
+.root {
+  position: relative;
+  width: calc(100% + 16px);
+  margin-left: -8px;
+  margin-top: -2px;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+
+  /* Dark Theme Palette (Luminous cyan-aqua backlit clouds matching illuminated reference) */
+  --pi-cloud-rim: rgba(74, 206, 232, 0.78);
+  --pi-cloud-hi: rgba(32, 118, 148, 0.7);
+  --pi-cloud-mid: rgba(18, 62, 87, 0.62);
+  --pi-cloud-low: rgba(13, 38, 56, 0.46);
+  --pi-mist-hi: rgba(74, 206, 232, 0.28);
+  --pi-mist-mid: rgba(28, 92, 122, 0.2);
+  --pi-mist-low: rgba(16, 48, 70, 0.12);
+  --pi-wind: rgba(118, 224, 246, 0.28);
+}
+
+:global(.light) .root {
+  /* Light Theme Palette (Granite cliff strata + natural alpine moss/trees + airy cumulus) */
+  --pi-rock0: #22262d;
+  --pi-rock1: #363b44;
+  --pi-rock2: #4d5460;
+  --pi-rock3: #676f7d;
+  --pi-rock4: #838b99;
+  --pi-rock5: #a1a9b6;
+  --pi-rock6: #c0c7d2;
+  --pi-rock7: #dfe4ec;
+
+  --pi-moss0: #283823;
+  --pi-moss1: #3e5332;
+  --pi-moss2: #566f42;
+  --pi-moss3: #738d57;
+  --pi-moss4: #95ad74;
+
+  --pi-bark0: #3c322b;
+  --pi-bark1: #5e4f43;
+
+  --pi-cloud-rim: rgba(255, 255, 255, 0.86);
+  --pi-cloud-hi: rgba(238, 242, 248, 0.68);
+  --pi-cloud-mid: rgba(202, 210, 222, 0.44);
+  --pi-cloud-low: rgba(162, 173, 190, 0.24);
+  --pi-mist-hi: rgba(248, 250, 253, 0.42);
+  --pi-mist-mid: rgba(208, 216, 228, 0.28);
+  --pi-mist-low: rgba(174, 184, 200, 0.16);
+  --pi-wind: rgba(136, 148, 166, 0.22);
+}
+
+@media (max-width: 639px) {
+  .root {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+  }
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 280 / 96;
+  overflow: hidden;
+}
+
+.svgLayer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.darkIslandImg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Pure-CSS instant theme swap (zero hydration mismatch) */
+.darkOnly {
+  display: block;
+}
+
+.lightOnly {
+  display: none;
+}
+
+:global(.light) .darkOnly {
+  display: none;
+}
+
+:global(.light) .lightOnly {
+  display: block;
+}
+
+/* Light island material classes */
+.rock0 { fill: var(--pi-rock0); }
+.rock1 { fill: var(--pi-rock1); }
+.rock2 { fill: var(--pi-rock2); }
+.rock3 { fill: var(--pi-rock3); }
+.rock4 { fill: var(--pi-rock4); }
+.rock5 { fill: var(--pi-rock5); }
+.rock6 { fill: var(--pi-rock6); }
+.rock7 { fill: var(--pi-rock7); }
+
+.moss0 { fill: var(--pi-moss0); }
+.moss1 { fill: var(--pi-moss1); }
+.moss2 { fill: var(--pi-moss2); }
+.moss3 { fill: var(--pi-moss3); }
+.moss4 { fill: var(--pi-moss4); }
+
+.bark0 { fill: var(--pi-bark0); }
+.bark1 { fill: var(--pi-bark1); }
+
+/* Drifting cloud & mist classes */
+.cloudRim { fill: var(--pi-cloud-rim); }
+.cloudHi { fill: var(--pi-cloud-hi); }
+.cloudMid { fill: var(--pi-cloud-mid); }
+.cloudLow { fill: var(--pi-cloud-low); }
+.mistHi { fill: var(--pi-mist-hi); }
+.mistMid { fill: var(--pi-mist-mid); }
+.mistLow { fill: var(--pi-mist-low); }
+.windLine { fill: var(--pi-wind); }
+
+/* ========================================================================= */
+/* SEAMLESS PARALLAX DRIFTING CLOUDS + AMBIENT CYAN SKYLIGHT & FIREFLIES     */
+/* ========================================================================= */
+
+@keyframes cloudDrift {
+  from {
+    transform: translateX(-280px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes auraBreath {
+  0%, 100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 0.96;
+  }
+}
+
+@keyframes fireflyTwinkle {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.cloudBackTrack,
+.cloudMidTrack,
+.cloudForeTrack {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cloudBackTrack {
+    animation: cloudDrift 38s linear infinite;
+  }
+  .cloudMidTrack {
+    animation: cloudDrift 24s linear -8s infinite;
+  }
+  .cloudForeTrack {
+    animation: cloudDrift 16s linear -4s infinite;
+  }
+  .auraAnim {
+    animation: auraBreath 4.2s ease-in-out infinite;
+  }
+  .fireflyA {
+    animation: fireflyTwinkle 2.6s ease-in-out infinite;
+  }
+  .fireflyB {
+    animation: fireflyTwinkle 3.2s ease-in-out -1.1s infinite;
+  }
+  .fireflyC {
+    animation: fireflyTwinkle 2.9s ease-in-out -1.9s infinite;
+  }
+
+  .root:not([data-active="true"]) .cloudBackTrack,
+  .root:not([data-active="true"]) .cloudMidTrack,
+  .root:not([data-active="true"]) .cloudForeTrack,
+  .root:not([data-active="true"]) .auraAnim,
+  .root:not([data-active="true"]) .fireflyA,
+  .root:not([data-active="true"]) .fireflyB,
+  .root:not([data-active="true"]) .fireflyC {
+    animation-play-state: paused;
+  }
+}

@@ -51,8 +51,8 @@
   letter-spacing: 0.06em;
 }
 /* Keep the split through AnimatePresence's exit, then reconnect at collapsed height. */
-.row:has(.disclosure) .spine { bottom: auto; height: calc(54 * var(--tower-unit)); mask-image: linear-gradient(#000, transparent); }
-.row:has(.disclosure) .column { bottom: auto; height: calc(101 * var(--tower-unit)); }
+.environment[data-tower-active="true"] .row:has(.disclosure) .spine { bottom: auto; height: calc(54 * var(--tower-unit)); mask-image: linear-gradient(#000, transparent); }
+.environment[data-tower-active="true"] .row:has(.disclosure) .column { bottom: auto; height: calc(101 * var(--tower-unit)); }
 .wiring {
   position: absolute;
   left: calc(5 * var(--tower-unit));
@@ -88,11 +88,19 @@
 .fragments::after { content: ""; position: absolute; left: calc(44 * var(--tower-unit)); top: 0; width: calc(2 * var(--tower-unit)); height: calc(4 * var(--tower-unit)); transform: translateY(calc(75 * var(--tower-unit))); background: var(--tower-edge); }
 .rail {
   position: relative;
-  flex: 0 0 18%;
+  flex: 0 0 calc(126 * var(--tower-unit));
   max-width: 132px;
   min-width: 0;
   pointer-events: none;
   user-select: none;
+  transition: flex-basis 340ms cubic-bezier(0.22, 1, 0.36, 1), max-width 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.machineryLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  transform-origin: calc(37 * var(--tower-unit)) 50%;
 }
 .column {
   position: absolute;
@@ -157,10 +165,30 @@
 .cable, .seam { stroke: var(--tower-edge); stroke-width: 1.3; }
 .pins { stroke: var(--tower-shadow); stroke-width: 1.5; }
 .dust { fill: var(--tower-edge); opacity: 0.4; }
-.ending { position: relative; height: calc(88 * var(--tower-unit)); pointer-events: none; }
+.ending {
+  position: relative;
+  height: calc(88 * var(--tower-unit));
+  pointer-events: none;
+  transition: height 340ms cubic-bezier(0.22, 1, 0.36, 1), margin-top 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.baseLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 30% 80%;
+}
 .base, .groundPlane { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(88 * var(--tower-unit)); }
 .ground { stroke: var(--tower-edge); opacity: 0.45; stroke-width: 1; }
-.annotation { position: absolute; left: calc(105 * var(--tower-unit)); top: calc(8 * var(--tower-unit)); display: flex; align-items: center; gap: 10px; color: var(--text-body); }
+.annotation {
+  position: absolute;
+  left: calc(105 * var(--tower-unit));
+  top: calc(8 * var(--tower-unit));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-body);
+  transition: left 340ms cubic-bezier(0.22, 1, 0.36, 1), top 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 .annotation svg { width: calc(70 * var(--tower-unit)); height: auto; }
 .annotation p { margin: 0; transform: rotate(-5deg); font: italic 12px/1.5 "Segoe Print", "Bradley Hand", cursive; }
 .annotation strong { font-weight: 600; }
@@ -191,6 +219,24 @@
 :global(.dark) .fragments { opacity: 0.16; }
 :global(.dark) .dust { opacity: 0.16; }
 :global(.dark) .ground { opacity: 0.25; }
+@container experience (min-width: 560px) {
+  .environment[data-tower-active="false"] .row {
+    min-height: 0;
+  }
+  .environment[data-tower-active="false"] .rail {
+    flex-basis: 48px;
+    max-width: 48px;
+  }
+  .environment[data-tower-active="false"] .ending {
+    height: calc(52 * var(--tower-unit));
+    margin-top: 4px;
+  }
+  .environment[data-tower-active="false"] .annotation {
+    left: 24px;
+    top: 4px;
+  }
+}
+
 @container experience (max-width: 679px) {
   .desktopComposition { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
   .desktopDate { grid-column: 2; }
@@ -206,6 +252,8 @@
   }
 
   /* Completely remove decorative pixel-tech tower artwork on mobile */
+  .machineryLayer,
+  .baseLayer,
   .column,
   .wiring,
   .machine,
@@ -334,6 +382,16 @@
   .mobileHeading { display: grid; grid-template-columns: 28px minmax(0, 1fr); }
   .mobileDate { grid-column: 2; }
 }
+:global([data-creative-motion="off"]) .rail,
+:global([data-creative-motion="off"]) .ending,
+:global([data-creative-motion="off"]) .annotation,
+:global([data-creative-motion="off"]) .connector,
+:global([data-creative-motion="off"]) .node,
+:global([data-creative-motion="off"]) .screen,
+:global([data-creative-motion="off"]) .wiring {
+  transition: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .connector, .node, .screen, .wiring, .row[data-open="true"] .wiring { transition: none; }
+  .rail, .ending, .annotation, .connector, .node, .screen, .wiring, .row[data-open="true"] .wiring { transition: none; }
 }

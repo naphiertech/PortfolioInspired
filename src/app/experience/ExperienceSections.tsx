@@ -10,12 +10,17 @@ import {
   Eye,
   CheckCircle2,
   ChevronDown,
+  Layers,
 } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   techSections,
   certifications,
+  CertificationCategory,
   CertificationItem,
   getCertificationGroups,
+  getTrackCourses,
+  getTopLevelCertifications,
   hasPreviewableDocument,
   isPdfCertificate,
   getVerifyHref,
@@ -26,6 +31,7 @@ import {
 import {
   IssuerLogo,
   CertificationTagBadge,
+  CareerPathBadge,
   getCertificationMetaText,
   CertificationDocumentPreview,
 } from "@/components/CertificationShared";
@@ -254,11 +260,46 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
 /**
  * Shared Verified Certifications section & modal preview used by /experience and /certifications.
  */
-export function CertificationsSection() {
+export function CertificationsSection({
+  defaultTrackExpanded = false,
+}: {
+  defaultTrackExpanded?: boolean;
+}) {
   const { playHover, playClick } = useUISound();
+  const shouldReduceMotion = useReducedMotion();
   const [previewCert, setPreviewCert] = useState<CertificationItem | null>(null);
+  const [activeFilter, setActiveFilter] = useState<"all" | CertificationCategory>("all");
+  const [trackExpanded, setTrackExpanded] = useState(defaultTrackExpanded);
   const [mounted, setMounted] = useState(false);
+
   const certGroups = useMemo(() => getCertificationGroups(), []);
+  const filteredItems = useMemo(
+    () =>
+      activeFilter === "all"
+        ? certifications
+        : certifications.filter((c) => c.category === activeFilter),
+    [activeFilter]
+  );
+  const topLevelItems = useMemo(
+    () => getTopLevelCertifications(filteredItems),
+    [filteredItems]
+  );
+  const flagshipTracks = useMemo(
+    () => topLevelItems.filter((c) => Boolean(c.trackId)),
+    [topLevelItems]
+  );
+  const ledgerItems = useMemo(
+    () => topLevelItems.filter((c) => !c.trackId),
+    [topLevelItems]
+  );
+
+  const handleFilterChange = (next: "all" | CertificationCategory) => {
+    playClick();
+    setActiveFilter(next);
+    if (next === "course") {
+      setTrackExpanded(true);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -276,113 +317,380 @@ export function CertificationsSection() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [previewCert]);
 
+  const ledgerHeading =
+    activeFilter === "all"
+      ? "Courses & Workshops"
+      : activeFilter === "course"
+      ? "Standalone Course"
+      : "Workshops & Events";
+
   return (
     <>
-      <section id="certifications" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
-        <div className="flex items-center justify-between">
+      <section id="certifications" className="scroll-mt-20 sm:scroll-mt-24 space-y-5">
+        <div className="flex items-center justify-between gap-2">
           <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
             &lt;certificates/&gt;
           </span>
-          <span className="font-mono text-xs text-muted-foreground">
-            {certifications.length} certificates
+          <span className="font-mono text-xs text-muted-foreground tabular-nums">
+            {certifications.length} verified
           </span>
         </div>
 
-        <div className="space-y-8">
-          {certGroups.map((group) => (
-            <div key={group.id} className="space-y-3.5">
-              <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-border-hairline/50">
-                <div className="flex items-center gap-2 min-w-0">
-                  <h3 className="font-sans text-xs font-semibold text-ink tracking-wide uppercase">
-                    {group.label}
-                  </h3>
-                  <span className="font-mono text-[10px] text-muted-foreground/70 hidden sm:inline">
-                    {group.syntaxLabel}
-                  </span>
-                </div>
-                <span className="font-mono text-[11px] text-muted-foreground tabular-nums shrink-0">
-                  {String(group.items.length).padStart(2, "0")}
+        {/* Segmented Category Filter */}
+        <div
+          role="group"
+          aria-label="Filter certifications by category"
+          className="inline-flex flex-wrap items-center gap-1 p-1 rounded-lg bg-surface/50 border border-border-hairline"
+        >
+          <button
+            type="button"
+            aria-pressed={activeFilter === "all"}
+            onClick={() => handleFilterChange("all")}
+            onMouseEnter={playHover}
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md font-mono text-xs transition-colors cursor-pointer ${
+              activeFilter === "all"
+                ? "bg-ink text-page font-semibold shadow-2xs"
+                : "text-muted-foreground hover:text-ink hover:bg-surface/80"
+            }`}
+          >
+            <span>All</span>
+            <span
+              className={`text-[10px] tabular-nums ${
+                activeFilter === "all" ? "opacity-80" : "opacity-60"
+              }`}
+            >
+              {certifications.length}
+            </span>
+          </button>
+
+          {certGroups.map((group) => {
+            const isActive = activeFilter === group.id;
+            return (
+              <button
+                key={group.id}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => handleFilterChange(group.id)}
+                onMouseEnter={playHover}
+                className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md font-mono text-xs transition-colors cursor-pointer ${
+                  isActive
+                    ? "bg-ink text-page font-semibold shadow-2xs"
+                    : "text-muted-foreground hover:text-ink hover:bg-surface/80"
+                }`}
+              >
+                <span>{group.label}</span>
+                <span
+                  className={`text-[10px] tabular-nums ${
+                    isActive ? "opacity-80" : "opacity-60"
+                  }`}
+                >
+                  {group.items.length}
                 </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* #1 Flagship Career Path Spotlight */}
+        {flagshipTracks.map((track) => {
+          const subCourses = track.trackId ? getTrackCourses(track.trackId) : [];
+          const hasPreview = hasPreviewableDocument(track);
+          const verifyHref = getVerifyHref(track);
+          const metaText = getCertificationMetaText(track);
+          const panelId = `std-track-${track.trackId}`;
+
+          return (
+            <div
+              key={track.name}
+              className="rounded-xl border border-border-hairline border-t-2 border-t-sky-500/55 dark:border-t-sky-400/50 bg-surface/40 shadow-2xs overflow-hidden"
+            >
+              <div className="p-4 sm:p-5 space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div className="flex items-start gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-2 shadow-2xs shrink-0 mt-0.5">
+                      <IssuerLogo cert={track} className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-sans text-base sm:text-[17px] font-semibold text-ink tracking-tight leading-snug">
+                        {track.name}
+                      </h3>
+                      <p className="font-mono text-xs text-muted-foreground mt-0.5">
+                        {track.issuer}
+                        {metaText ? ` · ${metaText}` : ""}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 flex-wrap sm:justify-end shrink-0 pl-[3.25rem] sm:pl-0">
+                    <CareerPathBadge label={track.trackLabel || "CAREER PATH"} />
+                    <CertificationTagBadge cert={track} />
+                  </div>
+                </div>
+
+                {track.summary && (
+                  <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed max-w-2xl">
+                    {track.summary}
+                  </p>
+                )}
+
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  {hasPreview && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playClick();
+                        setPreviewCert(track);
+                      }}
+                      onMouseEnter={playHover}
+                      className="tactile-btn gap-1.5 text-xs px-3 py-1.5 min-h-[34px]"
+                    >
+                      <Eye className="w-3.5 h-3.5 opacity-75" aria-hidden="true" />
+                      <span>Inspect PDF</span>
+                    </button>
+                  )}
+
+                  {verifyHref && (
+                    <a
+                      href={verifyHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="tactile-btn gap-1.5 text-xs px-3 py-1.5 min-h-[34px]"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 opacity-75" aria-hidden="true" />
+                      <span>{track.verifyUrl ? "Verify on Credly" : "Open Certificate"}</span>
+                    </a>
+                  )}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {group.items.map((cert) => {
-                  const hasPreview = hasPreviewableDocument(cert);
-                  const verifyHref = getVerifyHref(cert);
-                  const metaText = getCertificationMetaText(cert);
+              {subCourses.length > 0 && (
+                <div className="border-t border-border-hairline/70">
+                  <button
+                    type="button"
+                    aria-expanded={trackExpanded}
+                    aria-controls={panelId}
+                    onClick={() => {
+                      playClick();
+                      setTrackExpanded((open) => !open);
+                    }}
+                    onMouseEnter={playHover}
+                    className="w-full px-4 sm:px-5 py-2.5 bg-black/[0.015] dark:bg-white/[0.02] hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-3 text-left cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Layers className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" aria-hidden="true" />
+                      <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink/90">
+                        {String(subCourses.length).padStart(2, "0")} Included Courses
+                      </span>
+                      <span className="hidden md:inline font-mono text-[11px] text-muted-foreground/75 truncate">
+                        · Basics · Devices · Addressing · Support &amp; Security
+                      </span>
+                    </div>
 
-                  return (
-                    <div
-                      key={cert.name}
-                      className="p-4 sm:p-5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 transition-all duration-200 flex flex-col justify-between group shadow-2xs relative overflow-hidden"
-                    >
-                      <div className="space-y-3.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs">
-                            <IssuerLogo cert={cert} />
-                          </div>
-                          <CertificationTagBadge cert={cert} />
-                        </div>
+                    <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground shrink-0">
+                      <span>{trackExpanded ? "Hide" : "Expand"}</span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          trackExpanded ? "rotate-180 text-brand" : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </button>
 
-                        <div className="space-y-1">
-                          <h4 className="font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors line-clamp-2 leading-snug">
-                            {cert.name}
-                          </h4>
-                          <p className="font-sans text-xs text-muted-foreground line-clamp-2">
-                            Issued by <span className="text-body font-medium">{cert.issuer}</span>
-                          </p>
+                  <AnimatePresence initial={false}>
+                    {trackExpanded && (
+                      <motion.div
+                        id={panelId}
+                        role="region"
+                        aria-label={`${track.name} included courses`}
+                        initial={shouldReduceMotion ? { opacity: 1, height: "auto" } : { opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{
+                          height: { duration: shouldReduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] },
+                          opacity: { duration: shouldReduceMotion ? 0 : 0.16, ease: "easeOut" },
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="divide-y divide-border-hairline/50 border-t border-border-hairline/60 bg-surface/20">
+                          {subCourses.map((course, idx) => {
+                            const courseHasPreview = hasPreviewableDocument(course);
+                            const courseVerifyHref = getVerifyHref(course);
+
+                            return (
+                              <div
+                                key={course.name}
+                                className="group relative flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 px-4 sm:px-5 py-3 hover:bg-surface/60 transition-colors"
+                              >
+                                <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                                  <span className="font-mono text-[11px] font-semibold tabular-nums text-sky-600/80 dark:text-sky-400/80 pt-0.5 sm:pt-0 shrink-0 w-5">
+                                    {String(idx + 1).padStart(2, "0")}
+                                  </span>
+                                  <div className="min-w-0 flex-1">
+                                    {courseHasPreview ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          playClick();
+                                          setPreviewCert(course);
+                                        }}
+                                        onMouseEnter={playHover}
+                                        className="text-left font-sans text-xs sm:text-[13.5px] font-medium text-ink group-hover:text-brand transition-colors leading-snug cursor-pointer after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                                      >
+                                        {course.name}
+                                      </button>
+                                    ) : (
+                                      <span className="font-sans text-xs sm:text-[13.5px] font-medium text-ink leading-snug">
+                                        {course.name}
+                                      </span>
+                                    )}
+                                    {course.issuedAt && (
+                                      <span className="block sm:inline sm:ml-2 font-mono text-[10.5px] text-muted-foreground/75">
+                                        {course.issuedAt}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 pl-8 sm:pl-0 shrink-0">
+                                  {courseHasPreview && (
+                                    <span
+                                      aria-hidden="true"
+                                      className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground group-hover:text-ink px-2 py-1 rounded border border-border-hairline/70 bg-surface/60 transition-colors"
+                                    >
+                                      <Eye className="w-3 h-3 opacity-75" />
+                                      <span>Inspect</span>
+                                    </span>
+                                  )}
+
+                                  {courseVerifyHref && (
+                                    <a
+                                      href={courseVerifyHref}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      title={`Verify ${course.name} on Credly`}
+                                      className="relative z-10 inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-ink px-2 py-1 rounded border border-border-hairline bg-surface hover:bg-surface-hover transition-colors"
+                                    >
+                                      <span>Credly</span>
+                                      <ExternalLink className="w-3 h-3 opacity-75" aria-hidden="true" />
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {/* Compact Hairline-Divided Credential Ledger */}
+        {ledgerItems.length > 0 && (
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between gap-2 px-0.5">
+              <h3 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {ledgerHeading}
+              </h3>
+              <span className="font-mono text-[11px] text-muted-foreground/70 tabular-nums">
+                {String(ledgerItems.length).padStart(2, "0")}
+              </span>
+            </div>
+
+            <div className="rounded-xl border border-border-hairline bg-surface/25 divide-y divide-border-hairline/60 overflow-hidden shadow-2xs">
+              {ledgerItems.map((cert) => {
+                const hasPreview = hasPreviewableDocument(cert);
+                const verifyHref = getVerifyHref(cert);
+                const metaText = getCertificationMetaText(cert);
+
+                return (
+                  <div
+                    key={cert.name}
+                    className={`group relative flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4 px-3.5 sm:px-4 py-3.5 transition-colors ${
+                      hasPreview ? "hover:bg-surface/65" : "hover:bg-surface/35"
+                    }`}
+                  >
+                    <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                      <div className="w-8 h-8 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs shrink-0 mt-0.5 sm:mt-0">
+                        <IssuerLogo cert={cert} className="w-4 h-4" />
                       </div>
 
-                      <div className="pt-3 mt-3 border-t border-border-hairline/40 flex items-center justify-between gap-2">
-                        {metaText ? (
-                          <span className="font-mono text-[10px] text-muted-foreground bg-muted-subtle/80 px-2 py-0.5 rounded border border-border-hairline truncate max-w-[170px]">
-                            {metaText}
-                          </span>
+                      <div className="min-w-0 flex-1">
+                        {hasPreview ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              playClick();
+                              setPreviewCert(cert);
+                            }}
+                            onMouseEnter={playHover}
+                            className="text-left font-sans text-sm font-semibold text-ink group-hover:text-brand transition-colors leading-snug cursor-pointer after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                          >
+                            {cert.name}
+                          </button>
                         ) : (
-                          <span className="font-mono text-[10px] text-muted-foreground/60 italic">
-                            Verified
-                          </span>
+                          <h4 className="font-sans text-sm font-semibold text-ink leading-snug">
+                            {cert.name}
+                          </h4>
                         )}
 
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          {hasPreview && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                playClick();
-                                setPreviewCert(cert);
-                              }}
-                              onMouseEnter={playHover}
-                              className="tactile-btn gap-1 text-xs px-2.5 py-1"
-                              title={`Inspect certificate for ${cert.name}`}
-                            >
-                              <Eye className="w-3 h-3 opacity-70" />
-                              <span>Inspect</span>
-                            </button>
-                          )}
-
-                          {verifyHref && (
-                            <a
-                              href={verifyHref}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              title={cert.verifyUrl ? "Verify badge on Credly" : `Verify ${cert.name}`}
-                              className="tactile-btn gap-1 text-xs px-2.5 py-1"
-                            >
-                              <ExternalLink className="w-3 h-3 opacity-70" />
-                              <span>Verify</span>
-                            </a>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-xs text-muted-foreground">
+                          <span className="font-sans truncate max-w-full">{cert.issuer}</span>
+                          {metaText && (
+                            <>
+                              <span aria-hidden="true" className="opacity-40">·</span>
+                              <span className="font-mono text-[10.5px] text-muted-foreground/85 tabular-nums">
+                                {metaText}
+                              </span>
+                            </>
                           )}
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-2 pl-11 sm:pl-0 shrink-0">
+                      <CertificationTagBadge cert={cert} />
+
+                      <div className="flex items-center gap-1.5">
+                        {hasPreview ? (
+                          <span
+                            aria-hidden="true"
+                            className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground group-hover:text-ink px-2 py-1 rounded-md border border-border-hairline/80 bg-surface/70 transition-colors"
+                          >
+                            <Eye className="w-3 h-3 opacity-75" />
+                            <span>Inspect</span>
+                          </span>
+                        ) : (
+                          <span className="font-mono text-[10.5px] text-muted-foreground/70 inline-flex items-center gap-1 px-1.5">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-500/80" aria-hidden="true" />
+                            <span>Verified</span>
+                          </span>
+                        )}
+
+                        {verifyHref && (
+                          <a
+                            href={verifyHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={cert.verifyUrl ? `Verify ${cert.name} on Credly` : `Open certificate for ${cert.name}`}
+                            className="relative z-10 inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-ink px-2 py-1 rounded-md border border-border-hairline bg-surface hover:bg-surface-hover transition-colors"
+                          >
+                            <span>{cert.verifyUrl ? "Credly" : "Open"}</span>
+                            <ExternalLink className="w-3 h-3 opacity-75" aria-hidden="true" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
         <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
           <div className="border-l-2 border-border-hairline pl-3 italic text-muted-foreground/90">

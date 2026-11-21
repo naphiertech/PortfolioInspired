@@ -1,4 +1,8 @@
+"use client";
+
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import type { MotionLevel } from "@/features/creative-mode/types/creativeMode";
 import styles from "./ExperienceTower.module.css";
 
 function useIsDesktop(query = "(min-width: 640px)") {
@@ -41,71 +45,131 @@ function ExposedWiring() {
 }
 
 /** Machinery scales with the section; only the rails extend for expanded rows. */
-export function ExperienceTowerNode({ index, current, year }: { index: number; current: boolean; year: string }) {
+export function ExperienceTowerNode({
+  index,
+  current,
+  year,
+  showTower = false,
+  revealed = true,
+  motionLevel = "subtle",
+}: {
+  index: number;
+  current: boolean;
+  year: string;
+  showTower?: boolean;
+  revealed?: boolean;
+  motionLevel?: MotionLevel;
+}) {
   const isDesktop = useIsDesktop();
+  const systemReducedMotion = useReducedMotion();
+  const quiet = !!systemReducedMotion || motionLevel === "off";
+  const expressive = motionLevel === "expressive";
+  const renderMachinery = isDesktop && showTower;
   const offset = index % 2 ? 8 : 0;
+  const riseDistance = quiet ? 0 : expressive ? 24 : 16;
+
   return (
     <div className={styles.rail} data-current={current} aria-hidden="true">
-      {isDesktop && <div className={styles.column} />}
-      {isDesktop && <ExposedWiring />}
+      <AnimatePresence initial={false}>
+        {renderMachinery && (
+          <motion.div
+            key="tower-machinery"
+            className={styles.machineryLayer}
+            initial={quiet ? false : { opacity: 0, y: riseDistance }}
+            animate={revealed || quiet ? { opacity: 1, y: 0 } : { opacity: 0, y: riseDistance }}
+            exit={quiet ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            transition={{
+              duration: quiet ? 0 : expressive ? 0.5 : 0.4,
+              ease: expressive ? [0.16, 1.12, 0.3, 1] : [0.22, 1, 0.36, 1],
+            }}
+          >
+            <div className={styles.column} />
+            <ExposedWiring />
+            <svg className={styles.machine} viewBox="0 0 70 110" fill="none" focusable="false">
+              <path className={styles.cable} d="M22 1 V16 H13 V69 H24 V107 M53 0 V27 H59 V84 H49 V110" />
+              <path className={styles.shadow} d="M28 0 H43 V109 H28 Z M43 8 H49 V88 H43 Z" />
+              <path className={styles.face} d="M25 0 H37 V110 H25 Z M20 15 H29 V79 H20 Z" />
+              <path className={styles.highlight} d="M25 1 V109 M33 3 V45 M21 18 V76 M44 60 V91" />
+              <path className={styles.seam} d="M30 52 H38 V76 H33 V102 M38 20 H46 V35" />
+              <g transform={`translate(${offset} 0)`}>
+                <path className={styles.shadow} d="M8 24 H36 V56 H8 Z" />
+                <path className={styles.face} d="M5 21 H32 V52 H5 Z" />
+                <path className={styles.highlight} d="M6 51 V22 H31" />
+                <path className={styles.recess} d="M11 27 H26 V44 H11 Z" />
+                <rect className={styles.screen} x="14" y="30" width="9" height="11" />
+                <path className={styles.screenDetail} d="M16 33 H21 M16 36 H20" />
+                <path className={styles.pins} d="M11 53 V60 M16 53 V65 M22 53 V59 M27 53 V62" />
+              </g>
+              {index === 0 && <g className={styles.crest}>
+                <path className={styles.cable} d="M34 0 V-14 M46 10 V-7 H52 V-20 M17 20 V2" />
+                <path className={styles.face} d="M31 -17 h6 v5 h-6 Z M49 -23 h6 v5 h-6 Z M14 0 h6 v5 h-6 Z" />
+              </g>}
+              <g className={styles.detail}>
+                <path className={styles.face} d="M40 71 h13 v18 H40 Z" />
+                <path className={styles.recess} d="M43 74 h7 v10 h-7 Z" />
+                <path className={styles.highlight} d="M44 76 v5 M27 91 h4 v5 h-4 Z" />
+                <path className={styles.dust} d={index % 2 ? "M7 84 h3 v3 H7 Z M58 12 h4 v4 h-4 Z" : "M3 6 h4 v4 H3 Z M60 65 h3 v3 h-3 Z"} />
+              </g>
+            </svg>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className={styles.spine} />
       {isDesktop && <span className={styles.year}>{year}</span>}
       <span className={styles.connector} />
       <span className={styles.node}><i /></span>
-      {isDesktop && (
-        <svg className={styles.machine} viewBox="0 0 70 110" fill="none" focusable="false">
-          <path className={styles.cable} d="M22 1 V16 H13 V69 H24 V107 M53 0 V27 H59 V84 H49 V110" />
-          <path className={styles.shadow} d="M28 0 H43 V109 H28 Z M43 8 H49 V88 H43 Z" />
-          <path className={styles.face} d="M25 0 H37 V110 H25 Z M20 15 H29 V79 H20 Z" />
-          <path className={styles.highlight} d="M25 1 V109 M33 3 V45 M21 18 V76 M44 60 V91" />
-          <path className={styles.seam} d="M30 52 H38 V76 H33 V102 M38 20 H46 V35" />
-          <g transform={`translate(${offset} 0)`}>
-            <path className={styles.shadow} d="M8 24 H36 V56 H8 Z" />
-            <path className={styles.face} d="M5 21 H32 V52 H5 Z" />
-            <path className={styles.highlight} d="M6 51 V22 H31" />
-            <path className={styles.recess} d="M11 27 H26 V44 H11 Z" />
-            <rect className={styles.screen} x="14" y="30" width="9" height="11" />
-            <path className={styles.screenDetail} d="M16 33 H21 M16 36 H20" />
-            <path className={styles.pins} d="M11 53 V60 M16 53 V65 M22 53 V59 M27 53 V62" />
-          </g>
-          {index === 0 && <g className={styles.crest}>
-            <path className={styles.cable} d="M34 0 V-14 M46 10 V-7 H52 V-20 M17 20 V2" />
-            <path className={styles.face} d="M31 -17 h6 v5 h-6 Z M49 -23 h6 v5 h-6 Z M14 0 h6 v5 h-6 Z" />
-          </g>}
-          <g className={styles.detail}>
-            <path className={styles.face} d="M40 71 h13 v18 H40 Z" />
-            <path className={styles.recess} d="M43 74 h7 v10 h-7 Z" />
-            <path className={styles.highlight} d="M44 76 v5 M27 91 h4 v5 h-4 Z" />
-            <path className={styles.dust} d={index % 2 ? "M7 84 h3 v3 H7 Z M58 12 h4 v4 h-4 Z" : "M3 6 h4 v4 H3 Z M60 65 h3 v3 h-3 Z"} />
-          </g>
-        </svg>
-      )}
     </div>
   );
 }
 
-export function ExperienceTowerBase() {
+export function ExperienceTowerBase({
+  showTower = false,
+  revealed = true,
+  motionLevel = "subtle",
+}: {
+  showTower?: boolean;
+  revealed?: boolean;
+  motionLevel?: MotionLevel;
+}) {
   const isDesktop = useIsDesktop();
+  const systemReducedMotion = useReducedMotion();
+  const quiet = !!systemReducedMotion || motionLevel === "off";
+  const expressive = motionLevel === "expressive";
+  const renderBase = isDesktop && showTower;
+  const riseDistance = quiet ? 0 : expressive ? 24 : 16;
+
   return (
     <div className={styles.ending}>
-      {isDesktop && (
-        <svg className={styles.base} viewBox="0 0 680 88" preserveAspectRatio="xMinYMax meet" fill="none" focusable="false" aria-hidden="true">
-          <path className={styles.shadow} d="M27 0 H49 V31 H62 V51 H83 V66 H143 V73 H236 V78 H17 V66 H29 V46 H27 Z" />
-          <path className={styles.face} d="M24 0 H38 V28 H54 V49 H68 V64 H126 V70 H202 V76 H10 V69 H21 V57 H31 V31 H24 Z" />
-          <path className={styles.highlight} d="M25 0 V27 H53 M22 58 H66 M11 70 H123 M38 31 V48" />
-          <path className={styles.recess} d="M30 38 H51 V53 H30 Z" />
-          <path className={styles.screen} d="M34 42 H47 V48 H34 Z" />
-          <path className={styles.face} d="M96 58 h9 v12 h-9 Z M159 66 h16 v8 h-16 Z M274 70 h14 v5 h-14 Z" />
-          <path className={styles.cable} d="M100 58 V47 M280 70 V62" />
-          <path className={styles.dust} d="M73 82 h4 v4 h-4 Z M243 81 h3 v3 h-3 Z M323 70 h4 v4 h-4 Z M453 73 h3 v3 h-3 Z" />
-        </svg>
-      )}
-      {/* Only the horizontal ground rules extend across the wider section. */}
-      {isDesktop && (
-        <svg className={styles.groundPlane} viewBox="0 0 680 88" preserveAspectRatio="none" fill="none" focusable="false" aria-hidden="true">
-          <path className={styles.ground} d="M0 77 H350 M365 77 H498 M516 77 H676 M22 81 H141 M168 81 H215" />
-        </svg>
-      )}
+      <AnimatePresence initial={false}>
+        {renderBase && (
+          <motion.div
+            key="tower-base"
+            className={styles.baseLayer}
+            initial={quiet ? false : { opacity: 0, y: riseDistance }}
+            animate={revealed || quiet ? { opacity: 1, y: 0 } : { opacity: 0, y: riseDistance }}
+            exit={quiet ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            transition={{
+              duration: quiet ? 0 : expressive ? 0.5 : 0.4,
+              ease: expressive ? [0.16, 1.12, 0.3, 1] : [0.22, 1, 0.36, 1],
+            }}
+          >
+            <svg className={styles.base} viewBox="0 0 680 88" preserveAspectRatio="xMinYMax meet" fill="none" focusable="false" aria-hidden="true">
+              <path className={styles.shadow} d="M27 0 H49 V31 H62 V51 H83 V66 H143 V73 H236 V78 H17 V66 H29 V46 H27 Z" />
+              <path className={styles.face} d="M24 0 H38 V28 H54 V49 H68 V64 H126 V70 H202 V76 H10 V69 H21 V57 H31 V31 H24 Z" />
+              <path className={styles.highlight} d="M25 0 V27 H53 M22 58 H66 M11 70 H123 M38 31 V48" />
+              <path className={styles.recess} d="M30 38 H51 V53 H30 Z" />
+              <path className={styles.screen} d="M34 42 H47 V48 H34 Z" />
+              <path className={styles.face} d="M96 58 h9 v12 h-9 Z M159 66 h16 v8 h-16 Z M274 70 h14 v5 h-14 Z" />
+              <path className={styles.cable} d="M100 58 V47 M280 70 V62" />
+              <path className={styles.dust} d="M73 82 h4 v4 h-4 Z M243 81 h3 v3 h-3 Z M323 70 h4 v4 h-4 Z M453 73 h3 v3 h-3 Z" />
+            </svg>
+            {/* Only the horizontal ground rules extend across the wider section. */}
+            <svg className={styles.groundPlane} viewBox="0 0 680 88" preserveAspectRatio="none" fill="none" focusable="false" aria-hidden="true">
+              <path className={styles.ground} d="M0 77 H350 M365 77 H498 M516 77 H676 M22 81 H141 M168 81 H215" />
+            </svg>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className={styles.annotation}>
         <svg viewBox="0 0 100 60" fill="none" focusable="false" aria-hidden="true">
           <path d="M94 50 C50 55 15 40 13 7 M7 16 L13 7 L21 15" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />

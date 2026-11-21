@@ -410,13 +410,13 @@ export function ProfileHeader() {
       </div>
 
       {/* Horizontal Structural Rail before Developer Profile Matrix */}
-      <EditorialDivider className="mt-5 mb-3 sm:mt-6 sm:mb-4" />
+      <EditorialDivider variant="hatch" className="mt-5 mb-3 sm:mt-6 sm:mb-4" />
 
       {/* Structured Developer Profile Matrix (Current Focus, Capabilities, Principles) */}
       <ProfileInfoBlock />
 
       {/* Horizontal Structural Rail before GitHub Graph */}
-      <EditorialDivider className="my-3 sm:my-4" />
+      <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
 
       {/* Real GitHub Contribution Graph */}
       <DeferredGithubContributions />

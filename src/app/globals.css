@@ -31,6 +31,8 @@
   --grid-crosshair: rgba(255, 255, 255, 0.34);
   --grid-dot: transparent;
   --grid-hatch: rgba(255, 255, 255, 0.04);
+  --grid-hatch-band-line: rgba(255, 255, 255, 0.085);
+  --grid-hatch-band-border: rgba(255, 255, 255, 0.145);
   --grid-mark: rgba(255, 255, 255, 0.34);
   
   /* Shared Structural Layout Dimensions */
@@ -105,6 +107,8 @@
   --grid-crosshair: rgba(0, 0, 0, 0.36);
   --grid-dot: transparent;
   --grid-hatch: rgba(0, 0, 0, 0.05);
+  --grid-hatch-band-line: rgba(0, 0, 0, 0.15);
+  --grid-hatch-band-border: rgba(0, 0, 0, 0.24);
   --grid-mark: rgba(0, 0, 0, 0.36);
 
   --status-active: #09090b;
@@ -604,6 +608,19 @@ body:has(.artisan-mode) .bottom-progressive-blur,
     transparent 1px,
     transparent 7px
   );
+}
+
+/* Full-bleed 45° diagonal hatched section band framed by dashed drafting rules */
+.editorial-hatch-band {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--grid-hatch-band-line) 0px,
+    var(--grid-hatch-band-line) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  border-top: 1px dashed var(--grid-hatch-band-border);
+  border-bottom: 1px dashed var(--grid-hatch-band-border);
 }
 
 /* Architectural Layout Grid Line Utilities */

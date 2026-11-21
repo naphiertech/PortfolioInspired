@@ -12,7 +12,7 @@ import {
   ArrowUpRight,
   ChevronDown,
 } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { experiences } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
 import { StatusBadge } from "./ProjectStatusBadge";
@@ -24,6 +24,7 @@ import {
   timelineContainerVariants,
   milestoneVariants,
 } from "@/lib/motion";
+import { useCreativeMode } from "@/features/creative-mode";
 
 // Compact disclosure copy; full experience descriptions remain in the shared data.
 const disclosureHighlights: Record<string, string[]> = {
@@ -60,7 +61,19 @@ const disclosureHighlights: Record<string, string[]> = {
 export function ExperienceTimeline() {
   const shouldReduceMotion = useReducedMotion();
   const { playClick } = useUISound();
+  const { active: creativeActive, effectiveMotion } = useCreativeMode();
   const [openIndex, setOpenIndex] = React.useState<number | null>(null);
+  const envRef = React.useRef<HTMLDivElement>(null);
+  const envInView = useInView(envRef, { amount: 0.06 });
+  const [towerRevealed, setTowerRevealed] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!creativeActive) {
+      setTowerRevealed(false);
+    } else if (envInView) {
+      setTowerRevealed(true);
+    }
+  }, [creativeActive, envInView]);
 
   const toggleItem = (index: number) => {
     playClick?.();
@@ -92,7 +105,7 @@ export function ExperienceTimeline() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.12 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className={`w-full space-y-3 select-none mb-0 ${towerStyles.section}`}
+      className={`w-full space-y-3 select-none mb-0 ${creativeActive ? "pb-0" : "pb-2 sm:pb-3"} ${towerStyles.section}`}
       aria-label="Experience Timeline"
     >
       {/* Consistent Section Header */}
@@ -105,7 +118,7 @@ export function ExperienceTimeline() {
       />
 
       {/* Vertical Milestone Timeline Container */}
-      <div className={towerStyles.environment}>
+      <div ref={envRef} className={towerStyles.environment} data-tower-active={creativeActive ? "true" : "false"}>
         <motion.div
           variants={shouldReduceMotion ? undefined : timelineContainerVariants}
           className="flex flex-col relative"
@@ -123,7 +136,14 @@ export function ExperienceTimeline() {
                 className={`relative flex items-stretch group ${towerStyles.row}`}
                 data-open={isOpen}
               >
-                <ExperienceTowerNode index={index} current={!!isCurrent} year={yearLabel} />
+                <ExperienceTowerNode
+                  index={index}
+                  current={!!isCurrent}
+                  year={yearLabel}
+                  showTower={creativeActive}
+                  revealed={towerRevealed}
+                  motionLevel={effectiveMotion}
+                />
 
                 {/* Milestone Row Editorial Container */}
                 <div className="flex-1 min-w-0 pb-3 pt-[19.5px] border-b border-border-hairline/30 last:border-b-0 flex flex-col justify-start">
@@ -283,7 +303,7 @@ export function ExperienceTimeline() {
             );
           })}
         </motion.div>
-        <ExperienceTowerBase />
+        <ExperienceTowerBase showTower={creativeActive} revealed={towerRevealed} motionLevel={effectiveMotion} />
       </div>
     </motion.section>
   );

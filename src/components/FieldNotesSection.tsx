@@ -9,12 +9,13 @@ import { fieldNotes } from "@/lib/fieldNotes";
 import { SectionHeader } from "./SectionHeader";
 import { useUISound } from "@/context/SoundContext";
 import { sectionContainerVariants } from "@/lib/motion";
+import { CreativeSceneReveal, useCreativeMode } from "@/features/creative-mode";
 
-const FloatingTerrain = dynamic(
-  () => import("./FloatingTerrain").then((m) => m.FloatingTerrain),
+const RocketMountain = dynamic(
+  () => import("./RocketMountain").then((m) => m.RocketMountain),
   {
     ssr: false,
-    loading: () => <div className="w-full aspect-[760/172]" aria-hidden="true" />,
+    loading: () => <div className="w-full aspect-[320/124]" aria-hidden="true" />,
   }
 );
 
@@ -28,6 +29,7 @@ const FloatingTerrain = dynamic(
 export function FieldNotesSection() {
   const { playHover, playClick } = useUISound();
   const shouldReduceMotion = useReducedMotion();
+  const { active: creativeActive, effectiveMotion } = useCreativeMode();
 
   return (
     <motion.section
@@ -35,7 +37,7 @@ export function FieldNotesSection() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-2 select-none mb-0"
+      className={`w-full space-y-2 select-none mb-0 ${creativeActive ? "pb-0" : "pb-3 sm:pb-4"}`}
       aria-label="Field Notes"
     >
       {/* Section Header */}
@@ -103,8 +105,10 @@ export function FieldNotesSection() {
           ))}
         </div>
 
-        {/* Floating Pixel Terrain Foundation directly attached beneath the list */}
-        <FloatingTerrain variant="now" />
+        {/* Rocket-powered Floating Alpine Citadel anchoring <FIELD-NOTES/> (Creative Mode only) */}
+        <CreativeSceneReveal>
+          <RocketMountain paused={effectiveMotion === "off"} />
+        </CreativeSceneReveal>
       </div>
     </motion.section>
   );

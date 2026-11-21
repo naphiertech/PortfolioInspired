@@ -28,9 +28,9 @@ export function ProjectDetailClient({
   );
 
   return (
-    <div className="space-y-12 sm:space-y-14 animate-in fade-in duration-300">
+    <div className="flex flex-col animate-in fade-in duration-300">
       {/* Top Header & Breadcrumb */}
-      <div className="space-y-4 pt-4 sm:pt-5">
+      <div className="space-y-4 pt-4 sm:pt-5 mb-5 sm:mb-6">
         <Link
           href="/projects"
           onMouseEnter={playHover}
@@ -131,7 +131,7 @@ export function ProjectDetailClient({
       </div>
 
       {/* Horizontal Structural Rail before About */}
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* Section: <about-project/> */}
       <section className="space-y-3">
@@ -144,7 +144,7 @@ export function ProjectDetailClient({
       </section>
 
       {/* Horizontal Structural Rail before Stack */}
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* Section: <tech-stack/> */}
       <section className="space-y-3">
@@ -171,7 +171,7 @@ export function ProjectDetailClient({
       {/* Section: <key-features/> */}
       {project.features && project.features.length > 0 && (
         <>
-          <EditorialDivider className="my-8 sm:my-10" />
+          <EditorialDivider className="my-4 sm:my-5" />
           <section className="space-y-4">
             <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
               &lt;key-features/&gt;
@@ -194,7 +194,7 @@ export function ProjectDetailClient({
       {/* Section: <gallery/> (Responsive Screenshot Gallery) */}
       {galleryImages.length > 0 && (
         <>
-          <EditorialDivider className="my-8 sm:my-10" />
+          <EditorialDivider className="my-4 sm:my-5" />
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold">
@@ -231,7 +231,7 @@ export function ProjectDetailClient({
       {/* Section: <technical-decisions/> */}
       {project.technicalDecisions && project.technicalDecisions.length > 0 && (
         <>
-          <EditorialDivider className="my-8 sm:my-10" />
+          <EditorialDivider className="my-4 sm:my-5" />
           <section className="space-y-3.5" aria-label="Technical Decisions">
             <h2 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
               &lt;technical-decisions/&gt;
@@ -258,7 +258,7 @@ export function ProjectDetailClient({
       {/* Section: <what-i-learned/> */}
       {project.learnings && project.learnings.length > 0 && (
         <>
-          <EditorialDivider className="my-8 sm:my-10" />
+          <EditorialDivider className="my-4 sm:my-5" />
           <section className="space-y-3.5" aria-label="What I Learned">
             <h2 className="font-caps text-xs text-muted-foreground uppercase tracking-wider font-mono font-semibold block">
               &lt;what-i-learned/&gt;
@@ -288,7 +288,7 @@ export function ProjectDetailClient({
       )}
 
       {/* Bottom Navigation: Previous / All / Next Project */}
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
       <nav
         aria-label="Project Navigation"
         className="space-y-4"

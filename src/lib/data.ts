@@ -34,6 +34,10 @@ export interface CertificationItem {
   code?: string;
   tag?: string;
   featured?: boolean;
+  trackId?: string;
+  parentTrackId?: string;
+  trackLabel?: string;
+  summary?: string;
 }
 
 export interface ExperienceItem {
@@ -729,14 +733,18 @@ export const CERTIFICATION_CATEGORIES: {
 
 export const certifications: CertificationItem[] = [
   {
-    name: "Introduction to Cybersecurity",
+    name: "Network Technician Career Path",
     issuer: "Cisco Networking Academy",
-    href: "/certificates/I2CSUpdate20261115-21.pdf",
-    verifyUrl: "https://www.credly.com/badges/14ec44af-fcc0-4c26-8269-a84d8c29667b",
+    href: "/certificates/NetworkTechnicianCareerPathUpdate20261120-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/6ba4efa4-b193-462e-a29b-757aebb33c72/public_url",
     category: "course",
     issuedAt: "Nov 2026",
     tag: "CISCO",
     featured: true,
+    trackId: "cisco-network-technician",
+    trackLabel: "Career Path · 4 Courses",
+    summary:
+      "Student-level career path credential spanning network fundamentals, Cisco IOS configuration, IPv4/IPv6 addressing, troubleshooting, and endpoint security.",
   },
   {
     name: "Networking Basics",
@@ -745,6 +753,46 @@ export const certifications: CertificationItem[] = [
     verifyUrl: "https://www.credly.com/badges/a3dfb8b0-4f1a-45a2-8ba1-b1fb8a804674",
     category: "course",
     issuedAt: "Apr 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-network-technician",
+  },
+  {
+    name: "Networking Devices and Initial Configuration",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/NetworkingDevicesandBasicConfigUpdate20261120-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/ac43011b-c837-44fe-bcc2-e9207ab83f25/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-network-technician",
+  },
+  {
+    name: "Network Addressing and Basic Troubleshooting",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/NetworkAddressingandBasicTroubleshootingUpdate20261120-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/0b71857d-ecf2-4709-be1d-0d7ab2975130/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-network-technician",
+  },
+  {
+    name: "Network Support and Security",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/NetworkSupportandSecurityUpdate20261120-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/03b21762-6e68-4a88-a127-0d09d61b8764/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-network-technician",
+  },
+  {
+    name: "Introduction to Cybersecurity",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/I2CSUpdate20261115-21.pdf",
+    verifyUrl: "https://www.credly.com/badges/14ec44af-fcc0-4c26-8269-a84d8c29667b",
+    category: "course",
+    issuedAt: "Nov 2026",
     tag: "CISCO",
     featured: true,
   },
@@ -798,6 +846,22 @@ export function getCertificationGroups(items: CertificationItem[] = certificatio
     ...meta,
     items: items.filter((cert) => cert.category === meta.id),
   })).filter((group) => group.items.length > 0);
+}
+
+/** Returns component courses belonging to a parent career path/track credential. */
+export function getTrackCourses(
+  trackId: string,
+  items: CertificationItem[] = certifications
+): CertificationItem[] {
+  return items.filter((cert) => cert.parentTrackId === trackId);
+}
+
+/** Returns top-level credentials excluding sub-courses nested under a parent career path. */
+export function getTopLevelCertifications(
+  items: CertificationItem[] = certifications
+): CertificationItem[] {
+  const activeTrackIds = new Set(items.map((c) => c.trackId).filter(Boolean));
+  return items.filter((cert) => !cert.parentTrackId || !activeTrackIds.has(cert.parentTrackId));
 }
 
 /** Returns prioritized featured certifications up to `limit`, falling back cleanly to remaining entries. */
@@ -921,12 +985,17 @@ export const recommendations: RecommendationItem[] = [];
 
 export const galleryImages: string[] = [
   "/gallery/capstone.jpg",
+  "/gallery/capstone_mock.jpg",
+  "/gallery/capstone_mock2.jpg",
   "/gallery/hacakthon2026.jpg",
   "/gallery/hackathon-team.jpg",
   "/gallery/me.jpg",
   "/gallery/networking.jpg",
+  "/gallery/pagasa.jpg",
   "/gallery/recursia.jpg",
-  "/gallery/roblox.png",
+  "/gallery/rivanIT.jpg",
+  "/gallery/tour1.jpg",
+  "/gallery/worldtech.jpg",
 ];
 
 export const memberOf = [

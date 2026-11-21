@@ -73,6 +73,11 @@ export function CertificationBadgeCard({ cert, onSelect }: CertificationBadgeCar
             {cert.tag || "VERIFIED"}
             {cert.issuedAt ? ` · ${cert.issuedAt}` : ""}
           </span>
+          {cert.trackLabel && (
+            <span className="inline-block font-mono text-[9px] font-medium uppercase tracking-[0.14em] px-2 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.06] text-foreground/80 border border-black/10 dark:border-white/10">
+              {cert.trackLabel}
+            </span>
+          )}
         </div>
 
         <div className="inline-flex items-center gap-1.5 pt-0.5">

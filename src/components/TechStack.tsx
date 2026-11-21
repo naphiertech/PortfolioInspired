@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
 import { techSections } from "@/lib/data";
 import { SectionHeader } from "./SectionHeader";
 import { useUISound } from "@/context/SoundContext";
-import { CircuitPlatform } from "./CircuitPlatform";
 import circuitStyles from "./CircuitPlatform.module.css";
 import { TechIconTile } from "./TechIconTile";
 import {
@@ -13,6 +13,15 @@ import {
   staggeredGridVariants,
   gridItemVariants,
 } from "@/lib/motion";
+import { CreativeSceneReveal, useCreativeMode } from "@/features/creative-mode";
+
+const CircuitPlatform = dynamic(
+  () => import("./CircuitPlatform").then((m) => m.CircuitPlatform),
+  {
+    ssr: false,
+    loading: () => <div className="w-full aspect-[1024/334]" aria-hidden="true" />,
+  },
+);
 
 // Map section titles to code-syntax category tags
 const categorySyntaxMap: Record<string, string> = {
@@ -41,6 +50,7 @@ type CircuitSelection = { category: string; tech?: string };
 export function TechStack() {
   const { playHover, playClick } = useUISound();
   const shouldReduceMotion = useReducedMotion();
+  const { active: creativeActive, effectiveMotion } = useCreativeMode();
   const [hovered, setHovered] = useState<CircuitSelection | null>(null);
   const [focused, setFocused] = useState<CircuitSelection | null>(null);
   const selection = hovered ?? focused;
@@ -60,7 +70,7 @@ export function TechStack() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-3 select-none mb-0"
+      className={`w-full space-y-3 select-none mb-0 ${creativeActive ? "pb-0" : "pb-3 sm:pb-4"}`}
       aria-label="Tech Stack"
     >
       {/* Consistent Section Header */}
@@ -76,6 +86,7 @@ export function TechStack() {
       <motion.div
         variants={shouldReduceMotion ? undefined : staggeredGridVariants}
         className={`space-y-4 ${circuitStyles.environment}`}
+        data-creative-circuit={creativeActive ? "on" : "off"}
       >
         {displayedSections.map((section, catIdx) => {
           const syntaxTag =
@@ -92,6 +103,7 @@ export function TechStack() {
               className={`grid grid-cols-1 md:grid-cols-[148px_minmax(0,1fr)] gap-2 md:gap-4 items-start ${circuitStyles.category}`}
               data-branch={catIdx}
               data-connected={isCategoryConnected}
+              data-last-category={catIdx === displayedSections.length - 1 ? "true" : undefined}
               onPointerEnter={() => setHovered({ category: section.title })}
               onPointerLeave={() => setHovered(null)}
             >
@@ -133,7 +145,12 @@ export function TechStack() {
             </motion.div>
           );
         })}
-        <CircuitPlatform activeBranches={displayedSections.map(section => section.items.some(tech => connected(section.title, tech)))} />
+        <CreativeSceneReveal className="!mt-0">
+          <CircuitPlatform
+            activeBranches={displayedSections.map(section => section.items.some(tech => connected(section.title, tech)))}
+            paused={effectiveMotion === "off"}
+          />
+        </CreativeSceneReveal>
       </motion.div>
     </motion.section>
   );

@@ -50,7 +50,7 @@ export default function TechStackPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mb-10 space-y-2 pt-4 sm:pt-5">
+      <div className="space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
@@ -74,7 +74,7 @@ export default function TechStackPage() {
         </div>
       </div>
 
-      <EditorialDivider className="mb-10 sm:mb-12" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       <TechStackSection defaultShowAll />
 

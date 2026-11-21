@@ -7,6 +7,7 @@ import { getFeaturedCertifications, getVerifyHref } from "@/lib/data";
 import {
   IssuerLogo,
   CertificationTagBadge,
+  CareerPathBadge,
   getCertificationMetaText,
 } from "./CertificationShared";
 import { SectionHeader } from "./SectionHeader";
@@ -66,10 +67,13 @@ export function Certifications() {
               <div className="space-y-3.5 relative z-10">
                 {/* Issuer Logo + Tag Header */}
                 <div className="flex items-center justify-between gap-2">
-                  <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs group-hover:border-border-hairline transition-colors">
+                  <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs group-hover:border-border-hairline transition-colors shrink-0">
                     <IssuerLogo cert={cert} />
                   </div>
-                  <CertificationTagBadge cert={cert} />
+                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                    {cert.trackId && <CareerPathBadge label="4-COURSE PATH" />}
+                    <CertificationTagBadge cert={cert} />
+                  </div>
                 </div>
 
                 {/* Title & Organization */}

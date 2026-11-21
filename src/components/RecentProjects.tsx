@@ -12,11 +12,11 @@ import { ProjectStatusBadge } from "./ProjectStatusBadge";
 import { ProjectMedia } from "./ProjectMedia";
 import { useUISound } from "@/context/SoundContext";
 
-const FloatingTerrain = dynamic(
-  () => import("./FloatingTerrain").then((m) => m.FloatingTerrain),
+const ProjectsIsland = dynamic(
+  () => import("./ProjectsIsland").then((m) => m.ProjectsIsland),
   {
     ssr: false,
-    loading: () => <div className="w-full aspect-[760/172]" aria-hidden="true" />,
+    loading: () => <div className="w-full aspect-[280/96]" aria-hidden="true" />,
   }
 );
 import {
@@ -25,11 +25,13 @@ import {
   gridItemVariants,
 } from "@/lib/motion";
 import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
+import { CreativeSceneReveal, useCreativeMode } from "@/features/creative-mode";
 
 export function RecentProjects() {
   const featuredProjects = fullProjects.slice(0, 4);
   const { playHover, playClick } = useUISound();
   const shouldReduceMotion = useReducedMotion();
+  const { active: creativeActive, effectiveMotion } = useCreativeMode();
 
   return (
     <motion.section
@@ -38,7 +40,7 @@ export function RecentProjects() {
       whileInView={shouldReduceMotion ? undefined : "visible"}
       viewport={{ once: true, amount: 0.15 }}
       variants={shouldReduceMotion ? undefined : sectionContainerVariants}
-      className="w-full space-y-3 select-none mb-0"
+      className={`w-full space-y-3 select-none mb-0 ${creativeActive ? "pb-0" : "pb-3 sm:pb-4"}`}
       aria-label="Selected Projects"
     >
       {/* Section Header */}
@@ -134,8 +136,10 @@ export function RecentProjects() {
         ))}
         </motion.div>
 
-        {/* Floating Pixel Terrain Foundation directly attached to project grid bottom */}
-        <FloatingTerrain variant="projects" />
+        {/* Floating Pixel Granite & Alpine Moss Island with drifting clouds (Creative Mode only) */}
+        <CreativeSceneReveal>
+          <ProjectsIsland paused={effectiveMotion === "off"} />
+        </CreativeSceneReveal>
       </div>
     </motion.section>
   );

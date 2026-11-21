@@ -27,7 +27,7 @@ export function FocusProjectsPage() {
       <FocusNavigation />
 
       {/* Top Header & Section Eyebrow */}
-      <div className="space-y-3 mb-6">
+      <div className="space-y-3">
         <Link
           href="/"
           onMouseEnter={playHover}
@@ -59,7 +59,7 @@ export function FocusProjectsPage() {
         </div>
       </div>
 
-      <EditorialDivider className="mb-8" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* 2-Column Browseable Project Gallery Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

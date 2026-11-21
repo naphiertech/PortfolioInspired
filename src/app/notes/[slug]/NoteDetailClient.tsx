@@ -23,7 +23,7 @@ export function NoteDetailClient({
   const { playHover, playClick } = useUISound();
 
   return (
-    <article className="w-full max-w-3xl mx-auto space-y-8 sm:space-y-10 animate-in fade-in duration-300 pt-4 sm:pt-5 pb-12 sm:pb-16">
+    <article className="w-full max-w-3xl mx-auto flex flex-col animate-in fade-in duration-300 pt-4 sm:pt-5 pb-4 sm:pb-6">
       {/* Top Header & Breadcrumb */}
       <header className="space-y-5">
         <div className="flex items-center justify-between">
@@ -76,7 +76,7 @@ export function NoteDetailClient({
         </div>
       </header>
 
-      <EditorialDivider className="my-6 sm:my-8" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* Main Document Content */}
       <div className="space-y-8 sm:space-y-10">
@@ -135,7 +135,7 @@ export function NoteDetailClient({
         )}
       </div>
 
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* Bottom Previous / Next / Index Navigation */}
       <footer className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2 font-mono text-xs">

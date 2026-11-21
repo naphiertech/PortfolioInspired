@@ -35,7 +35,7 @@ export function FocusProjectDetailPage({
       <FocusNavigation />
 
       {/* Top Header & Breadcrumb */}
-      <div className="space-y-3 mb-6">
+      <div className="space-y-3">
         <Link
           href="/projects"
           onMouseEnter={playHover}
@@ -88,10 +88,10 @@ export function FocusProjectDetailPage({
         </div>
       </div>
 
-      <EditorialDivider className="mb-8" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* Structured Technical Sections */}
-      <div className="space-y-8">
+      <div className="flex flex-col">
         {/* 01 // OVERVIEW */}
         <section aria-labelledby="project-overview-heading">
           <h2 id="project-overview-heading" className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider mb-2.5">
@@ -213,7 +213,7 @@ export function FocusProjectDetailPage({
         </section>
       </div>
 
-      <EditorialDivider className="my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* Prev / Next Pagination */}
       <nav aria-label="Project Navigation" className="flex items-center justify-between gap-4 font-mono text-xs">

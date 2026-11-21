@@ -25,37 +25,37 @@ export function FocusModeLayout() {
       <FocusHero />
 
       {/* Structural Divider */}
-      <EditorialDivider className="my-6 sm:my-7" />
+      <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
 
       {/* 01 // CORE ENGINEERING CAPABILITIES */}
       <FocusCapabilities />
 
       {/* Structural Divider */}
-      <EditorialDivider className="my-6 sm:my-7" />
+      <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
 
       {/* 02 // FIELD NOTES (Editorial Engineering Observations) */}
       <FocusFieldNotes />
 
       {/* Structural Divider */}
-      <EditorialDivider className="my-6 sm:my-7" />
+      <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
 
       {/* 03 // SELECTED FLAGSHIP SYSTEMS */}
       <FocusSelectedWork />
 
       {/* Structural Divider */}
-      <EditorialDivider className="my-6 sm:my-7" />
+      <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
 
       {/* 03 // TECHNICAL STACK */}
       <FocusTechStack />
 
       {/* Structural Divider */}
-      <EditorialDivider className="my-6 sm:my-7" />
+      <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
 
       {/* 04 // EXPERIENCE & EDUCATION TIMELINE */}
       <FocusExperience />
 
       {/* Structural Divider */}
-      <EditorialDivider className="my-6 sm:my-7" />
+      <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
 
       {/* 06 // CONTACT & AVAILABILITY */}
       <FocusContact />

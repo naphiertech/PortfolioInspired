@@ -471,7 +471,7 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
                     ? "sm:col-span-4 sm:row-span-2 aspect-[16/10] sm:aspect-auto sm:h-full"
                     : idx === 1 || idx === 2
                       ? "sm:col-span-2 sm:row-span-1 aspect-[16/10]"
-                      : "sm:col-span-3 aspect-[16/10]"
+                      : "sm:col-span-2 aspect-[4/3]"
                 }`}
               >
                 <Image

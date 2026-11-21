@@ -80,14 +80,38 @@ export function Gallery() {
   const scroll = (direction: "left" | "right") => {
     playClick();
     const container = scrollContainerRef.current;
-    const firstCard = container?.firstElementChild;
-    if (container && firstCard) {
-      const scrollAmount = firstCard.getBoundingClientRect().width + parseFloat(getComputedStyle(container).columnGap);
-      container.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: shouldReduceMotion ? "auto" : "smooth",
-      });
+    if (!container) return;
+
+    const cards = Array.from(container.children) as HTMLElement[];
+    if (cards.length === 0) return;
+
+    const currentLeft = container.scrollLeft;
+    const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+    if (maxScroll <= 1) return;
+
+    let nearestIdx = 0;
+    let smallestDiff = Infinity;
+    for (let i = 0; i < cards.length; i++) {
+      const diff = Math.abs(cards[i].offsetLeft - currentLeft);
+      if (diff < smallestDiff) {
+        smallestDiff = diff;
+        nearestIdx = i;
+      }
     }
+
+    const targetLeft =
+      direction === "right"
+        ? currentLeft >= maxScroll - 2
+          ? 0
+          : Math.min(maxScroll, cards[Math.min(cards.length - 1, nearestIdx + 1)].offsetLeft)
+        : currentLeft <= 2
+          ? maxScroll
+          : cards[Math.max(0, nearestIdx - 1)].offsetLeft;
+
+    container.scrollTo({
+      left: targetLeft,
+      behavior: shouldReduceMotion ? "auto" : "smooth",
+    });
   };
 
   // Keyboard navigation for Lightbox
@@ -137,6 +161,7 @@ export function Gallery() {
           </div>
           <div className="flex items-center gap-1">
             <button
+              type="button"
               onClick={() => scroll("left")}
               className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer shadow-xs"
               aria-label="Scroll left"
@@ -144,6 +169,7 @@ export function Gallery() {
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
             <button
+              type="button"
               onClick={() => scroll("right")}
               className="p-1.5 rounded bg-surface border border-border-hairline text-muted-foreground hover:text-ink transition-colors cursor-pointer shadow-xs"
               aria-label="Scroll right"
@@ -157,13 +183,13 @@ export function Gallery() {
         <DeferredMomentsEnvironment />
       </div>
 
-      {/* Horizontal Strip (Compact 4-image preview) attached directly beneath concrete platform */}
+      {/* Horizontal Strip (Scrollable gallery preview) attached directly beneath concrete platform */}
       <motion.div
         variants={shouldReduceMotion ? undefined : contentBlockVariants}
         ref={scrollContainerRef}
         className={`scrollbar-hide ${styles.strip}`}
       >
-        {galleryImages.slice(0, 4).map((src, idx) => (
+        {galleryImages.map((src, idx) => (
           <div
             key={idx}
             onClick={() => {

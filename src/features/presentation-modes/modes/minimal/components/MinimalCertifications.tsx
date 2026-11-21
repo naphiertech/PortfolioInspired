@@ -66,7 +66,7 @@ function MinimalCertCard({
           <span className="line-clamp-2">{cert.name}</span>
         </h3>
         <span className="block font-mono text-[10px] tracking-[0.18em] uppercase text-zinc-500 dark:text-[#827d73]">
-          {cert.tag || "VERIFIED"}
+          {cert.trackLabel || cert.tag || "VERIFIED"}
         </span>
       </div>
 

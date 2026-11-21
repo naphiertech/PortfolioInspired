@@ -16,14 +16,18 @@ import {
   Eye,
   CheckCircle2,
   ChevronDown,
+  Layers,
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   experiences,
   techSections,
   certifications,
+  CertificationCategory,
   CertificationItem,
   getCertificationGroups,
+  getTrackCourses,
+  getTopLevelCertifications,
   hasPreviewableDocument,
   isPdfCertificate,
   getVerifyHref,
@@ -33,6 +37,7 @@ import {
 import {
   IssuerLogo,
   CertificationTagBadge,
+  CareerPathBadge,
   getCertificationMetaText,
   CertificationDocumentPreview,
 } from "@/components/CertificationShared";
@@ -193,7 +198,37 @@ export function FocusExperiencePage() {
     }
   };
 
+  const [activeCertFilter, setActiveCertFilter] = useState<"all" | CertificationCategory>("all");
+  const [careerTrackExpanded, setCareerTrackExpanded] = useState(false);
+
   const certGroups = useMemo(() => getCertificationGroups(), []);
+  const filteredCerts = useMemo(
+    () =>
+      activeCertFilter === "all"
+        ? certifications
+        : certifications.filter((c) => c.category === activeCertFilter),
+    [activeCertFilter]
+  );
+  const topLevelCerts = useMemo(
+    () => getTopLevelCertifications(filteredCerts),
+    [filteredCerts]
+  );
+  const flagshipCertTracks = useMemo(
+    () => topLevelCerts.filter((c) => Boolean(c.trackId)),
+    [topLevelCerts]
+  );
+  const ledgerCerts = useMemo(
+    () => topLevelCerts.filter((c) => !c.trackId),
+    [topLevelCerts]
+  );
+
+  const handleCertFilterChange = (next: "all" | CertificationCategory) => {
+    playClick();
+    setActiveCertFilter(next);
+    if (next === "course") {
+      setCareerTrackExpanded(true);
+    }
+  };
 
   return (
     <div className="w-full select-none animate-in fade-in duration-200">
@@ -201,7 +236,7 @@ export function FocusExperiencePage() {
       <FocusNavigation />
 
       {/* Top Header & Breadcrumb */}
-      <div className="space-y-3 mb-6">
+      <div className="space-y-3">
         <Link
           href="/"
           onMouseEnter={playHover}
@@ -233,7 +268,7 @@ export function FocusExperiencePage() {
         </div>
       </div>
 
-      <EditorialDivider className="mb-6" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       <div>
         {/* Concise introduction */}
@@ -245,7 +280,7 @@ export function FocusExperiencePage() {
         </p>
       </div>
 
-      <EditorialDivider className="my-7 sm:my-8" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* 01 // WORK HISTORY & EDUCATION */}
       <section id="work" aria-label="Work history and education" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
@@ -388,7 +423,7 @@ export function FocusExperiencePage() {
         </div>
       </section>
 
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* 02 // SKILLS & TOOLS */}
       <section id="tech-stack" aria-label="Skills and tools" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
@@ -523,112 +558,362 @@ export function FocusExperiencePage() {
         )}
       </section>
 
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* 03 // CERTIFICATES */}
-      <section id="certifications" aria-label="Certificates" className="scroll-mt-20 sm:scroll-mt-24 space-y-6">
+      <section id="certifications" aria-label="Certificates" className="scroll-mt-20 sm:scroll-mt-24 space-y-5">
         <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 uppercase tracking-wider">
           <span>03 // CERTIFICATES</span>
-          <span className="text-[10px] sm:text-[11px] text-muted-foreground/40 font-mono">
-            {certifications.length} CERTIFICATES
+          <span className="text-[10px] sm:text-[11px] text-muted-foreground/50 font-mono tabular-nums">
+            {certifications.length} VERIFIED
           </span>
         </div>
 
-        {/* Grouped Credential Cards */}
-        <div className="space-y-6">
-          {certGroups.map((group) => (
-            <div key={group.id} className="space-y-3">
-              <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-border-hairline/60 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+        {/* Segmented Category Filter */}
+        <div
+          role="group"
+          aria-label="Filter certificates by category"
+          className="inline-flex flex-wrap items-center gap-1 p-1 rounded-md bg-surface/50 border border-border-hairline"
+        >
+          <button
+            type="button"
+            aria-pressed={activeCertFilter === "all"}
+            onClick={() => handleCertFilterChange("all")}
+            onMouseEnter={playHover}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer ${
+              activeCertFilter === "all"
+                ? "bg-ink text-page font-semibold shadow-2xs"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-ink hover:bg-surface/80"
+            }`}
+          >
+            <span>All</span>
+            <span className="text-[10px] tabular-nums opacity-70">{certifications.length}</span>
+          </button>
+
+          {certGroups.map((group) => {
+            const isActive = activeCertFilter === group.id;
+            return (
+              <button
+                key={group.id}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => handleCertFilterChange(group.id)}
+                onMouseEnter={playHover}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer ${
+                  isActive
+                    ? "bg-ink text-page font-semibold shadow-2xs"
+                    : "text-zinc-600 dark:text-zinc-400 hover:text-ink hover:bg-surface/80"
+                }`}
+              >
                 <span>{group.label}</span>
-                <span className="text-muted-foreground/60 tabular-nums">
-                  {String(group.items.length).padStart(2, "0")}
-                </span>
+                <span className="text-[10px] tabular-nums opacity-70">{group.items.length}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* #1 Flagship Career Path Spotlight */}
+        {flagshipCertTracks.map((track) => {
+          const subCourses = track.trackId ? getTrackCourses(track.trackId) : [];
+          const hasPreview = hasPreviewableDocument(track);
+          const verifyHref = getVerifyHref(track);
+          const metaText = getCertificationMetaText(track);
+          const panelId = `focus-track-${track.trackId}`;
+
+          return (
+            <div
+              key={track.name}
+              className="rounded-md border border-border-hairline border-t-2 border-t-sky-500/55 dark:border-t-sky-400/50 bg-surface/35 overflow-hidden"
+            >
+              <div className="p-4 sm:p-5 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded bg-surface border border-border-hairline flex items-center justify-center p-1.5 shrink-0 mt-0.5">
+                      <IssuerLogo cert={track} className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-sans font-semibold text-sm sm:text-base text-ink leading-snug">
+                        {track.name}
+                      </h3>
+                      <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                        {track.issuer}
+                        {metaText ? ` · ${metaText}` : ""}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 flex-wrap shrink-0 pl-10 sm:pl-0">
+                    <CareerPathBadge label={track.trackLabel || "CAREER PATH"} />
+                    <CertificationTagBadge cert={track} />
+                  </div>
+                </div>
+
+                {track.summary && (
+                  <p className="font-sans text-xs sm:text-[13px] text-muted-foreground leading-relaxed max-w-2xl">
+                    {track.summary}
+                  </p>
+                )}
+
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  {hasPreview && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playClick();
+                        setPreviewCert(track);
+                      }}
+                      onMouseEnter={playHover}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-mono bg-surface border border-border-hairline text-ink hover:bg-surface-hover transition-colors cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
+                      <span>Inspect PDF</span>
+                    </button>
+                  )}
+
+                  {verifyHref && (
+                    <a
+                      href={verifyHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-mono bg-surface/60 border border-border-hairline text-ink hover:bg-surface-hover transition-colors"
+                    >
+                      <span>{track.verifyUrl ? "Verify on Credly" : "Open File"}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
+                    </a>
+                  )}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {group.items.map((cert, idx) => {
-                  const hasPreview = hasPreviewableDocument(cert);
-                  const verifyHref = getVerifyHref(cert);
-                  const metaText = getCertificationMetaText(cert);
+              {subCourses.length > 0 && (
+                <div className="border-t border-border-divider">
+                  <button
+                    type="button"
+                    aria-expanded={careerTrackExpanded}
+                    aria-controls={panelId}
+                    onClick={() => {
+                      playClick();
+                      setCareerTrackExpanded((open) => !open);
+                    }}
+                    onMouseEnter={playHover}
+                    className="w-full px-4 sm:px-5 py-2.5 bg-black/[0.015] dark:bg-white/[0.02] hover:bg-surface/60 transition-colors flex items-center justify-between gap-3 text-left cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Layers className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" aria-hidden="true" />
+                      <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink/90">
+                        {String(subCourses.length).padStart(2, "0")} Included Courses
+                      </span>
+                      <span className="hidden md:inline font-mono text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
+                        · Basics · Devices · Addressing · Support &amp; Security
+                      </span>
+                    </div>
 
-                  return (
-                    <div
-                      key={`${cert.name}-${idx}`}
-                      className="p-4 rounded-md border border-border-hairline bg-surface/30 flex flex-col justify-between"
-                    >
-                      <div>
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-start gap-2.5 min-w-0">
-                            <div className="flex-shrink-0 mt-0.5">
-                              <IssuerLogo cert={cert} className="w-4 h-4" />
-                            </div>
-                            <div className="min-w-0">
-                              <h3 className="font-sans font-semibold text-[13.5px] sm:text-sm text-ink leading-snug">
-                                {cert.name}
-                              </h3>
-                              <p className="font-mono text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                                {cert.issuer}
-                              </p>
-                            </div>
-                          </div>
-                          <CertificationTagBadge cert={cert} />
+                    <span className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground shrink-0">
+                      <span>{careerTrackExpanded ? "less" : "expand"}</span>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          careerTrackExpanded ? "rotate-180 text-brand" : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {careerTrackExpanded && (
+                      <motion.div
+                        id={panelId}
+                        role="region"
+                        aria-label={`${track.name} included courses`}
+                        initial={shouldReduceMotion ? { opacity: 1, height: "auto" } : { opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{
+                          height: { duration: shouldReduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] },
+                          opacity: { duration: shouldReduceMotion ? 0 : 0.16, ease: "easeOut" },
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="divide-y divide-border-divider border-t border-border-divider bg-surface/20">
+                          {subCourses.map((course, idx) => {
+                            const courseHasPreview = hasPreviewableDocument(course);
+                            const courseVerifyHref = getVerifyHref(course);
+
+                            return (
+                              <div
+                                key={course.name}
+                                className="group relative flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 px-4 sm:px-5 py-2.5 hover:bg-surface/60 transition-colors"
+                              >
+                                <div className="flex items-start sm:items-center gap-2.5 min-w-0 flex-1">
+                                  <span className="font-mono text-[11px] font-semibold tabular-nums text-sky-600/80 dark:text-sky-400/80 w-5 shrink-0 pt-0.5 sm:pt-0">
+                                    {String(idx + 1).padStart(2, "0")}
+                                  </span>
+                                  <div className="min-w-0 flex-1">
+                                    {courseHasPreview ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          playClick();
+                                          setPreviewCert(course);
+                                        }}
+                                        onMouseEnter={playHover}
+                                        className="text-left font-sans text-xs sm:text-[13px] font-medium text-ink group-hover:text-brand transition-colors cursor-pointer after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                                      >
+                                        {course.name}
+                                      </button>
+                                    ) : (
+                                      <span className="font-sans text-xs sm:text-[13px] font-medium text-ink">
+                                        {course.name}
+                                      </span>
+                                    )}
+                                    {course.issuedAt && (
+                                      <span className="block sm:inline sm:ml-2 font-mono text-[10.5px] text-zinc-500 dark:text-zinc-400">
+                                        {course.issuedAt}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-1.5 pl-7 sm:pl-0 shrink-0">
+                                  {courseHasPreview && (
+                                    <span
+                                      aria-hidden="true"
+                                      className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono bg-surface/70 border border-border-hairline text-muted-foreground group-hover:text-ink transition-colors"
+                                    >
+                                      <Eye className="w-3 h-3 opacity-75" />
+                                      <span>Inspect</span>
+                                    </span>
+                                  )}
+
+                                  {courseVerifyHref && (
+                                    <a
+                                      href={courseVerifyHref}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      title={`Verify ${course.name} on Credly`}
+                                      className="relative z-10 inline-flex items-center gap-0.5 px-2 py-1 rounded text-[11px] font-mono bg-surface border border-border-hairline text-muted-foreground hover:text-ink hover:bg-surface-hover transition-colors"
+                                    >
+                                      <span>Credly</span>
+                                      <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {/* Compact Hairline-Divided Credential Ledger */}
+        {ledgerCerts.length > 0 && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground/75">
+              <span>
+                {activeCertFilter === "all"
+                  ? "Courses & Workshops"
+                  : activeCertFilter === "course"
+                  ? "Standalone Course"
+                  : "Workshops & Events"}
+              </span>
+              <span className="tabular-nums text-muted-foreground/60">
+                {String(ledgerCerts.length).padStart(2, "0")}
+              </span>
+            </div>
+
+            <div className="rounded-md border border-border-hairline bg-surface/25 divide-y divide-border-divider overflow-hidden">
+              {ledgerCerts.map((cert, idx) => {
+                const hasPreview = hasPreviewableDocument(cert);
+                const verifyHref = getVerifyHref(cert);
+                const metaText = getCertificationMetaText(cert);
+
+                return (
+                  <div
+                    key={`${cert.name}-${idx}`}
+                    className={`group relative flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4 px-3.5 sm:px-4 py-3 transition-colors ${
+                      hasPreview ? "hover:bg-surface/60" : "hover:bg-surface/35"
+                    }`}
+                  >
+                    <div className="flex items-start sm:items-center gap-2.5 min-w-0 flex-1">
+                      <div className="w-7 h-7 rounded bg-surface border border-border-hairline flex items-center justify-center p-1 shrink-0 mt-0.5 sm:mt-0">
+                        <IssuerLogo cert={cert} className="w-4 h-4" />
                       </div>
 
-                      <div className="mt-3 pt-2.5 border-t border-border-divider/80 flex items-center justify-between gap-2">
-                        {metaText ? (
-                          <span className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
-                            {metaText}
-                          </span>
+                      <div className="min-w-0 flex-1">
+                        {hasPreview ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              playClick();
+                              setPreviewCert(cert);
+                            }}
+                            onMouseEnter={playHover}
+                            className="text-left font-sans font-semibold text-[13.5px] sm:text-sm text-ink group-hover:text-brand transition-colors leading-snug cursor-pointer after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                          >
+                            {cert.name}
+                          </button>
                         ) : (
-                          <span className="font-mono text-[10.5px] text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                            <span>Verified</span>
-                          </span>
+                          <h3 className="font-sans font-semibold text-[13.5px] sm:text-sm text-ink leading-snug">
+                            {cert.name}
+                          </h3>
                         )}
 
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          {hasPreview && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                playClick();
-                                setPreviewCert(cert);
-                              }}
-                              onMouseEnter={playHover}
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono bg-surface border border-border-hairline text-ink hover:bg-surface-hover transition-colors cursor-pointer"
-                              title={`Inspect certificate for ${cert.name}`}
-                            >
-                              <Eye className="w-3 h-3 text-muted-foreground" />
-                              <span>Inspect</span>
-                            </button>
-                          )}
-
-                          {verifyHref && (
-                            <a
-                              href={verifyHref}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-muted-foreground/60 hover:text-ink transition-colors p-1"
-                              title={cert.verifyUrl ? "Verify badge on Credly" : `Open certificate file for ${cert.name}`}
-                              aria-label={
-                                cert.verifyUrl
-                                  ? `Verify ${cert.name} on Credly`
-                                  : `Open certificate file for ${cert.name}`
-                              }
-                            >
-                              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
-                            </a>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+                          <span className="truncate max-w-full">{cert.issuer}</span>
+                          {metaText && (
+                            <>
+                              <span aria-hidden="true" className="opacity-40">·</span>
+                              <span className="tabular-nums">{metaText}</span>
+                            </>
                           )}
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-2 pl-9 sm:pl-0 shrink-0">
+                      <CertificationTagBadge cert={cert} />
+
+                      <div className="flex items-center gap-1.5">
+                        {hasPreview ? (
+                          <span
+                            aria-hidden="true"
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-mono bg-surface/70 border border-border-hairline text-muted-foreground group-hover:text-ink transition-colors"
+                          >
+                            <Eye className="w-3 h-3 opacity-75" />
+                            <span>Inspect</span>
+                          </span>
+                        ) : (
+                          <span className="font-mono text-[10.5px] text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1 px-1">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-500" aria-hidden="true" />
+                            <span>Verified</span>
+                          </span>
+                        )}
+
+                        {verifyHref && (
+                          <a
+                            href={verifyHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative z-10 inline-flex items-center gap-0.5 px-2 py-1 rounded text-[11px] font-mono bg-surface border border-border-hairline text-muted-foreground hover:text-ink hover:bg-surface-hover transition-colors"
+                            title={cert.verifyUrl ? "Verify badge on Credly" : `Open certificate file for ${cert.name}`}
+                          >
+                            <span>{cert.verifyUrl ? "Credly" : "Open"}</span>
+                            <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
         {/* Milestone Quote */}
         <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-muted-foreground">
@@ -641,7 +926,7 @@ export function FocusExperiencePage() {
         </div>
       </section>
 
-      <EditorialDivider className="my-8 sm:my-10" />
+      <EditorialDivider className="my-4 sm:my-5" />
 
       {/* 04 // HIRING & COLLABORATION */}
       <section id="contact" aria-label="Work opportunities and collaboration" className="scroll-mt-20 sm:scroll-mt-24">

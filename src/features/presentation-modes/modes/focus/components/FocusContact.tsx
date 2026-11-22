@@ -63,8 +63,8 @@ export function FocusContact() {
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
-                <span className="text-emerald-500 font-sans text-xs font-medium">Copied</span>
+                <Check className="w-3.5 h-3.5 text-ink" aria-hidden="true" />
+                <span className="text-ink font-sans text-xs font-medium">Copied</span>
               </>
             ) : (
               <>

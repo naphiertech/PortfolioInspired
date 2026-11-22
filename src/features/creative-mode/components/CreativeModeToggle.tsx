@@ -45,7 +45,7 @@ export function CreativeModeToggle({ variant }: CreativeModeToggleProps = {}) {
   const dotClasses =
     resolvedVariant === "minimal"
       ? "bg-zinc-900 dark:bg-[#e5e1d8]"
-      : "bg-emerald-500 dark:bg-emerald-400";
+      : "bg-ink";
 
   return (
     <button

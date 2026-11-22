@@ -19,6 +19,7 @@ import { LocalTime } from "./LocalTime";
 import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { EditorialDivider } from "./EditorialDivider";
 import { StatusBadge } from "./ProjectStatusBadge";
+import { CalBookingTrigger } from "./CalBookingModal";
 import {
   AUTHOR_INFO,
   AVAILABILITY,
@@ -364,9 +365,8 @@ export function ProfileHeader() {
           <div className="relative pt-2">
             {/* Mobile Vertical Stack / Desktop Horizontal Flow */}
             <div data-guide="socials" className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-2.5 sm:pr-20">
-              {/* Primary Action: Schedule a Call (Full-width on mobile) */}
-              <a
-                href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
+              {/* Primary Action: Schedule a Call via Cal.com (Full-width on mobile) */}
+              <CalBookingTrigger
                 data-cursor-label="Let's talk."
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-ink text-page font-sans text-xs sm:text-[12.5px] font-semibold hover:opacity-90 transition-[opacity,transform] shadow-xs active:scale-[0.98] cursor-pointer shrink-0"
               >
@@ -374,7 +374,7 @@ export function ProfileHeader() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span>Schedule a Call</span>
-              </a>
+              </CalBookingTrigger>
 
               {/* Secondary Icon-Only Actions with Expanding Pill on Hover (Approach B) */}
               <div className="grid grid-cols-6 gap-2 w-full sm:contents">

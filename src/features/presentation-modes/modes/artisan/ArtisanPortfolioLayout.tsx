@@ -27,6 +27,11 @@ const MusicSection = dynamic(() =>
 const ResourcesSection = dynamic(() =>
   import("./ResourcesSection").then((m) => m.ResourcesSection)
 );
+const ComponentsSection = dynamic(() =>
+  import("@/components/showcase/ComponentsCatalogView").then(
+    (m) => m.ComponentsCatalogView
+  )
+);
 
 type TabType =
   | "home"
@@ -35,7 +40,8 @@ type TabType =
   | "projects"
   | "notes"
   | "music"
-  | "resources";
+  | "resources"
+  | "components";
 
 const VALID_TABS: readonly TabType[] = [
   "home",
@@ -45,6 +51,7 @@ const VALID_TABS: readonly TabType[] = [
   "notes",
   "music",
   "resources",
+  "components",
 ];
 
 const RESOLVED_TABS: {
@@ -54,6 +61,7 @@ const RESOLVED_TABS: {
   notes?: React.ComponentType;
   music?: React.ComponentType;
   resources?: React.ComponentType;
+  components?: React.ComponentType<{ insideArtisanShell?: boolean }>;
 } = {};
 
 async function preloadArtisanTab(tab: TabType): Promise<void> {
@@ -76,6 +84,9 @@ async function preloadArtisanTab(tab: TabType): Promise<void> {
     } else if (tab === "resources" && !RESOLVED_TABS.resources) {
       const mod = await import("./ResourcesSection");
       RESOLVED_TABS.resources = mod.ResourcesSection;
+    } else if (tab === "components" && !RESOLVED_TABS.components) {
+      const mod = await import("@/components/showcase/ComponentsCatalogView");
+      RESOLVED_TABS.components = mod.ComponentsCatalogView;
     }
   } catch {
     // Ignore preload errors
@@ -106,6 +117,10 @@ const ARTISAN_TAB_QUOTES: Record<Exclude<TabType, "home">, { quote: string; auth
   resources: {
     quote: "A craftsman is only as sharp as the instruments he keeps clean.",
     author: "Studio Ledger",
+  },
+  components: {
+    quote: "Good design is as little design as possible.",
+    author: "Dieter Rams",
   },
 };
 
@@ -143,6 +158,8 @@ export function ArtisanPortfolioLayout({
         ? "/music"
         : tab === "resources"
         ? "/resources"
+        : tab === "components"
+        ? "/components"
         : tab === "home"
         ? baseRoot
         : tab === "projects" && !projectSlug && window.location.pathname.startsWith("/projects")
@@ -177,6 +194,7 @@ export function ArtisanPortfolioLayout({
       void preloadArtisanTab("notes");
       void preloadArtisanTab("music");
       void preloadArtisanTab("resources");
+      void preloadArtisanTab("components");
     }, 3800);
     return () => clearTimeout(timer);
   }, []);
@@ -243,7 +261,8 @@ export function ArtisanPortfolioLayout({
       tab === "projects" ||
       tab === "notes" ||
       tab === "music" ||
-      tab === "resources"
+      tab === "resources" ||
+      tab === "components"
     ) {
       void preloadArtisanTab(tab as TabType);
     }
@@ -266,6 +285,16 @@ export function ArtisanPortfolioLayout({
       setSelectedProjectSlug(nextProjectSlug);
 
       if (tab === activeTab) {
+        if (
+          tab === "components" &&
+          typeof window !== "undefined" &&
+          window.location.pathname.startsWith("/components/")
+        ) {
+          setHasSwitchedTab(true);
+          syncTabUrl("components");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
         if (tab === "projects" && nextProjectSlug) {
           syncTabUrl("projects", nextProjectSlug);
         }
@@ -417,6 +446,7 @@ export function ArtisanPortfolioLayout({
   const ResolvedNotes = RESOLVED_TABS.notes || NotesSection;
   const ResolvedMusic = RESOLVED_TABS.music || MusicSection;
   const ResolvedResources = RESOLVED_TABS.resources || ResourcesSection;
+  const ResolvedComponents = RESOLVED_TABS.components || ComponentsSection;
 
   return (
     <MotionConfig reducedMotion="user">
@@ -502,6 +532,9 @@ export function ArtisanPortfolioLayout({
             {activeTab === "notes" && <ResolvedNotes />}
             {activeTab === "music" && <ResolvedMusic />}
             {activeTab === "resources" && <ResolvedResources />}
+            {activeTab === "components" && (
+              <ResolvedComponents insideArtisanShell />
+            )}
           </>
         )}
 

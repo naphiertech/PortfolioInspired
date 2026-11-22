@@ -211,7 +211,7 @@ export function RecommendModal({ isOpen, onClose }: RecommendModalProps) {
         {/* --- SUCCESS VIEW --- */}
         {success ? (
           <div className="flex-1 overflow-y-auto p-6 sm:p-8 text-center space-y-4 animate-in fade-in duration-300 flex flex-col items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-muted-subtle border border-border-hairline text-ink flex items-center justify-center">
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div className="space-y-1.5 max-w-sm">

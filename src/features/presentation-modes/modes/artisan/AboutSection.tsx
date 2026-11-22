@@ -29,6 +29,7 @@ import {
   WORKSPACE_GEAR,
 } from "./data";
 import { ArtisanResources } from "./ArtisanResources";
+import { ReadingShelf } from "@/components/ReadingShelf";
 import { EDUCATION, RESUME_PATH, AVAILABILITY } from "@/lib/siteConfig";
 
 function ClaudeIcon({ className = "w-5 h-5" }: { className?: string }) {
@@ -435,6 +436,9 @@ export function AboutSection({ onNavigateTab }: AboutSectionProps) {
         </section>
 
         <ArtisanResources />
+
+        {/* 3.5 Reading Shelf */}
+        <ReadingShelf variant="artisan" />
 
         {/* 4. Moments & Photo Gallery */}
         <section id="about-moments" aria-label="Moments and photo gallery" className="space-y-4 scroll-mt-20">

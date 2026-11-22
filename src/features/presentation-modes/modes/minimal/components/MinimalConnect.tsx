@@ -2,6 +2,7 @@
 
 import React from "react";
 import { SOCIAL_PROFILES } from "@/lib/siteConfig";
+import { CalBookingTrigger } from "@/components/CalBookingModal";
 
 /**
  * MinimalConnect
@@ -40,13 +41,12 @@ export function MinimalConnect() {
           Email ↗
         </a>
         <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
-        <a
-          href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
+        <CalBookingTrigger
           data-cursor-label="Let's talk."
           className="hover:text-zinc-900 hover:dark:text-[#eae6df] hover:underline underline-offset-4"
         >
           Schedule a Call ↗
-        </a>
+        </CalBookingTrigger>
         <span className="text-zinc-300 dark:text-white/[0.12] select-none">/</span>
         <a
           href={SOCIAL_PROFILES.github}

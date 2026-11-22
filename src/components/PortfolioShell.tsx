@@ -101,7 +101,11 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const isAgent = mode === "agent" || pathname === "/artisan";
   const isAgentHome =
     (mode === "agent" &&
-      (pathname === "/" || pathname === "/music" || pathname === "/resources")) ||
+      (pathname === "/" ||
+        pathname === "/music" ||
+        pathname === "/resources" ||
+        pathname === "/components" ||
+        pathname.startsWith("/components/"))) ||
     pathname === "/artisan";
   const { state: creative, active: creativeActive, effectiveMotion } = useCreativeMode();
   const mapping = supportsCreativeMode(mode) ? CREATIVE_MAPPINGS[mode] : null;

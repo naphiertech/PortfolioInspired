@@ -9,14 +9,13 @@
 }
 .identity { min-width: 0; }
 .availability { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 12.5px; margin-bottom: 20px; }
-.availability > span, .opportunities > span { width: 6px; height: 6px; border-radius: 50%; background: #10b981; flex-shrink: 0; }
+.availability > span, .opportunities > span { width: 6px; height: 6px; border-radius: 50%; background: var(--text-ink); flex-shrink: 0; }
 .name { margin: 0; line-height: 0.98; letter-spacing: -0.045em; font-size: calc(clamp(48px, 5.4vw, 72px) * var(--creative-type-scale, 1)); color: var(--text-ink); }
 .firstName { display: block; font-family: var(--creative-font-heading, "Figtree", sans-serif); font-weight: var(--creative-font-heading-weight, 700); }
 .surname { display: block; padding-bottom: 0.1em; font-family: var(--creative-font-heading, Georgia, serif); font-weight: 400; font-style: italic; color: var(--text-muted); letter-spacing: -0.05em; }
 .role { margin-top: 14px; font-size: calc(22px * var(--creative-type-scale, 1)); line-height: 1.35; color: var(--text-ink); }
 .bio { max-width: 60ch; margin-top: 12px; font-size: calc(14px * var(--creative-type-scale, 1)); line-height: 1.75; color: var(--text-body); }
-.opportunities { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; margin-top: 16px; padding: 4px 10px; border: 1px solid rgb(16 185 129 / 20%); border-radius: 999px; background: rgb(16 185 129 / 8%); color: #059669; font: 12px/1.5 var(--creative-font-mono, "JetBrains Mono", monospace); }
-:global(.dark) .opportunities { color: #34d399; }
+.opportunities { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; margin-top: 16px; padding: 4px 10px; border: 1px solid var(--border-hairline); border-radius: 999px; background: var(--bg-muted-subtle); color: var(--text-ink); font: 12px/1.5 var(--creative-font-mono, "JetBrains Mono", monospace); }
 .metadata { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 12px; font: 12px/1.5 var(--creative-font-mono, "JetBrains Mono", monospace); color: var(--text-muted); }
 .metadata > span { display: inline-flex; align-items: center; gap: 5px; }
 .metadata svg { flex-shrink: 0; }

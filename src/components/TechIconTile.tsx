@@ -43,7 +43,7 @@ export function TechIconTile({
 }: TechIconTileProps) {
   const chipClassName = `inline-flex items-center gap-2 h-8 px-2.5 rounded-[6px] border font-mono text-xs leading-none cursor-pointer select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand ${circuitStyles.chip} ${
     isSelected
-      ? "bg-surface border-emerald-500/60 dark:border-emerald-400/50 text-ink"
+      ? "bg-surface border-ink/60 text-ink"
       : "bg-surface/55 border-border-hairline text-ink/85 hover:bg-surface-hover hover:border-border hover:text-ink"
   }`;
 
@@ -55,7 +55,7 @@ export function TechIconTile({
       <span className="whitespace-nowrap">{name}</span>
       {isSelected && (
         <span
-          className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 flex-shrink-0"
+          className="w-1.5 h-1.5 rounded-full bg-ink flex-shrink-0"
           aria-hidden="true"
         />
       )}

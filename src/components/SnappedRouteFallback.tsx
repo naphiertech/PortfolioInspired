@@ -81,7 +81,7 @@ export function SnappedRouteFallback({
       <div className="relative z-10 max-w-sm w-full mx-auto flex flex-col items-center">
         {/* Technical Blueprint Annotation */}
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/80 border border-border-hairline text-muted-foreground/80 font-mono text-[10px] tracking-wider uppercase mb-5 shadow-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-ink/70 animate-pulse" />
           <span>snap_entropy // route_disintegrated</span>
         </div>
 
@@ -106,14 +106,14 @@ export function SnappedRouteFallback({
           className={`mt-7 tactile-btn px-4 py-2 text-xs font-mono font-medium rounded-lg border transition-all duration-200 flex items-center gap-2 group cursor-pointer active:scale-95 shadow-xs ${
             isRestoring
               ? "opacity-60 pointer-events-none text-muted-foreground border-border-hairline bg-surface/50"
-              : "text-emerald-600 dark:text-emerald-400 border-emerald-500/25 bg-emerald-500/10 hover:bg-emerald-500/15 hover:border-emerald-500/40"
+              : "text-ink border-border-hairline bg-surface hover:bg-surface-hover hover:border-border"
           }`}
           aria-label="Restore Reality and rematerialize page"
         >
           <RotateCcw
             className={`w-3.5 h-3.5 transition-transform duration-300 ${
               isRestoring
-                ? "animate-spin text-emerald-500"
+                ? "animate-spin text-ink"
                 : "group-hover:-rotate-45"
             }`}
           />

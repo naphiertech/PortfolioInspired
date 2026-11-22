@@ -23,6 +23,7 @@ import {
   SOCIAL_PROFILES,
 } from "@/lib/siteConfig";
 import { EditorialDivider } from "@/components/EditorialDivider";
+import { CalBookingTrigger } from "@/components/CalBookingModal";
 import { TechIcon } from "@/components/TechIcon";
 import { StatusBadge } from "@/components/ProjectStatusBadge";
 import { useUISound } from "@/context/SoundContext";
@@ -292,7 +293,7 @@ export function ExperienceClient() {
                 key={area}
                 className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-surface/30 border border-border-hairline font-sans text-xs sm:text-[13px] text-ink"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 flex-shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-ink/75 flex-shrink-0" />
                 <span>{area}</span>
               </div>
             ))}
@@ -342,13 +343,10 @@ export function ExperienceClient() {
             <span>Send Email</span>
           </a>
 
-          <a
-            href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
-            className="tactile-btn gap-2 h-9 px-4 rounded-md"
-          >
+          <CalBookingTrigger className="tactile-btn gap-2 h-9 px-4 rounded-md">
             <Calendar className="w-3.5 h-3.5 opacity-70" />
             <span>Schedule a Call</span>
-          </a>
+          </CalBookingTrigger>
 
           <Link
             href="/projects"

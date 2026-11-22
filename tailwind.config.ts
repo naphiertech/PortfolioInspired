@@ -88,6 +88,7 @@ const config: Config = {
           "Times New Roman",
           "serif",
         ],
+        hand: ["var(--font-handwriting)", "Caveat", "cursive"],
       },
       maxWidth: {
         reading: "760px",

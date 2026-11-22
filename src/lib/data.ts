@@ -128,12 +128,12 @@ export const projectStatusConfig: Record<
 > = {
   live: {
     label: "LIVE",
-    dotClass: "bg-emerald-500 dark:bg-emerald-400",
+    dotClass: "bg-ink",
     badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
   active: {
     label: "ACTIVE",
-    dotClass: "bg-emerald-500 dark:bg-emerald-400",
+    dotClass: "bg-ink",
     badgeClass: "text-zinc-800 dark:text-zinc-200 bg-black/[0.02] dark:bg-white/[0.03] border-black/[0.08] dark:border-white/[0.10]",
   },
   wip: {

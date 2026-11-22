@@ -31,7 +31,7 @@ const statusDefinitions: Record<StatusType, StatusItemConfig> = {
     defaultLabel: "LIVE",
     renderIndicator: () => (
       <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
-        <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
+        <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-ink" />
       </span>
     ),
   },
@@ -50,7 +50,7 @@ const statusDefinitions: Record<StatusType, StatusItemConfig> = {
     defaultLabel: "BUILDING",
     renderIndicator: () => (
       <span
-        className="font-mono text-teal-500 dark:text-teal-400 text-[11px] leading-none select-none flex-shrink-0"
+        className="font-mono text-ink/75 text-[11px] leading-none select-none flex-shrink-0"
         aria-hidden="true"
       >
         ◌
@@ -61,7 +61,7 @@ const statusDefinitions: Record<StatusType, StatusItemConfig> = {
     defaultLabel: "IMPROVING",
     renderIndicator: () => (
       <span
-        className="font-mono text-teal-500 dark:text-teal-400 text-[11px] leading-none select-none flex-shrink-0"
+        className="font-mono text-ink/75 text-[11px] leading-none select-none flex-shrink-0"
         aria-hidden="true"
       >
         ◌
@@ -116,7 +116,7 @@ const statusDefinitions: Record<StatusType, StatusItemConfig> = {
     defaultLabel: "CURRENT",
     renderIndicator: () => (
       <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
-        <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
+        <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-ink" />
       </span>
     ),
   },
@@ -124,7 +124,7 @@ const statusDefinitions: Record<StatusType, StatusItemConfig> = {
     defaultLabel: "ACTIVE",
     renderIndicator: () => (
       <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
-        <span className="inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
+        <span className="inline-flex rounded-full h-1.5 w-1.5 bg-ink" />
       </span>
     ),
   },
@@ -132,7 +132,7 @@ const statusDefinitions: Record<StatusType, StatusItemConfig> = {
     defaultLabel: "AVAILABLE FOR WORK",
     renderIndicator: () => (
       <span className="relative flex h-1.5 w-1.5 flex-shrink-0" aria-hidden="true">
-        <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 dark:bg-emerald-400" />
+        <span className="animate-status-breathe inline-flex rounded-full h-1.5 w-1.5 bg-ink" />
       </span>
     ),
   },

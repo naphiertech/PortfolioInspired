@@ -7,6 +7,7 @@ import { FocusFieldNotes } from "./components/FocusFieldNotes";
 import { FocusSelectedWork } from "./components/FocusSelectedWork";
 import { FocusTechStack } from "./components/FocusTechStack";
 import { FocusExperience } from "./components/FocusExperience";
+import { ReadingShelf } from "@/components/ReadingShelf";
 import { FocusContact } from "./components/FocusContact";
 
 /**
@@ -57,7 +58,13 @@ export function FocusModeLayout() {
       {/* Structural Divider */}
       <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
 
-      {/* 06 // CONTACT & AVAILABILITY */}
+      {/* 06 // READING SHELF */}
+      <ReadingShelf variant="focus" />
+
+      {/* Structural Divider */}
+      <EditorialDivider variant="hatch" className="my-4 sm:my-5" />
+
+      {/* 07 // CONTACT & AVAILABILITY */}
       <FocusContact />
     </div>
   );

@@ -328,7 +328,7 @@ export function PresentationModeSwitcher({
               }`}
             >
               <LayoutTemplate className="w-3.5 h-3.5 text-muted-foreground/80 flex-shrink-0" />
-              <span className="text-emerald-500 text-[9px] flex-shrink-0" aria-hidden="true">
+              <span className="text-ink text-[9px] flex-shrink-0" aria-hidden="true">
                 ●
               </span>
               <span className="font-semibold uppercase text-[11px] leading-none whitespace-nowrap">
@@ -691,7 +691,7 @@ export function PresentationModeSwitcher({
                                 </span>
                               </div>
                               {isSelected && (
-                                <span className="font-mono text-[9px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider">
+                                <span className="font-mono text-[9px] font-bold text-ink uppercase tracking-wider">
                                   [ ACTIVE ]
                                 </span>
                               )}
@@ -847,7 +847,7 @@ export function PresentationModeSwitcher({
                           <span
                             className={`font-mono text-[10px] font-bold tracking-wider ${
                               starsEnabled
-                                ? "text-emerald-500 dark:text-emerald-400"
+                                ? "text-ink"
                                 : "text-muted-foreground/50"
                             }`}
                           >
@@ -856,14 +856,14 @@ export function PresentationModeSwitcher({
                           <div
                             className={`relative inline-flex h-4.5 w-8 flex-shrink-0 cursor-pointer rounded-full border p-0.5 transition-colors duration-150 ${
                               starsEnabled
-                                ? "bg-emerald-500 border-emerald-600 dark:border-emerald-400/40"
+                                ? "bg-ink border-ink"
                                 : "bg-zinc-200 dark:bg-zinc-700/90 border-zinc-300 dark:border-zinc-600 shadow-inner"
                             }`}
                             aria-hidden="true"
                           >
                             <span
-                              className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow-xs transition duration-150 ${
-                                starsEnabled ? "translate-x-3.5" : "translate-x-0"
+                              className={`pointer-events-none inline-block h-3 w-3 transform rounded-full shadow-xs transition duration-150 ${
+                                starsEnabled ? "translate-x-3.5 bg-page" : "translate-x-0 bg-white"
                               }`}
                             />
                           </div>
@@ -915,7 +915,7 @@ export function PresentationModeSwitcher({
                           <span
                             className={`font-mono text-[10px] font-bold tracking-wider ${
                               gridEnabled
-                                ? "text-emerald-500 dark:text-emerald-400"
+                                ? "text-ink"
                                 : "text-muted-foreground/50"
                             }`}
                           >
@@ -924,14 +924,14 @@ export function PresentationModeSwitcher({
                           <div
                             className={`relative inline-flex h-4.5 w-8 flex-shrink-0 cursor-pointer rounded-full border p-0.5 transition-colors duration-150 ${
                               gridEnabled
-                                ? "bg-emerald-500 border-emerald-600 dark:border-emerald-400/40"
+                                ? "bg-ink border-ink"
                                 : "bg-zinc-200 dark:bg-zinc-700/90 border-zinc-300 dark:border-zinc-600 shadow-inner"
                             }`}
                             aria-hidden="true"
                           >
                             <span
-                              className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow-xs transition duration-150 ${
-                                gridEnabled ? "translate-x-3.5" : "translate-x-0"
+                              className={`pointer-events-none inline-block h-3 w-3 transform rounded-full shadow-xs transition duration-150 ${
+                                gridEnabled ? "translate-x-3.5 bg-page" : "translate-x-0 bg-white"
                               }`}
                             />
                           </div>

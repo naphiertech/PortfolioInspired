@@ -36,16 +36,7 @@ export function FocusNotesPage() {
             <span>cd .. / home</span>
           </Link>
 
-          <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none pt-1">
-            <span className="tracking-wider font-medium text-emerald-500/90 dark:text-emerald-400/90">
-              [ 02 // FIELD NOTES ]
-            </span>
-            <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
-              ARCHIVE ({fieldNotes.length} ESSAYS)
-            </span>
-          </div>
-
-          <div className="space-y-1.5 pt-1">
+          <div className="space-y-1.5">
             <h1 className="font-sans text-2xl sm:text-3xl font-bold text-ink tracking-tight">
               Field Notes
             </h1>
@@ -69,7 +60,7 @@ export function FocusNotesPage() {
             >
               {/* Left Column: Number marker */}
               <div className="flex items-center sm:items-start gap-2.5 sm:pt-0.5 flex-shrink-0">
-                <span className="font-mono text-xs sm:text-[13px] font-semibold text-muted-foreground/60 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-150 tabular-nums">
+                <span className="font-mono text-xs sm:text-[13px] font-semibold text-muted-foreground/60 group-hover:text-ink transition-colors duration-150 tabular-nums">
                   [ {note.number} ]
                 </span>
               </div>
@@ -77,7 +68,7 @@ export function FocusNotesPage() {
               {/* Middle Column: Metadata, Title, and Excerpt */}
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-center gap-2 font-mono text-[10px] sm:text-[11px] text-muted-foreground/80 uppercase tracking-wider">
-                  <span className="text-emerald-500 font-bold">{"//"}</span>
+                  <span className="text-ink font-bold">{"//"}</span>
                   <span className="font-semibold text-ink/90 group-hover:text-ink">
                     {note.category}
                   </span>

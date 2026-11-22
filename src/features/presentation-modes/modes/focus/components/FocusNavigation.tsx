@@ -22,6 +22,7 @@ export const focusNavItems: FocusNavItem[] = [
   { name: "Experience", href: "/experience", code: "01" },
   { name: "Projects", href: "/projects", code: "02" },
   { name: "Notes", href: "/notes", code: "03" },
+  { name: "Components", href: "/components", code: "04" },
 ];
 
 /**

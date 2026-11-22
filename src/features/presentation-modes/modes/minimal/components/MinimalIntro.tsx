@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { AUTHOR_INFO, AVAILABILITY, SOCIAL_PROFILES } from "@/lib/siteConfig";
+import { CalBookingTrigger } from "@/components/CalBookingModal";
 
 /**
  * MinimalIntro
@@ -70,13 +71,12 @@ export function MinimalIntro() {
 
       {/* Understated Action Links - Single row on desktop/tablet, clean wrapping without stranded separators on mobile */}
       <div data-guide="socials" className="w-full flex flex-wrap sm:flex-nowrap items-center gap-x-2 sm:gap-x-2.5 md:gap-x-3 gap-y-2 pt-2 text-xs sm:text-[13px] font-mono text-zinc-700 dark:text-[#a8a397]">
-        <a
-          href={`mailto:${SOCIAL_PROFILES.email}?subject=Let's%20Schedule%20a%20Call`}
+        <CalBookingTrigger
           data-cursor-label="Let's talk."
           className="whitespace-nowrap text-zinc-900 dark:text-[#dedad0] hover:text-zinc-700 hover:dark:text-[#eae6df] hover:underline underline-offset-4 flex-shrink-0"
         >
           Schedule a Call ↗
-        </a>
+        </CalBookingTrigger>
         <span className="text-zinc-300 dark:text-white/[0.12] select-none hidden sm:inline flex-shrink-0" aria-hidden="true">
           /
         </span>

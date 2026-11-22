@@ -48,8 +48,6 @@ export function DustCanvas() {
       "#a1a1aa",
       "#71717a",
       "#52525b",
-      "#10b981", // subtle emerald speck
-      "#34d399",
       "#3f3f46",
     ];
 
@@ -60,8 +58,6 @@ export function DustCanvas() {
       "#3f3f46",
       "#52525b",
       "#71717a",
-      "#059669", // subtle emerald speck
-      "#10b981",
       "#a1a1aa",
     ];
 

@@ -51,7 +51,7 @@ export function NoteDetailClient({
           {/* Category Tag */}
           <div className="flex items-center gap-2 pt-1">
             <span
-              className="w-1.5 h-1.5 rounded-full bg-emerald-500"
+              className="w-1.5 h-1.5 rounded-full bg-ink"
               aria-hidden="true"
             />
             <span className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -104,7 +104,7 @@ export function NoteDetailClient({
             </div>
 
             {section.callout && (
-              <blockquote className="my-6 border-l-2 border-emerald-500/80 pl-4 sm:pl-5 py-1.5 bg-surface/20 font-sans text-sm sm:text-base italic text-ink/90">
+              <blockquote className="my-6 border-l-2 border-ink/60 pl-4 sm:pl-5 py-1.5 bg-surface/20 font-sans text-sm sm:text-base italic text-ink/90">
                 &ldquo;{section.callout}&rdquo;
               </blockquote>
             )}

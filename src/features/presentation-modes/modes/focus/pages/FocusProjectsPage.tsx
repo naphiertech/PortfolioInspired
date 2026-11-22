@@ -26,7 +26,7 @@ export function FocusProjectsPage() {
       {/* Focus Top Navigation */}
       <FocusNavigation />
 
-      {/* Top Header & Section Eyebrow */}
+      {/* Top Header */}
       <div className="space-y-3">
         <Link
           href="/"
@@ -37,15 +37,6 @@ export function FocusProjectsPage() {
           <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
           <span>cd .. / home</span>
         </Link>
-
-        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none">
-          <span className="tracking-wider font-medium">
-            [ 02 // PROJECTS ]
-          </span>
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
-            PROJECTS ({fullProjects.length})
-          </span>
-        </div>
 
         <div className="flex items-start sm:items-center justify-between flex-wrap gap-3">
           <div>

@@ -35,7 +35,7 @@ export function ProfileInfoBlock() {
           <div className="space-y-2">
             <div className="flex items-center gap-1.5">
               <Target
-                className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 flex-shrink-0"
+                className="w-3.5 h-3.5 text-ink flex-shrink-0"
                 aria-hidden="true"
               />
               <span className="font-mono text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -48,7 +48,7 @@ export function ProfileInfoBlock() {
           </div>
 
           <div className="pt-2 border-t border-border-hairline/40">
-            <span className="font-mono text-[10px] sm:text-[11px] text-muted-foreground/80 dark:text-emerald-400/90 select-text leading-tight block">
+            <span className="font-mono text-[10px] sm:text-[11px] text-muted-foreground/85 select-text leading-tight block">
               &gt; learn · build<SnappedFragment id="terminal-iterate">{" · iterate"}</SnappedFragment> · ship
             </span>
           </div>
@@ -62,7 +62,7 @@ export function ProfileInfoBlock() {
           <div className="space-y-2.5">
             <div className="flex items-center gap-1.5">
               <Layers
-                className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 flex-shrink-0"
+                className="w-3.5 h-3.5 text-ink flex-shrink-0"
                 aria-hidden="true"
               />
               <span className="font-mono text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -73,19 +73,19 @@ export function ProfileInfoBlock() {
             {/* High-signal capability list */}
             <ul className="space-y-1.5 pt-0.5">
               <li className="flex items-start gap-1.5 text-xs text-muted-foreground leading-snug">
-                <span className="font-mono text-emerald-500/80 dark:text-emerald-400/80 text-[11px] select-none mt-0.5" aria-hidden="true">›</span>
+                <span className="font-mono text-ink/70 text-[11px] select-none mt-0.5" aria-hidden="true">›</span>
                 <span>
                   <SnappedFragment id="build-fullstack">{"Full-Stack "}</SnappedFragment>Web Apps &amp; <SnappedFragment id="build-responsive">{"Responsive "}</SnappedFragment>Interfaces
                 </span>
               </li>
               <li className="flex items-start gap-1.5 text-xs text-muted-foreground leading-snug">
-                <span className="font-mono text-emerald-500/80 dark:text-emerald-400/80 text-[11px] select-none mt-0.5" aria-hidden="true">›</span>
+                <span className="font-mono text-ink/70 text-[11px] select-none mt-0.5" aria-hidden="true">›</span>
                 <span>
                   Dashboards<SnappedFragment id="build-portals">{" & Portals"}</SnappedFragment>, APIs<SnappedFragment id="build-integrations">{" & Integrations"}</SnappedFragment>
                 </span>
               </li>
               <li className="flex items-start gap-1.5 text-xs text-muted-foreground leading-snug">
-                <span className="font-mono text-emerald-500/80 dark:text-emerald-400/80 text-[11px] select-none mt-0.5" aria-hidden="true">›</span>
+                <span className="font-mono text-ink/70 text-[11px] select-none mt-0.5" aria-hidden="true">›</span>
                 <span>
                   UI Systems<SnappedFragment id="build-tooling">{" & Tooling"}</SnappedFragment>, <SnappedFragment id="build-db">{"Database "}</SnappedFragment>Tools
                 </span>
@@ -108,7 +108,7 @@ export function ProfileInfoBlock() {
           <div className="space-y-2">
             <div className="flex items-center gap-1.5">
               <Workflow
-                className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 flex-shrink-0"
+                className="w-3.5 h-3.5 text-ink flex-shrink-0"
                 aria-hidden="true"
               />
               <span className="font-mono text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -123,7 +123,7 @@ export function ProfileInfoBlock() {
                   className="flex items-start gap-1.5 text-xs text-muted-foreground leading-snug"
                 >
                   <span
-                    className="font-mono text-emerald-500/80 dark:text-emerald-400/80 text-[11px] select-none mt-0.5"
+                    className="font-mono text-ink/70 text-[11px] select-none mt-0.5"
                     aria-hidden="true"
                   >
                     ›

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import { preload } from "react-dom";
-import { Doto, Figtree, JetBrains_Mono, Carrois_Gothic_SC } from "next/font/google";
+import { Doto, Figtree, JetBrains_Mono, Carrois_Gothic_SC, Caveat } from "next/font/google";
 import "./globals.css";
 
 const fontDoto = Doto({
@@ -29,6 +29,14 @@ const fontCarroisGothic = Carrois_Gothic_SC({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-carrois-gothic-sc",
+  display: "swap",
+  preload: false,
+});
+
+const fontCaveat = Caveat({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  variable: "--font-handwriting",
   display: "swap",
   preload: false,
 });
@@ -169,7 +177,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className={`dark ${fontDoto.variable} ${fontFigtree.variable} ${fontJetBrainsMono.variable} ${fontCarroisGothic.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`dark ${fontDoto.variable} ${fontFigtree.variable} ${fontJetBrainsMono.variable} ${fontCarroisGothic.variable} ${fontCaveat.variable}`}>
       <head>
         <link
           rel="preload"

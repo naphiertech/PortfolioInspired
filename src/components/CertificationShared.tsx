@@ -137,7 +137,7 @@ export function CareerPathBadge({
 }) {
   return (
     <span
-      className={`inline-flex items-center font-mono text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 ${className}`}
+      className={`inline-flex items-center font-mono text-[9px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-muted-subtle text-ink border border-border-hairline ${className}`}
     >
       {label}
     </span>

@@ -44,7 +44,7 @@ export function FocusFieldNotes() {
           >
             {/* Left Column: Number marker & Technical Indicator */}
             <div className="flex items-center sm:items-start gap-2.5 sm:pt-0.5 flex-shrink-0">
-              <span className="font-mono text-xs sm:text-[13px] font-semibold text-muted-foreground/60 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-150 tabular-nums">
+              <span className="font-mono text-xs sm:text-[13px] font-semibold text-muted-foreground/60 group-hover:text-ink transition-colors duration-150 tabular-nums">
                 [ {note.number} ]
               </span>
             </div>
@@ -52,7 +52,7 @@ export function FocusFieldNotes() {
             {/* Middle Column: Technical metadata, Title, and Excerpt */}
             <div className="flex-1 min-w-0 space-y-1">
               <div className="flex items-center gap-2 font-mono text-[10px] sm:text-[11px] text-muted-foreground/80 uppercase tracking-wider">
-                <span className="text-emerald-500 font-bold">{"//"}</span>
+                <span className="text-ink font-bold">{"//"}</span>
                 <span className="font-semibold text-ink/90 group-hover:text-ink">
                   {note.category}
                 </span>

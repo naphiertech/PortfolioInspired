@@ -46,16 +46,6 @@ export function FocusProjectDetailPage({
           <span>cd .. / projects</span>
         </Link>
 
-        {/* Project Eyebrow */}
-        <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none">
-          <span className="tracking-wider font-medium">
-            [ PROJECT // {project.slug.toUpperCase()} ]
-          </span>
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
-            CASE STUDY
-          </span>
-        </div>
-
         {/* Title & Metadata Strip */}
         <div className="space-y-2 pt-1">
           <div className="flex items-start sm:items-center justify-between flex-wrap gap-3">
@@ -170,7 +160,7 @@ export function FocusProjectDetailPage({
                   key={idx}
                   className="text-[13.5px] sm:text-sm text-zinc-700 dark:text-zinc-300 font-sans leading-relaxed flex items-start gap-2 p-2.5 rounded bg-surface/20 border border-border-hairline"
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-ink/80 flex-shrink-0 mt-0.5" aria-hidden="true" />
                   <span>{feature}</span>
                 </li>
               ))}

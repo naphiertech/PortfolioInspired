@@ -27,11 +27,13 @@ import {
   FaLinkedinIn,
   FaEnvelope,
 } from "./ArtisanIcons";
+import { Blocks } from "lucide-react";
 import { EXPERIENCE_DATA } from "./data";
 import { fullProjects, certifications, techSections } from "@/lib/data";
 import { fieldNotes } from "@/lib/fieldNotes";
 import { FAVORITE_TRACKS } from "@/features/music-drawer";
 import { RESOURCE_CATEGORIES } from "@/features/resources-drawer";
+import { COMPONENTS_CATALOG } from "@/lib/componentsCatalog";
 import {
   AUTHOR_INFO,
   AVAILABILITY,
@@ -183,6 +185,13 @@ export function WorkspaceSidebar({
   ];
 
   const studioItems = [
+    {
+      id: "components",
+      href: "/components",
+      label: "Components",
+      count: COMPONENTS_CATALOG.length,
+      icon: Blocks,
+    },
     {
       id: "music",
       href: "/music",

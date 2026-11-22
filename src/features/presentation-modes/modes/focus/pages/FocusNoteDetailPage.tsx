@@ -54,16 +54,6 @@ export function FocusNoteDetailPage({
             </span>
           </div>
 
-          {/* Section Marker */}
-          <div className="flex items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60 select-none pt-1">
-            <span className="tracking-wider font-medium text-emerald-500/90 dark:text-emerald-400/90">
-              [ FIELD NOTE // BRIEFING {note.number} ]
-            </span>
-            <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-muted-foreground/50">
-              ENGINEERING ESSAY
-            </span>
-          </div>
-
           {/* Title & Metadata Strip */}
           <div className="space-y-2.5 pt-1">
             <h1 className="font-sans text-2xl sm:text-4xl font-extrabold text-ink tracking-tight uppercase leading-[1.18]">
@@ -118,7 +108,7 @@ export function FocusNoteDetailPage({
               </div>
 
               {section.callout && (
-                <blockquote className="my-5 border-l-2 border-emerald-500 pl-4 py-2 bg-surface/30 font-sans text-sm sm:text-base italic text-ink/90">
+                <blockquote className="my-5 border-l-2 border-ink/70 pl-4 py-2 bg-surface/30 font-sans text-sm sm:text-base italic text-ink/90">
                   &ldquo;{section.callout}&rdquo;
                 </blockquote>
               )}
@@ -144,7 +134,7 @@ export function FocusNoteDetailPage({
           {/* Conclusion / Takeaway */}
           {note.content.conclusion && (
             <div className="pt-5 border-t border-border-divider space-y-1.5">
-              <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-emerald-500 font-semibold">
+              <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-ink font-semibold">
                 [ DIRECTIVE // SUMMARY ]
               </span>
               <p className="font-sans text-sm sm:text-base text-ink/90 leading-relaxed italic">
@@ -165,7 +155,7 @@ export function FocusNoteDetailPage({
               onClick={playClick}
               className="group flex flex-col items-start gap-1 py-1 text-left flex-1 hover:text-ink transition-colors"
             >
-              <span className="text-[10px] text-muted-foreground uppercase tracking-widest flex items-center gap-1 group-hover:text-emerald-400">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest flex items-center gap-1 group-hover:text-ink">
                 <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" />
                 [ PREV // {prevNote.number} ]
               </span>
@@ -196,7 +186,7 @@ export function FocusNoteDetailPage({
               onClick={playClick}
               className="group flex flex-col items-end gap-1 py-1 text-right flex-1 hover:text-ink transition-colors"
             >
-              <span className="text-[10px] text-muted-foreground uppercase tracking-widest flex items-center gap-1 group-hover:text-emerald-400">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest flex items-center gap-1 group-hover:text-ink">
                 [ NEXT // {nextNote.number} ]
                 <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
               </span>

@@ -1,3 +1,8 @@
+import {
+  READING_SHELF_BOOKS,
+  type ReadingBookItem,
+} from "@/lib/readingShelfData";
+
 export interface SocialLink {
   name: string;
   url: string;
@@ -338,57 +343,8 @@ export const WORKSPACE_AI_DEV_TOOLS = [
   "Supabase",
 ] as const;
 
-export interface WorkspaceBookItem {
-  id: string;
-  title: string;
-  author: string;
-  publisher: string;
-  domain: string;
-  url: string;
-  lesson: string;
-}
+export type WorkspaceBookItem = ReadingBookItem;
 
-export const WORKSPACE_BOOKSHELF: WorkspaceBookItem[] = [
-  {
-    id: "ddia",
-    title: "Designing Data-Intensive Applications",
-    author: "Martin Kleppmann",
-    publisher: "O'Reilly Media",
-    domain: "dataintensive.net",
-    url: "https://dataintensive.net/",
-    lesson:
-      "Reliability, scalability, and maintainability are the foundational pillars of lasting data systems.",
-  },
-  {
-    id: "pragprog",
-    title: "The Pragmatic Programmer",
-    author: "David Thomas & Andrew Hunt",
-    publisher: "20th Anniversary Ed.",
-    domain: "pragprog.com",
-    url: "https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/",
-    lesson:
-      "Care about your craft, think critically about your work, and build adaptable software.",
-  },
-  {
-    id: "refactoring-ui",
-    title: "Refactoring UI",
-    author: "Adam Wathan & Steve Schoger",
-    publisher: "Tailwind Labs",
-    domain: "refactoringui.com",
-    url: "https://www.refactoringui.com/",
-    lesson:
-      "Design with clear visual hierarchy, deliberate spacing, and restrained typography.",
-  },
-  {
-    id: "clean-arch",
-    title: "Clean Architecture",
-    author: "Robert C. Martin",
-    publisher: "Prentice Hall",
-    domain: "oreilly.com",
-    url: "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
-    lesson:
-      "Keep core domain logic independent of frameworks, user interfaces, and external databases.",
-  },
-];
+export const WORKSPACE_BOOKSHELF: WorkspaceBookItem[] = READING_SHELF_BOOKS;
 
 

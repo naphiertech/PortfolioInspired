@@ -128,7 +128,7 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
             >
               <div className="md:w-40 lg:w-44 flex-shrink-0 flex md:flex-col justify-between md:justify-start items-baseline md:items-start gap-1 pb-1 md:pb-0 md:pt-1.5 border-b md:border-b-0 border-black/[0.04] dark:border-white/[0.04]">
                 <div className="flex items-baseline gap-2">
-                  <span className="font-mono text-xs font-semibold text-emerald-500/70 dark:text-emerald-400/70 select-none">
+                  <span className="font-mono text-xs font-semibold text-muted-foreground select-none">
                     {categoryNumber}
                   </span>
                   <span className="font-mono text-xs font-medium text-ink/85 tracking-tight lowercase">
@@ -191,7 +191,7 @@ export function TechStackSection({ defaultShowAll = false }: { defaultShowAll?: 
               <span className="text-muted-foreground/60 uppercase">
                 &lt;USED-IN-PROJECTS/&gt;
               </span>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+              <span className="px-2 py-0.5 rounded bg-muted-subtle text-ink font-semibold border border-border-hairline">
                 {selectedTech}
               </span>
               <span className="text-muted-foreground/60">
@@ -666,7 +666,7 @@ export function CertificationsSection({
                           </span>
                         ) : (
                           <span className="font-mono text-[10.5px] text-muted-foreground/70 inline-flex items-center gap-1 px-1.5">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-500/80" aria-hidden="true" />
+                            <CheckCircle2 className="w-3 h-3 text-ink/75" aria-hidden="true" />
                             <span>Verified</span>
                           </span>
                         )}
@@ -748,7 +748,7 @@ export function CertificationsSection({
 
             <div className="px-4 py-2.5 border-t border-border-hairline flex flex-wrap items-center justify-between gap-2 bg-surface/50 font-mono text-xs">
               <span className="text-muted-foreground flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-ink" />
                 Verified Credential Document
               </span>
               <div className="flex items-center gap-3">

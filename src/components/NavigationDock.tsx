@@ -8,6 +8,7 @@ import {
   Briefcase,
   FolderGit2,
   BookOpen,
+  Blocks,
   LayoutTemplate,
 } from "lucide-react";
 import {
@@ -220,7 +221,7 @@ function NavItemLink({
         onTouchStart={() => router.prefetch(item.href)}
         onClick={onClick}
         data-cursor-label={NAV_CURSOR_LABELS[item.name]}
-        className={`flex flex-col items-center justify-center gap-1 px-3 py-1 cursor-pointer relative group select-none transition-colors duration-150 ease-out ${
+        className={`flex flex-col items-center justify-center gap-1 px-1.5 sm:px-3 py-1 cursor-pointer relative group select-none transition-colors duration-150 ease-out ${
           isActive
             ? "text-ink font-semibold"
             : "text-muted-foreground hover:text-ink font-medium"
@@ -251,7 +252,7 @@ function NavItemLink({
           </div>
 
           {/* Label */}
-          <span className="text-[10px] font-sans leading-none tracking-tight whitespace-nowrap">
+          <span className="text-[9.5px] sm:text-[10px] font-sans leading-none tracking-tight whitespace-nowrap">
             {item.name}
           </span>
         </motion.div>
@@ -280,6 +281,11 @@ const NAV_ITEMS: NavItem[] = [
     name: "Notes",
     href: "/notes",
     icon: <BookOpen className="w-[18px] h-[18px]" />,
+  },
+  {
+    name: "Components",
+    href: "/components",
+    icon: <Blocks className="w-[18px] h-[18px]" />,
   },
 ];
 

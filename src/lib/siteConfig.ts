@@ -19,6 +19,7 @@ export const SOCIAL_PROFILES = {
   instagram: "https://www.instagram.com/bagatata05/",
   twitter: "https://x.com/bagatata05",
   email: "naphiera@gmail.com",
+  calCom: "https://cal.com/awalie-naphier-b-2iung0",
 };
 
 export const EDUCATION = {

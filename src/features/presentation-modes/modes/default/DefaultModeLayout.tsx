@@ -5,6 +5,7 @@ import { RecentProjects } from "@/components/RecentProjects";
 import { TechStack } from "@/components/TechStack";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
 import { Recommendations } from "@/components/Recommendations";
+import { ReadingShelf } from "@/components/ReadingShelf";
 import { Gallery } from "@/components/Gallery";
 import { FooterGrid } from "@/components/FooterGrid";
 import { SnapSectionWrapper } from "@/components/SnapSectionWrapper";
@@ -63,6 +64,12 @@ export function DefaultModeLayout() {
           </div>
         </SnapSectionWrapper>
       )}
+
+      {/* 8.5 Reading Shelf (Books I keep coming back to) */}
+      <SnapSectionWrapper id="reading-shelf">
+        <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
+        <ReadingShelf variant="default" />
+      </SnapSectionWrapper>
 
       {/* 9. Compact Moments Gallery (4-Moment Preview) */}
       <SnapSectionWrapper id="gallery">

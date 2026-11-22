@@ -138,7 +138,7 @@ function ChatWidgetContent() {
                 initial={{ opacity: 0, y: 6, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 6, scale: 0.9 }}
-                className="absolute -top-24 right-0 whitespace-nowrap rounded-full bg-white/95 dark:bg-[#0a0a0a]/95 px-3 py-1 text-[10px] font-mono font-medium text-emerald-600 dark:text-emerald-400 border border-black/10 dark:border-white/10 shadow-lg backdrop-blur-2xl flex items-center gap-1"
+                className="absolute -top-24 right-0 whitespace-nowrap rounded-full bg-white/95 dark:bg-[#0a0a0a]/95 px-3 py-1 text-[10px] font-mono font-medium text-ink border border-black/10 dark:border-white/10 shadow-lg backdrop-blur-2xl flex items-center gap-1"
               >
                 <Check className="w-3 h-3" />
                 <span>Prompt copied</span>
@@ -336,7 +336,7 @@ function ChatWidgetContent() {
 
               {/* Copied Feedback Toast */}
               {copied && (
-                <div className="mt-2 pt-2 border-t border-border-hairline flex items-center justify-center gap-1 text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+                <div className="mt-2 pt-2 border-t border-border-hairline flex items-center justify-center gap-1 text-[10px] font-mono text-ink">
                   <Check className="w-3 h-3" />
                   <span>Prompt copied to clipboard</span>
                 </div>

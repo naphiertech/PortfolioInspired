@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { fullProjects } from "@/lib/data";
 import { fieldNotes } from "@/lib/fieldNotes";
+import { COMPONENTS_CATALOG } from "@/lib/componentsCatalog";
 import { SITE_URL } from "@/lib/siteConfig";
 
 const SITE_RELEASE_DATE = new Date("2026-11-16T00:00:00.000Z");
@@ -70,6 +71,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/components`,
+      lastModified: SITE_RELEASE_DATE,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
   ];
 
   // Dynamic project detail routes derived from fullProjects
@@ -88,5 +95,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...staticRoutes, ...projectRoutes, ...noteRoutes];
+  const componentRoutes: MetadataRoute.Sitemap = COMPONENTS_CATALOG.map((item) => ({
+    url: `${SITE_URL}/components/${item.slug}`,
+    lastModified: SITE_RELEASE_DATE,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...noteRoutes, ...componentRoutes];
 }

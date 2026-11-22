@@ -69,10 +69,10 @@ export function NotesPageClient() {
                 </div>
               </div>
 
-              {/* Sub-line: Category with subtle emerald accent */}
+              {/* Sub-line: Category */}
               <div className="flex items-center gap-1.5">
                 <span
-                  className="w-1.5 h-1.5 rounded-full bg-emerald-500/70 group-hover:bg-emerald-500 transition-colors duration-150 flex-shrink-0"
+                  className="w-1.5 h-1.5 rounded-full bg-ink/45 group-hover:bg-ink transition-colors duration-150 flex-shrink-0"
                   aria-hidden="true"
                 />
                 <span className="font-mono text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/90 group-hover:text-ink transition-colors duration-150">

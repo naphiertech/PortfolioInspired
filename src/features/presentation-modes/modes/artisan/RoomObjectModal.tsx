@@ -20,6 +20,8 @@ import {
   WORKSPACE_DESK_ARTIFACTS,
 } from "./data";
 import { techSections, fullProjects } from "@/lib/data";
+import { READING_SHELF_BOOKS } from "@/lib/readingShelfData";
+import Image from "next/image";
 
 interface RoomObjectModalProps {
   hotspotId: HotspotId | null;
@@ -581,174 +583,10 @@ function DeskCornerContent() {
    4. BOOKSHELF: Tactile Book Covers & Official Reading Links
    ========================================================================= */
 function BookshelfContent() {
-  const books = [
-    {
-      id: "ddia",
-      title: "Designing Data-Intensive Applications",
-      author: "Martin Kleppmann",
-      publisher: "O'Reilly Media",
-      domain: "dataintensive.net",
-      url: "https://dataintensive.net/",
-      lesson:
-        "Reliability, scalability, and maintainability are the foundational pillars of lasting data systems.",
-      cover: (
-        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#faf7f2] text-[#18181b] border border-black/15 shadow-[2px_4px_10px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
-          {/* Book Spine Crease */}
-          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-black/20 via-black/5 to-transparent pointer-events-none" />
-          {/* O'Reilly Crimson Top Band */}
-          <div className="w-full h-2.5 bg-[#991b1b] rounded-[1px] flex items-center justify-between px-1">
-            <span className="font-sans text-[4.5px] font-bold tracking-widest uppercase text-white/95">
-              O&apos;REILLY
-            </span>
-            <span className="size-1 rounded-full bg-white/80" />
-          </div>
-          {/* Title & Node Graph Motif */}
-          <div className="pl-1 space-y-1">
-            <div className="font-mono text-[6px] font-bold leading-[1.1] tracking-tight text-[#111111]">
-              DATA-INTENSIVE
-              <br />
-              APPLICATIONS
-            </div>
-            <svg viewBox="0 0 40 22" className="w-8 h-4 text-[#991b1b]" fill="none">
-              <circle cx="8" cy="11" r="3" stroke="currentColor" strokeWidth="1.4" />
-              <circle cx="22" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.3" />
-              <circle cx="22" cy="17" r="2.5" stroke="currentColor" strokeWidth="1.3" />
-              <circle cx="34" cy="11" r="3" stroke="currentColor" strokeWidth="1.4" />
-              <path d="M11 10L19.5 6M11 12L19.5 16M24.5 6L31 10M24.5 16L31 12" stroke="currentColor" strokeWidth="1" />
-            </svg>
-          </div>
-          {/* Bottom Author Line */}
-          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-neutral-500 truncate">
-            M. Kleppmann
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "pragprog",
-      title: "The Pragmatic Programmer",
-      author: "David Thomas & Andrew Hunt",
-      publisher: "20th Anniversary Ed.",
-      domain: "pragprog.com",
-      url: "https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/",
-      lesson:
-        "Care about your craft, think critically about your work, and build adaptable software.",
-      cover: (
-        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#18181b] text-white border border-white/15 shadow-[2px_4px_10px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
-          {/* Book Spine Crease */}
-          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-white/15 via-black/30 to-transparent pointer-events-none" />
-          {/* Top Gold Foil Header */}
-          <div className="pl-1 flex items-center justify-between">
-            <span className="font-sans text-[4.5px] font-semibold uppercase tracking-widest text-amber-400">
-              20TH ED
-            </span>
-            <span className="w-2.5 h-[1.5px] bg-amber-400/80" />
-          </div>
-          {/* Center Title & Craft Emblem */}
-          <div className="pl-1 space-y-1">
-            <div className="font-mono text-[6px] font-bold leading-[1.1] tracking-tight text-amber-50">
-              THE PRAGMATIC
-              <br />
-              PROGRAMMER
-            </div>
-            <div className="w-full h-3.5 rounded-[2px] bg-amber-500/15 border border-amber-400/40 flex items-center justify-center">
-              <span className="font-mono text-[6px] text-amber-300 tracking-widest">
-                {"</>"}
-              </span>
-            </div>
-          </div>
-          {/* Bottom Author */}
-          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-neutral-400 truncate">
-            Thomas · Hunt
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "refactoring-ui",
-      title: "Refactoring UI",
-      author: "Adam Wathan & Steve Schoger",
-      publisher: "Tailwind Labs",
-      domain: "refactoringui.com",
-      url: "https://www.refactoringui.com/",
-      lesson:
-        "Design with clear visual hierarchy, deliberate spacing, and restrained typography.",
-      cover: (
-        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#0f172a] text-white border border-sky-400/25 shadow-[2px_4px_10px_rgba(0,0,0,0.18)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
-          {/* Book Spine Crease */}
-          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-white/15 via-black/25 to-transparent pointer-events-none" />
-          {/* Top Grid Accent */}
-          <div className="pl-1 flex items-center gap-1">
-            <span className="size-1.5 rounded-full bg-sky-400" />
-            <span className="font-sans text-[4.5px] font-semibold uppercase tracking-widest text-sky-300">
-              DESIGN
-            </span>
-          </div>
-          {/* UI Wireframe Card Motif */}
-          <div className="pl-1 space-y-1">
-            <div className="font-mono text-[6.5px] font-bold leading-[1.08] text-white">
-              Refactoring
-              <br />
-              <span className="text-sky-400">UI</span>
-            </div>
-            <div className="p-1 rounded-[2px] bg-white/10 border border-white/15 space-y-0.5">
-              <div className="w-4 h-1 rounded-full bg-sky-400/90" />
-              <div className="w-6 h-0.5 rounded-full bg-white/50" />
-              <div className="w-5 h-0.5 rounded-full bg-white/30" />
-            </div>
-          </div>
-          {/* Bottom Author */}
-          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-slate-400 truncate">
-            Wathan · Schoger
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "clean-arch",
-      title: "Clean Architecture",
-      author: "Robert C. Martin",
-      publisher: "Prentice Hall",
-      domain: "oreilly.com",
-      url: "https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/",
-      lesson:
-        "Keep core domain logic independent of frameworks, user interfaces, and external databases.",
-      cover: (
-        <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] bg-[#172554] text-white border border-blue-300/20 shadow-[2px_4px_10px_rgba(0,0,0,0.18)] overflow-hidden flex flex-col justify-between p-1.5 select-none">
-          {/* Book Spine Crease */}
-          <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-white/15 via-black/25 to-transparent pointer-events-none" />
-          {/* Top Band */}
-          <div className="pl-1 flex items-center justify-between">
-            <span className="font-sans text-[4.5px] font-semibold uppercase tracking-wider text-sky-200">
-              ROBERT C. MARTIN
-            </span>
-          </div>
-          {/* Concentric Ring Motif */}
-          <div className="pl-1 flex flex-col items-start gap-1">
-            <div className="font-mono text-[6px] font-bold leading-[1.08] text-white">
-              CLEAN
-              <br />
-              ARCHITECTURE
-            </div>
-            <svg viewBox="0 0 24 24" className="size-4 text-amber-300" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.2" opacity="0.55" />
-              <circle cx="12" cy="12" r="5.5" stroke="#38bdf8" strokeWidth="1.2" opacity="0.85" />
-              <circle cx="12" cy="12" r="2.2" fill="#f43f5e" />
-            </svg>
-          </div>
-          {/* Bottom Tag */}
-          <div className="pl-1 font-sans text-[4.5px] uppercase tracking-wider text-blue-200/70 truncate">
-            Craftsman Series
-          </div>
-        </div>
-      ),
-    },
-  ];
-
   return (
     <div className="space-y-5">
       <div className="space-y-3">
-        {books.map((b) => (
+        {READING_SHELF_BOOKS.map((b) => (
           <a
             key={b.id}
             href={b.url}
@@ -759,7 +597,16 @@ function BookshelfContent() {
             <div className="flex items-start gap-4">
               {/* Tactile Miniature Hardcover Book Jacket */}
               <div className="shrink-0 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:-rotate-2">
-                {b.cover}
+                <div className="relative w-14 h-20 rounded-r-[4px] rounded-l-[2px] border border-black/15 dark:border-white/15 shadow-[2px_4px_10px_rgba(0,0,0,0.16)] overflow-hidden select-none">
+                  <Image
+                    src={b.coverImage}
+                    alt={`${b.title} by ${b.author}`}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-white/20 via-black/15 to-transparent pointer-events-none" />
+                </div>
               </div>
 
               {/* Book Details & Takeaway */}

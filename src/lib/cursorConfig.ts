@@ -13,6 +13,7 @@ export const NAV_CURSOR_LABELS: Record<string, string> = {
   Tech: "Tools I work with.",
   Certifications: "Certificates and credentials.",
   Notes: "Field notes and technical thoughts.",
+  Components: "Public interactive UI & pixel artifacts.",
 };
 
 export const PROJECT_CURSOR_LABELS: Record<string, string> = {

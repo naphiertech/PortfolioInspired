@@ -20,6 +20,24 @@ export default function createNextConfig(phase) {
     htmlLimitedBots: /.*/,
     serverExternalPackages: ['ably'],
     outputFileTracingRoot: __dirname,
+    outputFileTracingIncludes: {
+      '/components/[slug]': [
+        './src/components/ReadingShelf.tsx',
+        './src/components/ReadingShelf.module.css',
+        './src/components/BookSpine.tsx',
+        './src/lib/readingShelfData.ts',
+        './src/components/ContributionTruck.tsx',
+        './src/components/ContributionTruck.module.css',
+        './src/components/FloatingTerrain.tsx',
+        './src/components/FloatingTerrain.module.css',
+        './src/lib/motion.ts',
+        './src/components/showcase/ThanosGauntletSandbox.tsx',
+        './src/components/GauntletTrigger.module.css',
+        './src/components/showcase/AICompanionWidget.tsx',
+        './src/components/RocketMountain.tsx',
+        './src/components/RocketMountain.module.css',
+      ],
+    },
     experimental: {
       inlineCss: true,
       optimizePackageImports: [

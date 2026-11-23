@@ -1,4 +1,9 @@
-import { fullProjects, experiences, getCertificationGroups } from "./data";
+import {
+  fullProjects,
+  experiences,
+  getCertificationGroups,
+  getVerifyPlatformLabel,
+} from "./data";
 import { AUTHOR_INFO, EDUCATION, SOCIAL_PROFILES } from "./siteConfig";
 import { CONFIGURED_AI_MODELS } from "./portfolioKnowledge";
 import { NormalizedQuery } from "./queryNormalizer";
@@ -340,7 +345,9 @@ In **[MKBRiderTrack](/projects/mkb-ridertrack)**, it secures rider telemetry and
               : c.issuedAt
               ? ` (Issued ${c.issuedAt})`
               : "";
-            const verify = c.verifyUrl ? ` — [Verify on Credly](${c.verifyUrl})` : "";
+            const verify = c.verifyUrl
+              ? ` — [Verify on ${getVerifyPlatformLabel(c)}](${c.verifyUrl})`
+              : "";
             return `- **${c.issuer}**: *${c.name}*${meta}${verify}`;
           })
           .join("\n");

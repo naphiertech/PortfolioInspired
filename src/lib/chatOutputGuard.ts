@@ -105,6 +105,8 @@ export function inspectGeneratedOutput(generatedText: string): OutputGuardResult
       "phierplay.pages.dev",
       "credly.com",
       "www.credly.com",
+      "graphacademy.neo4j.com",
+      "cal.com",
       "naphier.tech",
       "naphierawalie.tech",
       "www.naphierawalie.tech",

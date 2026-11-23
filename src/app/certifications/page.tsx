@@ -97,8 +97,8 @@ export default function CertificationsPage() {
           </span>
         </div>
         <p className="font-sans text-xs sm:text-sm text-muted-foreground leading-relaxed">
-          Credentials are organized into {groups.map((g) => `${g.label} (${g.items.length})`).join(" and ")}.
-          Cisco Networking Academy badges verify live through Credly—led by the 6-course Junior Cybersecurity Analyst Career Path (cybersecurity fundamentals, networking, device configuration, endpoint security, network defense, and cyber threat management) and the 4-course Network Technician Career Path—while Google Developer Groups and DICT certificates include verification IDs and inspectable source documents.
+          Credentials are organized into {groups.map((g) => `${g.label} (${g.items.length})`).join(", ")}.
+          Led by the Neo4j &amp; Generative AI Certification verified live on Neo4j GraphAcademy alongside two Credly-verified Cisco Networking Academy career paths (6-course Junior Cybersecurity Analyst and 4-course Network Technician), plus Google Developer Groups and DICT credentials with inspectable source documents.
         </p>
       </section>
 

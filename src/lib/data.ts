@@ -40,6 +40,7 @@ export interface CertificationItem {
   trackLabel?: string;
   trackTopics?: string;
   summary?: string;
+  skills?: string[];
 }
 
 export interface ExperienceItem {
@@ -714,26 +715,44 @@ export const workCapabilities = [
 export const CERTIFICATION_CATEGORIES: {
   id: CertificationCategory;
   label: string;
+  shortLabel: string;
   syntaxLabel: string;
 }[] = [
   {
     id: "professional",
     label: "Professional Certifications",
+    shortLabel: "Professional",
     syntaxLabel: "<professional/>",
   },
   {
     id: "course",
     label: "Technical Courses",
+    shortLabel: "Career Paths",
     syntaxLabel: "<technical-courses/>",
   },
   {
     id: "workshop",
     label: "Workshops & Events",
+    shortLabel: "Workshops",
     syntaxLabel: "<workshops-events/>",
   },
 ];
 
 export const certifications: CertificationItem[] = [
+  {
+    name: "Neo4j & Generative AI Certification",
+    issuer: "Neo4j GraphAcademy",
+    href: "/certificates/Neo4j-Generative-AI-Certification.png",
+    verifyUrl: "https://graphacademy.neo4j.com/c/ffc1f4c3-7cf9-430a-8f83-90c440e70984",
+    category: "professional",
+    issuedAt: "Nov 2026",
+    code: "ffc1f4c3-7cf9-430a-8f83-90c440e70984",
+    tag: "NEO4J",
+    featured: true,
+    summary:
+      "Official timed certification exam validating GraphRAG architectures, vector similarity search, Knowledge Graph modeling for LLMs, neo4j-graphrag workflows, and MCP integration.",
+    skills: ["GraphRAG", "Vector Search", "Knowledge Graphs", "neo4j-graphrag", "MCP"],
+  },
   {
     name: "Junior Cybersecurity Analyst Career Path",
     issuer: "Cisco Networking Academy",
@@ -896,6 +915,11 @@ export function getCertificationGroups(items: CertificationItem[] = certificatio
   })).filter((group) => group.items.length > 0);
 }
 
+/** Returns non-empty top-level credential groups matching rendered box counts 1:1. */
+export function getTopLevelCertificationGroups(items: CertificationItem[] = certifications) {
+  return getCertificationGroups(getTopLevelCertifications(items));
+}
+
 function getCertParentTrackIds(cert: CertificationItem): string[] {
   const ids: string[] = [];
   if (cert.parentTrackId) ids.push(cert.parentTrackId);
@@ -946,11 +970,24 @@ export function hasPreviewableDocument(cert: CertificationItem): boolean {
   );
 }
 
-/** Prefers live online verification (e.g., Credly) when present, falling back to the local certificate file. */
+/** Prefers live online verification (e.g., GraphAcademy, Credly) when present, falling back to the local certificate file. */
 export function getVerifyHref(cert: CertificationItem): string | null {
   if (cert.verifyUrl) return cert.verifyUrl;
   if (cert.href && cert.href !== "#") return cert.href;
   return null;
+}
+
+/** Returns the human-readable verification platform name for a credential URL. */
+export function getVerifyPlatformLabel(cert: CertificationItem): string {
+  if (!cert.verifyUrl) return "Open";
+  const url = cert.verifyUrl.toLowerCase();
+  if (url.includes("graphacademy.neo4j.com") || url.includes("neo4j.com")) {
+    return "GraphAcademy";
+  }
+  if (url.includes("credly.com")) {
+    return "Credly";
+  }
+  return "Verify";
 }
 
 export const experiences: ExperienceItem[] = [

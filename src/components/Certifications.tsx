@@ -3,7 +3,12 @@
 import React from "react";
 import { ExternalLink } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
-import { getFeaturedCertifications, getTrackCourses, getVerifyHref } from "@/lib/data";
+import {
+  getFeaturedCertifications,
+  getTrackCourses,
+  getVerifyHref,
+  getVerifyPlatformLabel,
+} from "@/lib/data";
 import {
   IssuerLogo,
   CertificationTagBadge,
@@ -34,7 +39,7 @@ export function Certifications() {
       {/* Consistent Section Header */}
       <SectionHeader
         label="CERTIFICATIONS"
-        description="Programs and achievements that reflect my continued learning."
+        description="Industry exams, technical career paths, and verified credentials."
         actionHref="/experience#certifications"
         actionLabel="view all certifications"
         className="mb-6 pb-2 border-b border-border-hairline/40"
@@ -47,13 +52,17 @@ export function Certifications() {
       >
         {featuredCerts.map((cert) => {
           const verifyHref = getVerifyHref(cert);
+          const verifyPlatform = getVerifyPlatformLabel(cert);
           const metaText = getCertificationMetaText(cert);
+          const isProfessional = cert.category === "professional";
 
           return (
             <motion.div
               key={cert.name}
               variants={shouldReduceMotion ? undefined : gridItemVariants}
-              className="relative p-4 sm:p-4.5 rounded-xl bg-surface/30 border border-border-hairline hover:bg-surface/60 hover:border-border-hairline transition-all duration-200 group flex flex-col justify-between overflow-hidden shadow-2xs"
+              className={`relative p-4 sm:p-4.5 rounded-xl border border-border-hairline bg-surface/30 hover:bg-surface/60 transition-all duration-200 group flex flex-col justify-between overflow-hidden shadow-2xs ${
+                isProfessional ? "border-t-2 border-t-ink" : ""
+              }`}
             >
               {/* Subtle decorative curve in dark mode */}
               <svg
@@ -65,12 +74,15 @@ export function Certifications() {
               </svg>
 
               <div className="space-y-3.5 relative z-10">
-                {/* Issuer Logo + Tag Header */}
+                {/* Issuer Logo + Tier & Tag Header */}
                 <div className="flex items-center justify-between gap-2">
-                  <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs group-hover:border-border-hairline transition-colors shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-surface border border-border-hairline flex items-center justify-center p-1.5 shadow-2xs shrink-0">
                     <IssuerLogo cert={cert} />
                   </div>
                   <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                    {isProfessional && (
+                      <CareerPathBadge label="PROFESSIONAL" variant="solid" />
+                    )}
                     {cert.trackId && (
                       <CareerPathBadge
                         label={`${getTrackCourses(cert.trackId).length}-COURSE PATH`}
@@ -108,13 +120,13 @@ export function Certifications() {
                     href={verifyHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title={cert.verifyUrl ? "Verify on Credly" : "View certificate"}
+                    title={cert.verifyUrl ? `Verify on ${verifyPlatform}` : "View certificate"}
                     aria-label={
                       cert.verifyUrl
-                        ? `Verify ${cert.name} on Credly`
+                        ? `Verify ${cert.name} on ${verifyPlatform}`
                         : `View certificate for ${cert.name}`
                     }
-                    className="text-muted-foreground/40 group-hover:text-ink transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 p-1 -m-1"
+                    className="text-muted-foreground/50 group-hover:text-ink transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 p-1 -m-1"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
@@ -142,5 +154,3 @@ export function Certifications() {
     </motion.section>
   );
 }
-
-export default Certifications;

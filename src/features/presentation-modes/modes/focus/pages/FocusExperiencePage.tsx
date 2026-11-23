@@ -200,7 +200,7 @@ export function FocusExperiencePage() {
   };
 
   const [activeCertFilter, setActiveCertFilter] = useState<"all" | CertificationCategory>("all");
-  const [careerTrackExpanded, setCareerTrackExpanded] = useState(false);
+  const [expandedTracks, setExpandedTracks] = useState<Record<string, boolean>>({});
 
   const certGroups = useMemo(() => getCertificationGroups(), []);
   const filteredCerts = useMemo(
@@ -227,8 +227,19 @@ export function FocusExperiencePage() {
     playClick();
     setActiveCertFilter(next);
     if (next === "course") {
-      setCareerTrackExpanded(true);
+      setExpandedTracks(
+        Object.fromEntries(
+          certifications
+            .filter((c) => Boolean(c.trackId))
+            .map((c) => [c.trackId as string, true])
+        )
+      );
     }
+  };
+
+  const toggleCareerTrack = (trackId: string) => {
+    playClick();
+    setExpandedTracks((prev) => ({ ...prev, [trackId]: !prev[trackId] }));
   };
 
   return (
@@ -604,8 +615,10 @@ export function FocusExperiencePage() {
           })}
         </div>
 
-        {/* #1 Flagship Career Path Spotlight */}
+        {/* Flagship Career Path Spotlights */}
         {flagshipCertTracks.map((track) => {
+          const trackKey = track.trackId || track.name;
+          const isTrackExpanded = Boolean(expandedTracks[trackKey]);
           const subCourses = track.trackId ? getTrackCourses(track.trackId) : [];
           const hasPreview = hasPreviewableDocument(track);
           const verifyHref = getVerifyHref(track);
@@ -680,12 +693,9 @@ export function FocusExperiencePage() {
                 <div className="border-t border-border-divider">
                   <button
                     type="button"
-                    aria-expanded={careerTrackExpanded}
+                    aria-expanded={isTrackExpanded}
                     aria-controls={panelId}
-                    onClick={() => {
-                      playClick();
-                      setCareerTrackExpanded((open) => !open);
-                    }}
+                    onClick={() => toggleCareerTrack(trackKey)}
                     onMouseEnter={playHover}
                     className="w-full px-4 sm:px-5 py-2.5 bg-black/[0.015] dark:bg-white/[0.02] hover:bg-surface/60 transition-colors flex items-center justify-between gap-3 text-left cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand"
                   >
@@ -694,16 +704,18 @@ export function FocusExperiencePage() {
                       <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink/90">
                         {String(subCourses.length).padStart(2, "0")} Included Courses
                       </span>
-                      <span className="hidden md:inline font-mono text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
-                        · Basics · Devices · Addressing · Support &amp; Security
-                      </span>
+                      {track.trackTopics && (
+                        <span className="hidden md:inline font-mono text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
+                          · {track.trackTopics}
+                        </span>
+                      )}
                     </div>
 
                     <span className="inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground shrink-0">
-                      <span>{careerTrackExpanded ? "less" : "expand"}</span>
+                      <span>{isTrackExpanded ? "less" : "expand"}</span>
                       <ChevronDown
                         className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          careerTrackExpanded ? "rotate-180 text-brand" : ""
+                          isTrackExpanded ? "rotate-180 text-brand" : ""
                         }`}
                         aria-hidden="true"
                       />
@@ -711,7 +723,7 @@ export function FocusExperiencePage() {
                   </button>
 
                   <AnimatePresence initial={false}>
-                    {careerTrackExpanded && (
+                    {isTrackExpanded && (
                       <motion.div
                         id={panelId}
                         role="region"

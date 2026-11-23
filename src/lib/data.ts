@@ -36,7 +36,9 @@ export interface CertificationItem {
   featured?: boolean;
   trackId?: string;
   parentTrackId?: string;
+  parentTrackIds?: string[];
   trackLabel?: string;
+  trackTopics?: string;
   summary?: string;
 }
 
@@ -733,6 +735,21 @@ export const CERTIFICATION_CATEGORIES: {
 
 export const certifications: CertificationItem[] = [
   {
+    name: "Junior Cybersecurity Analyst Career Path",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/JuniorCybersecurityAnalystUpdate20261123-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/689e052e-5d0e-4b1f-af89-595c357475c2/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    featured: true,
+    trackId: "cisco-junior-cybersecurity-analyst",
+    trackLabel: "Career Path · 6 Courses",
+    trackTopics: "Intro · Basics · Devices · Endpoint · Network Defense · Threat Mgmt",
+    summary:
+      "Career path credential covering cybersecurity fundamentals, networking and device hardening, endpoint security, network defense, and cyber threat management.",
+  },
+  {
     name: "Network Technician Career Path",
     issuer: "Cisco Networking Academy",
     href: "/certificates/NetworkTechnicianCareerPathUpdate20261120-20.pdf",
@@ -743,8 +760,19 @@ export const certifications: CertificationItem[] = [
     featured: true,
     trackId: "cisco-network-technician",
     trackLabel: "Career Path · 4 Courses",
+    trackTopics: "Basics · Devices · Addressing · Support & Security",
     summary:
       "Student-level career path credential spanning network fundamentals, Cisco IOS configuration, IPv4/IPv6 addressing, troubleshooting, and endpoint security.",
+  },
+  {
+    name: "Introduction to Cybersecurity",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/I2CSUpdate20261115-21.pdf",
+    verifyUrl: "https://www.credly.com/badges/14ec44af-fcc0-4c26-8269-a84d8c29667b/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-junior-cybersecurity-analyst",
   },
   {
     name: "Networking Basics",
@@ -754,7 +782,7 @@ export const certifications: CertificationItem[] = [
     category: "course",
     issuedAt: "Apr 2026",
     tag: "CISCO",
-    parentTrackId: "cisco-network-technician",
+    parentTrackIds: ["cisco-junior-cybersecurity-analyst", "cisco-network-technician"],
   },
   {
     name: "Networking Devices and Initial Configuration",
@@ -764,7 +792,37 @@ export const certifications: CertificationItem[] = [
     category: "course",
     issuedAt: "Nov 2026",
     tag: "CISCO",
-    parentTrackId: "cisco-network-technician",
+    parentTrackIds: ["cisco-junior-cybersecurity-analyst", "cisco-network-technician"],
+  },
+  {
+    name: "Endpoint Security",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/EndpointSecurityUpdate20261123-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/b8c10469-02f1-4e44-809e-f9672110b719/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-junior-cybersecurity-analyst",
+  },
+  {
+    name: "Network Defense",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/NetworkDefenseUpdate20261123-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/625dbddf-1315-4469-acda-bd3616769db9/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-junior-cybersecurity-analyst",
+  },
+  {
+    name: "Cyber Threat Management",
+    issuer: "Cisco Networking Academy",
+    href: "/certificates/CyberThreatManagementUpdate20261123-20.pdf",
+    verifyUrl: "https://www.credly.com/badges/d242498c-3715-4c40-be35-8b515d3ffc4e/public_url",
+    category: "course",
+    issuedAt: "Nov 2026",
+    tag: "CISCO",
+    parentTrackId: "cisco-junior-cybersecurity-analyst",
   },
   {
     name: "Network Addressing and Basic Troubleshooting",
@@ -785,16 +843,6 @@ export const certifications: CertificationItem[] = [
     issuedAt: "Nov 2026",
     tag: "CISCO",
     parentTrackId: "cisco-network-technician",
-  },
-  {
-    name: "Introduction to Cybersecurity",
-    issuer: "Cisco Networking Academy",
-    href: "/certificates/I2CSUpdate20261115-21.pdf",
-    verifyUrl: "https://www.credly.com/badges/14ec44af-fcc0-4c26-8269-a84d8c29667b",
-    category: "course",
-    issuedAt: "Nov 2026",
-    tag: "CISCO",
-    featured: true,
   },
   {
     name: "Build with AI 2026",
@@ -848,12 +896,19 @@ export function getCertificationGroups(items: CertificationItem[] = certificatio
   })).filter((group) => group.items.length > 0);
 }
 
+function getCertParentTrackIds(cert: CertificationItem): string[] {
+  const ids: string[] = [];
+  if (cert.parentTrackId) ids.push(cert.parentTrackId);
+  if (cert.parentTrackIds) ids.push(...cert.parentTrackIds);
+  return ids;
+}
+
 /** Returns component courses belonging to a parent career path/track credential. */
 export function getTrackCourses(
   trackId: string,
   items: CertificationItem[] = certifications
 ): CertificationItem[] {
-  return items.filter((cert) => cert.parentTrackId === trackId);
+  return items.filter((cert) => getCertParentTrackIds(cert).includes(trackId));
 }
 
 /** Returns top-level credentials excluding sub-courses nested under a parent career path. */
@@ -861,7 +916,10 @@ export function getTopLevelCertifications(
   items: CertificationItem[] = certifications
 ): CertificationItem[] {
   const activeTrackIds = new Set(items.map((c) => c.trackId).filter(Boolean));
-  return items.filter((cert) => !cert.parentTrackId || !activeTrackIds.has(cert.parentTrackId));
+  return items.filter((cert) => {
+    const parents = getCertParentTrackIds(cert);
+    return parents.length === 0 || !parents.some((id) => activeTrackIds.has(id));
+  });
 }
 
 /** Returns prioritized featured certifications up to `limit`, falling back cleanly to remaining entries. */

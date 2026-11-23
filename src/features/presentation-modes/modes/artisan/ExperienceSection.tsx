@@ -155,7 +155,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
   const [showAllSkills, setShowAllSkills] = useState(false);
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null);
   const [activeCertFilter, setActiveCertFilter] = useState<"all" | CertificationCategory>("all");
-  const [careerTrackExpanded, setCareerTrackExpanded] = useState(false);
+  const [expandedTracks, setExpandedTracks] = useState<Record<string, boolean>>({});
   const experiences = EXPERIENCE_DATA;
 
   const certGroups = useMemo(() => getCertificationGroups(), []);
@@ -182,8 +182,18 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
   const handleCertFilterChange = (next: "all" | CertificationCategory) => {
     setActiveCertFilter(next);
     if (next === "course") {
-      setCareerTrackExpanded(true);
+      setExpandedTracks(
+        Object.fromEntries(
+          certifications
+            .filter((c) => Boolean(c.trackId))
+            .map((c) => [c.trackId as string, true])
+        )
+      );
     }
+  };
+
+  const toggleCareerTrack = (trackId: string) => {
+    setExpandedTracks((prev) => ({ ...prev, [trackId]: !prev[trackId] }));
   };
 
   const skillCategories = techSections.map((section) => ({
@@ -392,8 +402,10 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
               </div>
             </div>
 
-            {/* #1 Flagship Career Path Banner (Double-Bordered Editorial Frame) */}
+            {/* Flagship Career Path Banners (Double-Bordered Editorial Frame) */}
             {flagshipTracks.map((track) => {
+              const trackKey = track.trackId || track.name;
+              const isTrackExpanded = Boolean(expandedTracks[trackKey]);
               const subCourses = track.trackId ? getTrackCourses(track.trackId) : [];
               const hasPreview = hasPreviewableDocument(track);
               const verifyHref = getVerifyHref(track);
@@ -471,19 +483,19 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
                       <div className="border-t border-black/[0.08] dark:border-white/[0.08]">
                         <button
                           type="button"
-                          aria-expanded={careerTrackExpanded}
+                          aria-expanded={isTrackExpanded}
                           aria-controls={panelId}
-                          onClick={() => setCareerTrackExpanded((open) => !open)}
+                          onClick={() => toggleCareerTrack(trackKey)}
                           className="w-full px-4 sm:px-5 py-2.5 bg-black/[0.015] dark:bg-white/[0.02] hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-3 text-left cursor-pointer"
                         >
                           <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-foreground/85">
                             {String(subCourses.length).padStart(2, "0")} Included Courses
                           </span>
                           <span className="inline-flex items-center gap-1 font-sans text-xs text-muted-foreground">
-                            <span>{careerTrackExpanded ? "Hide" : "View track"}</span>
+                            <span>{isTrackExpanded ? "Hide" : "View track"}</span>
                             <LuChevronDown
                               className={`size-3.5 transition-transform duration-200 ${
-                                careerTrackExpanded ? "rotate-180" : ""
+                                isTrackExpanded ? "rotate-180" : ""
                               }`}
                               aria-hidden="true"
                             />
@@ -491,7 +503,7 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
                         </button>
 
                         <AnimatePresence initial={false}>
-                          {careerTrackExpanded && (
+                          {isTrackExpanded && (
                             <motion.div
                               id={panelId}
                               role="region"

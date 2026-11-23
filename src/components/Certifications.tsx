@@ -3,7 +3,7 @@
 import React from "react";
 import { ExternalLink } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
-import { getFeaturedCertifications, getVerifyHref } from "@/lib/data";
+import { getFeaturedCertifications, getTrackCourses, getVerifyHref } from "@/lib/data";
 import {
   IssuerLogo,
   CertificationTagBadge,
@@ -71,7 +71,11 @@ export function Certifications() {
                     <IssuerLogo cert={cert} />
                   </div>
                   <div className="flex items-center gap-1.5 flex-wrap justify-end">
-                    {cert.trackId && <CareerPathBadge label="4-COURSE PATH" />}
+                    {cert.trackId && (
+                      <CareerPathBadge
+                        label={`${getTrackCourses(cert.trackId).length}-COURSE PATH`}
+                      />
+                    )}
                     <CertificationTagBadge cert={cert} />
                   </div>
                 </div>

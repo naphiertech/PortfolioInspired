@@ -269,7 +269,14 @@ export function CertificationsSection({
   const shouldReduceMotion = useReducedMotion();
   const [previewCert, setPreviewCert] = useState<CertificationItem | null>(null);
   const [activeFilter, setActiveFilter] = useState<"all" | CertificationCategory>("all");
-  const [trackExpanded, setTrackExpanded] = useState(defaultTrackExpanded);
+  const [expandedTracks, setExpandedTracks] = useState<Record<string, boolean>>(() => {
+    if (!defaultTrackExpanded) return {};
+    return Object.fromEntries(
+      certifications
+        .filter((c) => Boolean(c.trackId))
+        .map((c) => [c.trackId as string, true])
+    );
+  });
   const [mounted, setMounted] = useState(false);
 
   const certGroups = useMemo(() => getCertificationGroups(), []);
@@ -297,8 +304,19 @@ export function CertificationsSection({
     playClick();
     setActiveFilter(next);
     if (next === "course") {
-      setTrackExpanded(true);
+      setExpandedTracks(
+        Object.fromEntries(
+          certifications
+            .filter((c) => Boolean(c.trackId))
+            .map((c) => [c.trackId as string, true])
+        )
+      );
     }
+  };
+
+  const toggleTrack = (trackId: string) => {
+    playClick();
+    setExpandedTracks((prev) => ({ ...prev, [trackId]: !prev[trackId] }));
   };
 
   useEffect(() => {
@@ -391,8 +409,10 @@ export function CertificationsSection({
           })}
         </div>
 
-        {/* #1 Flagship Career Path Spotlight */}
+        {/* Flagship Career Path Spotlights */}
         {flagshipTracks.map((track) => {
+          const trackKey = track.trackId || track.name;
+          const isTrackExpanded = Boolean(expandedTracks[trackKey]);
           const subCourses = track.trackId ? getTrackCourses(track.trackId) : [];
           const hasPreview = hasPreviewableDocument(track);
           const verifyHref = getVerifyHref(track);
@@ -467,12 +487,9 @@ export function CertificationsSection({
                 <div className="border-t border-border-hairline/70">
                   <button
                     type="button"
-                    aria-expanded={trackExpanded}
+                    aria-expanded={isTrackExpanded}
                     aria-controls={panelId}
-                    onClick={() => {
-                      playClick();
-                      setTrackExpanded((open) => !open);
-                    }}
+                    onClick={() => toggleTrack(trackKey)}
                     onMouseEnter={playHover}
                     className="w-full px-4 sm:px-5 py-2.5 bg-black/[0.015] dark:bg-white/[0.02] hover:bg-black/[0.03] dark:hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-3 text-left cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand"
                   >
@@ -481,16 +498,18 @@ export function CertificationsSection({
                       <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-ink/90">
                         {String(subCourses.length).padStart(2, "0")} Included Courses
                       </span>
-                      <span className="hidden md:inline font-mono text-[11px] text-muted-foreground/75 truncate">
-                        · Basics · Devices · Addressing · Support &amp; Security
-                      </span>
+                      {track.trackTopics && (
+                        <span className="hidden md:inline font-mono text-[11px] text-muted-foreground/75 truncate">
+                          · {track.trackTopics}
+                        </span>
+                      )}
                     </div>
 
                     <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground shrink-0">
-                      <span>{trackExpanded ? "Hide" : "Expand"}</span>
+                      <span>{isTrackExpanded ? "Hide" : "Expand"}</span>
                       <ChevronDown
                         className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          trackExpanded ? "rotate-180 text-brand" : ""
+                          isTrackExpanded ? "rotate-180 text-brand" : ""
                         }`}
                         aria-hidden="true"
                       />
@@ -498,7 +517,7 @@ export function CertificationsSection({
                   </button>
 
                   <AnimatePresence initial={false}>
-                    {trackExpanded && (
+                    {isTrackExpanded && (
                       <motion.div
                         id={panelId}
                         role="region"

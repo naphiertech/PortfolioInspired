@@ -26,6 +26,7 @@ import {
 } from "@/lib/motion";
 import { PROJECT_CURSOR_LABELS } from "@/lib/cursorConfig";
 import { CreativeSceneReveal, useCreativeMode } from "@/features/creative-mode";
+import { VaderGutter } from "@/features/margin-easter-eggs";
 
 export function RecentProjects() {
   const featuredProjects = fullProjects.slice(0, 4);
@@ -140,6 +141,9 @@ export function RecentProjects() {
         <CreativeSceneReveal>
           <ProjectsIsland paused={effectiveMotion === "off"} />
         </CreativeSceneReveal>
+
+        {/* Interactive Darth Vader Lightsaber Easter Egg in the left 96px blueprint bay */}
+        <VaderGutter />
       </div>
     </motion.section>
   );

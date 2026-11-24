@@ -1,0 +1,876 @@
+/* ============================================================================
+ * Minecraft Oak Campfire Easter Egg Styles
+ * - Centered cleanly inside the 96px blueprint margin bay via MarginArtifactSlot
+ * - Tilted margin doodle (-5deg) with upright vertical smoke & embers
+ * - Multi-layer dark-mode flickering radial firelight pool
+ * - 4-frame stepped Minecraft pixel flame animation
+ * ============================================================================ */
+
+/* ============================================================================
+ * Ambient Firelight Pool (Dark Mode: realistic warm spill onto page + gutter)
+ * ============================================================================ */
+.lightRig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transform: scale(0.76);
+  transition:
+    opacity 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lightRigActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.lightRigIgniting {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.ambientSpill {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 640px;
+  height: 560px;
+  transform: translate(-54%, -50%);
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.lightRigDark.lightRigClassic .ambientSpill {
+  background: radial-gradient(
+    ellipse at 54% 50%,
+    rgba(255, 138, 42, 0.22) 0%,
+    rgba(234, 88, 12, 0.12) 24%,
+    rgba(194, 65, 12, 0.055) 46%,
+    rgba(124, 45, 18, 0.018) 64%,
+    transparent 76%
+  );
+  animation: firelightBreatheA 3.1s ease-in-out infinite;
+}
+
+.lightRigDark.lightRigSoul .ambientSpill {
+  background: radial-gradient(
+    ellipse at 54% 50%,
+    rgba(45, 212, 191, 0.22) 0%,
+    rgba(14, 165, 233, 0.11) 25%,
+    rgba(8, 145, 178, 0.048) 48%,
+    rgba(15, 118, 110, 0.016) 65%,
+    transparent 76%
+  );
+  animation: firelightBreatheA 3.4s ease-in-out infinite;
+}
+
+.lightRigLight.lightRigClassic .ambientSpill {
+  width: 210px;
+  height: 190px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at 50% 52%,
+    rgba(249, 115, 22, 0.15) 0%,
+    rgba(251, 146, 60, 0.06) 44%,
+    transparent 74%
+  );
+  animation: firelightFlickerB 2.9s ease-in-out infinite;
+}
+
+.lightRigLight.lightRigSoul .ambientSpill {
+  width: 210px;
+  height: 190px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at 50% 52%,
+    rgba(20, 184, 166, 0.15) 0%,
+    rgba(56, 189, 248, 0.06) 44%,
+    transparent 74%
+  );
+  animation: firelightFlickerB 3.1s ease-in-out infinite;
+}
+
+.hearthGlow {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: 260px;
+  height: 230px;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.lightRigDark.lightRigClassic .hearthGlow {
+  background: radial-gradient(
+    circle at 50% 54%,
+    rgba(255, 176, 64, 0.3) 0%,
+    rgba(249, 115, 22, 0.13) 38%,
+    transparent 70%
+  );
+  animation: firelightFlickerB 1.85s ease-in-out infinite;
+}
+
+.lightRigDark.lightRigSoul .hearthGlow {
+  background: radial-gradient(
+    circle at 50% 54%,
+    rgba(94, 234, 212, 0.28) 0%,
+    rgba(14, 165, 233, 0.12) 38%,
+    transparent 70%
+  );
+  animation: firelightFlickerB 2.05s ease-in-out infinite;
+}
+
+.lightRigLight .hearthGlow {
+  opacity: 0;
+}
+
+.groundBounce {
+  position: absolute;
+  left: 50%;
+  top: 74%;
+  width: 112px;
+  height: 54px;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.lightRigDark.lightRigClassic .groundBounce {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(255, 206, 102, 0.42) 0%,
+    rgba(251, 146, 60, 0.16) 48%,
+    transparent 76%
+  );
+  animation: firelightFlickerB 1.45s ease-in-out infinite reverse;
+}
+
+.lightRigDark.lightRigSoul .groundBounce {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(165, 243, 252, 0.38) 0%,
+    rgba(45, 212, 191, 0.15) 48%,
+    transparent 76%
+  );
+  animation: firelightFlickerB 1.65s ease-in-out infinite reverse;
+}
+
+.lightRigLight.lightRigClassic .groundBounce {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(251, 146, 60, 0.22) 0%,
+    transparent 72%
+  );
+}
+
+.lightRigLight.lightRigSoul .groundBounce {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(45, 212, 191, 0.22) 0%,
+    transparent 72%
+  );
+}
+
+@keyframes firelightBreatheA {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate(-54%, -50%) scale(0.98);
+  }
+  23% {
+    opacity: 1;
+    transform: translate(-54%, -50%) scale(1.035);
+  }
+  47% {
+    opacity: 0.84;
+    transform: translate(-54%, -50%) scale(0.96);
+  }
+  71% {
+    opacity: 0.98;
+    transform: translate(-54%, -50%) scale(1.02);
+  }
+}
+
+@keyframes firelightFlickerB {
+  0%,
+  100% {
+    opacity: 0.86;
+    transform: translate(-50%, -50%) scale(0.97);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+  39% {
+    opacity: 0.78;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+  63% {
+    opacity: 0.96;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+  82% {
+    opacity: 0.84;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+
+/* ============================================================================
+ * Interactive Tilted Campfire Button
+ * ============================================================================ */
+.campfireButton {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 88px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  outline: none;
+  border-radius: 10px;
+  transform: rotate(-5deg);
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.campfireButton:hover {
+  transform: rotate(-2deg) scale(1.06) translateY(-1px);
+}
+
+.campfireButton:active {
+  transform: rotate(-6.5deg) scale(0.96) translateY(1px);
+}
+
+.campfireButton:focus-visible {
+  box-shadow: 0 0 0 1.5px var(--text-ink);
+}
+
+.hoverEmberGlint {
+  fill: transparent;
+  transition: fill 200ms ease;
+}
+
+.campfireButton:hover .hoverEmberGlint {
+  fill: #f97316;
+}
+
+/* ============================================================================
+ * Upright Smoke & Rising Pixel Embers (counter-rotated +5deg)
+ * ============================================================================ */
+.smokeOverlay {
+  position: absolute;
+  left: 50%;
+  bottom: 42px;
+  width: 56px;
+  height: 96px;
+  transform: translateX(-50%) rotate(5deg);
+  pointer-events: none;
+  overflow: visible;
+  z-index: 3;
+}
+
+.smokePuff {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--smoke-color, rgba(161, 161, 170, 0.45));
+  box-shadow:
+    5px -2px 0 0 var(--smoke-color-soft, rgba(161, 161, 170, 0.3)),
+    -3px 2px 0 0 var(--smoke-color-soft, rgba(161, 161, 170, 0.28));
+  opacity: 0;
+  image-rendering: pixelated;
+  animation: smokeRise 2.7s linear infinite;
+}
+
+.smokePuff1 {
+  margin-left: -4px;
+  animation-delay: 0s;
+}
+
+.smokePuff2 {
+  margin-left: 2px;
+  width: 6px;
+  height: 6px;
+  animation-duration: 3.1s;
+  animation-delay: 0.72s;
+}
+
+.smokePuff3 {
+  margin-left: -7px;
+  width: 5px;
+  height: 5px;
+  animation-duration: 2.45s;
+  animation-delay: 1.48s;
+}
+
+.smokePuff4 {
+  margin-left: 0px;
+  width: 6px;
+  height: 6px;
+  animation-duration: 2.95s;
+  animation-delay: 2.15s;
+}
+
+.smokeDark {
+  --smoke-color: rgba(161, 161, 170, 0.38);
+  --smoke-color-soft: rgba(113, 113, 122, 0.24);
+}
+
+.smokeLight {
+  --smoke-color: rgba(82, 82, 91, 0.28);
+  --smoke-color-soft: rgba(113, 113, 122, 0.18);
+}
+
+.emberPixel {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  width: 3px;
+  height: 3px;
+  opacity: 0;
+  animation: emberFloat 2.1s ease-out infinite;
+}
+
+.emberClassic {
+  background: #fde047;
+  box-shadow: 0 0 6px rgba(251, 146, 60, 0.85);
+}
+
+.emberSoul {
+  background: #a5f3fc;
+  box-shadow: 0 0 6px rgba(45, 212, 191, 0.85);
+}
+
+.ember1 {
+  margin-left: -8px;
+  animation-delay: 0.15s;
+}
+
+.ember2 {
+  margin-left: 6px;
+  animation-duration: 2.5s;
+  animation-delay: 0.9s;
+}
+
+.ember3 {
+  margin-left: -1px;
+  animation-duration: 1.9s;
+  animation-delay: 1.55s;
+}
+
+.dousePuff {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 8px;
+  height: 8px;
+  background: var(--smoke-color, rgba(161, 161, 170, 0.55));
+  box-shadow:
+    6px -3px 0 0 var(--smoke-color-soft, rgba(161, 161, 170, 0.35)),
+    -5px -1px 0 0 var(--smoke-color-soft, rgba(161, 161, 170, 0.35));
+  opacity: 0;
+  animation: douseBurst 450ms ease-out forwards;
+}
+
+.dousePuff2 {
+  margin-left: -9px;
+  width: 6px;
+  height: 6px;
+  animation-delay: 45ms;
+}
+
+.dousePuff3 {
+  margin-left: 7px;
+  width: 6px;
+  height: 6px;
+  animation-delay: 80ms;
+}
+
+@keyframes smokeRise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.75);
+  }
+  16% {
+    opacity: 0.85;
+  }
+  55% {
+    opacity: 0.55;
+    transform: translate(4px, -42px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-3px, -84px) scale(1.38);
+  }
+}
+
+@keyframes emberFloat {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0.85;
+    transform: translate(6px, -36px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-4px, -64px);
+  }
+}
+
+@keyframes douseBurst {
+  0% {
+    opacity: 0.9;
+    transform: translate(0, 0) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(3px, -44px) scale(1.65);
+  }
+}
+
+/* ============================================================================
+ * Isometric Minecraft Oak Wood & Flame Palette Tokens
+ * ============================================================================ */
+.pixelSvg {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.14));
+}
+
+.themeLight {
+  --wood-top: #7b5936;
+  --wood-top-light: #936d45;
+  --wood-top-dark: #5a3e23;
+  --wood-left: #654728;
+  --wood-left-dark: #49311a;
+  --wood-right: #52381f;
+  --wood-right-dark: #3b2613;
+  --wood-end-outer: #4e361e;
+  --wood-end-sap: #9e7d50;
+  --wood-end-core: #705230;
+  --wood-end-outer-left: #5e4225;
+  --wood-end-sap-left: #ad8b5c;
+  --wood-end-core-left: #7e5c36;
+  --ash-base: #2b313c;
+  --ash-edge: #1c2028;
+  --ash-light: #3c4554;
+  --ash-dark: #1d222b;
+  --shadow-fill: rgba(24, 24, 27, 0.14);
+}
+
+.themeDark {
+  --wood-top: #825e39;
+  --wood-top-light: #9b744a;
+  --wood-top-dark: #5e4124;
+  --wood-left: #68492a;
+  --wood-left-dark: #4c331b;
+  --wood-right: #543a20;
+  --wood-right-dark: #3d2815;
+  --wood-end-outer: #50371f;
+  --wood-end-sap: #a68454;
+  --wood-end-core: #755632;
+  --wood-end-outer-left: #634628;
+  --wood-end-sap-left: #b59362;
+  --wood-end-core-left: #84623a;
+  --ash-base: #232833;
+  --ash-edge: #161a21;
+  --ash-light: #353e4d;
+  --ash-dark: #181c24;
+  --shadow-fill: rgba(0, 0, 0, 0.5);
+}
+
+.variantClassic {
+  --fire-outer: #ea580c;
+  --fire-mid: #f97316;
+  --fire-inner: #facc15;
+  --fire-core: #fef9c3;
+  --coal-outer: #9a3412;
+  --coal-mid: #ea580c;
+  --coal-hot: #fb923c;
+  --fire-rim: rgba(251, 146, 60, 0.72);
+  --spark-color: #fde047;
+}
+
+.variantSoul {
+  --fire-outer: #0e7490;
+  --fire-mid: #06b6d4;
+  --fire-inner: #5eead4;
+  --fire-core: #ecfeff;
+  --coal-outer: #155e75;
+  --coal-mid: #0891b2;
+  --coal-hot: #22d3ee;
+  --fire-rim: rgba(94, 234, 212, 0.72);
+  --spark-color: #a5f3fc;
+}
+
+.groundShadow {
+  fill: var(--shadow-fill);
+}
+
+.woodTop {
+  fill: var(--wood-top);
+}
+
+.woodTopLight {
+  fill: var(--wood-top-light);
+}
+
+.woodTopDark {
+  fill: var(--wood-top-dark);
+}
+
+.woodLeft {
+  fill: var(--wood-left);
+}
+
+.woodLeftDark {
+  fill: var(--wood-left-dark);
+}
+
+.woodRight {
+  fill: var(--wood-right);
+}
+
+.woodRightDark {
+  fill: var(--wood-right-dark);
+}
+
+.woodEndOuter {
+  fill: var(--wood-end-outer);
+}
+
+.woodEndSap {
+  fill: var(--wood-end-sap);
+}
+
+.woodEndCore {
+  fill: var(--wood-end-core);
+}
+
+.woodEndOuterLeft {
+  fill: var(--wood-end-outer-left);
+}
+
+.woodEndSapLeft {
+  fill: var(--wood-end-sap-left);
+}
+
+.woodEndCoreLeft {
+  fill: var(--wood-end-core-left);
+}
+
+.ashBase {
+  fill: var(--ash-base);
+}
+
+.ashEdge {
+  fill: var(--ash-edge);
+}
+
+.ashTileLight {
+  fill: var(--ash-light);
+}
+
+.ashTileDark {
+  fill: var(--ash-dark);
+}
+
+.coalOuter {
+  fill: var(--coal-outer);
+}
+
+.coalMid {
+  fill: var(--coal-mid);
+}
+
+.coalHot {
+  fill: var(--coal-hot);
+}
+
+.fireOuter {
+  fill: var(--fire-outer);
+}
+
+.fireMid {
+  fill: var(--fire-mid);
+}
+
+.fireInner {
+  fill: var(--fire-inner);
+}
+
+.fireCore {
+  fill: var(--fire-core);
+}
+
+.logRimLight {
+  fill: var(--fire-rim);
+  animation: rimFlicker 0.96s steps(2) infinite;
+}
+
+.coalBed {
+  animation: coalPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes rimFlicker {
+  0%,
+  100% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 0.68;
+  }
+}
+
+@keyframes coalPulse {
+  0%,
+  100% {
+    opacity: 0.92;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+ * 4-Frame Stepped Minecraft Pixel Flame Cycle (480ms = ~8.3 fps tick cadence)
+ * ============================================================================ */
+.flameGroup {
+  transform-origin: 40px 62px;
+}
+
+.isIgniting .flameGroup {
+  animation: flameIgnitePop 360ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes flameIgnitePop {
+  0% {
+    transform: scale(0.35, 0.15);
+    opacity: 0.2;
+  }
+  55% {
+    transform: scale(1.08, 1.14);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+}
+
+.flameFrame0,
+.flameFrame1,
+.flameFrame2,
+.flameFrame3 {
+  opacity: 0;
+}
+
+.flameFrame0 {
+  opacity: 1;
+  animation: stepFrame0 0.48s steps(1) infinite;
+}
+
+.flameFrame1 {
+  animation: stepFrame1 0.48s steps(1) infinite;
+}
+
+.flameFrame2 {
+  animation: stepFrame2 0.48s steps(1) infinite;
+}
+
+.flameFrame3 {
+  animation: stepFrame3 0.48s steps(1) infinite;
+}
+
+@keyframes stepFrame0 {
+  0%,
+  24.99% {
+    opacity: 1;
+  }
+  25%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes stepFrame1 {
+  0%,
+  24.99% {
+    opacity: 0;
+  }
+  25%,
+  49.99% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes stepFrame2 {
+  0%,
+  49.99% {
+    opacity: 0;
+  }
+  50%,
+  74.99% {
+    opacity: 1;
+  }
+  75%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes stepFrame3 {
+  0%,
+  74.99% {
+    opacity: 0;
+  }
+  75%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Flint-and-steel ignition sparks */
+.spark {
+  fill: var(--spark-color);
+  opacity: 0;
+}
+
+.spark1 {
+  animation: sparkFly1 340ms ease-out forwards;
+}
+
+.spark2 {
+  animation: sparkFly2 360ms ease-out forwards;
+}
+
+.spark3 {
+  animation: sparkFly3 320ms ease-out forwards;
+}
+
+.spark4 {
+  animation: sparkFly4 350ms ease-out forwards;
+}
+
+.spark5 {
+  animation: sparkFly5 330ms ease-out forwards;
+}
+
+.spark6 {
+  animation: sparkFly6 370ms ease-out forwards;
+}
+
+@keyframes sparkFly1 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-18px, -22px);
+  }
+}
+
+@keyframes sparkFly2 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(20px, -24px);
+  }
+}
+
+@keyframes sparkFly3 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-22px, -8px);
+  }
+}
+
+@keyframes sparkFly4 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(22px, -10px);
+  }
+}
+
+@keyframes sparkFly5 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-6px, -30px);
+  }
+}
+
+@keyframes sparkFly6 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px, -28px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambientSpill,
+  .hearthGlow,
+  .groundBounce,
+  .smokePuff,
+  .emberPixel,
+  .dousePuff,
+  .logRimLight,
+  .coalBed,
+  .flameGroup,
+  .spark {
+    animation: none !important;
+  }
+
+  .flameFrame0 {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .flameFrame1,
+  .flameFrame2,
+  .flameFrame3 {
+    opacity: 0 !important;
+    animation: none !important;
+  }
+}

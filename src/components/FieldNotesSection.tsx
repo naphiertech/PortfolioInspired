@@ -10,6 +10,7 @@ import { SectionHeader } from "./SectionHeader";
 import { useUISound } from "@/context/SoundContext";
 import { sectionContainerVariants } from "@/lib/motion";
 import { CreativeSceneReveal, useCreativeMode } from "@/features/creative-mode";
+import { CampfireGutter } from "@/features/margin-easter-eggs";
 
 const RocketMountain = dynamic(
   () => import("./RocketMountain").then((m) => m.RocketMountain),
@@ -109,6 +110,9 @@ export function FieldNotesSection() {
         <CreativeSceneReveal>
           <RocketMountain paused={effectiveMotion === "off"} />
         </CreativeSceneReveal>
+
+        {/* Interactive Minecraft Campfire Easter Egg in the blank right margin */}
+        <CampfireGutter />
       </div>
     </motion.section>
   );

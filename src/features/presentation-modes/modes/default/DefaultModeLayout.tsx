@@ -10,6 +10,11 @@ import { Gallery } from "@/components/Gallery";
 import { FooterGrid } from "@/components/FooterGrid";
 import { SnapSectionWrapper } from "@/components/SnapSectionWrapper";
 import { EditorialDivider } from "@/components/EditorialDivider";
+import {
+  GachaponGutter,
+  MarioBlockGutter,
+  PolaroidGutter,
+} from "@/features/margin-easter-eggs";
 import { recommendations } from "@/lib/data";
 
 /**
@@ -50,8 +55,11 @@ export function DefaultModeLayout() {
       {/* 6. Work Experience Timeline (Top 3 Recent Milestones) */}
       <SnapSectionWrapper id="experience">
         <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
-        <div className="content-auto">
-          <ExperienceTimeline />
+        <div className="relative">
+          <div className="content-auto">
+            <ExperienceTimeline />
+          </div>
+          <MarioBlockGutter />
         </div>
       </SnapSectionWrapper>
 
@@ -74,8 +82,12 @@ export function DefaultModeLayout() {
       {/* 9. Compact Moments Gallery (4-Moment Preview) */}
       <SnapSectionWrapper id="gallery">
         <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
-        <div className="content-auto">
-          <Gallery />
+        <div className="relative">
+          <div className="content-auto">
+            <Gallery />
+          </div>
+          <PolaroidGutter />
+          <GachaponGutter />
         </div>
       </SnapSectionWrapper>
 

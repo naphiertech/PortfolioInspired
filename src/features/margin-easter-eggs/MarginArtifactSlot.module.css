@@ -1,0 +1,35 @@
+/* ============================================================================
+ * MarginArtifactSlot — Shared 96px Blueprint Bay Positioning Seam
+ *
+ * TechnicalGrid places:
+ * - Main content rail: 32px (2rem) beyond section content edge (md:px-8)
+ * - Outer dashed guide (xl+): 96px beyond main rail = 128px (8rem) beyond content
+ * Centering at 5rem (80px) places <=84px artifacts squarely inside the 96px bay
+ * with zero line intersection and clean clearance from viewport edge drawers.
+ * ============================================================================ */
+
+.slot {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+@media (min-width: 1280px) {
+  .slot {
+    display: flex;
+  }
+}
+
+.sideRight {
+  left: calc(100% + 5rem);
+  transform: translate(-50%, -50%);
+}
+
+.sideLeft {
+  right: calc(100% + 5rem);
+  transform: translate(50%, -50%);
+}

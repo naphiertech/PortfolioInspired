@@ -1,0 +1,403 @@
+/* ============================================================================
+ * Pixel Japanese Gachapon Capsule Machine Easter Egg Styles
+ * - Centered cleanly inside the right 96px blueprint bay via MarginArtifactSlot
+ * - Tilted -4deg mirroring the Polaroid (+4deg) on the left of Moments & Events
+ * - 360deg rotary dial crank + popping collectible pixel charm + pastel glow
+ * ============================================================================ */
+
+/* ============================================================================
+ * Pastel Dark-Mode Reveal Glow (tints to match the revealed pixel charm)
+ * ============================================================================ */
+.glowRig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transform: scale(0.76);
+  transition:
+    opacity 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glowRigActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.glowPool {
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  width: 520px;
+  height: 460px;
+  transform: translate(-54%, -50%);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.glowDark.charmDuck .glowPool {
+  background: radial-gradient(
+    ellipse at 54% 50%,
+    rgba(250, 204, 21, 0.22) 0%,
+    rgba(234, 179, 8, 0.09) 28%,
+    transparent 72%
+  );
+}
+
+.glowDark.charmCat .glowPool {
+  background: radial-gradient(
+    ellipse at 54% 50%,
+    rgba(253, 186, 116, 0.22) 0%,
+    rgba(251, 146, 60, 0.09) 28%,
+    transparent 72%
+  );
+}
+
+.glowDark.charmHeart .glowPool {
+  background: radial-gradient(
+    ellipse at 54% 50%,
+    rgba(251, 113, 133, 0.24) 0%,
+    rgba(239, 68, 68, 0.1) 28%,
+    transparent 72%
+  );
+}
+
+.glowDark.charmCoffee .glowPool {
+  background: radial-gradient(
+    ellipse at 54% 50%,
+    rgba(245, 158, 11, 0.2) 0%,
+    rgba(180, 83, 9, 0.08) 28%,
+    transparent 72%
+  );
+}
+
+.glowDark.charmTrophy .glowPool {
+  background: radial-gradient(
+    ellipse at 54% 50%,
+    rgba(254, 240, 138, 0.28) 0%,
+    rgba(250, 204, 21, 0.13) 28%,
+    transparent 74%
+  );
+}
+
+.glowLight .glowPool {
+  width: 180px;
+  height: 180px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(251, 191, 36, 0.18) 0%,
+    rgba(244, 114, 182, 0.08) 42%,
+    transparent 74%
+  );
+}
+
+/* ============================================================================
+ * Interactive Tilted Gachapon Button (-4deg)
+ * ============================================================================ */
+.gachaponButton {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 94px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  outline: none;
+  border-radius: 10px;
+  transform: rotate(-4deg);
+  transition: transform 210ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gachaponButton:hover {
+  transform: rotate(-1.5deg) scale(1.06) translateY(-1px);
+}
+
+.gachaponButton:active {
+  transform: rotate(-5.5deg) scale(0.95) translateY(1px);
+}
+
+.gachaponButton:focus-visible {
+  box-shadow: 0 0 0 1.5px var(--text-ink);
+}
+
+.isCranking .machineWrap {
+  animation: machineWiggle 400ms ease-in-out;
+}
+
+@keyframes machineWiggle {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1.5px);
+  }
+  50% {
+    transform: translateX(1.5px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+}
+
+/* ============================================================================
+ * Revealed Floating Pixel Charm (counter-rotated +4deg above the dome)
+ * ============================================================================ */
+.charmStage {
+  position: absolute;
+  left: 50%;
+  bottom: 92px;
+  width: 48px;
+  height: 48px;
+  transform: translateX(-50%) rotate(4deg);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.charmPop {
+  display: inline-flex;
+  animation:
+    charmPopIn 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    charmBob 2.4s ease-in-out 320ms infinite;
+}
+
+.charmSvg {
+  display: block;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.25));
+}
+
+.popSpark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fef08a;
+  box-shadow: 0 0 6px rgba(250, 204, 21, 0.85);
+  opacity: 0;
+}
+
+.popSpark1 {
+  animation: popSpark1 420ms ease-out forwards;
+}
+.popSpark2 {
+  animation: popSpark2 420ms ease-out forwards;
+}
+.popSpark3 {
+  animation: popSpark3 420ms ease-out forwards;
+}
+.popSpark4 {
+  animation: popSpark4 420ms ease-out forwards;
+}
+
+@keyframes charmPopIn {
+  0% {
+    transform: translateY(24px) scale(0.35);
+    opacity: 0;
+  }
+  65% {
+    transform: translateY(-5px) scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes charmBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes popSpark1 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-18px, -16px);
+  }
+}
+@keyframes popSpark2 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(18px, -16px);
+  }
+}
+@keyframes popSpark3 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-16px, 14px);
+  }
+}
+@keyframes popSpark4 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(16px, 14px);
+  }
+}
+
+/* ============================================================================
+ * Machine Pixel Palette & Rotary Dial Animation
+ * ============================================================================ */
+.machineSvg {
+  display: block;
+  overflow: visible;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.themeLight {
+  --gacha-outline: #18181b;
+  --gacha-glass: rgba(241, 245, 249, 0.78);
+  --gacha-faceplate: #f4f4f0;
+  --gacha-faceplate-hi: #ffffff;
+  --gacha-shadow: rgba(24, 24, 27, 0.14);
+}
+
+.themeDark {
+  --gacha-outline: #09090b;
+  --gacha-glass: rgba(226, 232, 240, 0.18);
+  --gacha-faceplate: #e4e4e0;
+  --gacha-faceplate-hi: #fafaf9;
+  --gacha-shadow: rgba(0, 0, 0, 0.5);
+}
+
+.groundShadow {
+  fill: var(--gacha-shadow);
+}
+
+.outline {
+  fill: var(--gacha-outline);
+}
+
+.redMain {
+  fill: #dc2626;
+}
+
+.redBright {
+  fill: #ef4444;
+}
+
+.redDark {
+  fill: #991b1b;
+}
+
+.glassBg {
+  fill: var(--gacha-glass);
+}
+
+.glassShine {
+  fill: rgba(255, 255, 255, 0.8);
+}
+
+.faceplate {
+  fill: var(--gacha-faceplate);
+}
+
+.faceplateHighlight {
+  fill: var(--gacha-faceplate-hi);
+}
+
+.metalDark {
+  fill: #52525b;
+}
+
+.metalLight {
+  fill: #a1a1aa;
+}
+
+.metalBright {
+  fill: #e4e4e7;
+}
+
+.chuteDark {
+  fill: #27272a;
+}
+
+.crankHandle {
+  transform-origin: 11px 20px;
+}
+
+.crankSpin {
+  transform-origin: 11px 20px;
+  animation: dialTurn 400ms cubic-bezier(0.3, 0.8, 0.4, 1) forwards;
+}
+
+@keyframes dialTurn {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.capsulesJostle {
+  animation: capsuleJostle 380ms steps(2) forwards;
+}
+
+@keyframes capsuleJostle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+.chuteCapsule {
+  animation: capsulePeek 280ms ease-out forwards;
+}
+
+@keyframes capsulePeek {
+  0% {
+    transform: translateY(-2px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .machineWrap,
+  .crankSpin,
+  .capsulesJostle,
+  .charmPop,
+  .popSpark {
+    animation: none !important;
+  }
+}

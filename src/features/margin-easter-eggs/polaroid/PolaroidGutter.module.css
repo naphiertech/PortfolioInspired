@@ -1,0 +1,304 @@
+/* ============================================================================
+ * Vintage Pixel Polaroid Camera Easter Egg Styles
+ * - Centered cleanly inside the left 96px blueprint bay via MarginArtifactSlot
+ * - Tilted +4deg with xenon camera flash illuminating dark mode + gallery edge
+ * - Ejects a miniature pixel Polaroid downward that develops in real time
+ * ============================================================================ */
+
+/* ============================================================================
+ * Xenon Camera Flash Pool (Dark Mode: crisp instant flash burst)
+ * ============================================================================ */
+.flashRig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 280ms ease-out, transform 280ms ease-out;
+}
+
+.flashRigActive {
+  opacity: 1;
+  transform: scale(1.06);
+  transition: opacity 45ms ease-out, transform 60ms ease-out;
+}
+
+.flashBurst {
+  position: absolute;
+  left: 52%;
+  top: 26%;
+  width: 580px;
+  height: 520px;
+  transform: translate(-46%, -50%);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.flashDark.flashColor .flashBurst {
+  background: radial-gradient(
+    ellipse at 48% 48%,
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(241, 245, 249, 0.24) 22%,
+    rgba(226, 232, 240, 0.08) 48%,
+    transparent 74%
+  );
+}
+
+.flashDark.flashSepia .flashBurst {
+  background: radial-gradient(
+    ellipse at 48% 48%,
+    rgba(254, 243, 199, 0.5) 0%,
+    rgba(251, 191, 36, 0.22) 24%,
+    rgba(217, 119, 6, 0.08) 48%,
+    transparent 74%
+  );
+}
+
+.flashLight.flashColor .flashBurst {
+  width: 220px;
+  height: 220px;
+  transform: translate(-46%, -50%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(250, 204, 21, 0.2) 38%,
+    transparent 72%
+  );
+}
+
+.flashLight.flashSepia .flashBurst {
+  width: 220px;
+  height: 220px;
+  transform: translate(-46%, -50%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(254, 243, 199, 0.85) 0%,
+    rgba(245, 158, 11, 0.22) 40%,
+    transparent 72%
+  );
+}
+
+/* ============================================================================
+ * Interactive Tilted Polaroid Button (+4deg)
+ * ============================================================================ */
+.polaroidButton {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 70px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  outline: none;
+  border-radius: 10px;
+  transform: rotate(4deg);
+  transition: transform 210ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.polaroidButton:hover {
+  transform: rotate(1.5deg) scale(1.06) translateY(-1px);
+}
+
+.polaroidButton:active {
+  transform: rotate(5deg) scale(0.95) translateY(1px);
+}
+
+.polaroidButton:focus-visible {
+  box-shadow: 0 0 0 1.5px var(--text-ink);
+}
+
+/* ============================================================================
+ * Ejecting Miniature Pixel Polaroid Print
+ * ============================================================================ */
+.photoSlot {
+  position: absolute;
+  left: 50%;
+  top: 52px;
+  width: 52px;
+  height: 62px;
+  transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.photoPrint {
+  display: inline-flex;
+  transform: translateY(-56px);
+  animation: ejectPhoto 680ms cubic-bezier(0.22, 0.85, 0.32, 1) forwards;
+  will-change: transform;
+}
+
+@keyframes ejectPhoto {
+  0% {
+    transform: translateY(-56px);
+  }
+  100% {
+    transform: translateY(2px);
+  }
+}
+
+.photoSvg {
+  display: block;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.28));
+}
+
+.photoSepia {
+  filter: sepia(0.85) contrast(1.05) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.28));
+}
+
+.photoBorderOutline {
+  fill: #27272a;
+}
+
+.photoPaper {
+  fill: #fafaf9;
+}
+
+.photoCaptionInk {
+  fill: #a1a1aa;
+}
+
+/* Dark developing chemical veil that clears gradually into the pixel memory */
+.developVeil {
+  fill: #18181b;
+  opacity: 0.94;
+  animation: developPrint 1.45s ease-out 260ms forwards;
+}
+
+@keyframes developPrint {
+  0% {
+    opacity: 0.94;
+  }
+  45% {
+    opacity: 0.52;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ============================================================================
+ * Polaroid Camera Pixel Palette Tokens
+ * ============================================================================ */
+.cameraSvg {
+  position: relative;
+  z-index: 2;
+  display: block;
+  overflow: visible;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.themeLight {
+  --cam-outline: #18181b;
+  --cam-cream: #f4f4f0;
+  --cam-highlight: #ffffff;
+  --cam-dark: #27272a;
+  --cam-slot: #09090b;
+  --cam-lens-ring: #52525b;
+  --cam-lens-deep: #18181b;
+  --cam-lens-core: #09090b;
+  --cam-lens-glint: #e4e4e7;
+  --cam-lens-tint: #38bdf8;
+}
+
+.themeDark {
+  --cam-outline: #09090b;
+  --cam-cream: #e4e4e0;
+  --cam-highlight: #fafaf9;
+  --cam-dark: #3f3f46;
+  --cam-slot: #09090b;
+  --cam-lens-ring: #71717a;
+  --cam-lens-deep: #18181b;
+  --cam-lens-core: #09090b;
+  --cam-lens-glint: #f4f4f5;
+  --cam-lens-tint: #38bdf8;
+}
+
+.bodyOutline {
+  fill: var(--cam-outline);
+}
+
+.bodyCream {
+  fill: var(--cam-cream);
+}
+
+.bodyHighlight {
+  fill: var(--cam-highlight);
+}
+
+.bodyDark {
+  fill: var(--cam-dark);
+}
+
+.slotDark {
+  fill: var(--cam-slot);
+}
+
+.flashWindow {
+  fill: #d4d4d8;
+}
+
+.flashActive {
+  fill: #ffffff;
+}
+
+.flashSpecular {
+  fill: #fafafa;
+}
+
+.shutterRed {
+  fill: #dc2626;
+}
+
+.shutterPressed {
+  fill: #991b1b;
+}
+
+.shutterHighlight {
+  fill: #fca5a5;
+}
+
+.lensRing {
+  fill: var(--cam-lens-ring);
+}
+
+.lensDeep {
+  fill: var(--cam-lens-deep);
+}
+
+.lensCore {
+  fill: var(--cam-lens-core);
+}
+
+.lensGlint {
+  fill: var(--cam-lens-glint);
+}
+
+.lensTint {
+  fill: var(--cam-lens-tint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photoPrint {
+    animation: none !important;
+    transform: translateY(2px) !important;
+  }
+
+  .developVeil {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

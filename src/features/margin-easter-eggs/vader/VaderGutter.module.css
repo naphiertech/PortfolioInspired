@@ -1,0 +1,402 @@
+/* ============================================================================
+ * Darth Vader Margin Easter Egg Styles
+ * - Centered cleanly inside the left 96px blueprint bay via MarginArtifactSlot
+ * - Mirrored margin tilt (+4deg) to balance Campfire (-5deg) on the right
+ * - Extendable plasma lightsaber animation + crimson/blue dark-mode glow
+ * ============================================================================ */
+
+/* ============================================================================
+ * Ambient Lightsaber Light Pool (Dark Mode: realistic crimson/blue spill)
+ * ============================================================================ */
+.lightRig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transform: scale(0.76);
+  transition:
+    opacity 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lightRigActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.lightRigIgniting {
+  opacity: 1;
+  transform: scale(1.07);
+}
+
+/* Wide atmospheric saber spill kissing the left edge of <SELECTED-PROJECTS/> */
+.ambientSpill {
+  position: absolute;
+  left: 58%;
+  top: 42%;
+  width: 600px;
+  height: 540px;
+  transform: translate(-46%, -50%);
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.lightRigDark.lightRigSith .ambientSpill {
+  background: radial-gradient(
+    ellipse at 48% 48%,
+    rgba(239, 68, 68, 0.24) 0%,
+    rgba(220, 38, 38, 0.12) 25%,
+    rgba(153, 27, 27, 0.05) 48%,
+    rgba(127, 29, 29, 0.016) 66%,
+    transparent 76%
+  );
+  animation: saberHumSpill 2.2s ease-in-out infinite;
+}
+
+.lightRigDark.lightRigJedi .ambientSpill {
+  background: radial-gradient(
+    ellipse at 48% 48%,
+    rgba(56, 189, 248, 0.24) 0%,
+    rgba(37, 99, 235, 0.12) 25%,
+    rgba(29, 78, 216, 0.05) 48%,
+    rgba(30, 58, 138, 0.016) 66%,
+    transparent 76%
+  );
+  animation: saberHumSpill 2.2s ease-in-out infinite;
+}
+
+/* Restrained blade halo in light mode */
+.lightRigLight.lightRigSith .ambientSpill {
+  width: 190px;
+  height: 210px;
+  transform: translate(-42%, -52%);
+  background: radial-gradient(
+    ellipse at 54% 48%,
+    rgba(239, 68, 68, 0.16) 0%,
+    rgba(220, 38, 38, 0.05) 45%,
+    transparent 74%
+  );
+}
+
+.lightRigLight.lightRigJedi .ambientSpill {
+  width: 190px;
+  height: 210px;
+  transform: translate(-42%, -52%);
+  background: radial-gradient(
+    ellipse at 54% 48%,
+    rgba(59, 130, 246, 0.16) 0%,
+    rgba(37, 99, 235, 0.05) 45%,
+    transparent 74%
+  );
+}
+
+/* Focused vertical plasma bloom aligned along the lightsaber blade */
+.bladeBloom {
+  position: absolute;
+  left: 72%;
+  top: 34%;
+  width: 140px;
+  height: 210px;
+  transform: translate(-50%, -50%) rotate(4deg);
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.lightRigDark.lightRigSith .bladeBloom {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(248, 113, 113, 0.34) 0%,
+    rgba(220, 38, 38, 0.15) 40%,
+    transparent 72%
+  );
+  animation: saberHumTight 1.35s ease-in-out infinite;
+}
+
+.lightRigDark.lightRigJedi .bladeBloom {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(125, 211, 252, 0.34) 0%,
+    rgba(37, 99, 235, 0.15) 40%,
+    transparent 72%
+  );
+  animation: saberHumTight 1.35s ease-in-out infinite;
+}
+
+.lightRigLight .bladeBloom {
+  opacity: 0;
+}
+
+@keyframes saberHumSpill {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate(-46%, -50%) scale(0.985);
+  }
+  33% {
+    opacity: 1;
+    transform: translate(-46%, -50%) scale(1.025);
+  }
+  67% {
+    opacity: 0.86;
+    transform: translate(-46%, -50%) scale(0.975);
+  }
+}
+
+@keyframes saberHumTight {
+  0%,
+  100% {
+    opacity: 0.88;
+    transform: translate(-50%, -50%) rotate(4deg) scale(0.98);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(4deg) scale(1.035);
+  }
+  55% {
+    opacity: 0.82;
+    transform: translate(-50%, -50%) rotate(4deg) scale(0.96);
+  }
+  80% {
+    opacity: 0.98;
+    transform: translate(-50%, -50%) rotate(4deg) scale(1.02);
+  }
+}
+
+/* ============================================================================
+ * Interactive Tilted Vader Button (+4deg mirrors Campfire -5deg)
+ * ============================================================================ */
+.vaderButton {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 106px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  outline: none;
+  border-radius: 10px;
+  transform: rotate(4deg);
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vaderButton:hover {
+  transform: rotate(1.5deg) scale(1.06) translateY(-1px);
+}
+
+.vaderButton:active {
+  transform: rotate(5.5deg) scale(0.96) translateY(1px);
+}
+
+.vaderButton:focus-visible {
+  box-shadow: 0 0 0 1.5px var(--text-ink);
+}
+
+/* Subtle red ignition button glint on hover while saber is off */
+.hiltSwitch {
+  fill: #7f1d1d;
+  transition: fill 180ms ease;
+}
+
+.vaderButton:hover .hiltSwitch {
+  fill: #ef4444;
+}
+
+/* ============================================================================
+ * Pixel Art Palette Tokens & Blade Ignition Physics
+ * ============================================================================ */
+.pixelSvg {
+  display: block;
+  overflow: visible;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 1.5px 2px rgba(0, 0, 0, 0.16));
+}
+
+.themeLight {
+  --armor-black: #0f1014;
+  --armor-dark: #27272a;
+  --armor-mid: #52525b;
+  --armor-light: #71717a;
+  --visor-glint: #a1a1aa;
+  --hilt-light: #a1a1aa;
+  --hilt-dark: #3f3f46;
+  --shadow-fill: rgba(24, 24, 27, 0.14);
+}
+
+.themeDark {
+  --armor-black: #050608;
+  --armor-dark: #27272a;
+  --armor-mid: #52525b;
+  --armor-light: #80808a;
+  --visor-glint: #d4d4d8;
+  --hilt-light: #b4b4bd;
+  --hilt-dark: #3f3f46;
+  --shadow-fill: rgba(0, 0, 0, 0.55);
+}
+
+.saberSith {
+  --blade-outer: #dc2626;
+  --blade-core: #fff1f2;
+  --blade-aura: rgba(239, 68, 68, 0.34);
+  --armor-rim: rgba(248, 113, 113, 0.62);
+}
+
+.saberJedi {
+  --blade-outer: #2563eb;
+  --blade-core: #f0f9ff;
+  --blade-aura: rgba(56, 189, 248, 0.34);
+  --armor-rim: rgba(125, 211, 252, 0.62);
+}
+
+.groundShadow {
+  fill: var(--shadow-fill);
+}
+
+.armorBlack {
+  fill: var(--armor-black);
+}
+
+.armorDark {
+  fill: var(--armor-dark);
+}
+
+.armorMid {
+  fill: var(--armor-mid);
+}
+
+.armorLight {
+  fill: var(--armor-light);
+}
+
+.visorGlint {
+  fill: var(--visor-glint);
+}
+
+.hiltLight {
+  fill: var(--hilt-light);
+}
+
+.hiltDark {
+  fill: var(--hilt-dark);
+}
+
+.ledRed {
+  fill: #ef4444;
+}
+
+.ledBlue {
+  fill: #3b82f6;
+}
+
+.ledGreen {
+  fill: #4ade80;
+}
+
+.bladeOuter {
+  fill: var(--blade-outer);
+}
+
+.bladeCore {
+  fill: var(--blade-core);
+}
+
+.bladeAura {
+  fill: var(--blade-aura);
+}
+
+/* Lightsaber extension/retraction from the hilt emitter (y = 21) */
+.bladeGroup {
+  transform-origin: 19.5px 21px;
+  transform: scaleY(0);
+  opacity: 0;
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 140ms ease;
+}
+
+.isLit .bladeGroup {
+  transform: scaleY(1);
+  opacity: 1;
+  animation: bladePulse 0.16s steps(2) infinite;
+}
+
+.isIgniting .bladeGroup {
+  animation: bladeIgnite 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.isRetracting .bladeGroup {
+  transform: scaleY(0);
+  opacity: 0;
+  transition:
+    transform 240ms cubic-bezier(0.4, 0, 1, 1),
+    opacity 200ms ease 60ms;
+}
+
+.emitterFlare {
+  transform-origin: 19.5px 20px;
+  animation: flarePop 260ms ease-out forwards;
+}
+
+.armorRimGlow {
+  fill: var(--armor-rim);
+  animation: bladePulse 0.24s steps(2) infinite;
+}
+
+@keyframes bladeIgnite {
+  0% {
+    transform: scaleY(0);
+    opacity: 0.4;
+  }
+  70% {
+    transform: scaleY(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bladePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes flarePop {
+  0% {
+    opacity: 1;
+    transform: scale(0.7);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambientSpill,
+  .bladeBloom,
+  .bladeGroup,
+  .emitterFlare,
+  .armorRimGlow {
+    animation: none !important;
+  }
+}

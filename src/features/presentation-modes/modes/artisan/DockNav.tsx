@@ -41,7 +41,6 @@ export function DockNav({
     { type: "divider" },
     {
       id: "about",
-      href: "/?tab=about",
       label: "About",
       icon: <PiUserLight aria-hidden="true" className="size-5 transition-transform duration-200 ease-out group-hover:scale-125" />,
     },
@@ -138,9 +137,9 @@ export function DockNav({
                 >
                   {item.icon}
                 </button>
-              ) : (
+              ) : item.href ? (
                 <Link
-                  href={item.href!}
+                  href={item.href}
                   onClick={(e) => {
                     if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
                       e.preventDefault();
@@ -157,6 +156,20 @@ export function DockNav({
                   {item.icon}
                   <span className="sr-only">{item.label}</span>
                 </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onSelectTab(item.id!)}
+                  aria-label={item.label}
+                  className={`flex size-10 hover:size-12 items-center justify-center rounded-full transition-all duration-200 ease-out active:scale-95 cursor-pointer ${
+                    isCurrent
+                      ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white font-bold shadow-xs scale-105"
+                      : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white"
+                  }`}
+                >
+                  {item.icon}
+                  <span className="sr-only">{item.label}</span>
+                </button>
               )}
             </div>
           );

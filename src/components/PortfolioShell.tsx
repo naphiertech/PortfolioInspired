@@ -102,6 +102,13 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const isAgentHome =
     (mode === "agent" &&
       (pathname === "/" ||
+        pathname === "/projects" ||
+        pathname.startsWith("/projects/") ||
+        pathname === "/experience" ||
+        pathname === "/notes" ||
+        pathname.startsWith("/notes/") ||
+        pathname === "/certifications" ||
+        pathname === "/tech-stack" ||
         pathname === "/music" ||
         pathname === "/resources" ||
         pathname === "/components" ||

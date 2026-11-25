@@ -6,6 +6,7 @@ import { TechStackSection } from "@/app/experience/ExperienceSections";
 import { getProjectsUsingTech, techSections, techStackIntro } from "@/lib/data";
 import { buildCollectionPageJsonLd } from "@/lib/seoSchemas";
 import { SITE_NAME, SITE_URL } from "@/lib/siteConfig";
+import { TechStackPresentationRoot } from "@/features/presentation-modes/components/TechStackPresentationRoot";
 
 const TECH_STACK_DESCRIPTION =
   "Frameworks, languages, databases, AI/ML tools, and cloud infrastructure used by Naphier Awalie across full-stack web and mobile applications.";
@@ -45,12 +46,14 @@ export default function TechStackPage() {
   });
 
   return (
-    <div className="w-full select-none pb-16">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="space-y-2 pt-4 sm:pt-5">
+      <TechStackPresentationRoot>
+        <div className="w-full select-none pb-16">
+          <div className="space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
@@ -161,7 +164,9 @@ export default function TechStackPage() {
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
-    </div>
+        </div>
+      </TechStackPresentationRoot>
+    </>
   );
 }
 

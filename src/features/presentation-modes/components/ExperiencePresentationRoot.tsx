@@ -4,6 +4,8 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { ExperienceClient } from "@/app/experience/ExperienceClient";
+import { ArtisanPortfolioLayout } from "../modes/artisan/ArtisanPortfolioLayout";
+import { ExperienceSection } from "../modes/artisan/ExperienceSection";
 import dynamic from "next/dynamic";
 
 const FocusExperiencePage = dynamic(
@@ -33,10 +35,17 @@ export function ExperiencePresentationRoot() {
     if (typeof window === "undefined") return;
     if (mode === "minimal") {
       router.replace("/");
-    } else if (mode === "agent" && previousMode !== null && previousMode !== mode) {
-      router.replace("/?tab=experience");
     }
-  }, [mode, previousMode, router]);
+  }, [mode, router]);
+
+  if (mode === "agent") {
+    return (
+      <ArtisanPortfolioLayout
+        defaultTab="experience"
+        initialSectionNode={<ExperienceSection standalone />}
+      />
+    );
+  }
 
   return (
     <div

@@ -4,7 +4,7 @@ import { fieldNotes } from "@/lib/fieldNotes";
 import { COMPONENTS_CATALOG } from "@/lib/componentsCatalog";
 import { SITE_URL } from "@/lib/siteConfig";
 
-const SITE_RELEASE_DATE = new Date("2026-11-16T00:00:00.000Z");
+const SITE_RELEASE_DATE = new Date("2026-11-25T00:00:00.000Z");
 
 function parseNoteLastModified(dotDate: string): Date {
   const match = /^(\d{4})\.(\d{2})$/.exec(dotDate.trim());

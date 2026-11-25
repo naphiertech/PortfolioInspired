@@ -1,7 +1,7 @@
 {
   "name": "Naphier Awalie",
   "short_name": "Naphier Awalie",
-  "description": "Hi, I’m Naphier Awalie, an IT student and full-stack developer who enjoys turning ideas into practical web applications with clean interfaces, thoughtful user experiences, and reliable functionality.",
+  "description": "Naphier Awalie — Full-Stack Developer building Next.js, TypeScript & Supabase web apps, UI components, and systems like MKBRiderTrack and AUDIT/WEB.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

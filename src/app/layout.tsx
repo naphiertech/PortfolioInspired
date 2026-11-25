@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { cookies } from "next/headers";
 import { preload } from "react-dom";
 import { Doto, Figtree, JetBrains_Mono, Carrois_Gothic_SC, Caveat } from "next/font/google";
 import "./globals.css";
@@ -44,8 +43,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { SoundProvider } from "@/context/SoundContext";
 import { SnapProvider } from "@/context/SnapContext";
 import { PresentationModeProvider } from "@/features/presentation-modes/context/PresentationModeContext";
-import { resolveInitialPresentationMode } from "@/features/presentation-modes/lib/resolveMode";
-import { PRESENTATION_COOKIE_NAME, STARS_COOKIE_NAME, GRID_COOKIE_NAME } from "@/features/presentation-modes/types/config";
+import { DEFAULT_PRESENTATION_MODE } from "@/features/presentation-modes/types/config";
 import { PWARegister } from "@/components/PWARegister";
 import { Analytics } from "@vercel/analytics/next";
 import { PortfolioShell } from "@/components/PortfolioShell";
@@ -106,21 +104,12 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: SITE_DEFAULT_TITLE,
     description: SITE_DEFAULT_DESCRIPTION,
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: SITE_DEFAULT_TITLE,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_DEFAULT_TITLE,
     description: SITE_DEFAULT_DESCRIPTION,
     creator: AUTHOR_INFO.handle,
-    images: ["/og-image.png"],
   },
   manifest: "/site.webmanifest",
   appleWebApp: {
@@ -148,18 +137,12 @@ export const viewport: Viewport = {
   themeColor: "#0b0d0e",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const cookieMode = cookieStore.get(PRESENTATION_COOKIE_NAME)?.value;
-  const cookieStars = cookieStore.get(STARS_COOKIE_NAME)?.value;
-  const cookieGrid = cookieStore.get(GRID_COOKIE_NAME)?.value;
-  const initialMode = resolveInitialPresentationMode({ cookieMode });
-  const initialStarsEnabled = cookieStars === "true";
-  const initialGridEnabled = cookieGrid === "true";
+  const initialMode = DEFAULT_PRESENTATION_MODE;
 
   if (initialMode === "agent") {
     preload("/artisan-bg/room-light-cutout-mobile.webp", {
@@ -227,11 +210,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <SoundProvider>
             <SnapProvider>
-              <PresentationModeProvider
-                initialMode={initialMode}
-                initialStarsEnabled={initialStarsEnabled}
-                initialGridEnabled={initialGridEnabled}
-              >
+              <PresentationModeProvider initialMode={initialMode}>
                 <PWARegister />
 
                 <CreativeModeProvider>

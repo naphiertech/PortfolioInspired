@@ -162,13 +162,17 @@ export function HeroSection({
           <div data-guide="artisan-intro" className="space-y-3">
             {isHomeActive ? (
               <h1 className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
-                <span className="sr-only">{SITE_NAME} — </span>
-                {HERO_DATA.title}
+                <span className="block font-sans text-[11px] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground mb-1">
+                  {SITE_NAME}
+                </span>
+                <span>{HERO_DATA.title}</span>
               </h1>
             ) : (
               <p className="text-3xl sm:text-4xl md:text-5xl leading-tight font-semibold font-serif tracking-tight text-foreground min-h-[2.25rem] sm:min-h-[2.75rem] lg:min-h-0">
-                <span className="sr-only">{SITE_NAME} — </span>
-                {HERO_DATA.title}
+                <span className="block font-sans text-[11px] sm:text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground mb-1">
+                  {SITE_NAME}
+                </span>
+                <span>{HERO_DATA.title}</span>
               </p>
             )}
 
@@ -542,6 +546,24 @@ export function HeroSection({
                   className="font-medium text-foreground hover:underline cursor-pointer inline-flex items-center gap-1 truncate"
                 >
                   <span>MKBRiderTrack &amp; Naphix</span>
+                  <LuArrowUpRight className="size-3" aria-hidden="true" />
+                </Link>
+              </div>
+
+              <div className="flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <LuCode
+                    className="size-3.5 text-muted-foreground shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>Components</span>
+                </span>
+                <Link
+                  href="/components"
+                  onClick={(e) => handleTabLinkClick(e, "components")}
+                  className="font-medium text-foreground hover:underline cursor-pointer inline-flex items-center gap-1 truncate"
+                >
+                  <span>Interactive UI Lab</span>
                   <LuArrowUpRight className="size-3" aria-hidden="true" />
                 </Link>
               </div>

@@ -10,6 +10,7 @@ import {
 } from "@/lib/data";
 import { buildCollectionPageJsonLd } from "@/lib/seoSchemas";
 import { SITE_NAME, SITE_URL } from "@/lib/siteConfig";
+import { CertificationsPresentationRoot } from "@/features/presentation-modes/components/CertificationsPresentationRoot";
 
 const CERTIFICATIONS_DESCRIPTION =
   "Verified technical courses and community credentials earned by Naphier Awalie across cybersecurity, networking, and AI development (Cisco Networking Academy, Google Developer Groups, DICT).";
@@ -51,12 +52,14 @@ export default function CertificationsPage() {
   });
 
   return (
-    <div className="w-full select-none pb-16">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="space-y-2 pt-4 sm:pt-5">
+      <CertificationsPresentationRoot>
+        <div className="w-full select-none pb-16">
+          <div className="space-y-2 pt-4 sm:pt-5">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-ink transition-colors duration-150 mb-2 group"
@@ -118,7 +121,9 @@ export default function CertificationsPage() {
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
-    </div>
+        </div>
+      </CertificationsPresentationRoot>
+    </>
   );
 }
 

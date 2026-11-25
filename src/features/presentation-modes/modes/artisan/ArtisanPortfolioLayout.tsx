@@ -160,12 +160,16 @@ export function ArtisanPortfolioLayout({
         ? "/resources"
         : tab === "components"
         ? "/components"
+        : tab === "experience"
+        ? "/experience"
+        : tab === "notes"
+        ? "/notes"
         : tab === "home"
         ? baseRoot
-        : tab === "projects" && !projectSlug && window.location.pathname.startsWith("/projects")
+        : tab === "projects" && !projectSlug
         ? "/projects"
         : tab === "projects" && projectSlug
-        ? `${baseRoot}?tab=projects&project=${encodeURIComponent(projectSlug)}`
+        ? `/projects/${encodeURIComponent(projectSlug)}`
         : `${baseRoot}?tab=${tab}`;
     window.history.replaceState({}, "", nextPath);
   }, []);
@@ -285,6 +289,19 @@ export function ArtisanPortfolioLayout({
       setSelectedProjectSlug(nextProjectSlug);
 
       if (tab === activeTab) {
+        if (initialSectionNode !== undefined && !hasSwitchedTab) {
+          setHasSwitchedTab(true);
+          syncTabUrl(tab, nextProjectSlug);
+          if (target) {
+            setTimeout(() => {
+              const el = document.getElementById(target);
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 80);
+          } else if (typeof window !== "undefined") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+          return;
+        }
         if (
           tab === "components" &&
           typeof window !== "undefined" &&
@@ -329,7 +346,7 @@ export function ArtisanPortfolioLayout({
         void preloadArtisanTab(tab).then(startTransitionNow);
       }
     },
-    [activeTab, isTransitioning, syncTabUrl]
+    [activeTab, hasSwitchedTab, initialSectionNode, isTransitioning, syncTabUrl]
   );
 
   const handleTransitionMidpoint = useCallback(() => {

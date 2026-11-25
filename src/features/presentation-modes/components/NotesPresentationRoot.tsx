@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { usePresentationMode } from "../context/PresentationModeContext";
 import { NotesPageClient } from "@/app/notes/NotesPageClient";
+import { ArtisanPortfolioLayout } from "../modes/artisan/ArtisanPortfolioLayout";
+import { NotesSection } from "../modes/artisan/NotesSection";
 import dynamic from "next/dynamic";
 
 const FocusNotesPage = dynamic(
@@ -29,15 +30,17 @@ const MinimalNotesPage = dynamic(
  * Dispatches between Default list index, Focus engineering dossier, and Minimal essay archive.
  */
 export function NotesPresentationRoot() {
-  const router = useRouter();
   const { mode, previousMode } = usePresentationMode();
   const isSwitch = previousMode !== null && previousMode !== mode;
 
-  React.useEffect(() => {
-    if (mode === "agent" && previousMode !== null && previousMode !== mode && typeof window !== "undefined") {
-      router.replace("/?tab=notes");
-    }
-  }, [mode, previousMode, router]);
+  if (mode === "agent") {
+    return (
+      <ArtisanPortfolioLayout
+        defaultTab="notes"
+        initialSectionNode={<NotesSection standalone />}
+      />
+    );
+  }
 
   return (
     <div

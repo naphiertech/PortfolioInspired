@@ -66,7 +66,7 @@ export const SITE_TITLE_TEMPLATE = `%s | ${SITE_NAME}`;
 // Keep public/site.webmanifest and public/icon/site.webmanifest in sync with
 // this title/description and AUTHOR_INFO.shortName (their short_name).
 export const SITE_DEFAULT_DESCRIPTION =
-  `Hi, I’m ${SITE_NAME}, an IT student and full-stack developer who enjoys turning ideas into practical web applications with clean interfaces, thoughtful user experiences, and reliable functionality.`;
+  `${SITE_NAME} — Full-Stack Developer building Next.js, TypeScript & Supabase web apps, UI components, and systems like MKBRiderTrack and AUDIT/WEB.`;
 
 export const SNAP_EASTER_EGG = {
   triggerLine1: "do not",

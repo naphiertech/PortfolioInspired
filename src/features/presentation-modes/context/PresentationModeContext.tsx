@@ -13,6 +13,7 @@ import React, {
 import { usePathname, useRouter } from "next/navigation";
 import { useSnap } from "@/context/SnapContext";
 import { PresentationMode } from "../types/presentation";
+import { resolveInitialPresentationMode } from "../lib/resolveMode";
 import {
   DEFAULT_PRESENTATION_MODE,
   normalizePresentationMode,
@@ -148,6 +149,35 @@ export function PresentationModeProvider({
       if (timers.end) clearTimeout(timers.end);
     };
   }, []);
+
+  // Hydrate saved presentation mode from URL `?mode=` or first-party cookie after static SSR mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const queryMode = params.get(PRESENTATION_QUERY_PARAM);
+      const cookieEntry = document.cookie
+        .split("; ")
+        .find((entry) => entry.startsWith(`${PRESENTATION_COOKIE_NAME}=`));
+      const cookieMode = cookieEntry
+        ? decodeURIComponent(cookieEntry.slice(PRESENTATION_COOKIE_NAME.length + 1))
+        : null;
+
+      if (window.location.pathname === "/artisan" && !queryMode) {
+        return;
+      }
+
+      const resolved = resolveInitialPresentationMode({ queryMode, cookieMode });
+      if (resolved !== initialMode) {
+        if (queryMode) {
+          document.cookie = `${PRESENTATION_COOKIE_NAME}=${resolved}; path=/; max-age=${PRESENTATION_COOKIE_MAX_AGE}; SameSite=Lax`;
+        }
+        setModeState(resolved);
+      }
+    } catch {
+      // Ignore cookie/storage restrictions
+    }
+  }, [initialMode]);
 
   // Warm-preload inactive layout chunks after initial idle so layout switching is instantaneous
   useEffect(() => {

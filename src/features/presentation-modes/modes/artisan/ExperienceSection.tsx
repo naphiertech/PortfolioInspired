@@ -67,10 +67,12 @@ import {
   getTopLevelCertificationGroups,
 } from "@/lib/data";
 import { EXPERIENCE_DATA, EDUCATION_DATA } from "./data";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface ExperienceSectionProps {
-  isDark: boolean;
+  isDark?: boolean;
   onNavigateProjects?: () => void;
+  standalone?: boolean;
 }
 
 const CATEGORY_ICONS: Record<string, IconType> = {
@@ -144,7 +146,13 @@ const LEARNING_MARKERS = new Set([
 
 const INITIAL_VISIBLE_CATEGORIES = 3;
 
-export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSectionProps) {
+export function ExperienceSection({
+  isDark: isDarkProp,
+  onNavigateProjects,
+  standalone = false,
+}: ExperienceSectionProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = isDarkProp ?? resolvedTheme === "dark";
   const [showAllSkills, setShowAllSkills] = useState(false);
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null);
   const [activeCertFilter, setActiveCertFilter] = useState<"all" | CertificationCategory>("all");
@@ -213,9 +221,15 @@ export function ExperienceSection({ isDark, onNavigateProjects }: ExperienceSect
 
       {/* 2. Heading */}
       <div className="space-y-3 text-center max-w-xl px-4 pt-2 pb-10">
-        <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
-          The Journey So Far
-        </h2>
+        {standalone ? (
+          <h1 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+            The Journey So Far
+          </h1>
+        ) : (
+          <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+            The Journey So Far
+          </h2>
+        )}
         <p className="font-sans font-medium text-sm md:text-base text-foreground/80 leading-relaxed">
           Full-stack and UI/UX journey. <br />
           Building practical applications, experimenting, and picking up new skills at every stop.

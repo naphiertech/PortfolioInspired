@@ -6,7 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { LuArrowRight, LuX, LuExternalLink } from "react-icons/lu";
 import { fieldNotes, FieldNote } from "@/lib/fieldNotes";
 
-export function NotesSection() {
+interface NotesSectionProps {
+  standalone?: boolean;
+}
+
+export function NotesSection({ standalone = false }: NotesSectionProps) {
   const [selectedNote, setSelectedNote] = useState<FieldNote | null>(null);
 
   // Lock body scroll and listen for Escape key when note modal is open
@@ -30,9 +34,15 @@ export function NotesSection() {
     <div className="w-full flex flex-col items-center pt-8 sm:pt-10 pb-4 px-4 sm:px-6">
       {/* 1. Page Header */}
       <div className="w-full max-w-2xl text-center space-y-3 mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
-          Field Notes
-        </h2>
+        {standalone ? (
+          <h1 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+            Field Notes
+          </h1>
+        ) : (
+          <h2 className="text-2xl sm:text-3xl font-mono font-semibold tracking-tight text-foreground">
+            Field Notes
+          </h2>
+        )}
         <p className="font-sans font-medium text-sm md:text-base text-foreground/80 leading-relaxed max-w-xl mx-auto">
           Things I&apos;ve been thinking about while building. Reflections on interface design, system architecture, AI development, and software craft.
         </p>
@@ -107,10 +117,20 @@ export function NotesSection() {
                     ))}
                   </div>
 
-                  <span className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors group-hover:translate-x-1 duration-200">
+                  <Link
+                    href={`/notes/${note.slug}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                        e.preventDefault();
+                        setSelectedNote(note);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors group-hover:translate-x-1 duration-200"
+                  >
                     <span>Read Note</span>
                     <LuArrowRight className="size-3.5" />
-                  </span>
+                  </Link>
                 </div>
               </div>
             </article>

@@ -1,18 +1,71 @@
 "use client";
 
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { useUISound } from "@/context/SoundContext";
+import {
+  createTruckHornAudio,
+  type TruckHornAudioAdapter,
+} from "@/lib/truckHornAudio";
 import styles from "./ContributionTruck.module.css";
 
-function CabSVG() {
+function CabSVG({
+  isHonking,
+  honkNonce,
+}: {
+  isHonking: boolean;
+  honkNonce: number;
+}) {
   const clipId = useId();
+  const beamGradId = useId();
   return (
-    <svg viewBox="0 0 185 305" fill="none" focusable="false" shapeRendering="crispEdges">
+    <svg
+      viewBox="0 0 185 305"
+      fill="none"
+      focusable="false"
+      shapeRendering="crispEdges"
+      className={isHonking ? styles.cabHonking : undefined}
+    >
       <defs>
         <clipPath id={clipId}>
           <circle cx="89.5" cy="261.5" r="17.4" />
         </clipPath>
+        <linearGradient id={beamGradId} x1="1" y1="0.5" x2="0" y2="0.5">
+          <stop offset="0%" stopColor="#fef08a" stopOpacity="0.55" />
+          <stop offset="45%" stopColor="#fde047" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="#fde047" stopOpacity="0" />
+        </linearGradient>
       </defs>
       <g>
+        {/* High-beam headlight cone & sound-wave arcs when horn is honked */}
+        {isHonking && (
+          <g key={honkNonce} aria-hidden="true">
+            {/* Warm headlight high-beam cone shining forward-left off the cab nose */}
+            <polygon
+              points="10,218 -135,172 -135,274 10,236"
+              fill={`url(#${beamGradId})`}
+              shapeRendering="geometricPrecision"
+              className={styles.headlightBeam}
+            />
+            <rect x="6" y="217" width="7" height="14" rx="2" fill="#fef9c3" className={styles.headlightLens} />
+
+            {/* Crisp pixel horn sound-wave arcs radiating from roof air-horn */}
+            <g className={styles.hornWaves}>
+              <rect x="8" y="66" width="3" height="14" fill="currentColor" />
+              <rect x="11" y="62" width="3" height="4" fill="currentColor" />
+              <rect x="11" y="80" width="3" height="4" fill="currentColor" />
+              <rect x="-4" y="60" width="3" height="26" fill="currentColor" opacity="0.72" />
+              <rect x="-1" y="56" width="3" height="4" fill="currentColor" opacity="0.72" />
+              <rect x="-1" y="86" width="3" height="4" fill="currentColor" opacity="0.72" />
+            </g>
+
+            {/* Extra diesel exhaust burst on honk */}
+            <g className={styles.honkExhaust}>
+              <rect x="160" y="22" width="6" height="6" fill="currentColor" opacity="0.55" />
+              <rect x="166" y="14" width="7" height="6" fill="currentColor" opacity="0.38" />
+            </g>
+          </g>
+        )}
+
         {/* Subtle monochrome pixel exhaust wisps behind the upper cab stack */}
         <g className={styles.exhaust} aria-hidden="true">
           <rect x="163" y="34" width="3" height="3" className={`${styles.exhaustPuff} ${styles.exhaustPuff1}`} />
@@ -340,10 +393,17 @@ function RoadSVG() {
 }
 
 export function ContributionTruck({ children }: { children: ReactNode }) {
+  const { isSoundEnabled } = useUISound();
   const truckRef = useRef<HTMLDivElement>(null);
+  const hornAudioRef = useRef<TruckHornAudioAdapter | null>(null);
+  const honkTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastHonkAtRef = useRef<number>(0);
+
   const [revealed, setRevealed] = useState(false);
   const [inView, setInView] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isHonking, setIsHonking] = useState(false);
+  const [honkNonce, setHonkNonce] = useState(0);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 640px)");
@@ -368,6 +428,37 @@ export function ContributionTruck({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (honkTimerRef.current) clearTimeout(honkTimerRef.current);
+      hornAudioRef.current?.dispose();
+      hornAudioRef.current = null;
+    };
+  }, []);
+
+  const handleCabHonk = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    const now = performance.now();
+    const isRapid = now - lastHonkAtRef.current < 420;
+    lastHonkAtRef.current = now;
+
+    if (isSoundEnabled) {
+      if (!hornAudioRef.current) {
+        hornAudioRef.current = createTruckHornAudio();
+      }
+      hornAudioRef.current.playHonk(isRapid);
+    }
+
+    setIsHonking(true);
+    setHonkNonce((n) => n + 1);
+
+    if (honkTimerRef.current) clearTimeout(honkTimerRef.current);
+    honkTimerRef.current = setTimeout(() => {
+      setIsHonking(false);
+    }, isRapid ? 340 : 480);
+  };
+
   return (
     <div
       ref={truckRef}
@@ -376,9 +467,15 @@ export function ContributionTruck({ children }: { children: ReactNode }) {
       data-driving={revealed && inView}
     >
       {isDesktop && (
-        <div className={`${styles.cab} hidden sm:block`} aria-hidden="true">
-          <CabSVG />
-        </div>
+        <button
+          type="button"
+          onClick={handleCabHonk}
+          aria-label="Honk contribution truck air horn"
+          title="Honk horn"
+          className={`${styles.cab} hidden sm:block`}
+        >
+          <CabSVG isHonking={isHonking} honkNonce={honkNonce} />
+        </button>
       )}
       <div className={styles.trailer}>
         <div className={styles.mobileTruckViewport}>

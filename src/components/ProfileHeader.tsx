@@ -20,6 +20,8 @@ import { ProfileInfoBlock } from "./ProfileInfoBlock";
 import { EditorialDivider } from "./EditorialDivider";
 import { StatusBadge } from "./ProjectStatusBadge";
 import { CalBookingTrigger } from "./CalBookingModal";
+import { EditorialBio } from "./EditorialBio";
+import { RetroComputerWidget } from "@/features/retro-computer";
 import {
   AUTHOR_INFO,
   AVAILABILITY,
@@ -260,150 +262,118 @@ export function ProfileHeader() {
         </div>
 
         {/* Profile Information Hierarchy */}
-        <div className="space-y-2 text-center sm:text-left">
-          {/* Name & Handle & Mobile Availability Badge */}
-          <div className="flex flex-col items-center sm:items-start">
-            <h1
-              data-guide="name"
-              className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight flex items-center justify-center sm:justify-start gap-1.5"
-            >
-              <span>{SITE_NAME}</span>
-              <span className="text-muted-foreground/60 text-lg sm:text-xl select-none" aria-hidden="true">✧</span>
-            </h1>
-            <div className="mt-0.5 flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-1 text-xs sm:text-[13px]">
-              <a
-                href={SOCIAL_PROFILES.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-muted-foreground hover:text-ink transition-colors"
-              >
-                {AUTHOR_INFO.handle}
-              </a>
-              <span className="text-muted-foreground/50" aria-hidden="true">|</span>
-              <span className="font-sans text-body">{AUTHOR_INFO.jobTitle}</span>
+        <div className="space-y-3 text-center sm:text-left">
+          {/* Identity & Bio paired with Interactive 1990s Retro CRT Computer on Desktop */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-5">
+            <div className="min-w-0 flex-1 space-y-2.5">
+              {/* Name & Mobile Availability Badge */}
+              <div className="flex flex-col items-center sm:items-start">
+                <h1
+                  data-guide="name"
+                  className="font-display text-2xl sm:text-3xl font-bold tracking-normal text-ink leading-tight flex items-center justify-center sm:justify-start gap-1.5"
+                >
+                  <span>{SITE_NAME}</span>
+                  <span className="text-muted-foreground/60 text-lg sm:text-xl select-none" aria-hidden="true">✧</span>
+                </h1>
+
+                {/* Mobile-Only Availability Status (Positioned directly under identity) */}
+                <div className="flex sm:hidden items-center justify-center mt-2">
+                  <StatusBadge status="available" label={AVAILABILITY.label} size="sm" />
+                </div>
+              </div>
+
+              {/* Compact Interactive Bio with Blueprint Keycaps & AI Card-Fan */}
+              <EditorialBio variant="standard" />
             </div>
 
-            {/* Mobile-Only Availability Status (Positioned directly under identity) */}
-            <div className="flex sm:hidden items-center justify-center mt-2.5">
-              <StatusBadge status="available" label={AVAILABILITY.label} size="sm" />
-            </div>
-          </div>
-
-          {/* Introduction condensed from the former standalone About section */}
-          <p
-            data-creative-note="about"
-            data-guide="about"
-            className="font-sans text-sm sm:text-[15px] text-body max-w-[65ch] mx-auto sm:mx-0 leading-relaxed px-2 sm:px-0"
-          >
-            I&apos;m an IT student who enjoys turning ideas into practical web applications—from school systems and productivity tools to personal projects. I care about clean interfaces, thoughtful user experiences, and reliable functionality, with a growing interest in UI/UX, web animation, and AI-assisted development.
-          </p>
-
-          {/* Profile Details (Location, Live Time, Education) */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-center sm:justify-start gap-2.5 sm:gap-x-5 sm:gap-y-2 text-xs sm:text-[13px] text-muted-foreground/90 pt-1.5 sm:pt-1 max-w-xs sm:max-w-none mx-auto sm:mx-0 sm:flex-wrap">
-            {/* Location */}
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-4 h-4 text-muted-foreground/80 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span>{AUTHOR_INFO.location}</span>
-            </div>
-
-            {/* Local Time */}
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-4 h-4 text-muted-foreground/80 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 7v5l3 2" />
-              </svg>
-              <LocalTime />
-            </div>
-
-            {/* Education */}
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-4 h-4 text-muted-foreground/80 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
-                />
-              </svg>
-              <span>{EDUCATION.degree} @ {EDUCATION.abbreviation}</span>
+            {/* Interactive 1990s 2D CRT Desktop perched in the right hero nook */}
+            <div className="hidden md:flex items-center justify-center pr-1 self-center">
+              <RetroComputerWidget />
             </div>
           </div>
 
-          {/* Action Buttons Group with Profile-First Hierarchy */}
-          <div className="relative pt-2">
-            {/* Mobile Vertical Stack / Desktop Horizontal Flow */}
-            <div data-guide="socials" className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-2.5 sm:pr-20">
-              {/* Primary Action: Schedule a Call via Cal.com (Full-width on mobile) */}
-              <CalBookingTrigger
-                data-cursor-label="Let's talk."
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-ink text-page font-sans text-xs sm:text-[12.5px] font-semibold hover:opacity-90 transition-[opacity,transform] shadow-xs active:scale-[0.98] cursor-pointer shrink-0"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span>Schedule a Call</span>
-              </CalBookingTrigger>
+          {/* Lower Hero Band: Telemetry Strip + Actions on Left, Dedicated Gauntlet Slot on Right */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pt-0.5">
+            <div className="min-w-0 flex-1 space-y-3">
+              {/* Quiet Hairline Telemetry Strip (Location, Live Time, Education) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 border-y border-black/[0.08] dark:border-white/[0.09] divide-y sm:divide-y-0 sm:divide-x divide-black/[0.07] dark:divide-white/[0.08] bg-surface/25 text-left">
+                {/* Location */}
+                <div className="px-2.5 py-2 flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted-foreground/70">
+                    LOC
+                  </span>
+                  <span className="font-sans text-xs font-medium text-ink truncate">
+                    {AUTHOR_INFO.location}
+                  </span>
+                </div>
 
-              {/* Secondary Icon-Only Actions with Expanding Pill on Hover (Approach B) */}
-              <div className="grid grid-cols-6 gap-2 w-full sm:contents">
-                {SOCIAL_ACTIONS.map((action) => (
-                  <a
-                    key={action.label}
-                    href={action.href}
-                    {...(action.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    aria-label={action.ariaLabel}
-                    data-cursor-label={action.cursorLabel}
-                    className="tactile-btn group !px-0 sm:!px-2.5 !h-9 sm:!h-[32px] w-full sm:w-auto text-xs text-muted-foreground hover:text-ink transition-all duration-200 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer"
-                  >
-                    {action.icon}
-                    <span className="hidden sm:inline-block max-w-0 opacity-0 overflow-hidden whitespace-nowrap transition-all duration-200 ease-out group-hover:max-w-[85px] group-hover:opacity-100 group-hover:ml-1.5 group-focus-visible:max-w-[85px] group-focus-visible:opacity-100 group-focus-visible:ml-1.5 font-sans text-xs font-medium">
-                      {action.label}
-                    </span>
-                  </a>
-                ))}
+                {/* Live Local Time */}
+                <div className="px-2.5 py-2 flex flex-col gap-0.5 min-w-0">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted-foreground/70">
+                    <span>TIME</span>
+                    <span
+                      className="w-1 h-1 rounded-full bg-muted-foreground/80"
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <span className="text-xs font-medium text-ink truncate">
+                    <LocalTime />
+                  </span>
+                </div>
+
+                {/* Education */}
+                <div className="px-2.5 py-2 flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted-foreground/70">
+                    EDU
+                  </span>
+                  <span className="font-sans text-xs font-medium text-ink truncate">
+                    BSIT @ {EDUCATION.abbreviation}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons Group with Profile-First Hierarchy */}
+              <div data-guide="socials" className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-2.5">
+                {/* Primary Action: Schedule a Call via Cal.com (Full-width on mobile) */}
+                <CalBookingTrigger
+                  data-cursor-label="Let's talk."
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-ink text-page font-sans text-xs sm:text-[12.5px] font-semibold hover:opacity-90 transition-[opacity,transform] shadow-xs active:scale-[0.98] cursor-pointer shrink-0"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>Schedule a Call</span>
+                </CalBookingTrigger>
+
+                {/* Secondary Icon-Only Actions with Expanding Pill on Hover (Approach B) */}
+                <div className="grid grid-cols-6 gap-2 w-full sm:contents">
+                  {SOCIAL_ACTIONS.map((action) => (
+                    <a
+                      key={action.label}
+                      href={action.href}
+                      {...(action.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      aria-label={action.ariaLabel}
+                      data-cursor-label={action.cursorLabel}
+                      className="tactile-btn group !px-0 sm:!px-2.5 !h-9 sm:!h-[32px] w-full sm:w-auto text-xs text-muted-foreground hover:text-ink transition-all duration-200 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer"
+                    >
+                      {action.icon}
+                      <span className="hidden sm:inline-block max-w-0 opacity-0 overflow-hidden whitespace-nowrap transition-all duration-200 ease-out group-hover:max-w-[85px] group-hover:opacity-100 group-hover:ml-1.5 group-focus-visible:max-w-[85px] group-focus-visible:opacity-100 group-focus-visible:ml-1.5 font-sans text-xs font-medium">
+                        {action.label}
+                      </span>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Desktop Easter Egg Gauntlet Trigger */}
-            <div className="hidden sm:flex items-center absolute right-0 bottom-0 pointer-events-auto opacity-80 hover:opacity-100 transition-all duration-200">
+            {/* Dedicated Desktop Gauntlet Column (zero overlap with telemetry strip) */}
+            <div className="hidden sm:flex items-end justify-center shrink-0 pointer-events-auto opacity-80 hover:opacity-100 transition-all duration-200">
               <SnapTrigger />
             </div>
           </div>
 
           {/* Mobile-Only Easter Egg Gauntlet Trigger */}
-          <div className="flex sm:hidden justify-center pt-3 pb-1 pointer-events-auto opacity-80 hover:opacity-100 transition-all duration-200">
+          <div className="flex sm:hidden justify-center pt-2 pb-1 pointer-events-auto opacity-80 hover:opacity-100 transition-all duration-200">
             <SnapTrigger />
           </div>
         </div>

@@ -110,6 +110,7 @@ const ZustandIcon: IconType = (props) => (
 interface TechIconProps {
   name: string;
   className?: string;
+  monochrome?: boolean;
 }
 
 interface IconConfig {
@@ -285,10 +286,7 @@ const ICON_REGISTRY: Record<string, IconConfig> = {
   figma: { component: SiFigma, color: "#F24E1E" },
 };
 
-export function TechIcon({
-  name,
-  className = "w-3.5 h-3.5 flex-shrink-0",
-}: TechIconProps) {
+function resolveTechIconConfig(name: string): { isVsCode: true } | { isVsCode: false; config: IconConfig | undefined } {
   const normalized = name
     .toLowerCase()
     .trim()
@@ -297,21 +295,11 @@ export function TechIcon({
     .replace(/\./g, "")
     .replace(/[\s\-_@/]/g, "");
 
-  // VS Code special handling (from react-icons/vsc)
   if (normalized.includes("vscode") || normalized.includes("visualstudio") || (normalized === "code" && !name.includes(" "))) {
-    return (
-      <VscVscode
-        className={className}
-        style={{ color: "#007ACC" }}
-        aria-hidden={true}
-      />
-    );
+    return { isVsCode: true };
   }
 
-  // 1. Direct registry lookup
   let config = ICON_REGISTRY[normalized];
-
-  // 2. Partial/fuzzy registry lookup sorted longest-first to prioritize specific tools before 2-letter tokens
   if (!config) {
     const sortedKeys = Object.keys(ICON_REGISTRY).sort((a, b) => b.length - a.length);
     for (const key of sortedKeys) {
@@ -322,17 +310,46 @@ export function TechIcon({
     }
   }
 
-  // 3. Fallback for exact short tokens (e.g. "js", "ts", "r", "go")
-  if (!config && ICON_REGISTRY[normalized]) {
-    config = ICON_REGISTRY[normalized];
+  return { isVsCode: false, config };
+}
+
+export function hasTechIcon(name: string): boolean {
+  const resolved = resolveTechIconConfig(name);
+  return resolved.isVsCode || Boolean(resolved.config);
+}
+
+export function TechIcon({
+  name,
+  className = "w-3.5 h-3.5 flex-shrink-0",
+  monochrome = false,
+}: TechIconProps) {
+  const resolved = resolveTechIconConfig(name);
+
+  if (resolved.isVsCode) {
+    return (
+      <VscVscode
+        className={className}
+        style={monochrome ? undefined : { color: "#007ACC" }}
+        aria-hidden={true}
+      />
+    );
   }
 
-  if (config) {
-    const Icon = config.component;
-    if (config.isThemeAware) {
+  if (resolved.config) {
+    const Icon = resolved.config.component;
+    if (monochrome) {
+      return <Icon className={className} aria-hidden={true} />;
+    }
+    if (resolved.config.isThemeAware) {
       return <Icon className={`${className} text-ink`} aria-hidden={true} />;
     }
-    return <Icon className={className} style={config.color ? { color: config.color } : undefined} aria-hidden={true} />;
+    return (
+      <Icon
+        className={className}
+        style={resolved.config.color ? { color: resolved.config.color } : undefined}
+        aria-hidden={true}
+      />
+    );
   }
 
   // Safe fallback: null (clean text-only pill)

@@ -9,16 +9,20 @@ import {
   staggeredGridVariants,
   gridItemVariants,
 } from "@/lib/motion";
+import { PeekingMascotsStrip } from "@/features/peeking-mascots";
 
 export function ProfileInfoBlock() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <div
-      className="w-full select-none my-2 sm:my-3"
+      className="w-full select-none mt-12 sm:mt-14 mb-2 sm:mb-3 relative"
       aria-label="Profile Highlights"
       data-guide="focus"
     >
+      {/* Trio of Interactive Eye-Tracking Mascots perched along the top border */}
+      <PeekingMascotsStrip />
+
       {/* Architectural Cohesive Matrix: Editorial Focus, Structured Capabilities, Concise Principles */}
       <motion.div
         initial={shouldReduceMotion ? false : "hidden"}

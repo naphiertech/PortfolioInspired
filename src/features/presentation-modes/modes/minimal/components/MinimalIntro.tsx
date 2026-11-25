@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { AUTHOR_INFO, AVAILABILITY, SOCIAL_PROFILES } from "@/lib/siteConfig";
 import { CalBookingTrigger } from "@/components/CalBookingModal";
+import { EditorialBio } from "@/components/EditorialBio";
 
 /**
  * MinimalIntro
@@ -41,22 +42,8 @@ export function MinimalIntro() {
         </div>
       </div>
 
-      {/* Narrative Paragraphs - spans available section width with 72-74ch comfortable measure */}
-      <div className="w-full font-serif text-[15px] sm:text-[16px] text-zinc-700 dark:text-[#b4afa4] leading-[28px] space-y-4 [&_strong]:font-medium [&_strong]:text-zinc-950 dark:[&_strong]:text-[#eeeae1]">
-        <p data-creative-note="about" data-guide="about" className="w-full max-w-[72ch] sm:max-w-[74ch]">
-          I&apos;m an <strong>IT student and full-stack developer</strong> who enjoys turning ideas
-          into <strong>practical web applications</strong> with clean interfaces, <strong>thoughtful user
-          experiences</strong>, and reliable functionality.
-        </p>
-
-        <p className="w-full max-w-[72ch] sm:max-w-[74ch]">
-          Most of my work comes from turning ideas into <strong>working products</strong>, from
-          school systems and productivity tools to personal side projects. I&apos;m
-          especially interested in <strong>UI/UX, web animation</strong>, <strong>AI-assisted development</strong>,
-          and learning how real software systems are designed, connected, and
-          improved over time.
-        </p>
-      </div>
+      {/* Narrative Paragraphs with Inline Monochrome Skill Pills & AI Sticker Cluster */}
+      <EditorialBio variant="minimal" />
 
       {/* Availability Status */}
       <div className="w-full flex items-center gap-2 font-mono text-xs sm:text-[13px] text-zinc-700 dark:text-[#a8a397] pt-1">

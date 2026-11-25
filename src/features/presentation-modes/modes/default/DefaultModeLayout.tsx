@@ -14,6 +14,7 @@ import {
   GachaponGutter,
   MarioBlockGutter,
   PolaroidGutter,
+  RubberDuckGutter,
 } from "@/features/margin-easter-eggs";
 import { recommendations } from "@/lib/data";
 
@@ -49,7 +50,10 @@ export function DefaultModeLayout() {
       {/* 5. Tech Stack (Curated High-Signal Preview) */}
       <SnapSectionWrapper id="tech-stack">
         <EditorialDivider variant="hatch" className="my-3 sm:my-4" />
-        <TechStack />
+        <div className="relative">
+          <TechStack />
+          <RubberDuckGutter />
+        </div>
       </SnapSectionWrapper>
 
       {/* 6. Work Experience Timeline (Top 3 Recent Milestones) */}

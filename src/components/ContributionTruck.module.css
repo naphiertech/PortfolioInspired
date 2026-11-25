@@ -12,12 +12,109 @@
   position: relative;
   width: 100%;
   z-index: 3;
-  pointer-events: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-ink, #18181b);
+  cursor: pointer;
+  pointer-events: auto;
+  outline: none;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cab:hover {
+  transform: translateY(-1px);
+}
+.cab:active {
+  transform: translateY(1px);
+}
+.cab:focus-visible {
+  filter: drop-shadow(0 0 2px var(--text-ink, #18181b));
 }
 .cab > svg {
   display: block;
   width: 100%;
   height: auto;
+  overflow: visible;
+}
+
+.cabHonking .cabBody {
+  animation: cabHonkJolt 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.headlightBeam {
+  opacity: 0;
+  animation: headlightFlash 440ms ease-out forwards;
+}
+
+:global(.dark) .headlightBeam,
+:global(html:not(.light)) .headlightBeam {
+  filter: drop-shadow(0 0 18px rgba(254, 240, 138, 0.48));
+}
+
+.headlightLens {
+  animation: headlightFlash 440ms ease-out forwards;
+}
+
+.hornWaves {
+  animation: hornWavesBlast 420ms ease-out forwards;
+}
+
+.honkExhaust {
+  animation: honkExhaustBurst 440ms ease-out forwards;
+}
+
+@keyframes cabHonkJolt {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  28% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(1px);
+  }
+}
+
+@keyframes headlightFlash {
+  0% {
+    opacity: 0;
+  }
+  16% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hornWavesBlast {
+  0% {
+    opacity: 0;
+    transform: translate(6px, 4px) scale(0.75);
+  }
+  25% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-18px, -6px) scale(1.15);
+  }
+}
+
+@keyframes honkExhaustBurst {
+  0% {
+    opacity: 0.85;
+    transform: translate(0, 0) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(8px, -24px) scale(1.45);
+  }
 }
 
 .trailer {

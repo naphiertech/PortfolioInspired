@@ -1,0 +1,345 @@
+/* ============================================================================
+ * Retro 1990s 2D CRT Computer Widget Styles (Hero Bio Right Nook)
+ * - Screen-matched phosphor glow in dark mode (hello / terminal / screensaver)
+ * - Authentic CRT beam power-on flash & power-off collapse
+ * ============================================================================ */
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ============================================================================
+ * Dark Mode Screen-Matched CRT Phosphor Glow
+ * ============================================================================ */
+.phosphorRig {
+  position: absolute;
+  inset: -44px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transform: scale(0.82);
+  transition:
+    opacity 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.phosphorActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.phosphorPool {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 220px;
+  height: 190px;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+}
+
+.phosphorDark.modeHello .phosphorPool {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(220, 242, 230, 0.24) 0%,
+    rgba(167, 243, 208, 0.08) 38%,
+    transparent 74%
+  );
+}
+
+.phosphorDark.modeTerminal .phosphorPool {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(74, 222, 128, 0.26) 0%,
+    rgba(34, 197, 94, 0.1) 38%,
+    transparent 74%
+  );
+}
+
+.phosphorDark.modeScreensaver .phosphorPool {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(56, 189, 248, 0.24) 0%,
+    rgba(99, 102, 241, 0.1) 38%,
+    transparent 74%
+  );
+}
+
+.phosphorLight .phosphorPool {
+  opacity: 0;
+}
+
+/* ============================================================================
+ * Interactive Retro CRT Button
+ * ============================================================================ */
+.computerButton {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  border-radius: 10px;
+  transform: rotate(-2.5deg);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.computerButton:hover {
+  transform: rotate(0deg) scale(1.05) translateY(-1.5px);
+}
+
+.computerButton:active {
+  transform: rotate(-3deg) scale(0.96) translateY(1px);
+}
+
+.computerButton:focus-visible {
+  box-shadow: 0 0 0 1.5px var(--text-ink);
+}
+
+.computerSvg {
+  display: block;
+  overflow: visible;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.14));
+}
+
+/* ============================================================================
+ * Putty-Beige 90s Hardware Palette Tokens
+ * ============================================================================ */
+.themeLight {
+  --crt-outline: #27272a;
+  --crt-main: #e6dfd1;
+  --crt-hi: #f5f0e6;
+  --crt-shadow: #c2b9a7;
+  --crt-vent: #9e9584;
+  --crt-bezel: #3f3f46;
+  --crt-off: #18181b;
+  --crt-glare: #3f3f46;
+  --crt-key: #b3aa98;
+  --crt-desk-shadow: rgba(24, 24, 27, 0.12);
+}
+
+.themeDark {
+  --crt-outline: #09090b;
+  --crt-main: #d9d2c4;
+  --crt-hi: #ece7dc;
+  --crt-shadow: #aba291;
+  --crt-vent: #877f70;
+  --crt-bezel: #27272a;
+  --crt-off: #121316;
+  --crt-glare: #3f3f46;
+  --crt-key: #9c9484;
+  --crt-desk-shadow: rgba(0, 0, 0, 0.5);
+}
+
+.caseOutline {
+  fill: var(--crt-outline);
+}
+
+.caseMain {
+  fill: var(--crt-main);
+}
+
+.caseHighlight {
+  fill: var(--crt-hi);
+}
+
+.caseShadow {
+  fill: var(--crt-shadow);
+}
+
+.ventSlot {
+  fill: var(--crt-vent);
+}
+
+.bezelDeep {
+  fill: var(--crt-bezel);
+}
+
+.crtOffBg {
+  fill: var(--crt-off);
+}
+
+.crtGlare {
+  fill: var(--crt-glare);
+}
+
+.crtHelloBg {
+  fill: #e1eee6;
+}
+
+.keycap {
+  fill: var(--crt-key);
+}
+
+.deskShadow {
+  fill: var(--crt-desk-shadow);
+}
+
+.ledStandby {
+  fill: #71717a;
+  animation: standbyBlink 2.8s steps(2) infinite;
+}
+
+.ledOn {
+  fill: #22c55e;
+}
+
+/* ============================================================================
+ * CRT Screen Animations
+ * ============================================================================ */
+.crtBeamOn {
+  transform-origin: 19px 14px;
+  animation: crtPowerOn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.crtFlashFill {
+  animation: crtFlashFade 300ms ease-out forwards;
+}
+
+.crtBeamOff {
+  transform-origin: 19px 14px;
+  animation: crtPowerOff 280ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.blinkCursor {
+  animation: cursorBlink 0.9s steps(2) infinite;
+}
+
+.bouncingCube {
+  animation:
+    cubeBounce 3.6s linear infinite,
+    cubeTint 4.2s steps(1) infinite;
+}
+
+.floppyDisk {
+  animation: floppySlideOut 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes standbyBlink {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes cursorBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes crtPowerOn {
+  0% {
+    transform: scale(0.08, 0.35);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1, 0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 6.8);
+    opacity: 0;
+  }
+}
+
+@keyframes crtFlashFade {
+  0% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes crtPowerOff {
+  0% {
+    transform: scale(1, 6.5);
+    opacity: 0.95;
+  }
+  52% {
+    transform: scale(1, 0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.06, 0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes cubeBounce {
+  0% {
+    transform: translate(-2px, -1px);
+  }
+  25% {
+    transform: translate(15px, 8px);
+  }
+  50% {
+    transform: translate(5px, -1px);
+  }
+  75% {
+    transform: translate(-2px, 8px);
+  }
+  100% {
+    transform: translate(-2px, -1px);
+  }
+}
+
+@keyframes cubeTint {
+  0%,
+  33% {
+    fill: #38bdf8;
+  }
+  34%,
+  66% {
+    fill: #facc15;
+  }
+  67%,
+  100% {
+    fill: #f472b6;
+  }
+}
+
+@keyframes floppySlideOut {
+  0% {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledStandby,
+  .blinkCursor,
+  .bouncingCube,
+  .crtBeamOn,
+  .crtBeamOff,
+  .crtFlashFill,
+  .floppyDisk {
+    animation: none !important;
+  }
+}

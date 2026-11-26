@@ -189,19 +189,8 @@ export function ArtisanPortfolioLayout({
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
-  // Warm-preload sub-tabs after initial idle so tab switching is always instantaneous
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      void preloadArtisanTab("about");
-      void preloadArtisanTab("experience");
-      void preloadArtisanTab("projects");
-      void preloadArtisanTab("notes");
-      void preloadArtisanTab("music");
-      void preloadArtisanTab("resources");
-      void preloadArtisanTab("components");
-    }, 3800);
-    return () => clearTimeout(timer);
-  }, []);
+  // Sub-tabs are preloaded on desktop hover or tap rather than eagerly on idle,
+  // avoiding a 7-chunk JS parse spike on constrained mobile/laptop CPUs.
 
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [pendingTab, setPendingTab] = useState<TabType | null>(null);
@@ -259,6 +248,12 @@ export function ArtisanPortfolioLayout({
   );
 
   const handleHoverTab = useCallback((tab: string) => {
+    if (
+      typeof document !== "undefined" &&
+      document.documentElement.dataset.perf === "low"
+    ) {
+      return;
+    }
     if (
       tab === "about" ||
       tab === "experience" ||

@@ -98,7 +98,7 @@ export interface ArtisanGalleryItem {
 export const ARTISAN_GALLERY: ArtisanGalleryItem[] = [
   {
     id: "me",
-    src: "/gallery/me.jpg",
+    src: "/gallery/me.webp",
     title: "Desk Setup & Late-Night Builds",
     caption: "Late hours spent designing interfaces, writing code, and iterating on web applications.",
     tag: "Studio",
@@ -138,7 +138,7 @@ export const ARTISAN_GALLERY: ArtisanGalleryItem[] = [
   },
   {
     id: "capstone",
-    src: "/gallery/capstone.jpg",
+    src: "/gallery/capstone.webp",
     title: "Capstone Project Defense",
     caption: "Defending systems architecture, security patterns, and database design before faculty panelists.",
     tag: "Academic",
@@ -168,7 +168,7 @@ export const ARTISAN_GALLERY: ArtisanGalleryItem[] = [
   },
   {
     id: "networking",
-    src: "/gallery/networking.jpg",
+    src: "/gallery/networking.webp",
     title: "Developer Community Networking",
     caption: "Exchanging ideas with fellow creators and exploring emerging web technologies.",
     tag: "Networking",

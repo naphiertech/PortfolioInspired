@@ -224,7 +224,7 @@ export const fullProjects: FullProjectItem[] = [
     title: "Naphix Résumé",
     category: "Web Application",
     year: "2026",
-    image: "/projects/resumebuilder.png",
+    image: "/projects/resumebuilder.webp",
     color: "bg-[#0f172a]",
     role: "Fullstack Developer & Creator",
     client: "Personal Project",
@@ -234,15 +234,15 @@ export const fullProjects: FullProjectItem[] = [
     fullDescription:
       "Naphix Résumé is a modern, client-side résumé workspace created to eliminate the frustrations of clunky, template-restricted builders. Designed around a live split-screen interface, every edit updates an ISO 216 A4 preview in real time without lag. It features dynamic custom section schemas, smooth drag-and-drop reordering, and native dual export: selectable ATS-compliant vector PDF and fully editable Word .docx files. Everything runs 100% locally in the browser with zero server data collection.",
     gallery: [
-      "/projects/resumebuilder-1.png",
+      "/projects/resumebuilder-1.webp",
       "/projects/resumebuilder-2.png",
-      "/projects/resumebuilder-3.png",
+      "/projects/resumebuilder-3.webp",
     ],
     designScreens: [
-      "/projects/resumebuilder.png",
-      "/projects/resumebuilder-1.png",
+      "/projects/resumebuilder.webp",
+      "/projects/resumebuilder-1.webp",
       "/projects/resumebuilder-2.png",
-      "/projects/resumebuilder-3.png",
+      "/projects/resumebuilder-3.webp",
     ],
     techStack: [
       "React 18",
@@ -317,10 +317,10 @@ export const fullProjects: FullProjectItem[] = [
     fullDescription:
       "AssetLink is a centralized hardware and facility tracking system designed for educational institutions. It connects physical school assets to a digital repair and inventory workflow using uniquely generated QR codes. Faculty members can scan an equipment badge to submit a repair ticket, while maintenance staff and administrators receive immediate real-time status updates through role-specific dashboards.",
     gallery: [
-      "/projects/assetlink-1.png",
+      "/projects/assetlink-1.webp",
       "/projects/assetlink-2.png",
     ],
-    designScreens: ["/projects/assetlink-1.png", "/projects/assetlink-2.png"],
+    designScreens: ["/projects/assetlink-1.webp", "/projects/assetlink-2.png"],
     techStack: [
       "Next.js",
       "Supabase",
@@ -374,7 +374,7 @@ export const fullProjects: FullProjectItem[] = [
     title: "MovieStream",
     category: "Next-Gen Cinematic Experience",
     year: "2026",
-    image: "/projects/moviestream.png",
+    image: "/projects/moviestream.webp",
     color: "bg-[#0A0A0A]",
     role: "Fullstack Developer",
     client: "Personal Project",
@@ -384,13 +384,13 @@ export const fullProjects: FullProjectItem[] = [
     fullDescription:
       "MovieStream is an editorial cinema portal focusing on atmospheric typography, deep contrast, and motion-first interactions. Integrating with TMDB's live catalog, it provides curated trending carousels, genre hubs, and instant search while maintaining high frame-rate transitions and fluid layout shifts.",
     gallery: [
-      "/projects/moviestream-1.png",
-      "/projects/moviestream-2.png",
+      "/projects/moviestream-1.webp",
+      "/projects/moviestream-2.webp",
     ],
     designScreens: [
-      "/projects/moviestream.png",
-      "/projects/moviestream-1.png",
-      "/projects/moviestream-2.png",
+      "/projects/moviestream.webp",
+      "/projects/moviestream-1.webp",
+      "/projects/moviestream-2.webp",
     ],
     techStack: [
       "Next.js 15",
@@ -462,13 +462,13 @@ export const fullProjects: FullProjectItem[] = [
     fullDescription:
       "MKBRiderTrack is a comprehensive full-stack workforce and fleet logistics management platform built for delivery rider operations. Backed by Supabase PostgreSQL with strict Row Level Security (RLS), it unifies role-based portals for Admins, HR managers, Payroll accountants, and Field Riders. Features include real-time biometric facial recognition and GPS geofence validation for shift attendance, offline-first sync with Dexie.js, interactive zone mapping with Leaflet, immutable payroll snapshots with automated formula audits, and a modern Next.js landing portal.",
     gallery: [
-      "/projects/mkb-1.png",
-      "/projects/mkb-2.png",
+      "/projects/mkb-1.webp",
+      "/projects/mkb-2.webp",
     ],
     designScreens: [
       "/projects/mkb.png",
-      "/projects/mkb-1.png",
-      "/projects/mkb-2.png",
+      "/projects/mkb-1.webp",
+      "/projects/mkb-2.webp",
     ],
     techStack: [
       "React 18",
@@ -1079,13 +1079,13 @@ export const experiences: ExperienceItem[] = [
 export const recommendations: RecommendationItem[] = [];
 
 export const galleryImages: string[] = [
-  "/gallery/capstone.jpg",
+  "/gallery/capstone.webp",
   "/gallery/capstone_mock.jpg",
   "/gallery/capstone_mock2.jpg",
   "/gallery/hacakthon2026.jpg",
   "/gallery/hackathon-team.jpg",
-  "/gallery/me.jpg",
-  "/gallery/networking.jpg",
+  "/gallery/me.webp",
+  "/gallery/networking.webp",
   "/gallery/pagasa.jpg",
   "/gallery/recursia.jpg",
   "/gallery/rivanIT.jpg",

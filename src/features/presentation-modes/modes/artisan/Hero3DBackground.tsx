@@ -15,6 +15,7 @@ import {
 import { RoomHotspots, HotspotId } from "./RoomHotspots";
 import { useTheme } from "@/components/ThemeProvider";
 import { useNaphBotVoice } from "@/features/voice-agent/useNaphBotVoice";
+import { usePerformanceTier } from "@/lib/performanceTier";
 
 const RoomObjectModal = dynamic(
   () => import("./RoomObjectModal").then((m) => m.RoomObjectModal),
@@ -59,12 +60,13 @@ export function Hero3DBackground({
   expanded = false,
 }: Hero3DBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const tiltBoxRef = useRef<HTMLDivElement>(null);
+  const tiltRafRef = useRef<number | null>(null);
   const slotARef = useRef<HTMLVideoElement>(null);
   const slotBRef = useRef<HTMLVideoElement>(null);
   const { setTheme } = useTheme();
+  const { isLowPerf, isCoarseTouch } = usePerformanceTier();
 
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
   const [isVideoMounted, setIsVideoMounted] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [activeSlot, setActiveSlot] = useState<0 | 1>(0);
@@ -128,8 +130,16 @@ export function Hero3DBackground({
   }, [isCallActive, voiceStatus]);
   speakerMutedRef.current = speakerMuted;
 
-  // Mount videos after critical LCP settle or on first user interaction (unless prefers-reduced-motion)
+  // Mount videos after LCP settle only on fine-pointer high-tier devices.
+  // Slow CPUs, low-RAM devices, and coarse touch devices stay on the crisp 47 KB WebP cutout
+  // so scroll & touch responsiveness stay locked at 60fps.
   useEffect(() => {
+    if (isLowPerf || isCoarseTouch) {
+      setIsVideoMounted(false);
+      setIsVideoReady(false);
+      return;
+    }
+
     if (
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -137,11 +147,12 @@ export function Hero3DBackground({
       return;
     }
 
+    // Prefer hardware-decoded H.264 MP4 (33% smaller + native VPU decode across GPUs)
     const probe = document.createElement("video");
-    const canWebm =
-      probe.canPlayType('video/webm; codecs="vp9"') ||
-      probe.canPlayType("video/webm");
-    extRef.current = canWebm ? "webm" : "mp4";
+    const canMp4 =
+      probe.canPlayType('video/mp4; codecs="avc1.42E01E"') ||
+      probe.canPlayType("video/mp4");
+    extRef.current = canMp4 ? "mp4" : "webm";
 
     const enableVideo = () => setIsVideoMounted(true);
     const timer = setTimeout(enableVideo, 1800);
@@ -153,17 +164,65 @@ export function Hero3DBackground({
 
     window.addEventListener("pointermove", onInteract, { once: true, passive: true });
     window.addEventListener("pointerdown", onInteract, { once: true, passive: true });
-    window.addEventListener("touchstart", onInteract, { once: true, passive: true });
     window.addEventListener("keydown", onInteract, { once: true, passive: true });
 
     return () => {
       clearTimeout(timer);
       window.removeEventListener("pointermove", onInteract);
       window.removeEventListener("pointerdown", onInteract);
-      window.removeEventListener("touchstart", onInteract);
       window.removeEventListener("keydown", onInteract);
     };
-  }, []);
+  }, [isLowPerf, isCoarseTouch]);
+
+  // Pause active video automatically when scrolled off-screen, hidden tab, or switched away from Home
+  useEffect(() => {
+    if (!isVideoMounted) return;
+    const container = containerRef.current;
+    let inViewport = true;
+
+    const syncPlayback = () => {
+      const activeVideo =
+        activeSlotRef.current === 0 ? slotARef.current : slotBRef.current;
+      if (!activeVideo) return;
+      const shouldPlay =
+        inViewport &&
+        isHomeActive &&
+        !document.hidden &&
+        (clipStateRef.current !== "talking" ||
+          (voiceStatusRef.current === "speaking" && !speakerMutedRef.current));
+
+      if (shouldPlay) {
+        if (activeVideo.paused) {
+          void activeVideo.play()?.catch(() => {});
+        }
+      } else if (!activeVideo.paused) {
+        activeVideo.pause();
+      }
+    };
+
+    const observer =
+      container && typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver(
+            ([entry]) => {
+              inViewport = entry?.isIntersecting ?? true;
+              syncPlayback();
+            },
+            { threshold: 0.05 }
+          )
+        : null;
+
+    if (observer && container) {
+      observer.observe(container);
+    }
+
+    document.addEventListener("visibilitychange", syncPlayback);
+    syncPlayback();
+
+    return () => {
+      observer?.disconnect();
+      document.removeEventListener("visibilitychange", syncPlayback);
+    };
+  }, [isVideoMounted, isHomeActive]);
 
   // Increment call timer only once answer-phone finishes and talking begins
   useEffect(() => {
@@ -330,13 +389,7 @@ export function Hero3DBackground({
       firstVideo.addEventListener("canplay", onReady, { once: true });
     }
 
-    // Preload answer-phone into Slot B for instant call pickup
-    const secondVideo = slotBRef.current;
-    if (secondVideo) {
-      secondVideo.src = `/artisan-bg/answer-phone.${ext}`;
-      secondVideo.preload = "auto";
-    }
-
+    // Only preload the next clip during active call states (never eagerly preload idle answer-phone)
     scheduleNextStretch();
     return () => clearStretchTimer();
   }, [isVideoMounted, scheduleNextStretch, clearStretchTimer]);
@@ -431,30 +484,46 @@ export function Hero3DBackground({
     }
   }, [isCallActive, callSeconds, handleToggleCall]);
 
-  // Subtle interactive 3D perspective tilt on mouse move
+  // Zero-re-render 3D perspective tilt via rAF direct style update (desktop fine-pointer high-tier only)
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (activeHotspot) return;
+      if (activeHotspot || isLowPerf || isCoarseTouch) return;
       const el = containerRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const nx = (e.clientX - rect.left) / rect.width - 0.5;
-      const ny = (e.clientY - rect.top) / rect.height - 0.5;
-      setTilt({
-        x: -ny * 6.5,
-        y: nx * 8.5,
+      const box = tiltBoxRef.current;
+      if (!el || !box) return;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+      if (tiltRafRef.current !== null) return;
+      tiltRafRef.current = window.requestAnimationFrame(() => {
+        tiltRafRef.current = null;
+        const rect = el.getBoundingClientRect();
+        const nx = (clientX - rect.left) / rect.width - 0.5;
+        const ny = (clientY - rect.top) / rect.height - 0.5;
+        box.style.transition = "transform 0.12s ease-out";
+        box.style.transform = `rotateX(${(-ny * 6.5).toFixed(2)}deg) rotateY(${(nx * 8.5).toFixed(2)}deg) scale3d(1.02, 1.02, 1)`;
       });
     },
-    [activeHotspot]
+    [activeHotspot, isLowPerf, isCoarseTouch]
   );
 
   const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
-    setTilt({ x: 0, y: 0 });
+    if (tiltRafRef.current !== null) {
+      window.cancelAnimationFrame(tiltRafRef.current);
+      tiltRafRef.current = null;
+    }
+    const box = tiltBoxRef.current;
+    if (box) {
+      box.style.transition = "transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)";
+      box.style.transform = "";
+    }
   }, []);
 
-  const handleMouseEnter = useCallback(() => {
-    setIsHovered(true);
+  useEffect(() => {
+    return () => {
+      if (tiltRafRef.current !== null) {
+        window.cancelAnimationFrame(tiltRafRef.current);
+      }
+    };
   }, []);
 
   const isPickupInProgress = clipState === "answer-phone";
@@ -512,13 +581,13 @@ export function Hero3DBackground({
             type="button"
             disabled={isHangupInProgress}
             onClick={handleToggleCall}
-            initial={{ opacity: 0, scale: 0.94, filter: "blur(2px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 0.94, filter: "blur(2px)" }}
-            whileHover={isHangupInProgress ? {} : { scale: 1.03, y: -1 }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            whileHover={isHangupInProgress || isLowPerf ? {} : { scale: 1.03, y: -1 }}
             whileTap={isHangupInProgress ? {} : { scale: 0.96 }}
             transition={{
-              duration: 0.28,
+              duration: 0.24,
               ease: [0.22, 1, 0.36, 1],
             }}
             className={`group relative inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-[50px] bg-black text-white dark:bg-white dark:text-black font-prime text-xs sm:text-[13px] font-semibold tracking-wide shadow-[0_4px_16px_rgba(0,0,0,0.14)] dark:shadow-[0_4px_20px_rgba(255,255,255,0.12)] transition-colors duration-200 ${
@@ -527,25 +596,21 @@ export function Hero3DBackground({
                 : "hover:bg-[#222222] dark:hover:bg-[#f0f0f0] cursor-pointer"
             }`}
           >
-            {/* Live Mic with subtle pulse animation */}
-            <motion.span
-              animate={{ scale: [1, 1.14, 1] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-              className="inline-flex items-center justify-center shrink-0"
-            >
+            {/* Compositor-only CSS mic pulse (0 JS frame loops) */}
+            <span className="artisan-mic-pulse inline-flex items-center justify-center shrink-0">
               <Mic className="size-4 shrink-0" aria-hidden="true" />
-            </motion.span>
+            </span>
 
             <span className="relative z-10 select-none">Chat with NaphBot</span>
           </motion.button>
         ) : (
           <motion.div
             key="active-call-bar"
-            initial={{ opacity: 0, scale: 0.94, filter: "blur(3px)", y: 4 }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, filter: "blur(3px)", y: 4 }}
+            initial={{ opacity: 0, scale: 0.96, y: 4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 4 }}
             transition={{
-              duration: 0.32,
+              duration: 0.26,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="inline-flex items-center justify-between sm:justify-center gap-1.5 sm:gap-5 bg-white dark:bg-[#161616] border border-[#e5e5e5] dark:border-[#2a2a2a] rounded-[50px] px-2.5 sm:px-6 py-1.5 sm:py-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_6px_30px_rgba(0,0,0,0.6)] max-w-[95vw]"
@@ -707,7 +772,6 @@ export function Hero3DBackground({
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`relative w-full flex flex-col justify-center items-center pointer-events-auto select-none perspective-[1000px] ${
         expanded ? "" : "lg:-mt-4"
@@ -715,26 +779,17 @@ export function Hero3DBackground({
     >
       {/* Centered Constrained Isometric Room Container */}
       <div
-        style={{
-          transform:
-            isHovered || tilt.x !== 0 || tilt.y !== 0
-              ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(${
-                  isHovered ? 1.02 : 1
-                }, ${isHovered ? 1.02 : 1}, 1)`
-              : undefined,
-          transition: isHovered
-            ? "transform 0.12s ease-out"
-            : "transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
-        }}
+        ref={tiltBoxRef}
         className={`relative aspect-[988/1038] flex items-center justify-center group transition-[max-width,width] duration-[360ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
           expanded
             ? "w-[82vw] max-w-[380px] sm:max-w-[440px] md:max-w-[470px] lg:max-w-[min(490px,56dvh)] xl:max-w-[min(520px,58dvh)] 2xl:max-w-[min(550px,60dvh)]"
             : "w-[76vw] max-w-[340px] sm:max-w-[380px] md:max-w-[400px] lg:max-w-[410px] xl:max-w-[430px] 2xl:max-w-[450px]"
         }`}
       >
-        {/* 1. GPU-Composited Ambient Floor Shadow & Monitor Backlight Glow */}
+        {/* 1. Ambient Floor Shadow & Monitor Backlight Glow (hidden on coarse/low-perf GPUs) */}
         <div
           aria-hidden="true"
+          data-perf-blur="ambient"
           className="absolute inset-0 pointer-events-none"
         >
           <div className="absolute bottom-[1%] left-[10%] right-[10%] h-[20%] rounded-full blur-2xl pointer-events-none bg-black/18 dark:bg-black/80" />
@@ -744,7 +799,7 @@ export function Hero3DBackground({
           />
         </div>
 
-        {/* 2. Live 3D Isometric Room Box with Exact Polygon Clip-Path */}
+        {/* 2. Live 3D Isometric Room Box with Single Outer Polygon Clip-Path */}
         <div
           style={{
             clipPath: ISOMETRIC_BOX_CLIP,
@@ -753,7 +808,7 @@ export function Hero3DBackground({
           className="relative w-full h-full overflow-hidden"
         >
           {/* Unified Cutout Poster (instant 0ms LCP) */}
-          <picture className="absolute inset-0 w-full h-full select-none pointer-events-none dark:brightness-[0.84] dark:contrast-[1.06] dark:saturate-[0.96]">
+          <picture className="absolute inset-0 w-full h-full select-none pointer-events-none">
             <source
               media="(max-width: 640px)"
               srcSet="/artisan-bg/room-light-cutout-mobile.webp"
@@ -766,19 +821,15 @@ export function Hero3DBackground({
               width={988}
               height={1038}
               fetchPriority="high"
-              decoding="sync"
+              decoding="async"
               className="w-full h-full object-cover select-none pointer-events-none"
             />
           </picture>
 
-          {/* Double-Buffered Video Players for Zero-Flash State Transitions */}
+          {/* Double-Buffered Video Players (inherits outer clip-path — zero nested polygon passes) */}
           {isVideoMounted && (
             <div
-              style={{
-                clipPath: ISOMETRIC_BOX_CLIP,
-                WebkitClipPath: ISOMETRIC_BOX_CLIP,
-              }}
-              className={`absolute inset-0 w-full h-full overflow-hidden pointer-events-none transition-opacity duration-300 dark:brightness-[0.84] dark:contrast-[1.06] dark:saturate-[0.96] ${
+              className={`absolute inset-0 w-full h-full overflow-hidden pointer-events-none transition-opacity duration-300 ${
                 isVideoReady ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -789,10 +840,6 @@ export function Hero3DBackground({
                 preload="auto"
                 onEnded={() => handleSlotEnded(0)}
                 aria-label="3D Developer Workspace animation stream A"
-                style={{
-                  clipPath: ISOMETRIC_BOX_CLIP,
-                  WebkitClipPath: ISOMETRIC_BOX_CLIP,
-                }}
                 className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-200 ${
                   activeSlot === 0 ? "opacity-100 z-10" : "opacity-0 z-0"
                 }`}
@@ -801,19 +848,21 @@ export function Hero3DBackground({
                 ref={slotBRef}
                 muted
                 playsInline
-                preload="auto"
+                preload="none"
                 onEnded={() => handleSlotEnded(1)}
                 aria-label="3D Developer Workspace animation stream B"
-                style={{
-                  clipPath: ISOMETRIC_BOX_CLIP,
-                  WebkitClipPath: ISOMETRIC_BOX_CLIP,
-                }}
                 className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-200 ${
                   activeSlot === 1 ? "opacity-100 z-10" : "opacity-0 z-0"
                 }`}
               />
             </div>
           )}
+
+          {/* Cheap compositor-only dark scrim instead of per-frame GPU CSS color filters on video */}
+          <div
+            aria-hidden="true"
+            className="hidden dark:block absolute inset-0 bg-black/14 pointer-events-none z-[15]"
+          />
 
           {/* Keep the desk and person at their original brightness; shade the walls separately. */}
           <div

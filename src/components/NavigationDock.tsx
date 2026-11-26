@@ -431,7 +431,7 @@ export function NavigationDock() {
                 }
               : { opacity: 0, transition: { duration: 0.05 } }
           }
-          className={`fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-[70] max-sm:bottom-4 px-3 will-change-[transform,opacity] ${
+          className={`fixed bottom-7 sm:bottom-7 left-0 right-0 flex items-center justify-center gap-2 sm:gap-2.5 z-[70] max-sm:bottom-4 px-3 ${
             isFooterVisible ? "!pointer-events-none" : "pointer-events-none"
           }`}
         >

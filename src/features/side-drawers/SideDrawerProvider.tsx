@@ -112,12 +112,13 @@ export function SideDrawerProvider({ children }: { children: ReactNode }) {
             <motion.div
               key="side-drawer-backdrop"
               data-side-drawer-backdrop="true"
+              data-perf-surface="glass"
               aria-hidden="true"
               onClick={closeDrawer}
-              initial={{ opacity: 0, backdropFilter: reducedMotion ? "blur(6px)" : "blur(0px)" }}
-              animate={{ opacity: 1, backdropFilter: "blur(6px)" }}
-              exit={{ opacity: 0, backdropFilter: reducedMotion ? "blur(6px)" : "blur(0px)", transition: { duration: reducedMotion ? 0 : 0.16 } }}
-              transition={{ duration: reducedMotion ? 0 : 0.24, ease: "easeOut" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: reducedMotion ? 0 : 0.16 } }}
+              transition={{ duration: reducedMotion ? 0 : 0.22, ease: "easeOut" }}
               className={styles.backdrop}
             />
           )}

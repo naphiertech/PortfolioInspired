@@ -84,7 +84,8 @@ export function DockNav({
     >
       <nav
         data-guide="artisan-dock"
-        className={`relative flex h-14 w-fit items-center justify-center gap-1.5 sm:gap-2 overflow-visible rounded-t-[32px] bg-white/95 dark:bg-[#0a0a0a]/95 text-foreground px-3.5 py-2 border-t border-x border-black/10 dark:border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.12)] backdrop-blur-3xl transition-all duration-300 ease-out ${
+        data-perf-surface="glass"
+        className={`relative flex h-14 w-fit items-center justify-center gap-1.5 sm:gap-2 overflow-visible rounded-t-[32px] bg-white/95 dark:bg-[#0a0a0a]/95 text-foreground px-3.5 py-2 border-t border-x border-black/10 dark:border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.12)] lg:backdrop-blur-md transition-all duration-300 ease-out ${
           hidden ? "pointer-events-none" : "pointer-events-auto"
         }`}
       >
@@ -121,7 +122,7 @@ export function DockNav({
                     : "opacity-0 translate-y-2 scale-90"
                 }`}
               >
-                <div className="rounded-full bg-white dark:bg-neutral-800 px-3 py-1.5 font-semibold tracking-wider text-neutral-900 dark:text-white text-xs sm:text-sm shadow-xl border border-neutral-200 dark:border-neutral-700 backdrop-blur-md whitespace-nowrap font-mono">
+                <div className="rounded-full bg-white dark:bg-neutral-800 px-3 py-1.5 font-semibold tracking-wider text-neutral-900 dark:text-white text-xs sm:text-sm shadow-xl border border-neutral-200 dark:border-neutral-700 whitespace-nowrap font-mono">
                   {item.label}
                 </div>
                 <div className="-mt-1 h-2 w-2 rotate-45 bg-white dark:bg-neutral-800 border-r border-b border-neutral-200 dark:border-neutral-700" />

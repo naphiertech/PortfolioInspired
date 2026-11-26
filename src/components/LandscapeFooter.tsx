@@ -12,9 +12,9 @@ import { BUILD_INFO } from "@/lib/buildInfo";
 import styles from "./LandscapeFooter.module.css";
 
 const FOOTER_ART = {
-  default: { dark: "/footer/footer_dark.png", light: "/footer/footer_light.png" },
-  focus: { dark: "/footer/footer_dark_focus.png", light: "/footer/footer_light_focus.png" },
-  minimal: { dark: "/footer/footer_dark_minimal.png", light: "/footer/footer_light_minimal.png" },
+  default: { dark: "/footer/footer_dark.webp", light: "/footer/footer_light.webp" },
+  focus: { dark: "/footer/footer_dark_focus.webp", light: "/footer/footer_light_focus.webp" },
+  minimal: { dark: "/footer/footer_dark_minimal.webp", light: "/footer/footer_light_minimal.webp" },
 } as const;
 
 const FOOTER_QUOTES = {

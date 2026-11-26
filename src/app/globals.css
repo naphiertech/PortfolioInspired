@@ -373,6 +373,66 @@ body:has(.artisan-mode) .bottom-progressive-blur,
   display: none !important;
 }
 
+/* ============================================================================
+ * Adaptive GPU / CPU Budget Rules for Touch Devices & Constrained Hardware
+ * Eliminates expensive per-frame backdrop-filter readbacks, 40px ambient blurs,
+ * and excessive VRAM layer promotions across slow mobile & desktop GPUs.
+ * ============================================================================ */
+@media (hover: none) and (pointer: coarse) {
+  .bottom-progressive-blur {
+    display: none !important;
+  }
+
+  .nav-dock {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: var(--bg-surface) !important;
+    will-change: auto !important;
+  }
+
+  [data-perf-blur="ambient"] {
+    display: none !important;
+  }
+}
+
+html[data-perf="low"] .bottom-progressive-blur,
+html[data-perf="low"] [data-perf-blur="ambient"] {
+  display: none !important;
+}
+
+html[data-perf="low"] .nav-dock,
+html[data-perf="low"] [data-perf-surface="glass"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-perf="low"] * {
+  will-change: auto !important;
+}
+
+@keyframes artisan-mic-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.artisan-mic-pulse {
+  animation: artisan-mic-pulse 2.4s ease-in-out infinite;
+}
+
+html[data-perf="low"] .artisan-mic-pulse {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .artisan-mic-pulse {
+    animation: none;
+  }
+}
+
 
 /* Project CAD Card with Corner Drafting Reticles */
 .cad-project-card {

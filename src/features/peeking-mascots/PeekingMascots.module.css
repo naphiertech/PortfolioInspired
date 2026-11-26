@@ -63,6 +63,27 @@
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.14));
 }
 
+/* Bypass CPU-rasterized SVG feTurbulence/feDisplacementMap on touch & constrained devices */
+@media (hover: none) and (pointer: coarse) {
+  .mascotSvg {
+    filter: none;
+  }
+  .mascotSvg g[filter] {
+    filter: none !important;
+  }
+  .eyeTrackGroup {
+    will-change: auto;
+  }
+}
+
+:global(html[data-perf="low"]) .mascotSvg {
+  filter: none;
+}
+
+:global(html[data-perf="low"]) .mascotSvg g[filter] {
+  filter: none !important;
+}
+
 /* Smooth cursor-tracking eye offset (updated directly in rAF) */
 .eyeTrackGroup {
   transform: translate(var(--eye-x), var(--eye-y));

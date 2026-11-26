@@ -179,13 +179,8 @@ export function PresentationModeProvider({
     }
   }, [initialMode]);
 
-  // Warm-preload inactive layout chunks after initial idle so layout switching is instantaneous
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      preloadAllModeLayouts();
-    }, 4500);
-    return () => clearTimeout(timer);
-  }, []);
+  // Preloading inactive presentation layouts is intentionally on-demand (hover on fine pointers or click)
+  // so constrained CPUs never stall parsing ~1.1 MB+ of unused mode bundles during initial interaction.
 
   // Normalize stale client state before consumers render; then repair its cookie.
   useEffect(() => {

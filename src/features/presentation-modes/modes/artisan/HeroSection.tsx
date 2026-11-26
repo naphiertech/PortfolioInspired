@@ -48,6 +48,7 @@ import {
 } from "@/lib/siteConfig";
 
 import { Hero3DBackground } from "./Hero3DBackground";
+import { usePerformanceTier } from "@/lib/performanceTier";
 
 interface HeroSectionProps {
   isDark: boolean;
@@ -87,6 +88,8 @@ export function HeroSection({
   const [isTalkOpen, setIsTalkOpen] = useState(false);
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null);
   const talkRef = useRef<HTMLDivElement>(null);
+  const { isLowPerf, isCoarseTouch } = usePerformanceTier();
+  const layoutMode: "position" | false = isLowPerf || isCoarseTouch ? false : "position";
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -151,7 +154,7 @@ export function HeroSection({
         {/* 1. Intro: Title, Bio, and Action Buttons (Left-Top on Image 1; Expanded Editorial Header below 3D Desk on Image 2) */}
         <motion.div
           id="artisan-dossier"
-          layout="position"
+          layout={layoutMode}
           transition={LAYOUT_GLIDE}
           className={
             isSidebarOpen
@@ -276,7 +279,7 @@ export function HeroSection({
               href={RESUME_PATH}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-black/12 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20 bg-background/75 backdrop-blur-sm text-xs font-sans font-medium text-foreground/85 hover:text-foreground transition-colors px-4 py-2"
+              className="inline-flex items-center gap-1.5 rounded-full border border-black/12 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20 bg-background/95 text-xs font-sans font-medium text-foreground/85 hover:text-foreground transition-colors px-4 py-2"
             >
               <LuFileText className="size-3.5" aria-hidden="true" />
               <span>Résumé</span>
@@ -300,10 +303,10 @@ export function HeroSection({
                     ? "Close sidebar (Ctrl+B)"
                     : "Open sidebar (Ctrl+B)"
                 }
-                className={`inline-flex items-center justify-center rounded-full border backdrop-blur-sm transition-colors cursor-pointer size-[34px] ${
+                className={`inline-flex items-center justify-center rounded-full border transition-colors cursor-pointer size-[34px] ${
                   isSidebarOpen
                     ? "border-black/30 dark:border-white/25 bg-black/[0.06] dark:bg-white/[0.1] text-foreground"
-                    : "border-black/12 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20 bg-white/80 dark:bg-[#0d0f10]/80 text-foreground/80 hover:text-foreground"
+                    : "border-black/12 dark:border-white/10 hover:border-black/25 dark:hover:border-white/20 bg-white/95 dark:bg-[#0d0f10]/95 text-foreground/80 hover:text-foreground"
                 }`}
               >
                 {isSidebarOpen ? (
@@ -359,7 +362,7 @@ export function HeroSection({
 
         {/* 2. 3D Workspace (Right-offset centerpiece on Image 1; Full first-view centerpiece on Image 2) */}
         <motion.div
-          layout="position"
+          layout={layoutMode}
           transition={LAYOUT_GLIDE}
           data-guide="artisan-3d"
           className={
@@ -387,7 +390,7 @@ export function HeroSection({
 
         {/* 3. Extended Dossier: Left scrollable rail on Image 1; Editorial Overview on Image 2 */}
         <motion.div
-          layout="position"
+          layout={layoutMode}
           transition={LAYOUT_GLIDE}
           className={
             isSidebarOpen
@@ -434,7 +437,7 @@ export function HeroSection({
                   return (
                     <span
                       key={skill.name}
-                      className="inline-flex items-center gap-1.5 rounded-full font-sans font-normal border border-black/12 dark:border-white/10 bg-background/75 backdrop-blur-sm text-foreground/90 hover:border-black/25 dark:hover:border-white/20 transition-colors px-2.5 py-1 text-xs"
+                      className="inline-flex items-center gap-1.5 rounded-full font-sans font-normal border border-black/12 dark:border-white/10 bg-background/95 text-foreground/90 hover:border-black/25 dark:hover:border-white/20 transition-colors px-2.5 py-1 text-xs"
                     >
                       <Icon
                         className="size-3 text-foreground/85 shrink-0"
@@ -479,7 +482,7 @@ export function HeroSection({
                       onClick={() => {
                         if (hasPreview) setSelectedCert(cert);
                       }}
-                      className={`w-full text-left group flex items-center justify-between gap-2 rounded-xl border border-black/10 dark:border-white/10 bg-background/75 backdrop-blur-sm transition-all px-3 py-2 ${
+                      className={`w-full text-left group flex items-center justify-between gap-2 rounded-xl border border-black/10 dark:border-white/10 bg-background/95 transition-colors px-3 py-2 ${
                         hasPreview
                           ? "hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.02] dark:hover:bg-white/[0.03] cursor-pointer"
                           : "cursor-default"

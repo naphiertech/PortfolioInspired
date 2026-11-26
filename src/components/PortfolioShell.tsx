@@ -54,7 +54,8 @@ const ResourcesEdgeDrawer = dynamic(
   () => import("@/features/resources-drawer").then((m) => m.ResourcesEdgeDrawer),
   { ssr: false }
 );
-import { SideDrawerProvider } from "@/features/side-drawers/SideDrawerProvider";
+import { SideDrawerProvider, useSideDrawers } from "@/features/side-drawers/SideDrawerProvider";
+import { usePerformanceTier } from "@/lib/performanceTier";
 import styles from "./ContentSurfaces.module.css";
 const CreativeModeHost = dynamic(
   () => import("@/features/creative-mode/components/CreativeModeHost").then((m) => m.CreativeModeHost),
@@ -78,6 +79,27 @@ const CreativeNotes = dynamic(
   { ssr: false }
 );
 
+function ArtisanLazySideDrawers() {
+  const { activeDrawer } = useSideDrawers();
+  const [mountedMusic, setMountedMusic] = React.useState(false);
+  const [mountedResources, setMountedResources] = React.useState(false);
+
+  React.useEffect(() => {
+    if (activeDrawer === "music" && !mountedMusic) {
+      setMountedMusic(true);
+    } else if (activeDrawer === "resources" && !mountedResources) {
+      setMountedResources(true);
+    }
+  }, [activeDrawer, mountedMusic, mountedResources]);
+
+  return (
+    <>
+      {mountedMusic && <MusicEdgeDrawer hideEdgeTab />}
+      {mountedResources && <ResourcesEdgeDrawer hideEdgeTab />}
+    </>
+  );
+}
+
 interface PortfolioShellProps {
   children: ReactNode;
 }
@@ -96,6 +118,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
   const contentRef = useRef<HTMLElement>(null);
   const { mode } = usePresentationMode();
   const pathname = usePathname();
+  usePerformanceTier();
   const isFocus = mode === "focus";
   const isMinimal = mode === "minimal";
   const isAgent = mode === "agent" || pathname === "/artisan";
@@ -153,12 +176,7 @@ export function PortfolioShell({ children }: PortfolioShellProps) {
         <MusicEdgeDrawer variant="focus" />
         <ResourcesEdgeDrawer variant="focus" />
       </>}
-      {isAgent && (
-        <>
-          <MusicEdgeDrawer hideEdgeTab />
-          <ResourcesEdgeDrawer hideEdgeTab />
-        </>
-      )}
+      {isAgent && <ArtisanLazySideDrawers />}
       {!isAgent && <CreativeModeHost />}
 
       {/* Document-Scoped Architectural Technical Grid (Smoothly faded in Minimal, omitted in Agent) */}

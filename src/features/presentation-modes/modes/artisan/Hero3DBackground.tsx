@@ -130,16 +130,9 @@ export function Hero3DBackground({
   }, [isCallActive, voiceStatus]);
   speakerMutedRef.current = speakerMuted;
 
-  // Mount videos after LCP settle only on fine-pointer high-tier devices.
-  // Slow CPUs, low-RAM devices, and coarse touch devices stay on the crisp 47 KB WebP cutout
-  // so scroll & touch responsiveness stay locked at 60fps.
+  // Mount hardware-decoded H.264 desk animation after LCP settle or on first user interaction.
+  // Only skipped when the user explicitly requests prefers-reduced-motion or Data Saver.
   useEffect(() => {
-    if (isLowPerf || isCoarseTouch) {
-      setIsVideoMounted(false);
-      setIsVideoReady(false);
-      return;
-    }
-
     if (
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -147,7 +140,14 @@ export function Hero3DBackground({
       return;
     }
 
-    // Prefer hardware-decoded H.264 MP4 (33% smaller + native VPU decode across GPUs)
+    const navConnection = (
+      navigator as Navigator & { connection?: { saveData?: boolean } }
+    ).connection;
+    if (navConnection?.saveData) {
+      return;
+    }
+
+    // Prefer hardware-decoded H.264 MP4 (33% smaller + native VPU decode across mobile & desktop GPUs)
     const probe = document.createElement("video");
     const canMp4 =
       probe.canPlayType('video/mp4; codecs="avc1.42E01E"') ||
@@ -155,7 +155,7 @@ export function Hero3DBackground({
     extRef.current = canMp4 ? "mp4" : "webm";
 
     const enableVideo = () => setIsVideoMounted(true);
-    const timer = setTimeout(enableVideo, 1800);
+    const timer = setTimeout(enableVideo, isCoarseTouch ? 1200 : 900);
 
     const onInteract = () => {
       enableVideo();
@@ -164,15 +164,17 @@ export function Hero3DBackground({
 
     window.addEventListener("pointermove", onInteract, { once: true, passive: true });
     window.addEventListener("pointerdown", onInteract, { once: true, passive: true });
+    window.addEventListener("touchstart", onInteract, { once: true, passive: true });
     window.addEventListener("keydown", onInteract, { once: true, passive: true });
 
     return () => {
       clearTimeout(timer);
       window.removeEventListener("pointermove", onInteract);
       window.removeEventListener("pointerdown", onInteract);
+      window.removeEventListener("touchstart", onInteract);
       window.removeEventListener("keydown", onInteract);
     };
-  }, [isLowPerf, isCoarseTouch]);
+  }, [isCoarseTouch]);
 
   // Pause active video automatically when scrolled off-screen, hidden tab, or switched away from Home
   useEffect(() => {
@@ -484,10 +486,10 @@ export function Hero3DBackground({
     }
   }, [isCallActive, callSeconds, handleToggleCall]);
 
-  // Zero-re-render 3D perspective tilt via rAF direct style update (desktop fine-pointer high-tier only)
+  // Zero-re-render 3D perspective tilt via rAF direct style update (all pointer devices)
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (activeHotspot || isLowPerf || isCoarseTouch) return;
+      if (activeHotspot || isCoarseTouch) return;
       const el = containerRef.current;
       const box = tiltBoxRef.current;
       if (!el || !box) return;
@@ -503,7 +505,7 @@ export function Hero3DBackground({
         box.style.transform = `rotateX(${(-ny * 6.5).toFixed(2)}deg) rotateY(${(nx * 8.5).toFixed(2)}deg) scale3d(1.02, 1.02, 1)`;
       });
     },
-    [activeHotspot, isLowPerf, isCoarseTouch]
+    [activeHotspot, isCoarseTouch]
   );
 
   const handleMouseLeave = useCallback(() => {
